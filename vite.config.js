@@ -27,9 +27,14 @@ export default defineConfig({
           { src: 'icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
           { src: 'icon-maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
         ],
+        screenshots: [
+          { src: 'screenshot-wide.png', sizes: '2560x1440', type: 'image/png', form_factor: 'wide', label: 'Daftar materi di tampilan desktop' },
+          { src: 'screenshot-mobile.png', sizes: '780x1688', type: 'image/png', form_factor: 'narrow', label: 'Daftar materi di tampilan HP' },
+        ],
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,png,svg,json}'],
+        globIgnores: ['screenshot-*.png'],
       },
     }),
   ],
