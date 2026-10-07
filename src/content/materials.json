@@ -1,0 +1,137 @@
+[
+  {
+    "id": "algoritma-pemrograman",
+    "no": "1",
+    "title": "Pengertian Algoritma & Pemrograman",
+    "desc": "Dasar algoritma dan pemrograman",
+    "hasText": true,
+    "visualizer": null,
+    "challenge": "algoritma-pemrograman"
+  },
+  {
+    "id": "insertion-sort",
+    "no": "2",
+    "title": "Algoritma Insertion Sort & Analisis Running Time",
+    "desc": "Cara kerja insertion sort dan analisis waktunya",
+    "hasText": true,
+    "visualizer": "insertionSort",
+    "challenge": "insertion-sort"
+  },
+  {
+    "id": "pertumbuhan-fungsi",
+    "no": "3",
+    "title": "Pertumbuhan Fungsi Running Time",
+    "desc": "Cara membandingkan laju pertumbuhan fungsi",
+    "hasText": true,
+    "visualizer": null,
+    "challenge": "pertumbuhan-fungsi"
+  },
+  {
+    "id": "notasi-asimtotik",
+    "no": "4",
+    "title": "Notasi Asimtotik (Θ, O, Ω)",
+    "desc": "Batas atas, bawah, dan ketat",
+    "hasText": true,
+    "visualizer": null,
+    "challenge": "notasi-asimtotik"
+  },
+  {
+    "id": "little-o-omega",
+    "no": "5",
+    "title": "Notasi Asimtotik Little-Oh (o) & Little-Omega (ω)",
+    "desc": "Batas yang tidak ketat",
+    "hasText": true,
+    "visualizer": null,
+    "challenge": "little-o-omega"
+  },
+  {
+    "id": "merge-sort",
+    "no": "6",
+    "title": "Algoritma Divide and Conquer (Merge Sort)",
+    "desc": "Bagi, selesaikan, gabungkan",
+    "hasText": true,
+    "visualizer": "mergeSort",
+    "challenge": "merge-sort"
+  },
+  {
+    "id": "recurrence-master",
+    "no": "7",
+    "title": "Recurrence & Metode Master",
+    "desc": "Menyelesaikan relasi rekurens",
+    "hasText": true,
+    "visualizer": null,
+    "challenge": "recurrence-master"
+  },
+  {
+    "id": "dp-rantai-matriks",
+    "no": "8",
+    "title": "Dynamic Programming – Perkalian Rantai Matriks",
+    "desc": "Urutan perkalian matriks paling efisien",
+    "hasText": false,
+    "visualizer": null,
+    "challenge": "dp-rantai-matriks"
+  },
+  {
+    "id": "dp-lcs",
+    "no": "9",
+    "title": "Dynamic Programming – Longest Common Subsequence (LCS)",
+    "desc": "Subsequence bersama terpanjang",
+    "hasText": false,
+    "visualizer": null,
+    "challenge": "dp-lcs"
+  },
+  {
+    "id": "greedy-activity-selection",
+    "no": "10.1",
+    "title": "Algoritma Greedy – An Activity Selection Problem",
+    "desc": "Memilih aktivitas sebanyak mungkin",
+    "hasText": false,
+    "visualizer": null,
+    "challenge": "greedy-activity-selection"
+  },
+  {
+    "id": "greedy-huffman",
+    "no": "10.2",
+    "title": "Algoritma Greedy – Huffman Code",
+    "desc": "Kompresi dengan kode prefiks",
+    "hasText": false,
+    "visualizer": null,
+    "challenge": "greedy-huffman"
+  },
+  {
+    "id": "graph-bfs",
+    "no": "11.1",
+    "title": "Algoritma Graph – Breadth First Search (BFS)",
+    "desc": "Penelusuran graf per level",
+    "hasText": false,
+    "visualizer": null,
+    "challenge": "graph-bfs"
+  },
+  {
+    "id": "graph-dfs",
+    "no": "11.2",
+    "title": "Algoritma Graph – Depth First Search (DFS)",
+    "desc": "Penelusuran graf sedalam mungkin",
+    "hasText": false,
+    "visualizer": null,
+    "challenge": "graph-dfs"
+  },
+  {
+    "id": "mst",
+    "no": "12",
+    "title": "Minimum Spanning Tree (MST) – Algoritma Prim & Kruskal",
+    "desc": "Pohon rentang dengan bobot minimum",
+    "hasText": false,
+    "visualizer": null,
+    "challenge": "mst"
+  },
+  {
+    "id": "shortest-path",
+    "no": "13",
+    "title": "Single Source Shortest Path – Algoritma Dijkstra & Bellman-Ford",
+    "desc": "Jarak terpendek dari satu sumber",
+    "hasText": false,
+    "visualizer": null,
+    "challenge": "shortest-path"
+  }
+]
