@@ -1,8 +1,35 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
+import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
-  base: '/labu-kindle-book-algoritma/', // harus sama persis dengan nama repo
-  plugins: [react(), tailwindcss()],
+  base: '/labu-kindle-book-algoritma/',
+  plugins: [
+    react(),
+    tailwindcss(),
+    VitePWA({
+      registerType: 'autoUpdate',
+      includeAssets: ['favicon.png', 'apple-touch-icon.png'],
+      manifest: {
+        name: 'Labu Kindle Book Algoritma',
+        short_name: 'Labu Algo',
+        description: 'Belajar algoritma secara interaktif',
+        lang: 'id',
+        start_url: '/labu-kindle-book-algoritma/',
+        scope: '/labu-kindle-book-algoritma/',
+        display: 'standalone',
+        background_color: '#ffffff',
+        theme_color: '#f46505',
+        icons: [
+          { src: 'icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
+          { src: 'icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+          { src: 'icon-maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+        ],
+      },
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,png,svg,json}'],
+      },
+    }),
+  ],
 })
