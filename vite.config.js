@@ -12,7 +12,7 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.png', 'apple-touch-icon.png'],
       manifest: {
-        name: 'Labu Kindle Book Algoritma',
+        name: 'Labu I-Learning Algoritma',
         short_name: 'Labu Algo',
         description: 'Belajar algoritma secara interaktif',
         lang: 'id',
