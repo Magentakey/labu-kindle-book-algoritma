@@ -16,6 +16,7 @@ export default defineConfig({
         short_name: 'Labu Algo',
         description: 'Belajar algoritma secara interaktif',
         lang: 'id',
+        id: '/labu-kindle-book-algoritma/',
         start_url: '/labu-kindle-book-algoritma/',
         scope: '/labu-kindle-book-algoritma/',
         display: 'standalone',
