@@ -1,8 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import materials from '../content/materials.json'
-import CodeBlock from '../components/CodeBlock/CodeBlock.jsx'
-import { insertionSortCode } from '../algorithms/insertionSort.js'
+import DemoInsertion from '../components/AlgoVisualizer/DemoInsertion.jsx'
 
 export default function Material() {
   const { id } = useParams()
@@ -48,9 +47,7 @@ export default function Material() {
           <section aria-labelledby="sec-visual" className="mt-8">
             <h2 id="sec-visual" className="text-xl font-semibold">Visualisasi</h2>
             {m.visualizer === 'insertionSort' ? (
-              <div className="mt-2 max-w-xl">
-                <CodeBlock code={insertionSortCode} highlightLine={5} label="Kode insertion sort" />
-              </div>
+              <DemoInsertion />
             ) : (
               <p className="mt-2 rounded-xl border-2 border-dashed border-stone-700 bg-orange-100 p-4">
                 Visualisasi langkah demi langkah akan tampil di sini.
