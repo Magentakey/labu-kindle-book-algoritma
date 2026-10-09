@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
 import { auditContent } from '../../scripts/auditContent.js'
 import { checkMarkdown } from '../lib/checkMarkdown.js'
+import { runTests } from '../lib/runTests.js'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '../..')
 
@@ -51,5 +52,36 @@ test('semua file challenge punya format yang benar dan terhubung ke materials.js
     // Kode awal harus valid dan mendefinisikan solve().
     const solve = new Function(`${c.starterCode}\nreturn typeof solve === 'function' ? solve : null`)()
     assert.ok(solve, `${file}: starterCode harus mendefinisikan fungsi solve`)
+  }
+})
+
+// Jawaban acuan hanya ada di tes ini (bukan di bundle), untuk membuktikan test case benar dan bisa dilulusi.
+const referenceSolutions = {
+  'insertion-sort': `function solve(arr) {
+    const a = [...arr]
+    for (let i = 1; i < a.length; i++) {
+      const key = a[i]
+      let j = i - 1
+      while (j >= 0 && a[j] > key) { a[j + 1] = a[j]; j-- }
+      a[j + 1] = key
+    }
+    return a
+  }`,
+}
+
+test('setiap challenge: jawaban acuan lulus semua, kode awal tidak lulus', () => {
+  const dir = join(root, 'src/content/challenges')
+  for (const file of readdirSync(dir).filter((f) => f.endsWith('.json'))) {
+    const id = file.replace(/\.json$/, '')
+    const c = JSON.parse(readFileSync(join(dir, file), 'utf8'))
+    assert.ok(referenceSolutions[id], `${file}: tambahkan jawaban acuan di content.test.js`)
+
+    const ref = runTests(referenceSolutions[id], c.testCases)
+    assert.equal(ref.status, 'done', `${file}: jawaban acuan error`)
+    assert.deepEqual(ref.results.filter((r) => !r.pass).map((r) => r.index), [], `${file}: jawaban acuan gagal di test case ini`)
+
+    const starter = runTests(c.starterCode, c.testCases)
+    assert.equal(starter.status, 'done')
+    assert.ok(starter.results.some((r) => !r.pass), `${file}: kode awal tidak boleh sudah lulus semua`)
   }
 })

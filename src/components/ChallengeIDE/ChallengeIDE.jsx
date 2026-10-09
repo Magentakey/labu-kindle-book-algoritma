@@ -1,9 +1,11 @@
-import { useId, useMemo, useState } from 'react'
+import { useId, useMemo, useRef, useState } from 'react'
 import CodeMirror from '@uiw/react-codemirror'
 import { javascript } from '@codemirror/lang-javascript'
 import { EditorView } from '@codemirror/view'
 import { editorTheme } from './editorTheme.js'
 import { createTabKeys } from './tabKeys.js'
+import { describeOutcome } from '../../lib/describeOutcome.js'
+import { runInWorker } from '../../lib/runnerClient.js'
 
 const buttonClass =
   'inline-flex min-h-12 min-w-28 items-center justify-center rounded-xl px-4 font-semibold ' +
@@ -29,16 +31,18 @@ const basicSetup = {
  * Editor soal challenge: CodeMirror yang aksesibel + tombol Jalankan dan Kembalikan.
  *
  * @param {Object} props
- * @param {{ id: string, title: string, description: string, starterCode: string }} props.challenge
- * @param {(code: string) => void} [props.onRun]  dipanggil saat tombol Jalankan ditekan
+ * @param {{ id: string, title: string, description: string, starterCode: string, testCases: Array<{ input: unknown[], expected: unknown }> }} props.challenge
+ * @param {typeof runInWorker} [props.run]  pelaksana kode (bawaan: Web Worker; diganti saat tes)
  */
-export default function ChallengeIDE({ challenge, onRun }) {
+export default function ChallengeIDE({ challenge, run = runInWorker }) {
   const uid = useId()
   const labelId = `${uid}-label`
   const helpId = `${uid}-help`
   const [code, setCode] = useState(challenge.starterCode)
   const [tabIndent, setTabIndent] = useState(false)
   const [message, setMessage] = useState('')
+  const [running, setRunning] = useState(false)
+  const runId = useRef(0)
   const [tabKeys] = useState(createTabKeys)
 
   const changed = code !== challenge.starterCode
@@ -54,13 +58,15 @@ export default function ChallengeIDE({ challenge, onRun }) {
     [labelId, helpId, tabIndent, tabKeys],
   )
 
-  function run() {
-    if (onRun) {
-      setMessage('')
-      onRun(code)
-    } else {
-      setMessage('Menjalankan kode belum aktif di versi ini.')
-    }
+  async function handleRun() {
+    if (running) return // aria-disabled: tombol tetap bisa difokus, tetapi tidak berbuat apa-apa
+    const id = ++runId.current
+    setRunning(true)
+    setMessage('Menjalankan kode…')
+    const outcome = await run(code, challenge.testCases)
+    if (id !== runId.current) return
+    setRunning(false)
+    setMessage(describeOutcome(outcome))
   }
 
   function reset() {
@@ -97,8 +103,8 @@ export default function ChallengeIDE({ challenge, onRun }) {
       </p>
 
       <div className="mt-4 flex flex-wrap gap-3">
-        <button type="button" onClick={run} className={buttonClass}>
-          Jalankan kode
+        <button type="button" onClick={handleRun} aria-disabled={running} className={buttonClass}>
+          {running ? 'Menjalankan…' : 'Jalankan kode'}
         </button>
         <button type="button" onClick={reset} aria-disabled={!changed} className={secondaryButtonClass}>
           Kembalikan kode awal
