@@ -8,7 +8,8 @@
     "build": "vite build",
     "lint": "eslint .",
     "test": "node --test",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "check:content": "node scripts/check-content.js"
   },
   "dependencies": {
     "@codemirror/lang-javascript": "^6.2.5",
@@ -19,6 +20,7 @@
     "react-dom": "^19.2.8",
     "react-markdown": "^10.1.0",
     "react-router-dom": "^7.18.4",
+    "remark-gfm": "^4.0.1",
     "tailwindcss": "^4.3.3"
   },
   "devDependencies": {

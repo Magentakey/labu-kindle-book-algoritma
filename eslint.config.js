@@ -20,4 +20,9 @@ export default defineConfig([
       parserOptions: { ecmaFeatures: { jsx: true } },
     },
   },
+  {
+    // Skrip Node (bukan kode browser) dan tes yang membaca file.
+    files: ['scripts/**/*.js', 'src/content/*.test.js'],
+    languageOptions: { globals: globals.node },
+  },
 ])
