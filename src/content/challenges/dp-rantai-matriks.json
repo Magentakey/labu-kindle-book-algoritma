@@ -1,0 +1,14 @@
+{
+  "id": "dp-rantai-matriks",
+  "title": "Biaya Minimum Perkalian Rantai Matriks",
+  "description": "Ada rantai matriks A1, A2, ..., An. Ukuran matriks Ai adalah dims[i-1] × dims[i], jadi array dims berisi n + 1 angka.\nMengalikan matriks p×q dengan q×r membutuhkan p·q·r perkalian skalar.\nTulis solve(dims) yang mengembalikan jumlah perkalian skalar paling sedikit untuk mengalikan seluruh rantai (kamu bebas memilih urutan pengurungannya).\nContoh: solve([10, 30, 5, 60]) mengembalikan 4500, yaitu (A1·A2)·A3: 10·30·5 + 10·5·60. Satu matriks saja berarti biaya 0.",
+  "starterCode": "function solve(dims) {\n  // tulis kode Anda di sini\n}\n",
+  "testCases": [
+    {"input":[[10,20]],"expected":0},
+    {"input":[[10,20,30]],"expected":6000},
+    {"input":[[10,30,5,60]],"expected":4500},
+    {"input":[[40,20,30,10,30]],"expected":26000},
+    {"input":[[5,10,3,12,5,50,6]],"expected":2010},
+    {"input":[[30,35,15,5,10,20,25]],"expected":15125}
+  ]
+}

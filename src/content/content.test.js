@@ -6,6 +6,7 @@ import { dirname, join } from 'node:path'
 import { auditContent } from '../../scripts/auditContent.js'
 import { checkMarkdown } from '../lib/checkMarkdown.js'
 import { runTests } from '../lib/runTests.js'
+import { referenceSolutions } from './challengeReferences.js'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '../..')
 
@@ -55,26 +56,12 @@ test('semua file challenge punya format yang benar dan terhubung ke materials.js
   }
 })
 
-// Jawaban acuan hanya ada di tes ini (bukan di bundle), untuk membuktikan test case benar dan bisa dilulusi.
-const referenceSolutions = {
-  'insertion-sort': `function solve(arr) {
-    const a = [...arr]
-    for (let i = 1; i < a.length; i++) {
-      const key = a[i]
-      let j = i - 1
-      while (j >= 0 && a[j] > key) { a[j + 1] = a[j]; j-- }
-      a[j + 1] = key
-    }
-    return a
-  }`,
-}
-
 test('setiap challenge: jawaban acuan lulus semua, kode awal tidak lulus', () => {
   const dir = join(root, 'src/content/challenges')
   for (const file of readdirSync(dir).filter((f) => f.endsWith('.json'))) {
     const id = file.replace(/\.json$/, '')
     const c = JSON.parse(readFileSync(join(dir, file), 'utf8'))
-    assert.ok(referenceSolutions[id], `${file}: tambahkan jawaban acuan di content.test.js`)
+    assert.ok(referenceSolutions[id], `${file}: tambahkan jawaban acuan di src/content/challengeReferences.js`)
 
     const ref = runTests(referenceSolutions[id], c.testCases)
     assert.equal(ref.status, 'done', `${file}: jawaban acuan error`)
@@ -83,5 +70,32 @@ test('setiap challenge: jawaban acuan lulus semua, kode awal tidak lulus', () =>
     const starter = runTests(c.starterCode, c.testCases)
     assert.equal(starter.status, 'done')
     assert.ok(starter.results.some((r) => !r.pass), `${file}: kode awal tidak boleh sudah lulus semua`)
+  }
+})
+
+// Materi yang soalnya sengaja belum ada (ditampilkan "Segera hadir"). Hapus dari daftar ini saat file soalnya dibuat.
+const COMING_SOON = ['notasi-asimtotik', 'little-o-omega']
+
+test('materi tanpa file soal harus sengaja ditandai "segera hadir"', () => {
+  const materials = JSON.parse(readFileSync(join(root, 'src/content/materials.json'), 'utf8'))
+  const dir = join(root, 'src/content/challenges')
+  const files = new Set(readdirSync(dir).filter((f) => f.endsWith('.json')).map((f) => f.replace(/\.json$/, '')))
+  const missing = materials.map((m) => m.challenge).filter((id) => id && !files.has(id))
+  assert.deepEqual(missing.sort(), [...COMING_SOON].sort(), 'daftar materi tanpa soal harus sama dengan COMING_SOON')
+})
+
+test('semua jawaban acuan punya file soalnya (tidak ada acuan yatim)', () => {
+  const dir = join(root, 'src/content/challenges')
+  const files = new Set(readdirSync(dir).filter((f) => f.endsWith('.json')).map((f) => f.replace(/\.json$/, '')))
+  assert.deepEqual(Object.keys(referenceSolutions).filter((id) => !files.has(id)), [])
+})
+
+test('soal challenge: input dan expected bisa disimpan di JSON dan setiap soal punya minimal 4 test case', () => {
+  const dir = join(root, 'src/content/challenges')
+  for (const file of readdirSync(dir).filter((f) => f.endsWith('.json'))) {
+    const c = JSON.parse(readFileSync(join(dir, file), 'utf8'))
+    assert.ok(c.testCases.length >= 4, `${file}: minimal 4 test case (termasuk kasus tepi)`)
+    const serialized = JSON.stringify(c.testCases)
+    assert.ok(!serialized.includes('null'), `${file}: null di test case biasanya tanda Infinity/NaN yang gagal disimpan; pakai -1 atau nilai lain`)
   }
 })

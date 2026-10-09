@@ -1,0 +1,15 @@
+{
+  "id": "algoritma-pemrograman",
+  "title": "Cari Nilai Terbesar",
+  "description": "Tulis fungsi solve(arr) yang mengembalikan nilai terbesar di dalam array arr.\nArray berisi minimal satu angka (boleh negatif atau kembar). Tulis perulangannya sendiri, jangan memakai Math.max, supaya langkah algoritmanya terlihat.\nContoh: solve([3, 9, 2]) mengembalikan 9.",
+  "starterCode": "function solve(arr) {\n  // tulis kode Anda di sini\n}\n",
+  "testCases": [
+    {"input":[[5]],"expected":5},
+    {"input":[[3,9,2]],"expected":9},
+    {"input":[[-5,-2,-9]],"expected":-2},
+    {"input":[[7,7,7]],"expected":7},
+    {"input":[[1,2,3,4,5]],"expected":5},
+    {"input":[[9,1,2]],"expected":9},
+    {"input":[[0,-1]],"expected":0}
+  ]
+}

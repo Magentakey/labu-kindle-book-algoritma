@@ -62,7 +62,7 @@ function ChallengeSection({ id }) {
       </p>
     )
   }
-  if (state.status === 'missing') return <p className={placeholderClass}>Soal challenge untuk materi ini belum tersedia.</p>
+  if (state.status === 'missing') return <p className={placeholderClass}>Soal challenge segera hadir.</p>
   return (
     <Suspense fallback={<Loading className="mt-2 min-h-64">Memuat editor…</Loading>}>
       <ChallengeIDE key={state.challenge.id} challenge={state.challenge} />

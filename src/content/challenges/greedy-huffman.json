@@ -1,0 +1,14 @@
+{
+  "id": "greedy-huffman",
+  "title": "Total Biaya Kode Huffman",
+  "description": "Diberikan frekuensi kemunculan tiap simbol. Biaya kode adalah jumlah (frekuensi × panjang kode) untuk semua simbol.\nTulis solve(freq) yang mengembalikan biaya minimum dengan kode Huffman. freq berisi minimal 2 angka.\nPetunjuk: gabungkan dua frekuensi terkecil menjadi satu, tambahkan hasil penjumlahannya ke total, lalu ulangi sampai tinggal satu.\nContoh: solve([1, 2, 3]) mengembalikan 9 (1+2 = 3, lalu 3+3 = 6, total 3+6).",
+  "starterCode": "function solve(freq) {\n  // tulis kode Anda di sini\n}\n",
+  "testCases": [
+    {"input":[[45,13,12,16,9,5]],"expected":224},
+    {"input":[[1,1]],"expected":2},
+    {"input":[[1,2,3]],"expected":9},
+    {"input":[[5,5,5,5]],"expected":40},
+    {"input":[[1,1,2,3,5,8,13,21]],"expected":132},
+    {"input":[[3,3,3]],"expected":15}
+  ]
+}

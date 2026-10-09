@@ -1,0 +1,15 @@
+{
+  "id": "merge-sort",
+  "title": "Gabungkan Dua Array Terurut",
+  "description": "Ini langkah \"combine\" pada merge sort. Tulis solve(a, b) yang menerima dua array yang masing-masing sudah terurut naik, dan mengembalikan array baru berisi semua elemen keduanya dalam urutan naik.\nKerjakan dengan satu kali penelusuran memakai dua penunjuk, tanpa memanggil sort().\nContoh: solve([1, 3, 5], [2, 4, 6]) mengembalikan [1, 2, 3, 4, 5, 6].",
+  "starterCode": "function solve(a, b) {\n  // tulis kode Anda di sini\n}\n",
+  "testCases": [
+    {"input":[[1,3,5],[2,4,6]],"expected":[1,2,3,4,5,6]},
+    {"input":[[],[]],"expected":[]},
+    {"input":[[],[1,2]],"expected":[1,2]},
+    {"input":[[1,2],[]],"expected":[1,2]},
+    {"input":[[1,2,2],[2,3]],"expected":[1,2,2,2,3]},
+    {"input":[[5,6,7],[1,2]],"expected":[1,2,5,6,7]},
+    {"input":[[-3,0],[-5,-1,4]],"expected":[-5,-3,-1,0,4]}
+  ]
+}

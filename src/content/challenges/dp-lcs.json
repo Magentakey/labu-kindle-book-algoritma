@@ -1,0 +1,15 @@
+{
+  "id": "dp-lcs",
+  "title": "Panjang Longest Common Subsequence",
+  "description": "Subsequence adalah deretan karakter yang diambil dari sebuah string tanpa mengubah urutannya (karakternya tidak harus berurutan rapat). Misalnya \"ACE\" adalah subsequence dari \"ABCDE\".\nTulis solve(x, y) yang mengembalikan panjang subsequence bersama terpanjang dari string x dan y.\nContoh: solve(\"ABCBDAB\", \"BDCABA\") mengembalikan 4 (salah satunya \"BCBA\").",
+  "starterCode": "function solve(x, y) {\n  // tulis kode Anda di sini\n}\n",
+  "testCases": [
+    {"input":["ABCBDAB","BDCABA"],"expected":4},
+    {"input":["",""],"expected":0},
+    {"input":["","ABC"],"expected":0},
+    {"input":["ABC","ABC"],"expected":3},
+    {"input":["ABC","DEF"],"expected":0},
+    {"input":["AGGTAB","GXTXAYB"],"expected":4},
+    {"input":["AAAA","AA"],"expected":2}
+  ]
+}
