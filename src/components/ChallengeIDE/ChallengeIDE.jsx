@@ -4,7 +4,9 @@ import { javascript } from '@codemirror/lang-javascript'
 import { EditorView } from '@codemirror/view'
 import { editorTheme } from './editorTheme.js'
 import { createTabKeys } from './tabKeys.js'
+import TestPanel from './TestPanel.jsx'
 import { describeOutcome } from '../../lib/describeOutcome.js'
+import { findSyntaxLine } from '../../lib/findSyntaxLine.js'
 import { runInWorker } from '../../lib/runnerClient.js'
 
 const buttonClass =
@@ -42,6 +44,7 @@ export default function ChallengeIDE({ challenge, run = runInWorker }) {
   const [tabIndent, setTabIndent] = useState(false)
   const [message, setMessage] = useState('')
   const [running, setRunning] = useState(false)
+  const [result, setResult] = useState(null) // { outcome, code, no } dari Jalankan terakhir
   const runId = useRef(0)
   const [tabKeys] = useState(createTabKeys)
 
@@ -65,8 +68,10 @@ export default function ChallengeIDE({ challenge, run = runInWorker }) {
     setMessage('Menjalankan kode…')
     const outcome = await run(code, challenge.testCases)
     if (id !== runId.current) return
+    const line = outcome.status === 'error' && outcome.kind === 'syntax' ? findSyntaxLine(code) : null
     setRunning(false)
-    setMessage(describeOutcome(outcome))
+    setResult({ outcome, code, no: id })
+    setMessage(describeOutcome(outcome, { line }))
   }
 
   function reset() {
@@ -127,6 +132,10 @@ export default function ChallengeIDE({ challenge, run = runInWorker }) {
       <p role="status" className="mt-3 min-h-6">
         {message}
       </p>
+
+      {result?.outcome.status === 'done' && (
+        <TestPanel results={result.outcome.results} runNo={result.no} stale={result.code !== code} />
+      )}
     </div>
   )
 }

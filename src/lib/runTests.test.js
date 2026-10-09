@@ -85,3 +85,31 @@ test('describeOutcome: semua lulus, sebagian, error, timeout', () => {
   assert.equal(describeOutcome({ status: 'error', kind: 'no-solve', message: 'pesan' }), 'pesan')
   assert.match(describeOutcome({ status: 'timeout', timeoutMs: 2000 }), /2 detik/)
 })
+
+test('console.log dicatat per test case, bukan dibuang atau dicampur', () => {
+  const out = runTests('function solve(a) { console.log("masuk", a.length); console.table(a); return a }', [
+    { input: [[1, 2]], expected: [1, 2] },
+    { input: [[]], expected: [] },
+  ])
+  assert.deepEqual(out.results[0].logs, ['masuk 2'])
+  assert.deepEqual(out.results[1].logs, ['masuk 0'])
+})
+
+test('keluaran console dibatasi jumlah baris dan panjangnya', () => {
+  const out = runTests('function solve() { for (let i = 0; i < 100; i++) console.log("x".repeat(500)); return 1 }', [{ input: [], expected: 1 }])
+  const logs = out.results[0].logs
+  assert.equal(logs.length, 21)
+  assert.equal(logs[20], '… (keluaran dipotong)')
+  assert.ok(logs[0].length <= 201)
+})
+
+test('console.log sebelum error tetap tercatat di test case yang error', () => {
+  const out = runTests('function solve() { console.log("sebelum"); throw new Error("x") }', [{ input: [], expected: 1 }])
+  assert.deepEqual(out.results[0].logs, ['sebelum'])
+  assert.equal(out.results[0].error, 'Error: x')
+})
+
+test('describeOutcome: kesalahan sintaks dengan perkiraan baris', () => {
+  assert.match(describeOutcome({ status: 'error', kind: 'syntax', message: 'SyntaxError: x' }, { line: 3 }), /sekitar baris 3/)
+  assert.doesNotMatch(describeOutcome({ status: 'error', kind: 'syntax', message: 'SyntaxError: x' }), /baris/)
+})
