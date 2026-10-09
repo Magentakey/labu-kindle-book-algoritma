@@ -1,7 +1,8 @@
 import { useEffect, useRef } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import materials from '../content/materials.json'
-import DemoInsertion from '../components/AlgoVisualizer/DemoInsertion.jsx'
+import AlgoVisualizer from '../components/AlgoVisualizer/AlgoVisualizer.jsx'
+import { visualizers } from '../algorithms/registry.js'
 
 export default function Material() {
   const { id } = useParams()
@@ -46,8 +47,8 @@ export default function Material() {
         {m.visualizer && (
           <section aria-labelledby="sec-visual" className="mt-8">
             <h2 id="sec-visual" className="text-xl font-semibold">Visualisasi</h2>
-            {m.visualizer === 'insertionSort' ? (
-              <DemoInsertion />
+            {visualizers[m.visualizer] ? (
+              <AlgoVisualizer {...visualizers[m.visualizer]} />
             ) : (
               <p className="mt-2 rounded-xl border-2 border-dashed border-stone-700 bg-orange-100 p-4">
                 Visualisasi langkah demi langkah akan tampil di sini.
