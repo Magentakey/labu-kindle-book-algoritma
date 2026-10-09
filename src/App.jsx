@@ -1,6 +1,18 @@
+import { lazy, Suspense } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import Home from './pages/Home.jsx'
-import Material from './pages/Material.jsx'
+
+// Halaman Materi (Markdown, Prism, visualizer) baru diunduh saat pertama kali dibuka,
+// sehingga Home tetap ringan.
+const Material = lazy(() => import('./pages/Material.jsx'))
+
+function PageLoading() {
+  return (
+    <main id="konten" tabIndex={-1} className="min-h-screen bg-orange-50 p-6 text-stone-900 outline-none">
+      <p role="status">Memuat halaman…</p>
+    </main>
+  )
+}
 
 export default function App() {
   return (
@@ -12,10 +24,12 @@ export default function App() {
       >
         Lewati ke konten utama
       </button>
-      <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/materi/:id" element={<Material />} />
-      </Routes>
+      <Suspense fallback={<PageLoading />}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/materi/:id" element={<Material />} />
+        </Routes>
+      </Suspense>
     </>
   )
 }

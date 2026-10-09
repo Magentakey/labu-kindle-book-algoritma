@@ -1,20 +1,20 @@
 import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import materials from '../content/materials.json'
-import AlgoVisualizer from '../components/AlgoVisualizer/AlgoVisualizer.jsx'
 import { visualizers } from '../algorithms/registry.js'
 import { loadMaterialText } from '../lib/loadMaterialText.js'
 import { splitContent } from '../lib/splitContent.js'
 
-// react-markdown cukup besar, jadi hanya dimuat saat halaman Materi dibuka.
+// Bagian berat dimuat hanya saat dibutuhkan (react-markdown, Prism, visualizer).
 const MarkdownView = lazy(() => import('../components/MarkdownView/MarkdownView.jsx'))
+const AlgoVisualizer = lazy(() => import('../components/AlgoVisualizer/AlgoVisualizer.jsx'))
 
 const placeholderClass = 'mt-2 rounded-xl border-2 border-dashed border-stone-700 bg-orange-100 p-4'
 
-function Loading() {
+function Loading({ children = 'Memuat materi…', className = 'mt-6' }) {
   return (
-    <p role="status" className="mt-6">
-      Memuat materi…
+    <p role="status" className={className}>
+      {children}
     </p>
   )
 }
@@ -95,7 +95,9 @@ function MaterialPage({ m }) {
                 <section key={i} aria-labelledby="sec-visual" className="mt-8">
                   <h2 id="sec-visual" className="text-xl font-semibold">Visualisasi</h2>
                   {visualizers[m.visualizer] ? (
-                    <AlgoVisualizer {...visualizers[m.visualizer]} />
+                    <Suspense fallback={<Loading className="mt-2 min-h-64">Memuat visualisasi…</Loading>}>
+                      <AlgoVisualizer {...visualizers[m.visualizer]} />
+                    </Suspense>
                   ) : (
                     <p className={placeholderClass}>Visualisasi langkah demi langkah akan tampil di sini.</p>
                   )}

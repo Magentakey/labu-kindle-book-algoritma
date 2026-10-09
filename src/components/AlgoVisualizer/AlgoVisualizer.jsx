@@ -1,4 +1,4 @@
-import { useId, useMemo, useState } from 'react'
+import { useEffect, useId, useMemo, useState } from 'react'
 import CodeBlock from '../CodeBlock/CodeBlock.jsx'
 import BarChart from '../BarChart/BarChart.jsx'
 import AuxRow from './AuxRow.jsx'
@@ -15,6 +15,13 @@ const buttonClass =
 const secondaryButtonClass =
   'inline-flex min-h-12 items-center justify-center rounded-xl border-2 border-stone-900 bg-white px-4 font-semibold ' +
   'hover:bg-orange-100 focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-stone-900'
+
+// Jeda antar langkah saat putar otomatis (milidetik).
+const SPEEDS = [
+  { key: 'slow', label: 'Lambat', ms: 1600 },
+  { key: 'normal', label: 'Normal', ms: 900 },
+  { key: 'fast', label: 'Cepat', ms: 400 },
+]
 
 /**
  * Visualizer algoritma generik: kode + diagram batang + kontrol langkah.
@@ -33,6 +40,9 @@ export default function AlgoVisualizer({ code, codeLabel, chartLabel, initialArr
   const [no, setNo] = useState(0)
   const [text, setText] = useState(initialArray.join(', '))
   const [error, setError] = useState('')
+  const [playing, setPlaying] = useState(false)
+  const [speed, setSpeed] = useState('normal')
+  const [pauseNote, setPauseNote] = useState('')
 
   const steps = useMemo(() => buildSteps(array), [buildSteps, array])
   const last = steps.length - 1
@@ -44,12 +54,45 @@ export default function AlgoVisualizer({ code, codeLabel, chartLabel, initialArr
   const go = (n) => setNo(Math.min(Math.max(n, 0), last))
   const atStart = no <= 0
   const atEnd = no >= last
+  // `playing` = niat pengguna; `running` = benar-benar sedang berjalan (berhenti sendiri di langkah terakhir).
+  const running = playing && !atEnd
+  const delay = SPEEDS.find((x) => x.key === speed).ms
+
+  useEffect(() => {
+    if (!running) return
+    const timer = setTimeout(() => setNo((n) => Math.min(n + 1, last)), delay)
+    return () => clearTimeout(timer)
+  }, [running, no, delay, last])
+
+  // Navigasi manual selalu menghentikan putar otomatis.
+  function jump(n) {
+    setPlaying(false)
+    setPauseNote('')
+    go(n)
+  }
+
+  function togglePlay() {
+    if (running) {
+      setPlaying(false)
+      setPauseNote(`Dijeda di langkah ${no + 1} dari ${steps.length}. ${step.note}`)
+      return
+    }
+    if (atEnd) setNo(0)
+    setPauseNote('')
+    setPlaying(true)
+  }
+
+  let status = pauseNote
+  if (running) status = 'Putar otomatis berjalan.'
+  else if (playing && atEnd) status = 'Putar otomatis selesai di langkah terakhir.'
 
   function replaceArray(values) {
     setArray(values)
     setText(values.join(', '))
     setNo(0)
     setError('')
+    setPlaying(false)
+    setPauseNote('')
   }
 
   function handleSubmit(e) {
@@ -72,7 +115,7 @@ export default function AlgoVisualizer({ code, codeLabel, chartLabel, initialArr
         <button
           type="button"
           aria-disabled={atStart}
-          onClick={() => !atStart && go(no - 1)}
+          onClick={() => !atStart && jump(no - 1)}
           className={buttonClass}
         >
           ← Sebelumnya
@@ -80,14 +123,42 @@ export default function AlgoVisualizer({ code, codeLabel, chartLabel, initialArr
         <button
           type="button"
           aria-disabled={atEnd}
-          onClick={() => !atEnd && go(no + 1)}
+          onClick={() => !atEnd && jump(no + 1)}
           className={buttonClass}
         >
           Berikutnya →
         </button>
-        <button type="button" onClick={() => go(0)} className={secondaryButtonClass}>
+        <button type="button" onClick={() => jump(0)} className={secondaryButtonClass}>
           Ulangi dari awal
         </button>
+        <button type="button" onClick={togglePlay} className={secondaryButtonClass}>
+          {running ? (
+            <>
+              <span aria-hidden="true">⏸&nbsp;</span>Jeda
+            </>
+          ) : (
+            <>
+              <span aria-hidden="true">▶&nbsp;</span>Putar otomatis
+            </>
+          )}
+        </button>
+        <div className="flex items-center gap-2">
+          <label htmlFor={`${uid}-speed`} className="font-medium">
+            Kecepatan
+          </label>
+          <select
+            id={`${uid}-speed`}
+            value={speed}
+            onChange={(e) => setSpeed(e.target.value)}
+            className="min-h-12 rounded-xl border-2 border-stone-900 bg-white px-3 text-base"
+          >
+            {SPEEDS.map((x) => (
+              <option key={x.key} value={x.key}>
+                {x.label}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       <div className="mt-3">
@@ -101,13 +172,19 @@ export default function AlgoVisualizer({ code, codeLabel, chartLabel, initialArr
           max={last}
           value={Math.min(no, last)}
           aria-valuetext={`Langkah ${Math.min(no, last) + 1} dari ${steps.length}`}
-          onChange={(e) => go(Number(e.target.value))}
+          onChange={(e) => jump(Number(e.target.value))}
           className="h-8 w-full accent-stone-900"
         />
       </div>
 
+      <p role="status" className="sr-only">
+        {status}
+      </p>
+
       <div
-        aria-live="polite"
+        // Saat putar otomatis, penjelasan tiap langkah tidak diumumkan (terlalu cepat dan saling memotong).
+        // Pembaca layar mendapat status singkat di atas; saat dijeda, status memuat nomor langkah dan penjelasannya.
+        aria-live={running ? 'off' : 'polite'}
         aria-atomic="true"
         className="mt-2 rounded-xl border-2 border-stone-900 bg-orange-100 p-3"
       >
