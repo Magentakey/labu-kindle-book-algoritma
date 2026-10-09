@@ -1,0 +1,12 @@
+{
+  "id": "insertion-sort",
+  "title": "Urutkan Array Naik",
+  "description": "Tulis fungsi solve(arr) yang mengembalikan array baru berisi elemen arr dengan urutan naik.\nContoh: solve([3, 1, 2]) mengembalikan [1, 2, 3].",
+  "starterCode": "function solve(arr) {\n  // tulis kode Anda di sini\n}\n",
+  "testCases": [
+    { "input": [[3, 1, 2]], "expected": [1, 2, 3] },
+    { "input": [[]], "expected": [] },
+    { "input": [[2, 2, 1]], "expected": [1, 2, 2] },
+    { "input": [[1, 2, 3]], "expected": [1, 2, 3] }
+  ]
+}

@@ -2,12 +2,14 @@ import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import materials from '../content/materials.json'
 import { visualizers } from '../algorithms/registry.js'
+import { loadChallenge } from '../lib/loadChallenge.js'
 import { loadMaterialText } from '../lib/loadMaterialText.js'
 import { splitContent } from '../lib/splitContent.js'
 
 // Bagian berat dimuat hanya saat dibutuhkan (react-markdown, Prism, visualizer).
 const MarkdownView = lazy(() => import('../components/MarkdownView/MarkdownView.jsx'))
 const AlgoVisualizer = lazy(() => import('../components/AlgoVisualizer/AlgoVisualizer.jsx'))
+const ChallengeIDE = lazy(() => import('../components/ChallengeIDE/ChallengeIDE.jsx'))
 
 const placeholderClass = 'mt-2 rounded-xl border-2 border-dashed border-stone-700 bg-orange-100 p-4'
 
@@ -32,6 +34,39 @@ function TextNotice({ status }) {
       <h2 id="sec-teks" className="text-xl font-semibold">Penjelasan</h2>
       <p className={placeholderClass}>Teks materi ini belum tersedia.</p>
     </section>
+  )
+}
+
+function ChallengeSection({ id }) {
+  const [state, setState] = useState({ status: 'loading', challenge: null })
+
+  useEffect(() => {
+    let cancelled = false
+    loadChallenge(id)
+      .then((challenge) => {
+        if (!cancelled) setState(challenge === null ? { status: 'missing', challenge: null } : { status: 'ready', challenge })
+      })
+      .catch(() => {
+        if (!cancelled) setState({ status: 'error', challenge: null })
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [id])
+
+  if (state.status === 'loading') return <Loading className="mt-2 min-h-64">Memuat soal…</Loading>
+  if (state.status === 'error') {
+    return (
+      <p role="alert" className="mt-2 rounded-xl border-2 border-stone-900 bg-white p-4">
+        Soal gagal dimuat. Periksa koneksi, lalu muat ulang halaman.
+      </p>
+    )
+  }
+  if (state.status === 'missing') return <p className={placeholderClass}>Soal challenge untuk materi ini belum tersedia.</p>
+  return (
+    <Suspense fallback={<Loading className="mt-2 min-h-64">Memuat editor…</Loading>}>
+      <ChallengeIDE key={state.challenge.id} challenge={state.challenge} />
+    </Suspense>
   )
 }
 
@@ -107,7 +142,7 @@ function MaterialPage({ m }) {
             return (
               <section key={i} aria-labelledby="sec-soal" className="mt-8">
                 <h2 id="sec-soal" className="text-xl font-semibold">Soal Challenge</h2>
-                <p className={placeholderClass}>Editor kode dan test case akan tampil di sini.</p>
+                <ChallengeSection id={m.challenge} />
               </section>
             )
           })}
