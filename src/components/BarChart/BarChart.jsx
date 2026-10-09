@@ -1,29 +1,4 @@
-// Setiap status dibedakan oleh 3 hal sekaligus: pola isian, simbol, dan keterangan teks,
-// sehingga warna bukan satu-satunya pembeda (WCAG 1.4.1).
-const STATUS = {
-  normal: { label: 'belum diproses', glyph: '', fill: '#e7e5e4' },
-  sorted: { label: 'sudah terurut', glyph: '✓', fill: '#6ee7b7' },
-  compare: {
-    label: 'sedang dibandingkan',
-    glyph: '?',
-    fill: 'repeating-linear-gradient(45deg, #fb923c 0 5px, #9a3412 5px 8px)',
-  },
-  shift: {
-    label: 'baru digeser',
-    glyph: '→',
-    fill: 'radial-gradient(#0c4a6e 1.6px, transparent 1.7px) 0 0 / 8px 8px, #7dd3fc',
-  },
-  placed: {
-    label: 'baru disisipkan',
-    glyph: '↓',
-    fill: 'repeating-linear-gradient(0deg, #c4b5fd 0 5px, #4c1d95 5px 7px)',
-  },
-  key: {
-    label: 'key (nilai yang diambil)',
-    glyph: 'K',
-    fill: 'repeating-linear-gradient(90deg, #fde047 0 5px, #854d0e 5px 7px)',
-  },
-}
+import { STATUS } from './statuses.js'
 
 const MIN_PX = 16
 const MAX_PX = 120

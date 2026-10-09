@@ -1,6 +1,7 @@
 import { useId, useMemo, useState } from 'react'
 import CodeBlock from '../CodeBlock/CodeBlock.jsx'
 import BarChart from '../BarChart/BarChart.jsx'
+import AuxRow from './AuxRow.jsx'
 import { parseArrayInput, randomArray, MAX_LENGTH, MIN_VALUE, MAX_VALUE } from '../../lib/parseArray.js'
 
 // Tombol memakai aria-disabled (bukan disabled) agar fokus keyboard tidak hilang
@@ -127,6 +128,7 @@ export default function AlgoVisualizer({ code, codeLabel, chartLabel, initialArr
             label={chartLabel}
             legend={legend}
           />
+          {view.aux && <AuxRow title={view.aux.title} values={view.aux.values} marks={view.aux.marks} />}
         </div>
         <div className="min-w-0 lg:order-1">
           <CodeBlock code={code} highlightLine={step.line} label={codeLabel} />
