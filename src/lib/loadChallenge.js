@@ -11,3 +11,8 @@ export async function loadChallenge(id) {
   const load = loaders[`../content/challenges/${id}.json`]
   return load ? await load() : null
 }
+
+/** Apakah file soal untuk materi ini sudah ada? (tidak mengunduh isinya) */
+export function hasChallenge(id) {
+  return `../content/challenges/${id}.json` in loaders
+}

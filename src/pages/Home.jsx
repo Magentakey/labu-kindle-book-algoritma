@@ -1,6 +1,8 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import materials from '../content/materials.json'
+import { hasChallenge } from '../lib/loadChallenge.js'
+import { progress } from '../lib/storage.js'
 
 function Badge({ children, dashed = false }) {
   return (
@@ -18,6 +20,10 @@ function Badge({ children, dashed = false }) {
 }
 
 export default function Home() {
+  const [solved] = useState(() => new Set(progress.solvedIds()))
+  const totalSoal = materials.filter((m) => m.challenge && hasChallenge(m.challenge)).length
+  const selesai = materials.filter((m) => m.challenge && hasChallenge(m.challenge) && solved.has(m.challenge)).length
+
   useEffect(() => {
     document.title = 'Labu I-Learning Algoritma'
   }, [])
@@ -33,7 +39,10 @@ export default function Home() {
       </header>
 
       <section aria-labelledby="daftar-materi" className="mx-auto max-w-5xl px-6 py-8">
-        <h2 id="daftar-materi" className="mb-4 text-xl font-semibold">Daftar Materi</h2>
+        <h2 id="daftar-materi" className="mb-2 text-xl font-semibold">Daftar Materi</h2>
+        <p className="mb-4">
+          Soal selesai: {selesai} dari {totalSoal}
+        </p>
         <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {materials.map((m) => (
             <li key={m.id}>
@@ -51,7 +60,18 @@ export default function Home() {
                 <span className="mt-auto flex flex-wrap gap-2 pt-2">
                   {m.hasText ? <Badge>Teks</Badge> : <Badge dashed>Segera hadir</Badge>}
                   {m.visualizer && <Badge>Visualisasi</Badge>}
-                  {m.challenge && <Badge>Soal</Badge>}
+                  {m.challenge &&
+                    (hasChallenge(m.challenge) ? (
+                      solved.has(m.challenge) ? (
+                        <Badge>
+                          <span aria-hidden="true">✓ </span>Soal selesai
+                        </Badge>
+                      ) : (
+                        <Badge>Soal</Badge>
+                      )
+                    ) : (
+                      <Badge dashed>Soal segera hadir</Badge>
+                    ))}
                 </span>
               </Link>
             </li>

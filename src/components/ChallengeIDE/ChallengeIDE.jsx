@@ -1,4 +1,4 @@
-import { useId, useMemo, useRef, useState } from 'react'
+import { useEffect, useId, useMemo, useRef, useState } from 'react'
 import CodeMirror from '@uiw/react-codemirror'
 import { javascript } from '@codemirror/lang-javascript'
 import { EditorView } from '@codemirror/view'
@@ -6,7 +6,9 @@ import { editorTheme } from './editorTheme.js'
 import { createTabKeys } from './tabKeys.js'
 import TestPanel from './TestPanel.jsx'
 import { describeOutcome } from '../../lib/describeOutcome.js'
+import { createDebouncedSaver } from '../../lib/debouncedSaver.js'
 import { findSyntaxLine } from '../../lib/findSyntaxLine.js'
+import { progress as defaultProgress } from '../../lib/storage.js'
 import { runInWorker } from '../../lib/runnerClient.js'
 
 const buttonClass =
@@ -35,20 +37,51 @@ const basicSetup = {
  * @param {Object} props
  * @param {{ id: string, title: string, description: string, starterCode: string, testCases: Array<{ input: unknown[], expected: unknown }> }} props.challenge
  * @param {typeof runInWorker} [props.run]  pelaksana kode (bawaan: Web Worker; diganti saat tes)
+ * @param {ReturnType<typeof import('../../lib/storage.js').createProgress>} [props.progress]  penyimpanan progres (diganti saat tes)
  */
-export default function ChallengeIDE({ challenge, run = runInWorker }) {
+export default function ChallengeIDE({ challenge, run = runInWorker, progress = defaultProgress }) {
   const uid = useId()
   const labelId = `${uid}-label`
   const helpId = `${uid}-help`
-  const [code, setCode] = useState(challenge.starterCode)
+  // Kode terakhir dipulihkan sekali saat soal dibuka.
+  const [saved] = useState(() => progress.loadCode(challenge.id))
+  const restored = saved !== null && saved !== challenge.starterCode
+  const [code, setCode] = useState(restored ? saved : challenge.starterCode)
+  const [solved, setSolved] = useState(() => progress.isSolved(challenge.id))
   const [tabIndent, setTabIndent] = useState(false)
   const [message, setMessage] = useState('')
+  const [persistent] = useState(() => progress.persistent())
   const [running, setRunning] = useState(false)
   const [result, setResult] = useState(null) // { outcome, code, no } dari Jalankan terakhir
   const runId = useRef(0)
   const [tabKeys] = useState(createTabKeys)
 
   const changed = code !== challenge.starterCode
+
+  // Simpan otomatis setelah berhenti mengetik, dan segera saat tab disembunyikan, ditutup, atau halaman diganti.
+  const saver = useMemo(
+    () =>
+      createDebouncedSaver((value) => {
+        if (value === challenge.starterCode) progress.clearCode(challenge.id)
+        else progress.saveCode(challenge.id, value)
+      }),
+    [challenge.id, challenge.starterCode, progress],
+  )
+  useEffect(() => {
+    saver.schedule(code)
+  }, [saver, code])
+  useEffect(() => {
+    const onHide = () => {
+      if (document.visibilityState === 'hidden') saver.flush()
+    }
+    document.addEventListener('visibilitychange', onHide)
+    window.addEventListener('pagehide', saver.flush)
+    return () => {
+      document.removeEventListener('visibilitychange', onHide)
+      window.removeEventListener('pagehide', saver.flush)
+      saver.flush()
+    }
+  }, [saver])
 
   const extensions = useMemo(
     () => [
@@ -71,7 +104,12 @@ export default function ChallengeIDE({ challenge, run = runInWorker }) {
     const line = outcome.status === 'error' && outcome.kind === 'syntax' ? findSyntaxLine(code) : null
     setRunning(false)
     setResult({ outcome, code, no: id })
-    setMessage(describeOutcome(outcome, { line }))
+    let text = describeOutcome(outcome, { line })
+    if (outcome.status === 'done' && outcome.results.every((r) => r.pass)) {
+      if (progress.markSolved(challenge.id)) text += ' Soal ini ditandai selesai.'
+      setSolved(true)
+    }
+    setMessage(text)
   }
 
   function reset() {
@@ -84,7 +122,19 @@ export default function ChallengeIDE({ challenge, run = runInWorker }) {
   return (
     <div className="mt-2">
       <h3 className="text-lg font-semibold">{challenge.title}</h3>
+      {solved && (
+        <p className="mt-1 inline-block rounded-full bg-stone-900 px-3 py-0.5 text-sm font-semibold text-orange-50">
+          <span aria-hidden="true">✓ </span>Soal ini sudah selesai
+        </p>
+      )}
       <p className="mt-1 max-w-3xl whitespace-pre-line">{challenge.description}</p>
+
+      {restored && <p className="mt-3 text-sm">Kode terakhir Anda dipulihkan.</p>}
+      {!persistent && (
+        <p className="mt-3 max-w-3xl rounded-md border-2 border-stone-900 bg-orange-100 px-3 py-2 text-sm">
+          Browser ini tidak mengizinkan penyimpanan. Kode dan progres Anda hanya tersimpan selama halaman ini terbuka.
+        </p>
+      )}
 
       <p id={labelId} className="mt-4 font-semibold">
         Kode Anda (JavaScript)
