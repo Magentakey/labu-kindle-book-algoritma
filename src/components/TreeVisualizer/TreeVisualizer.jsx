@@ -91,6 +91,7 @@ function TablePanel({ caption, headers, rows, activeRow }) {
  * @param {(text: string) => { ok: true, value: any } | { ok: false, error: string }} props.parseInput
  * @param {(value: any) => string} props.formatInput
  * @param {Array<{ label: string, value: any }>} [props.presets]
+ * @param {() => any} [props.randomInput]  membuat masukan acak; bila ada, tombol Acak tampil
  * @param {(input: any) => Array<{ line: number|null, note: string, view: any }>} props.buildSteps
  * @param {string[]} [props.legend]
  * @param {string} props.inputLabel
@@ -104,6 +105,7 @@ export default function TreeVisualizer({
   parseInput,
   formatInput,
   presets = [],
+  randomInput,
   buildSteps,
   legend,
   inputLabel,
@@ -123,6 +125,13 @@ export default function TreeVisualizer({
     setText(formatInput(value))
     setError('')
     player.reset(`Masukan baru diterapkan, ${buildSteps(value).length} langkah.`)
+  }
+
+  // Acak: usahakan hasilnya berbeda dari masukan yang sedang tampil.
+  function applyRandom() {
+    let value = randomInput()
+    for (let i = 0; i < 5 && formatInput(value) === formatInput(input); i++) value = randomInput()
+    applyInput(value)
   }
 
   function handleSubmit(e) {
@@ -194,6 +203,11 @@ export default function TreeVisualizer({
             <button type="submit" className={buttonClass}>
               Terapkan
             </button>
+            {randomInput && (
+              <button type="button" onClick={applyRandom} className={secondaryButtonClass}>
+                Acak
+              </button>
+            )}
           </div>
         </form>
 

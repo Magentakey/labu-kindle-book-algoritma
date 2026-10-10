@@ -8,10 +8,10 @@ import { mergeSortExecLines, mergeSortTrace } from './mergeSortExact.js'
 import { bfsTreeCode, bfsTreeSteps } from './bfsTree.js'
 import { dfsTreeCode, dfsTreeSteps } from './dfsTree.js'
 import { mergeSortTreeCode, mergeSortTreeSteps } from './mergeSortTree.js'
-import { formatHuffmanInput, huffmanTreeCode, huffmanTreeSteps, parseHuffmanInput } from './huffmanTree.js'
-import { formatRecurrenceInput, parseRecurrenceInput, recurrenceTreeCode, recurrenceTreeSteps } from './recurrenceTree.js'
-import { formatTreeInput, parseTreeInput } from '../lib/binaryTree.js'
-import { parseArrayInput } from '../lib/parseArray.js'
+import { formatHuffmanInput, huffmanTreeCode, huffmanTreeSteps, parseHuffmanInput, randomHuffmanInput } from './huffmanTree.js'
+import { formatRecurrenceInput, parseRecurrenceInput, randomRecurrenceInput, recurrenceTreeCode, recurrenceTreeSteps } from './recurrenceTree.js'
+import { formatTreeInput, parseTreeInput, randomTreeTokens } from '../lib/binaryTree.js'
+import { parseArrayInput, randomArray } from '../lib/parseArray.js'
 
 // Pohon biner dalam urutan level (null = anak tidak ada). [1, 2, 3, 4, 5] adalah pohon pada gambar contoh.
 const binaryTreeInput = {
@@ -19,6 +19,7 @@ const binaryTreeInput = {
   initialInput: [1, 2, 3, 4, 5],
   parseInput: parseTreeInput,
   formatInput: formatTreeInput,
+  randomInput: () => randomTreeTokens(),
   inputLabel: 'Pohon (urutan level)',
   inputHint:
     'Angka bulat dipisah koma, dibaca dari atas ke bawah dan dari kiri ke kanan. Tulis null untuk anak yang tidak ada. ' +
@@ -74,6 +75,7 @@ export const visualizers = {
       return r.ok ? { ok: true, value: r.values } : r
     },
     formatInput: (values) => values.join(', '),
+    randomInput: () => randomArray(4 + Math.floor(Math.random() * 5)),
     inputLabel: 'Array awal',
     inputHint: 'Angka bulat dipisah koma, 1 sampai 8 angka, rentang -99 sampai 99.',
     presets: [
@@ -93,6 +95,7 @@ export const visualizers = {
     initialInput: { a: 2, b: 2, c: 1, k: 3 },
     parseInput: parseRecurrenceInput,
     formatInput: formatRecurrenceInput,
+    randomInput: () => randomRecurrenceInput(),
     inputLabel: 'Parameter a, b, c, k',
     inputHint:
       'Empat bilangan bulat dipisah koma untuk T(n) = a·T(n/b) + nᶜ dengan n = bᵏ. ' +
@@ -122,6 +125,7 @@ export const visualizers = {
     ],
     parseInput: parseHuffmanInput,
     formatInput: formatHuffmanInput,
+    randomInput: () => randomHuffmanInput(),
     inputLabel: 'Simbol dan frekuensi',
     inputHint: 'Pasangan simbol:frekuensi dipisah koma, contoh A:5, B:9. Simbol satu karakter dan berbeda-beda, 2 sampai 8 simbol, frekuensi 1 sampai 99.',
     presets: [

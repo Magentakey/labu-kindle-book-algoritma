@@ -86,3 +86,42 @@ export function parseTreeInput(text) {
 export function formatTreeInput(tokens) {
   return tokens.map((t) => (t === null ? 'null' : String(t))).join(', ')
 }
+
+/**
+ * Membuat pohon biner acak dalam bentuk token level-order (selalu lolos parseTreeInput).
+ * Simpul baru dipasang di tempat kosong acak, lalu hasilnya diulang bila tokennya melebihi batas
+ * (pohon yang terlalu condong butuh banyak null).
+ * @param {() => number} [rng]  fungsi acak [0,1), bisa diganti saat tes
+ * @returns {Array<number|null>}
+ */
+export function randomTreeTokens(rng = Math.random) {
+  const pick = (n) => Math.floor(rng() * n)
+  for (let attempt = 0; attempt < 100; attempt++) {
+    const count = 5 + pick(5) // 5 sampai 9 simpul
+    const kids = [{ left: null, right: null }]
+    const free = [[0, 'left'], [0, 'right']]
+    while (kids.length < count) {
+      const [parent, side] = free.splice(pick(free.length), 1)[0]
+      kids.push({ left: null, right: null })
+      kids[parent][side] = kids.length - 1
+      free.push([kids.length - 1, 'left'], [kids.length - 1, 'right'])
+    }
+    const values = kids.map(() => 1 + pick(20))
+    const tokens = []
+    const queue = [0]
+    for (let head = 0; head < queue.length; head++) {
+      const node = kids[queue[head]]
+      if (head === 0) tokens.push(values[0])
+      for (const side of ['left', 'right']) {
+        if (node[side] === null) tokens.push(null)
+        else {
+          tokens.push(values[node[side]])
+          queue.push(node[side])
+        }
+      }
+    }
+    while (tokens[tokens.length - 1] === null) tokens.pop()
+    if (tokens.length <= MAX_TREE_NODES) return tokens
+  }
+  return [1, 2, 3, 4, 5]
+}

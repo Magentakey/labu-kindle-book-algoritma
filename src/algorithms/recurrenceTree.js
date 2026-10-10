@@ -171,3 +171,13 @@ export function recurrenceTreeSteps({ a, b, c, k }) {
   )
   return steps
 }
+
+/**
+ * Parameter acak dalam batas LIMITS. Kedalaman minimal 2 agar pohonnya tidak terlalu kecil.
+ * @param {() => number} [rng]
+ * @returns {{ a: number, b: number, c: number, k: number }}
+ */
+export function randomRecurrenceInput(rng = Math.random) {
+  const between = ([lo, hi]) => lo + Math.floor(rng() * (hi - lo + 1))
+  return { a: between(LIMITS.a), b: between(LIMITS.b), c: between(LIMITS.c), k: between([2, LIMITS.k[1]]) }
+}

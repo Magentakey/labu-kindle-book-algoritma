@@ -176,3 +176,13 @@ export function huffmanTreeSteps(items) {
   )
   return steps
 }
+
+/**
+ * Simbol dan frekuensi acak: 4 sampai 7 simbol berurutan dari A, frekuensi 1 sampai 30.
+ * @param {() => number} [rng]
+ * @returns {Array<{ sym: string, freq: number }>}
+ */
+export function randomHuffmanInput(rng = Math.random) {
+  const count = 4 + Math.floor(rng() * 4)
+  return Array.from({ length: count }, (_, i) => ({ sym: String.fromCharCode(65 + i), freq: 1 + Math.floor(rng() * 30) }))
+}

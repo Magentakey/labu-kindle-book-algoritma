@@ -6,9 +6,10 @@ import { layoutForest } from '../lib/treeLayout.js'
 import { bfsTreeCode, bfsTreeSteps } from './bfsTree.js'
 import { dfsTreeCode, dfsTreeSteps } from './dfsTree.js'
 import { mergeSortTreeCode, mergeSortTreeSteps } from './mergeSortTree.js'
-import { formatHuffmanInput, huffmanCodes, huffmanTreeCode, huffmanTreeSteps, parseHuffmanInput } from './huffmanTree.js'
-import { formatRecurrenceInput, parseRecurrenceInput, recurrenceFormula, recurrenceTreeCode, recurrenceTreeSteps } from './recurrenceTree.js'
+import { formatHuffmanInput, huffmanCodes, huffmanTreeCode, huffmanTreeSteps, parseHuffmanInput, randomHuffmanInput } from './huffmanTree.js'
+import { formatRecurrenceInput, parseRecurrenceInput, randomRecurrenceInput, recurrenceFormula, recurrenceTreeCode, recurrenceTreeSteps } from './recurrenceTree.js'
 import { readFileSync } from 'node:fs'
+import { seeded } from '../lib/seededRandom.js'
 import { visualizers } from './registry.js'
 
 const trees = [
@@ -362,4 +363,33 @@ test('materials.json: setiap kunci visualizer ada di registry, dan pohon dipakai
   assert.deepEqual(keysOf('greedy-huffman'), ['huffmanTree'])
   assert.deepEqual(keysOf('graph-bfs'), ['bfsTree'])
   assert.deepEqual(keysOf('graph-dfs'), ['dfsTree'])
+})
+
+test('registry: tombol Acak tersedia untuk kelima visualizer pohon dan hasilnya selalu valid', () => {
+  for (const key of ['mergeSortTree', 'recurrenceTree', 'bfsTree', 'dfsTree', 'huffmanTree']) {
+    const v = visualizers[key]
+    assert.equal(typeof v.randomInput, 'function', `${key}.randomInput`)
+    const seen = new Set()
+    for (let i = 0; i < 60; i++) {
+      const value = v.randomInput()
+      const text = v.formatInput(value)
+      const parsed = v.parseInput(text)
+      assert.equal(parsed.ok, true, `${key}: "${text}" ditolak parser`)
+      assert.deepEqual(parsed.value, value)
+      checkSteps(v.buildSteps(value), v.code, `${key} acak`)
+      seen.add(text)
+    }
+    assert.ok(seen.size > 10, `${key}: hasil acak kurang beragam (${seen.size})`)
+  }
+})
+
+test('pengacak langsung: Huffman dan recurrence patuh batasnya untuk 300 biji', () => {
+  for (let seed = 1; seed <= 300; seed++) {
+    const h = randomHuffmanInput(seeded(seed))
+    assert.ok(h.length >= 4 && h.length <= 7)
+    assert.equal(parseHuffmanInput(formatHuffmanInput(h)).ok, true)
+    const r = randomRecurrenceInput(seeded(seed))
+    assert.equal(parseRecurrenceInput(formatRecurrenceInput(r)).ok, true)
+    assert.ok(r.k >= 2)
+  }
 })

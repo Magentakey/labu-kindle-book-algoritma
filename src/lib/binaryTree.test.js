@@ -1,6 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { buildBinaryTree, formatTreeInput, parseTreeInput, MAX_TREE_NODES } from './binaryTree.js'
+import { seeded } from './seededRandom.js'
+import { buildBinaryTree, formatTreeInput, parseTreeInput, randomTreeTokens, MAX_TREE_NODES } from './binaryTree.js'
 
 test('buildBinaryTree: pohon gambar contoh 1,2,3,4,5', () => {
   const { nodes } = buildBinaryTree([1, 2, 3, 4, 5])
@@ -51,4 +52,23 @@ test('parseTreeInput: pesan galat untuk isian tidak valid', () => {
 test('formatTreeInput bolak-balik dengan parseTreeInput', () => {
   const tokens = [8, 3, 10, 1, 6, null, 14]
   assert.deepEqual(parseTreeInput(formatTreeInput(tokens)), { ok: true, value: tokens })
+})
+
+test('randomTreeTokens: 500 pohon acak selalu lolos parser, 5-9 simpul, dalam batas', () => {
+  const shapes = new Set()
+  for (let seed = 1; seed <= 500; seed++) {
+    const tokens = randomTreeTokens(seeded(seed))
+    const parsed = parseTreeInput(formatTreeInput(tokens))
+    assert.equal(parsed.ok, true, `seed ${seed}: ${formatTreeInput(tokens)}`)
+    assert.deepEqual(parsed.value, tokens)
+    assert.ok(tokens.length <= MAX_TREE_NODES)
+    const n = buildBinaryTree(tokens).nodes.length
+    assert.ok(n >= 5 && n <= 9, `seed ${seed}: ${n} simpul`)
+    shapes.add(tokens.map((t) => (t === null ? 'n' : 'x')).join(''))
+  }
+  assert.ok(shapes.size >= 5, `bentuk pohon kurang beragam: ${shapes.size}`)
+})
+
+test('randomTreeTokens: tanpa argumen memakai Math.random dan tetap valid', () => {
+  for (let i = 0; i < 50; i++) assert.equal(parseTreeInput(formatTreeInput(randomTreeTokens())).ok, true)
 })
