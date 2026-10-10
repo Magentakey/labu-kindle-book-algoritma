@@ -3,6 +3,7 @@
   "title": "Cari Nilai Terbesar",
   "description": "Tulis fungsi solve(arr) yang mengembalikan nilai terbesar di dalam array arr.\nArray berisi minimal satu angka (boleh negatif atau kembar). Tulis perulangannya sendiri, jangan memakai Math.max, supaya langkah algoritmanya terlihat.\nContoh: solve([3, 9, 2]) mengembalikan 9.",
   "starterCode": "function solve(arr) {\n  // tulis kode Anda di sini\n}\n",
+  "solution": "function solve(arr) {\n  // Anggap elemen pertama sebagai yang terbesar untuk sementara.\n  let terbesar = arr[0]\n  // Periksa sisanya satu per satu; ganti jika ada yang lebih besar.\n  for (let i = 1; i < arr.length; i++) {\n    if (arr[i] > terbesar) terbesar = arr[i]\n  }\n  return terbesar\n}\n",
   "testCases": [
     {"input":[[5]],"expected":5},
     {"input":[[3,9,2]],"expected":9},

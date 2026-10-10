@@ -3,6 +3,7 @@
   "title": "Total Bobot Pohon Rentang Minimum",
   "description": "Graf tak berarah yang terhubung punya n simpul bernomor 0 sampai n-1. edges berisi [u, v, bobot].\nTulis solve(n, edges) yang mengembalikan total bobot minimum pohon rentang (MST), memakai Prim atau Kruskal.\nContoh: solve(3, [[0, 1, 1], [1, 2, 2], [0, 2, 3]]) mengembalikan 3 (sisi berbobot 1 dan 2). Satu simpul saja berarti total 0.",
   "starterCode": "function solve(n, edges) {\n  // tulis kode Anda di sini\n}\n",
+  "solution": "function solve(n, edges) {\n  // Kruskal: gunakan union-find untuk mendeteksi siklus.\n  const induk = Array.from({ length: n }, (_, i) => i)\n  const cari = (x) => (induk[x] === x ? x : (induk[x] = cari(induk[x])))\n\n  let total = 0\n  // Coba sisi dari yang paling ringan.\n  for (const [u, v, w] of [...edges].sort((p, q) => p[2] - q[2])) {\n    const a = cari(u)\n    const b = cari(v)\n    if (a !== b) {\n      induk[a] = b // gabungkan dua komponen\n      total += w\n    }\n  }\n  return total\n}\n",
   "testCases": [
     {"input":[1,[]],"expected":0},
     {"input":[2,[[0,1,5]]],"expected":5},

@@ -2,8 +2,10 @@ import { useEffect, useId, useMemo, useRef, useState } from 'react'
 import CodeMirror from '@uiw/react-codemirror'
 import { javascript } from '@codemirror/lang-javascript'
 import { EditorView } from '@codemirror/view'
+import { indentLess, indentMore } from '@codemirror/commands'
 import { editorTheme } from './editorTheme.js'
 import { createTabKeys } from './tabKeys.js'
+import SolutionPanel from './SolutionPanel.jsx'
 import TestPanel from './TestPanel.jsx'
 import { describeOutcome } from '../../lib/describeOutcome.js'
 import { createDebouncedSaver } from '../../lib/debouncedSaver.js'
@@ -23,6 +25,10 @@ const secondaryButtonClass =
   'aria-disabled:cursor-not-allowed aria-disabled:border-stone-400 aria-disabled:bg-stone-100 aria-disabled:text-stone-700 aria-disabled:hover:bg-stone-100 ' +
   'focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-stone-900'
 
+const smallButtonClass =
+  'inline-flex min-h-11 items-center justify-center rounded-xl border-2 border-stone-900 bg-white px-3 text-sm font-semibold ' +
+  'hover:bg-orange-100 focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-stone-900'
+
 // Tanpa bawaan CodeMirror yang bising untuk pembaca layar (autocompletion) atau tidak dipakai (lipat kode).
 const basicSetup = {
   foldGutter: false,
@@ -35,7 +41,7 @@ const basicSetup = {
  * Editor soal challenge: CodeMirror yang aksesibel + tombol Jalankan dan Kembalikan.
  *
  * @param {Object} props
- * @param {{ id: string, title: string, description: string, starterCode: string, testCases: Array<{ input: unknown[], expected: unknown }> }} props.challenge
+ * @param {{ id: string, title: string, description: string, starterCode: string, solution?: string, testCases: Array<{ input: unknown[], expected: unknown }> }} props.challenge
  * @param {typeof runInWorker} [props.run]  pelaksana kode (bawaan: Web Worker; diganti saat tes)
  * @param {ReturnType<typeof import('../../lib/storage.js').createProgress>} [props.progress]  penyimpanan progres (diganti saat tes)
  */
@@ -43,6 +49,9 @@ export default function ChallengeIDE({ challenge, run = runInWorker, progress = 
   const uid = useId()
   const labelId = `${uid}-label`
   const helpId = `${uid}-help`
+  const solutionId = `${uid}-jawaban`
+  const viewRef = useRef(null)
+  const [showSolution, setShowSolution] = useState(false)
   // Kode terakhir dipulihkan sekali saat soal dibuka.
   const [saved] = useState(() => progress.loadCode(challenge.id))
   const restored = saved !== null && saved !== challenge.starterCode
@@ -87,7 +96,7 @@ export default function ChallengeIDE({ challenge, run = runInWorker, progress = 
     () => [
       javascript(),
       ...editorTheme,
-      EditorView.lineWrapping, // teks tidak meluber di HP atau zoom 200% (WCAG 1.4.10)
+      // Tanpa pembungkus baris: baris panjang digeser ke samping supaya bentuk kode (indentasi) tetap utuh.
       EditorView.contentAttributes.of({ 'aria-labelledby': labelId, 'aria-describedby': helpId }),
       ...(tabIndent ? [tabKeys.extension] : []),
     ],
@@ -110,6 +119,23 @@ export default function ChallengeIDE({ challenge, run = runInWorker, progress = 
       setSolved(true)
     }
     setMessage(text)
+  }
+
+  // Tombol indentasi untuk layar sentuh (keyboard HP tidak punya Tab).
+  function indent(more, event) {
+    const view = viewRef.current
+    if (!view) return
+    ;(more ? indentMore : indentLess)(view)
+    // Sentuhan: kembalikan fokus ke editor agar keyboard HP tetap terbuka.
+    // Keyboard (detail 0): biarkan fokus di tombol agar pengguna tidak berpindah tempat.
+    if (event.detail !== 0) view.focus()
+  }
+
+  function copySolution() {
+    const ok = !changed || code === challenge.solution || window.confirm('Ganti kode di editor dengan jawaban contoh? Kode Anda saat ini akan hilang.')
+    if (!ok) return
+    setCode(challenge.solution)
+    setMessage('Jawaban contoh disalin ke editor.')
   }
 
   function reset() {
@@ -139,8 +165,20 @@ export default function ChallengeIDE({ challenge, run = runInWorker, progress = 
       <p id={labelId} className="mt-4 font-semibold">
         Kode Anda (JavaScript)
       </p>
-      <div className="mt-1 overflow-hidden rounded-xl border-2 border-stone-900 bg-white">
+      <div role="group" aria-label="Indentasi" className="mt-1 flex flex-wrap gap-2">
+        {/* onMouseDown dicegah supaya sentuhan di tombol tidak menutup keyboard HP */}
+        <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={(e) => indent(false, e)} className={smallButtonClass}>
+          <span aria-hidden="true">← </span>Kurangi indentasi
+        </button>
+        <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={(e) => indent(true, e)} className={smallButtonClass}>
+          Tambah indentasi<span aria-hidden="true"> →</span>
+        </button>
+      </div>
+      <div className="mt-2 overflow-hidden rounded-xl border-2 border-stone-900 bg-white">
         <CodeMirror
+          onCreateEditor={(view) => {
+            viewRef.current = view
+          }}
           value={code}
           onChange={setCode}
           extensions={extensions}
@@ -153,8 +191,9 @@ export default function ChallengeIDE({ challenge, run = runInWorker, progress = 
       </div>
 
       <p id={helpId} className="mt-2 max-w-3xl text-sm">
-        Tombol Tab memindahkan fokus keluar dari editor. Geser indentasi baris dengan Ctrl+] (ke kanan) dan Ctrl+[ (ke
-        kiri); di Mac pakai Cmd.
+        Baris baru otomatis mengikuti indentasi baris sebelumnya. Di layar sentuh, pakai tombol Tambah dan Kurangi
+        indentasi di atas editor. Di keyboard, Tab memindahkan fokus keluar dari editor; geser indentasi dengan Ctrl+] dan
+        Ctrl+[ (di Mac pakai Cmd). Baris yang panjang tidak dipotong: geser editor ke samping untuk melihatnya.
       </p>
 
       <div className="mt-4 flex flex-wrap gap-3">
@@ -164,7 +203,20 @@ export default function ChallengeIDE({ challenge, run = runInWorker, progress = 
         <button type="button" onClick={reset} aria-disabled={!changed} className={secondaryButtonClass}>
           Kembalikan kode awal
         </button>
+        {challenge.solution && (
+          <button
+            type="button"
+            onClick={() => setShowSolution((v) => !v)}
+            aria-expanded={showSolution}
+            aria-controls={solutionId}
+            className={secondaryButtonClass}
+          >
+            {showSolution ? 'Sembunyikan jawaban contoh' : 'Lihat jawaban contoh'}
+          </button>
+        )}
       </div>
+
+      {showSolution && challenge.solution && <SolutionPanel id={solutionId} code={challenge.solution} onCopy={copySolution} />}
 
       <label className="mt-4 flex min-h-6 max-w-3xl items-start gap-3">
         <input

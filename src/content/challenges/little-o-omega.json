@@ -1,0 +1,17 @@
+{
+  "id": "little-o-omega",
+  "title": "Hubungan Asimtotik Dua Polinom",
+  "description": "Polinom ditulis sebagai array koefisien dari pangkat terendah ke tertinggi. Misalnya [5, 0, 3] berarti 3n² + 5. Elemen terakhir selalu positif.\nTulis solve(f, g) yang mengembalikan array nama notasi yang BENAR untuk hubungan f(n) terhadap g(n), dengan urutan tetap dan hanya memuat yang benar:\n\"little-o\", \"big-O\", \"theta\", \"big-omega\", \"little-omega\"\nArtinya: f(n) = o(g(n)) ditulis \"little-o\", f(n) = O(g(n)) ditulis \"big-O\", f(n) = Θ(g(n)) ditulis \"theta\", f(n) = Ω(g(n)) ditulis \"big-omega\", dan f(n) = ω(g(n)) ditulis \"little-omega\". Ingat bahwa o termasuk O, dan ω termasuk Ω.\nContoh: solve([0, 1], [0, 0, 1]) membandingkan n dengan n² dan mengembalikan [\"little-o\", \"big-O\"]. Adapun solve([5, 0, 3], [0, 0, 7]) membandingkan 3n² + 5 dengan 7n² dan mengembalikan [\"big-O\", \"theta\", \"big-omega\"].\nPetunjuk: bandingkan derajat kedua polinom.",
+  "starterCode": "function solve(f, g) {\n  // tulis kode Anda di sini\n}\n",
+  "solution": "function solve(f, g) {\n  // Derajat polinom = indeks koefisien terakhir.\n  const df = f.length - 1\n  const dg = g.length - 1\n  if (df < dg) return ['little-o', 'big-O'] // f tumbuh pasti lebih lambat dari g\n  if (df > dg) return ['big-omega', 'little-omega'] // f tumbuh pasti lebih cepat dari g\n  return ['big-O', 'theta', 'big-omega'] // derajat sama: sebanding\n}\n",
+  "testCases": [
+    {"input":[[0,1],[0,0,1]],"expected":["little-o","big-O"]},
+    {"input":[[0,0,1],[0,1]],"expected":["big-omega","little-omega"]},
+    {"input":[[5,0,3],[0,0,7]],"expected":["big-O","theta","big-omega"]},
+    {"input":[[7],[1]],"expected":["big-O","theta","big-omega"]},
+    {"input":[[100],[0,1]],"expected":["little-o","big-O"]},
+    {"input":[[0,0,0,1],[1,1,1]],"expected":["big-omega","little-omega"]},
+    {"input":[[1,1,1],[0,0,0,1]],"expected":["little-o","big-O"]},
+    {"input":[[9,9],[0,1]],"expected":["big-O","theta","big-omega"]}
+  ]
+}

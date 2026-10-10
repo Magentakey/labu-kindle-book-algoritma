@@ -3,6 +3,7 @@
   "title": "Urutan Kunjungan BFS",
   "description": "Graf tak berarah punya n simpul bernomor 0 sampai n-1. edges berisi pasangan [u, v] yang berarti ada sisi antara u dan v.\nTulis solve(n, edges, start) yang mengembalikan array urutan simpul yang dikunjungi BFS dari simpul start. Jika ada beberapa tetangga, kunjungi yang bernomor lebih kecil lebih dulu. Simpul yang tidak terjangkau dari start tidak dimasukkan.\nContoh: solve(3, [[0, 1], [0, 2]], 0) mengembalikan [0, 1, 2].",
   "starterCode": "function solve(n, edges, start) {\n  // tulis kode Anda di sini\n}\n",
+  "solution": "function solve(n, edges, start) {\n  // Daftar tetangga, diurutkan naik agar aturan \"nomor kecil dulu\" terpenuhi.\n  const adj = Array.from({ length: n }, () => [])\n  for (const [u, v] of edges) {\n    adj[u].push(v)\n    adj[v].push(u)\n  }\n  adj.forEach((a) => a.sort((p, q) => p - q))\n\n  const dikunjungi = Array(n).fill(false)\n  const antrean = [start]\n  dikunjungi[start] = true\n  const urutan = []\n  while (antrean.length > 0) {\n    const u = antrean.shift() // ambil dari depan antrean\n    urutan.push(u)\n    for (const v of adj[u]) {\n      if (!dikunjungi[v]) {\n        dikunjungi[v] = true\n        antrean.push(v) // masuk antrean paling belakang\n      }\n    }\n  }\n  return urutan\n}\n",
   "testCases": [
     {"input":[1,[],0],"expected":[0]},
     {"input":[5,[[0,1],[0,2],[1,3],[2,4]],0],"expected":[0,1,2,3,4]},

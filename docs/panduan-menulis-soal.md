@@ -10,6 +10,7 @@ Setiap soal adalah satu file di `src/content/challenges/<id>.json`. `<id>` harus
   "title": "Urutkan Array Naik",
   "description": "Tulis fungsi solve(arr) yang ...\nContoh: solve([3, 1, 2]) mengembalikan [1, 2, 3].",
   "starterCode": "function solve(arr) {\n  // tulis kode Anda di sini\n}\n",
+  "solution": "function solve(arr) {\n  // ... jawaban contoh lengkap dengan komentar\n}\n",
   "testCases": [
     { "input": [[3, 1, 2]], "expected": [1, 2, 3] },
     { "input": [[]], "expected": [] }
@@ -21,6 +22,7 @@ Setiap soal adalah satu file di `src/content/challenges/<id>.json`. `<id>` harus
 - `input` adalah **daftar argumen**. `solve([3, 1, 2])` ditulis `"input": [[3, 1, 2]]`, sedangkan `solve(a, b)` ditulis `"input": [[1, 2], [3, 4]]`.
 - `expected` adalah nilai yang harus dikembalikan. Perbandingan memakai kesamaan isi (urutan array berpengaruh, urutan kunci objek tidak).
 - `description` boleh berisi `\n` untuk pindah baris. Teks biasa saja, tanpa Markdown.
+- `solution` adalah **jawaban contoh** yang muncul saat mahasiswa menekan "Lihat jawaban contoh" (hanya baca, bisa disalin ke editor). Karena dibaca mahasiswa, tulis rapi, dengan indentasi 2 spasi dan komentar singkat yang menjelaskan langkah-langkahnya.
 
 ## Aturan
 
@@ -29,12 +31,13 @@ Setiap soal adalah satu file di `src/content/challenges/<id>.json`. `<id>` harus
 3. **Minimal 4 test case**, termasuk kasus tepi: kosong, satu elemen, kembar, sudah terurut, kebalikan, tidak terhubung, dan sebagainya.
 4. **Sertakan satu contoh** di deskripsi, dan pastikan contohnya benar.
 5. **Kode awal tidak boleh lulus** semua test case.
+6. **Nama keluaran berupa teks sebaiknya mudah diketik di HP.** Pakai "big-O" atau "theta", jangan "Θ" atau "Ω".
 
-## Jawaban acuan (wajib)
+## Jawaban contoh (wajib)
 
-Setiap soal harus punya jawaban acuan di `src/content/challengeReferences.js`, dengan kunci yang sama dengan `id`. File itu hanya dipakai oleh `npm test` dan tidak ikut aplikasi. Tesnya memastikan jawaban acuan lulus semua test case dan kode awal tidak. Jika Anda menulis soal tanpa jawaban acuan, `npm test` akan gagal.
+Setiap soal harus punya field `solution`. `npm test` memastikan jawaban contoh lulus semua test case dan kode awal tidak. Jika Anda menulis soal tanpa `solution`, `npm test` akan gagal. Jawaban contoh ikut terunduh bersama soalnya, jadi **jangan menyimpan soal ujian rahasia di repo ini**.
 
-Saran: hitung nilai `expected` dengan cara yang **berbeda** dari jawaban acuan (misalnya brute force), supaya kesalahan di salah satunya ketahuan.
+Saran: hitung nilai `expected` dengan cara yang **berbeda** dari jawaban contoh (misalnya brute force), supaya kesalahan di salah satunya ketahuan.
 
 ## Mencoba
 

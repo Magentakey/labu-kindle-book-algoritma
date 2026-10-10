@@ -1,0 +1,17 @@
+{
+  "id": "notasi-asimtotik",
+  "title": "Buktikan Θ dengan Definisi (Cari n₀)",
+  "description": "Fungsi f(n) = a·n² + b·n + c termasuk Θ(n²) jika ada konstanta c1, c2, dan n₀ sehingga c1·n² ≤ f(n) ≤ c2·n² untuk semua n ≥ n₀.\nTulis solve(a, b, c, c1, c2) yang mengembalikan n₀ terkecil (bilangan bulat ≥ 1) untuk c1 dan c2 yang diberikan. Jika dengan konstanta itu syaratnya tidak pernah terpenuhi untuk n yang besar, kembalikan -1.\nBatasan: a ≥ 1; a, b, c, c1, c2 adalah bilangan bulat tak negatif.\nContoh: solve(3, 10, 5, 1, 4) mengembalikan 11, sebab 4n² ≥ 3n² + 10n + 5 baru berlaku mulai n = 11 (di n = 10 masih 400 < 405). Adapun solve(3, 10, 5, 4, 5) mengembalikan -1, karena c1 = 4 lebih besar dari a = 3 sehingga batas bawahnya akhirnya terlewati.\nPetunjuk: memeriksa n sampai 1000 sudah cukup. Jika di n = 1000 syaratnya masih gagal, jawabannya -1.",
+  "starterCode": "function solve(a, b, c, c1, c2) {\n  // tulis kode Anda di sini\n}\n",
+  "solution": "function solve(a, b, c, c1, c2) {\n  // f(n) = a·n² + b·n + c. Catat n terakhir yang melanggar c1·n² ≤ f(n) ≤ c2·n².\n  let terakhirMelanggar = 0\n  for (let n = 1; n <= 1000; n++) {\n    const f = a * n * n + b * n + c\n    if (f < c1 * n * n || f > c2 * n * n) terakhirMelanggar = n\n  }\n  // Masih melanggar di n = 1000: dengan c1 dan c2 ini syaratnya tidak akan terpenuhi.\n  if (terakhirMelanggar === 1000) return -1\n  return terakhirMelanggar + 1\n}\n",
+  "testCases": [
+    {"input":[3,10,5,1,4],"expected":11},
+    {"input":[3,10,5,4,5],"expected":-1},
+    {"input":[3,10,5,1,2],"expected":-1},
+    {"input":[3,0,0,3,3],"expected":1},
+    {"input":[3,1,0,3,3],"expected":-1},
+    {"input":[2,0,100,1,3],"expected":10},
+    {"input":[1,5,6,1,2],"expected":6},
+    {"input":[5,2,2,2,6],"expected":3}
+  ]
+}

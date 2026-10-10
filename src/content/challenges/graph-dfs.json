@@ -3,6 +3,7 @@
   "title": "Urutan Kunjungan DFS",
   "description": "Graf tak berarah punya n simpul bernomor 0 sampai n-1. edges berisi pasangan [u, v] yang berarti ada sisi antara u dan v.\nTulis solve(n, edges, start) yang mengembalikan array urutan simpul yang dikunjungi DFS dari simpul start; catat sebuah simpul saat pertama kali dikunjungi. Jika ada beberapa tetangga, kunjungi yang bernomor lebih kecil lebih dulu. Simpul yang tidak terjangkau tidak dimasukkan.\nContoh: solve(4, [[0, 1], [0, 2], [1, 3]], 0) mengembalikan [0, 1, 3, 2].",
   "starterCode": "function solve(n, edges, start) {\n  // tulis kode Anda di sini\n}\n",
+  "solution": "function solve(n, edges, start) {\n  // Daftar tetangga, diurutkan naik agar aturan \"nomor kecil dulu\" terpenuhi.\n  const adj = Array.from({ length: n }, () => [])\n  for (const [u, v] of edges) {\n    adj[u].push(v)\n    adj[v].push(u)\n  }\n  adj.forEach((a) => a.sort((p, q) => p - q))\n\n  const dikunjungi = Array(n).fill(false)\n  const urutan = []\n  function dfs(u) {\n    dikunjungi[u] = true\n    urutan.push(u) // catat saat pertama kali dikunjungi\n    for (const v of adj[u]) {\n      if (!dikunjungi[v]) dfs(v) // masuk sedalam mungkin dulu\n    }\n  }\n  dfs(start)\n  return urutan\n}\n",
   "testCases": [
     {"input":[1,[],0],"expected":[0]},
     {"input":[5,[[0,1],[0,2],[1,3],[2,4]],0],"expected":[0,1,3,2,4]},

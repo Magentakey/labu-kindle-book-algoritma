@@ -3,6 +3,7 @@
   "title": "Total Biaya Kode Huffman",
   "description": "Diberikan frekuensi kemunculan tiap simbol. Biaya kode adalah jumlah (frekuensi × panjang kode) untuk semua simbol.\nTulis solve(freq) yang mengembalikan biaya minimum dengan kode Huffman. freq berisi minimal 2 angka.\nPetunjuk: gabungkan dua frekuensi terkecil menjadi satu, tambahkan hasil penjumlahannya ke total, lalu ulangi sampai tinggal satu.\nContoh: solve([1, 2, 3]) mengembalikan 9 (1+2 = 3, lalu 3+3 = 6, total 3+6).",
   "starterCode": "function solve(freq) {\n  // tulis kode Anda di sini\n}\n",
+  "solution": "function solve(freq) {\n  const f = [...freq].sort((a, b) => a - b)\n  let total = 0\n  while (f.length > 1) {\n    // Gabungkan dua frekuensi terkecil.\n    const gabung = f.shift() + f.shift()\n    total += gabung\n    // Sisipkan hasilnya agar daftar tetap terurut.\n    let i = 0\n    while (i < f.length && f[i] < gabung) i++\n    f.splice(i, 0, gabung)\n  }\n  return total\n}\n",
   "testCases": [
     {"input":[[45,13,12,16,9,5]],"expected":224},
     {"input":[[1,1]],"expected":2},

@@ -3,6 +3,7 @@
   "title": "Hitung T(n) dari Rekurens",
   "description": "Sebuah algoritma divide and conquer memiliki waktu T(n) = 2T(n/2) + n untuk n > 1, dan T(1) = 1.\nTulis solve(n) yang mengembalikan nilai T(n) untuk n berupa pangkat 2 (1, 2, 4, 8, ...).\nContoh: solve(4) mengembalikan 12, sebab T(2) = 2·1 + 2 = 4 dan T(4) = 2·4 + 4 = 12.\nBandingkan hasilnya dengan Θ(n log n) dari Metode Master.",
   "starterCode": "function solve(n) {\n  // tulis kode Anda di sini\n}\n",
+  "solution": "function solve(n) {\n  if (n === 1) return 1 // kasus dasar: T(1) = 1\n  return 2 * solve(n / 2) + n // T(n) = 2T(n/2) + n\n}\n",
   "testCases": [
     {"input":[1],"expected":1},
     {"input":[2],"expected":4},

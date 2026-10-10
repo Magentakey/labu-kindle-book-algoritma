@@ -3,6 +3,7 @@
   "title": "Panjang Longest Common Subsequence",
   "description": "Subsequence adalah deretan karakter yang diambil dari sebuah string tanpa mengubah urutannya (karakternya tidak harus berurutan rapat). Misalnya \"ACE\" adalah subsequence dari \"ABCDE\".\nTulis solve(x, y) yang mengembalikan panjang subsequence bersama terpanjang dari string x dan y.\nContoh: solve(\"ABCBDAB\", \"BDCABA\") mengembalikan 4 (salah satunya \"BCBA\").",
   "starterCode": "function solve(x, y) {\n  // tulis kode Anda di sini\n}\n",
+  "solution": "function solve(x, y) {\n  // t[i][j] = panjang LCS dari i karakter pertama x dan j karakter pertama y\n  const t = Array.from({ length: x.length + 1 }, () => Array(y.length + 1).fill(0))\n  for (let i = 1; i <= x.length; i++) {\n    for (let j = 1; j <= y.length; j++) {\n      if (x[i - 1] === y[j - 1]) {\n        t[i][j] = t[i - 1][j - 1] + 1 // karakter sama: perpanjang LCS\n      } else {\n        t[i][j] = Math.max(t[i - 1][j], t[i][j - 1]) // beda: ambil yang terbaik\n      }\n    }\n  }\n  return t[x.length][y.length]\n}\n",
   "testCases": [
     {"input":["ABCBDAB","BDCABA"],"expected":4},
     {"input":["",""],"expected":0},

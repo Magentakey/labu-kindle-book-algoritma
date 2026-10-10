@@ -3,6 +3,7 @@
   "title": "Urutkan Array Naik",
   "description": "Tulis fungsi solve(arr) yang mengembalikan array baru berisi elemen arr dengan urutan naik. Array asli tidak perlu dipertahankan, tetapi hasilnya harus berupa array yang terurut.\nContoh: solve([3, 1, 2]) mengembalikan [1, 2, 3].\nCoba kerjakan dengan ide insertion sort: ambil satu elemen, lalu sisipkan ke tempat yang tepat di bagian kiri yang sudah terurut.",
   "starterCode": "function solve(arr) {\n  // tulis kode Anda di sini\n}\n",
+  "solution": "function solve(arr) {\n  const a = [...arr] // salin supaya array asli tidak berubah\n  for (let i = 1; i < a.length; i++) {\n    const key = a[i] // elemen yang akan disisipkan\n    let j = i - 1\n    // Geser elemen yang lebih besar dari key satu langkah ke kanan.\n    while (j >= 0 && a[j] > key) {\n      a[j + 1] = a[j]\n      j--\n    }\n    a[j + 1] = key // taruh key di celah yang tersisa\n  }\n  return a\n}\n",
   "testCases": [
     {"input":[[3,1,2]],"expected":[1,2,3]},
     {"input":[[]],"expected":[]},

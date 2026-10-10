@@ -6,7 +6,6 @@ import { dirname, join } from 'node:path'
 import { auditContent } from '../../scripts/auditContent.js'
 import { checkMarkdown } from '../lib/checkMarkdown.js'
 import { runTests } from '../lib/runTests.js'
-import { referenceSolutions } from './challengeReferences.js'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '../..')
 
@@ -56,16 +55,16 @@ test('semua file challenge punya format yang benar dan terhubung ke materials.js
   }
 })
 
-test('setiap challenge: jawaban acuan lulus semua, kode awal tidak lulus', () => {
+test('setiap challenge: jawaban contoh (solution) lulus semua test case, kode awal tidak', () => {
   const dir = join(root, 'src/content/challenges')
   for (const file of readdirSync(dir).filter((f) => f.endsWith('.json'))) {
-    const id = file.replace(/\.json$/, '')
     const c = JSON.parse(readFileSync(join(dir, file), 'utf8'))
-    assert.ok(referenceSolutions[id], `${file}: tambahkan jawaban acuan di src/content/challengeReferences.js`)
+    assert.equal(typeof c.solution, 'string', `${file}: field "solution" (jawaban contoh) wajib ada`)
+    assert.ok(c.solution.trim(), `${file}: solution tidak boleh kosong`)
 
-    const ref = runTests(referenceSolutions[id], c.testCases)
-    assert.equal(ref.status, 'done', `${file}: jawaban acuan error`)
-    assert.deepEqual(ref.results.filter((r) => !r.pass).map((r) => r.index), [], `${file}: jawaban acuan gagal di test case ini`)
+    const ref = runTests(c.solution, c.testCases)
+    assert.equal(ref.status, 'done', `${file}: jawaban contoh error: ${ref.message ?? ''}`)
+    assert.deepEqual(ref.results.filter((r) => !r.pass).map((r) => r.index), [], `${file}: jawaban contoh gagal di test case ini`)
 
     const starter = runTests(c.starterCode, c.testCases)
     assert.equal(starter.status, 'done')
@@ -74,7 +73,7 @@ test('setiap challenge: jawaban acuan lulus semua, kode awal tidak lulus', () =>
 })
 
 // Materi yang soalnya sengaja belum ada (ditampilkan "Segera hadir"). Hapus dari daftar ini saat file soalnya dibuat.
-const COMING_SOON = ['notasi-asimtotik', 'little-o-omega']
+const COMING_SOON = []
 
 test('materi tanpa file soal harus sengaja ditandai "segera hadir"', () => {
   const materials = JSON.parse(readFileSync(join(root, 'src/content/materials.json'), 'utf8'))
@@ -82,12 +81,6 @@ test('materi tanpa file soal harus sengaja ditandai "segera hadir"', () => {
   const files = new Set(readdirSync(dir).filter((f) => f.endsWith('.json')).map((f) => f.replace(/\.json$/, '')))
   const missing = materials.map((m) => m.challenge).filter((id) => id && !files.has(id))
   assert.deepEqual(missing.sort(), [...COMING_SOON].sort(), 'daftar materi tanpa soal harus sama dengan COMING_SOON')
-})
-
-test('semua jawaban acuan punya file soalnya (tidak ada acuan yatim)', () => {
-  const dir = join(root, 'src/content/challenges')
-  const files = new Set(readdirSync(dir).filter((f) => f.endsWith('.json')).map((f) => f.replace(/\.json$/, '')))
-  assert.deepEqual(Object.keys(referenceSolutions).filter((id) => !files.has(id)), [])
 })
 
 test('soal challenge: input dan expected bisa disimpan di JSON dan setiap soal punya minimal 4 test case', () => {

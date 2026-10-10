@@ -3,6 +3,7 @@
   "title": "Kapan 2ⁿ Mengalahkan c·n²?",
   "description": "Fungsi eksponensial pada akhirnya tumbuh lebih cepat daripada fungsi polinomial, tetapi kapan \"akhirnya\" itu terjadi bergantung pada konstanta.\nTulis solve(c) yang mengembalikan bilangan bulat n terkecil (n ≥ 1) sehingga c·n² < 2ⁿ berlaku untuk n itu dan untuk semua n yang lebih besar.\nContoh: solve(1) mengembalikan 5. Memang n = 1 memenuhi (1 < 2), tetapi n = 2, 3, 4 tidak (4 < 4, 9 < 8, 16 < 16 salah), baru mulai n = 5 selalu benar.\nPetunjuk: untuk c antara 1 dan 100, memeriksa n sampai 100 sudah cukup. Di JavaScript, 2ⁿ ditulis 2 ** n.",
   "starterCode": "function solve(c) {\n  // tulis kode Anda di sini\n}\n",
+  "solution": "function solve(c) {\n  // Catat n terakhir yang masih GAGAL, yaitu c·n² belum dikalahkan 2^n.\n  let terakhirGagal = 0\n  for (let n = 1; n <= 100; n++) {\n    if (c * n * n >= 2 ** n) terakhirGagal = n\n  }\n  // Setelah n itu, 2^n selalu menang.\n  return terakhirGagal + 1\n}\n",
   "testCases": [
     {"input":[1],"expected":5},
     {"input":[2],"expected":7},
