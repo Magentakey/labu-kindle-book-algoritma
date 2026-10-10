@@ -50,7 +50,10 @@
     "title": "Algoritma Divide and Conquer (Merge Sort)",
     "desc": "Bagi, selesaikan, gabungkan",
     "hasText": true,
-    "visualizer": "mergeSort",
+    "visualizer": [
+      "mergeSort",
+      "mergeSortTree"
+    ],
     "challenge": "merge-sort"
   },
   {
@@ -59,7 +62,7 @@
     "title": "Recurrence & Metode Master",
     "desc": "Menyelesaikan relasi rekurens",
     "hasText": true,
-    "visualizer": null,
+    "visualizer": "recurrenceTree",
     "challenge": "recurrence-master"
   },
   {
@@ -95,7 +98,7 @@
     "title": "Algoritma Greedy – Huffman Code",
     "desc": "Kompresi dengan kode prefiks",
     "hasText": false,
-    "visualizer": null,
+    "visualizer": "huffmanTree",
     "challenge": "greedy-huffman"
   },
   {
@@ -104,7 +107,7 @@
     "title": "Algoritma Graph – Breadth First Search (BFS)",
     "desc": "Penelusuran graf per level",
     "hasText": false,
-    "visualizer": null,
+    "visualizer": "bfsTree",
     "challenge": "graph-bfs"
   },
   {
@@ -113,7 +116,7 @@
     "title": "Algoritma Graph – Depth First Search (DFS)",
     "desc": "Penelusuran graf sedalam mungkin",
     "hasText": false,
-    "visualizer": null,
+    "visualizer": "dfsTree",
     "challenge": "graph-dfs"
   },
   {

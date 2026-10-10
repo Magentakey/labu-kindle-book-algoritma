@@ -9,6 +9,7 @@ import { splitContent } from '../lib/splitContent.js'
 // Bagian berat dimuat hanya saat dibutuhkan (react-markdown, Prism, visualizer).
 const MarkdownView = lazy(() => import('../components/MarkdownView/MarkdownView.jsx'))
 const AlgoVisualizer = lazy(() => import('../components/AlgoVisualizer/AlgoVisualizer.jsx'))
+const TreeVisualizer = lazy(() => import('../components/TreeVisualizer/TreeVisualizer.jsx'))
 const ChallengeIDE = lazy(() => import('../components/ChallengeIDE/ChallengeIDE.jsx'))
 
 const placeholderClass = 'mt-2 rounded-xl border-2 border-dashed border-stone-700 bg-orange-100 p-4'
@@ -70,6 +71,38 @@ function ChallengeSection({ id }) {
   )
 }
 
+/** Satu visualizer (diagram batang atau pohon) menurut `kind` di registry. */
+function VisualizerView({ entry }) {
+  const View = entry.kind === 'tree' ? TreeVisualizer : AlgoVisualizer
+  return (
+    <Suspense fallback={<Loading className="mt-2 min-h-64">Memuat visualisasi…</Loading>}>
+      <View {...entry} />
+    </Suspense>
+  )
+}
+
+function VisualizerSection({ keys }) {
+  const list = [].concat(keys)
+  return (
+    <section aria-labelledby="sec-visual" className="mt-8">
+      <h2 id="sec-visual" className="text-xl font-semibold">Visualisasi</h2>
+      {list.map((key) => {
+        const entry = visualizers[key]
+        return (
+          <div key={key} className={list.length > 1 ? 'mt-6' : ''}>
+            {list.length > 1 && entry?.title && <h3 className="text-lg font-semibold">{entry.title}</h3>}
+            {entry ? (
+              <VisualizerView entry={entry} />
+            ) : (
+              <p className={placeholderClass}>Visualisasi langkah demi langkah akan tampil di sini.</p>
+            )}
+          </div>
+        )
+      })}
+    </section>
+  )
+}
+
 function MaterialPage({ m }) {
   const headingRef = useRef(null)
   const [state, setState] = useState({ status: 'loading', text: '' })
@@ -125,20 +158,7 @@ function MaterialPage({ m }) {
                 </div>
               )
             }
-            if (seg.type === 'visualizer') {
-              return (
-                <section key={i} aria-labelledby="sec-visual" className="mt-8">
-                  <h2 id="sec-visual" className="text-xl font-semibold">Visualisasi</h2>
-                  {visualizers[m.visualizer] ? (
-                    <Suspense fallback={<Loading className="mt-2 min-h-64">Memuat visualisasi…</Loading>}>
-                      <AlgoVisualizer {...visualizers[m.visualizer]} />
-                    </Suspense>
-                  ) : (
-                    <p className={placeholderClass}>Visualisasi langkah demi langkah akan tampil di sini.</p>
-                  )}
-                </section>
-              )
-            }
+            if (seg.type === 'visualizer') return <VisualizerSection key={i} keys={m.visualizer} />
             return (
               <section key={i} aria-labelledby="sec-soal" className="mt-8">
                 <h2 id="sec-soal" className="text-xl font-semibold">Soal Challenge</h2>

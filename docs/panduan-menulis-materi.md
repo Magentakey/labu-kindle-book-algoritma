@@ -41,6 +41,7 @@ Tulis di barisnya sendiri, dengan baris kosong di atas dan bawahnya:
 ```
 
 - `::visualizer` menempatkan visualisasi langkah demi langkah di titik itu. Hanya untuk materi yang punya `visualizer` di `materials.json`.
+  Jika materi punya beberapa visualizer (misalnya diagram batang dan pohon rekursi merge sort), semuanya tampil berurutan di titik penanda yang sama, masing-masing dengan judulnya.
 - `::challenge` menempatkan soal challenge di titik itu. Hanya untuk materi yang punya `challenge`.
 - Tanpa penanda, visualisasi tampil setelah semua teks dan challenge paling akhir.
 - Satu penanda per materi. Teks setelah penanda sebaiknya diawali judul `##`.
