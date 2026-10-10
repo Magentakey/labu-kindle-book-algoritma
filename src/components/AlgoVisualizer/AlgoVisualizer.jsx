@@ -2,6 +2,8 @@ import { useEffect, useId, useMemo, useState } from 'react'
 import CodeBlock from '../CodeBlock/CodeBlock.jsx'
 import BarChart from '../BarChart/BarChart.jsx'
 import AuxRow from './AuxRow.jsx'
+import ExecTable from './ExecTable.jsx'
+import { buildCountRows, countLinesUpTo } from '../../lib/lineCounts.js'
 import { parseArrayInput, randomArray, MAX_LENGTH, MIN_VALUE, MAX_VALUE } from '../../lib/parseArray.js'
 
 // Tombol memakai aria-disabled (bukan disabled) agar fokus keyboard tidak hilang
@@ -33,8 +35,24 @@ const SPEEDS = [
  * @param {(arr: number[]) => Array<{ line: number, note: string }>} props.buildSteps
  * @param {(step: any) => { values: number[], marks: string[], held?: number|null }} props.toView
  * @param {string[]} [props.legend]
+ * @param {(arr: number[]) => Array<{ line: number, note: string }>} [props.buildExactSteps]  mode Tepat: satu langkah = satu eksekusi baris
+ * @param {(step: any) => { values: number[], marks: string[], held?: number|null }} [props.toExactView]
+ * @param {number[]} [props.exactLines]   nomor baris yang bisa dieksekusi (untuk tabel hitungan)
+ * @param {string[]} [props.exactLegend]  legenda untuk mode Tepat (bawaan: legend)
  */
-export default function AlgoVisualizer({ code, codeLabel, chartLabel, initialArray, buildSteps, toView, legend }) {
+export default function AlgoVisualizer({
+  code,
+  codeLabel,
+  chartLabel,
+  initialArray,
+  buildSteps,
+  toView,
+  legend,
+  buildExactSteps,
+  toExactView,
+  exactLines,
+  exactLegend,
+}) {
   const uid = useId()
   const [array, setArray] = useState(initialArray)
   const [no, setNo] = useState(0)
@@ -44,10 +62,16 @@ export default function AlgoVisualizer({ code, codeLabel, chartLabel, initialArr
   const [speed, setSpeed] = useState('normal')
   const [pauseNote, setPauseNote] = useState('')
 
-  const steps = useMemo(() => buildSteps(array), [buildSteps, array])
+  const hasExact = Boolean(buildExactSteps && toExactView && exactLines)
+  const [mode, setMode] = useState('summary') // 'summary' (Ringkas) | 'exact' (Tepat)
+  const exact = hasExact && mode === 'exact'
+
+  const steps = useMemo(() => (exact ? buildExactSteps(array) : buildSteps(array)), [exact, buildExactSteps, buildSteps, array])
   const last = steps.length - 1
   const step = steps[Math.min(no, last)]
-  const view = toView(step)
+  const view = (exact ? toExactView : toView)(step)
+  const counts = useMemo(() => (exact ? countLinesUpTo(steps, Math.min(no, last)) : null), [exact, steps, no, last])
+  const lineCounts = exact ? Object.fromEntries(exactLines.map((l) => [l, counts[l] ?? 0])) : null
   const lo = Math.min(...array)
   const hi = Math.max(...array)
 
@@ -86,6 +110,14 @@ export default function AlgoVisualizer({ code, codeLabel, chartLabel, initialArr
   if (running) status = 'Putar otomatis berjalan.'
   else if (playing && atEnd) status = 'Putar otomatis selesai di langkah terakhir.'
 
+  function changeMode(next) {
+    const builder = next === 'exact' ? buildExactSteps : buildSteps
+    setMode(next)
+    setNo(0)
+    setPlaying(false)
+    setPauseNote(`Mode ${next === 'exact' ? 'Tepat (per baris kode)' : 'Ringkas (per bagian visual)'} aktif, ${builder(array).length} langkah.`)
+  }
+
   function replaceArray(values) {
     setArray(values)
     setText(values.join(', '))
@@ -111,6 +143,38 @@ export default function AlgoVisualizer({ code, codeLabel, chartLabel, initialArr
 
   return (
     <div className="mt-2">
+      {hasExact && (
+        <fieldset className="mb-4">
+          <legend className="font-semibold">Mode langkah</legend>
+          <div className="mt-1 flex flex-wrap gap-3">
+            {[
+              { key: 'summary', title: 'Ringkas', desc: 'per bagian visual' },
+              { key: 'exact', title: 'Tepat', desc: 'per baris kode, dengan hitungan eksekusi' },
+            ].map((m) => (
+              <label
+                key={m.key}
+                className={
+                  'flex min-h-12 cursor-pointer flex-wrap items-center gap-x-2 rounded-xl border-2 border-stone-900 px-3 py-2 ' +
+                  'has-[:focus-visible]:outline-4 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-stone-900 ' +
+                  (mode === m.key ? 'bg-stone-900 text-orange-50' : 'bg-white hover:bg-orange-100')
+                }
+              >
+                <input
+                  type="radio"
+                  name={`${uid}-mode`}
+                  value={m.key}
+                  checked={mode === m.key}
+                  onChange={() => changeMode(m.key)}
+                  className="size-5 shrink-0 accent-orange-500"
+                />
+                <span className="font-semibold">{m.title}</span>
+                <span className="text-sm">{m.desc}</span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+      )}
+
       <div role="group" aria-label="Kontrol langkah" className="flex flex-wrap items-center gap-3">
         <button
           type="button"
@@ -192,6 +256,11 @@ export default function AlgoVisualizer({ code, codeLabel, chartLabel, initialArr
           Langkah {Math.min(no, last) + 1} dari {steps.length}
         </p>
         <p className="mt-1">{step.note}</p>
+        {exact && (
+          <p className="mt-1 text-sm">
+            Baris {step.line} sudah dieksekusi {counts[step.line]} kali. Total {Math.min(no, last) + 1} dari {steps.length} eksekusi baris.
+          </p>
+        )}
       </div>
 
       <div className="mt-4 grid gap-4 lg:grid-cols-2">
@@ -203,14 +272,23 @@ export default function AlgoVisualizer({ code, codeLabel, chartLabel, initialArr
             min={lo}
             max={hi}
             label={chartLabel}
-            legend={legend}
+            legend={exact ? (exactLegend ?? legend) : legend}
           />
           {view.aux && <AuxRow title={view.aux.title} values={view.aux.values} marks={view.aux.marks} />}
         </div>
         <div className="min-w-0 lg:order-1">
-          <CodeBlock code={code} highlightLine={step.line} label={codeLabel} />
+          <CodeBlock code={code} highlightLine={step.line} label={codeLabel} lineCounts={lineCounts} />
         </div>
       </div>
+
+      {exact && (
+        <ExecTable
+          rows={buildCountRows(code, exactLines, counts)}
+          activeLine={step.line}
+          current={Math.min(no, last) + 1}
+          total={steps.length}
+        />
+      )}
 
       <details className="mt-4 rounded-xl border-2 border-stone-900 bg-white p-3">
         <summary className="cursor-pointer font-semibold">Ubah array awal</summary>

@@ -1,7 +1,10 @@
 import { insertionSortCode, insertionSortSteps } from './insertionSort.js'
 import { insertionSortView } from './insertionSortView.js'
+import { insertionSortExecLines, insertionSortTrace } from './insertionSortExact.js'
+import { insertionSortExactView, mergeSortExactView } from './exactViews.js'
 import { mergeSortCode, mergeSortSteps } from './mergeSort.js'
 import { mergeSortView } from './mergeSortView.js'
+import { mergeSortExecLines, mergeSortTrace } from './mergeSortExact.js'
 
 /**
  * Daftar visualizer. Kuncinya sama dengan field `visualizer` di materials.json.
@@ -16,6 +19,10 @@ export const visualizers = {
     buildSteps: insertionSortSteps,
     toView: insertionSortView,
     legend: ['normal', 'sorted', 'compare', 'shift', 'placed', 'key'],
+    // Mode Tepat: satu langkah = satu eksekusi baris, dengan hitungan tiap baris.
+    buildExactSteps: insertionSortTrace,
+    toExactView: insertionSortExactView,
+    exactLines: insertionSortExecLines,
   },
   mergeSort: {
     code: mergeSortCode,
@@ -25,5 +32,9 @@ export const visualizers = {
     buildSteps: mergeSortSteps,
     toView: mergeSortView,
     legend: ['normal', 'left', 'right', 'compare', 'taken', 'merged', 'sorted'],
+    buildExactSteps: mergeSortTrace,
+    toExactView: mergeSortExactView,
+    exactLines: mergeSortExecLines,
+    exactLegend: ['normal', 'range', 'left', 'right', 'compare', 'taken', 'merged', 'sorted'],
   },
 }

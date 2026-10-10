@@ -42,6 +42,13 @@ export const STATUS = {
       'repeating-linear-gradient(0deg, transparent 0 5px, #374151 5px 6px), ' +
       'repeating-linear-gradient(90deg, transparent 0 5px, #374151 5px 6px), #e5e7eb',
   },
+  range: {
+    label: 'rentang yang sedang diproses',
+    glyph: '[ ]',
+    fill:
+      'repeating-linear-gradient(0deg, transparent 0 7px, #0f766e 7px 8px), ' +
+      'repeating-linear-gradient(90deg, #99f6e4 0 7px, #0f766e 7px 8px)',
+  },
   merged: {
     label: 'sudah digabung (terurut di dalam bagiannya)',
     glyph: '=',

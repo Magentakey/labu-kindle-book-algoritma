@@ -19,12 +19,14 @@ const theme = {
  * @param {string} [props.language]        bahasa untuk pewarnaan sintaks
  * @param {number|number[]|null} [props.highlightLine]  nomor baris aktif (mulai dari 1)
  * @param {string} [props.label]           nama area kode untuk pembaca layar
+ * @param {Record<number, number>} [props.lineCounts]  hitungan eksekusi per baris (mode Tepat); baris tanpa entri dikosongkan
  */
 export default function CodeBlock({
   code,
   language = 'javascript',
   highlightLine = null,
   label = 'Kode program',
+  lineCounts = null,
 }) {
   const active = Array.isArray(highlightLine) ? highlightLine : [highlightLine]
 
@@ -63,6 +65,12 @@ export default function CodeBlock({
                     <span aria-hidden="true" className="w-8 shrink-0 select-none pr-3 text-right text-stone-700">
                       {no}
                     </span>
+                    {lineCounts && (
+                      // Hitungan hanya hiasan visual; datanya tersedia dalam bentuk tabel untuk pembaca layar.
+                      <span aria-hidden="true" className="w-14 shrink-0 select-none pr-3 text-right font-semibold text-stone-800">
+                        {no in lineCounts ? `×${lineCounts[no]}` : ''}
+                      </span>
+                    )}
                     <span>
                       {line.map((token, key) => (
                         <span key={key} {...getTokenProps({ token })} />
