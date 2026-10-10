@@ -12,6 +12,7 @@ import { formatHuffmanInput, huffmanTreeCode, huffmanTreeSteps, parseHuffmanInpu
 import { formatRecurrenceInput, parseRecurrenceInput, randomRecurrenceInput, recurrenceTreeCode, recurrenceTreeSteps } from './recurrenceTree.js'
 import { formatTreeInput, parseTreeInput, randomTreeTokens } from '../lib/binaryTree.js'
 import { parseArrayInput, randomArray } from '../lib/parseArray.js'
+import { binarySearchCode, binarySearchSteps, formatBinarySearchInput, parseBinarySearchInput, randomBinarySearchInput } from './binarySearch.js'
 
 // Pohon biner dalam urutan level (null = anak tidak ada). [1, 2, 3, 4, 5] adalah pohon pada gambar contoh.
 const binaryTreeInput = {
@@ -33,7 +34,8 @@ const binaryTreeInput = {
 
 /**
  * Daftar visualizer. Kuncinya sama dengan field `visualizer` di materials.json
- * (boleh satu kunci atau daftar kunci). `kind: 'tree'` memakai TreeVisualizer; tanpa `kind` memakai AlgoVisualizer.
+ * (boleh satu kunci atau daftar kunci). `kind: 'tree'` memakai TreeVisualizer, `kind: 'search'` memakai SearchVisualizer;
+ * tanpa `kind` memakai AlgoVisualizer.
  * Menambah algoritma baru = menambah satu entri di sini.
  */
 export const visualizers = {
@@ -153,5 +155,27 @@ export const visualizers = {
     canvasLabel: 'Pohon yang ditelusuri DFS',
     buildSteps: dfsTreeSteps,
     legend: ['normal', 'current', 'waiting', 'visited'],
+  },
+  binarySearch: {
+    kind: 'search',
+    title: 'Binary search',
+    code: binarySearchCode,
+    codeLabel: 'Kode binary search',
+    chartLabel: 'Diagram batang binary search',
+    initialInput: { array: [5, 8, 9, 10, 14, 20], x: 12 }, // latihan pada materi: hasilnya NIL
+    parseInput: parseBinarySearchInput,
+    formatInput: formatBinarySearchInput,
+    randomInput: () => randomBinarySearchInput(),
+    inputHint:
+      'Array berisi 1 sampai 12 bilangan bulat yang terurut naik, dipisah koma (rentang -99 sampai 99). ' +
+      'Indeks dimulai dari 0, seperti array JavaScript.',
+    presets: [
+      { label: 'Latihan materi: x = 12 (tidak ada)', value: { array: [5, 8, 9, 10, 14, 20], x: 12 } },
+      { label: 'Ditemukan di tengah', value: { array: [2, 5, 8, 12, 16, 23, 38, 56], x: 16 } },
+      { label: 'Ditemukan di ujung kiri', value: { array: [2, 5, 8, 12, 16, 23, 38, 56], x: 2 } },
+      { label: 'Lebih besar dari semua', value: { array: [2, 5, 8, 12, 16, 23, 38, 56], x: 99 } },
+    ],
+    buildSteps: binarySearchSteps,
+    legend: ['range', 'compare', 'discarded', 'found'],
   },
 }

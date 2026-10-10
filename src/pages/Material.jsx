@@ -10,6 +10,9 @@ import { splitContent } from '../lib/splitContent.js'
 const MarkdownView = lazy(() => import('../components/MarkdownView/MarkdownView.jsx'))
 const AlgoVisualizer = lazy(() => import('../components/AlgoVisualizer/AlgoVisualizer.jsx'))
 const TreeVisualizer = lazy(() => import('../components/TreeVisualizer/TreeVisualizer.jsx'))
+const SearchVisualizer = lazy(() => import('../components/SearchVisualizer/SearchVisualizer.jsx'))
+
+const VISUALIZER_BY_KIND = { tree: TreeVisualizer, search: SearchVisualizer }
 const ChallengeIDE = lazy(() => import('../components/ChallengeIDE/ChallengeIDE.jsx'))
 
 const placeholderClass = 'mt-2 rounded-xl border-2 border-dashed border-stone-700 bg-orange-100 p-4'
@@ -71,9 +74,9 @@ function ChallengeSection({ id }) {
   )
 }
 
-/** Satu visualizer (diagram batang atau pohon) menurut `kind` di registry. */
+/** Satu visualizer menurut `kind` di registry (tanpa kind = diagram batang algoritma). */
 function VisualizerView({ entry }) {
-  const View = entry.kind === 'tree' ? TreeVisualizer : AlgoVisualizer
+  const View = VISUALIZER_BY_KIND[entry.kind] ?? AlgoVisualizer
   return (
     <Suspense fallback={<Loading className="mt-2 min-h-64">Memuat visualisasi…</Loading>}>
       <View {...entry} />

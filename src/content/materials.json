@@ -5,7 +5,7 @@
     "title": "Pengertian Algoritma & Pemrograman",
     "desc": "Dasar algoritma dan pemrograman",
     "hasText": true,
-    "visualizer": null,
+    "visualizer": "binarySearch",
     "challenge": "algoritma-pemrograman"
   },
   {

@@ -54,4 +54,15 @@ export const STATUS = {
     glyph: '=',
     fill: 'repeating-linear-gradient(0deg, #a7f3d0 0 8px, #047857 8px 10px)',
   },
+  // Binary search
+  discarded: {
+    label: 'sudah dibuang (pasti bukan x)',
+    glyph: '×',
+    fill: 'repeating-linear-gradient(45deg, #fafaf9 0 4px, #78716c 4px 5px)',
+  },
+  found: {
+    label: 'ditemukan',
+    glyph: '✓',
+    fill: 'repeating-linear-gradient(-45deg, #6ee7b7 0 6px, #047857 6px 8px)',
+  },
 }

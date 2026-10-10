@@ -1,32 +1,30 @@
 import { useId, useMemo, useState } from 'react'
 import CodeBlock from '../CodeBlock/CodeBlock.jsx'
-import TreeCanvas from '../TreeCanvas/TreeCanvas.jsx'
-import { ListPanel, TablePanel } from '../StepPanels/StepPanels.jsx'
+import BarChart from '../BarChart/BarChart.jsx'
+import { ListPanel } from '../StepPanels/StepPanels.jsx'
 import StepControls, { buttonClass, secondaryButtonClass } from '../StepControls/StepControls.jsx'
 import { useStepPlayer } from '../StepControls/useStepPlayer.js'
 
 /**
- * Visualizer algoritma berbentuk pohon: kode + gambar pohon + kontrol langkah.
- * Algoritma menyediakan `buildSteps(input)` yang mengembalikan langkah-langkah berisi
- * `{ line, note, view: { nodes, panels, labels } }`.
+ * Visualizer pencarian pada array terurut (binary search): kode + diagram batang + kontrol langkah.
+ * Masukannya dua isian: array dan nilai yang dicari.
  * @param {Object} props
  * @param {string} props.code
  * @param {string} props.codeLabel
- * @param {string} props.canvasLabel
+ * @param {string} props.chartLabel
  * @param {any} props.initialInput
- * @param {(text: string) => { ok: true, value: any } | { ok: false, error: string }} props.parseInput
- * @param {(value: any) => string} props.formatInput
+ * @param {(arrayText: string, xText: string) => { ok: true, value: any } | { ok: false, error: string }} props.parseInput
+ * @param {(value: any) => { array: string, x: string }} props.formatInput
  * @param {Array<{ label: string, value: any }>} [props.presets]
- * @param {() => any} [props.randomInput]  membuat masukan acak; bila ada, tombol Acak tampil
- * @param {(input: any) => Array<{ line: number|null, note: string, view: any }>} props.buildSteps
+ * @param {() => any} [props.randomInput]
+ * @param {(input: any) => Array<{ line: number, note: string, view: any }>} props.buildSteps
  * @param {string[]} [props.legend]
- * @param {string} props.inputLabel
  * @param {string} props.inputHint
  */
-export default function TreeVisualizer({
+export default function SearchVisualizer({
   code,
   codeLabel,
-  canvasLabel,
+  chartLabel,
   initialInput,
   parseInput,
   formatInput,
@@ -34,35 +32,37 @@ export default function TreeVisualizer({
   randomInput,
   buildSteps,
   legend,
-  inputLabel,
   inputHint,
 }) {
   const uid = useId()
   const [input, setInput] = useState(initialInput)
-  const [text, setText] = useState(() => formatInput(initialInput))
+  const [fields, setFields] = useState(() => formatInput(initialInput))
   const [error, setError] = useState('')
 
   const steps = useMemo(() => buildSteps(input), [buildSteps, input])
   const player = useStepPlayer(steps)
   const step = steps[player.index]
+  const { values } = step.view
+  const lo = Math.min(...values)
+  const hi = Math.max(...values)
 
   function applyInput(value) {
     setInput(value)
-    setText(formatInput(value))
+    setFields(formatInput(value))
     setError('')
     player.reset(`Masukan baru diterapkan, ${buildSteps(value).length} langkah.`)
   }
 
-  // Acak: usahakan hasilnya berbeda dari masukan yang sedang tampil.
   function applyRandom() {
     let value = randomInput()
-    for (let i = 0; i < 5 && formatInput(value) === formatInput(input); i++) value = randomInput()
+    const same = (v) => JSON.stringify(v) === JSON.stringify(input)
+    for (let i = 0; i < 5 && same(value); i++) value = randomInput()
     applyInput(value)
   }
 
   function handleSubmit(e) {
     e.preventDefault()
-    const result = parseInput(text)
+    const result = parseInput(fields.array, fields.x)
     if (!result.ok) {
       setError(result.error)
       return
@@ -70,9 +70,11 @@ export default function TreeVisualizer({
     applyInput(result.value)
   }
 
-  const inputId = `${uid}-input`
+  const arrayId = `${uid}-array`
+  const xId = `${uid}-x`
   const hintId = `${uid}-hint`
   const errorId = `${uid}-error`
+  const describedBy = error ? `${hintId} ${errorId}` : hintId
 
   return (
     <div className="mt-2">
@@ -90,12 +92,12 @@ export default function TreeVisualizer({
         <p className="mt-1">{step.note}</p>
       </div>
 
-      <div className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
+      <div className="mt-4 grid gap-4 lg:grid-cols-2">
         <div className="min-w-0 lg:order-2">
-          <TreeCanvas nodes={step.view.nodes} labels={step.view.labels} legend={legend} label={canvasLabel} />
-          {step.view.panels.map((p, i) =>
-            p.type === 'table' ? <TablePanel key={i} {...p} /> : <ListPanel key={i} {...p} />,
-          )}
+          <BarChart values={values} marks={step.view.marks} min={lo} max={hi} label={chartLabel} legend={legend} />
+          {step.view.panels.map((p, i) => (
+            <ListPanel key={i} {...p} />
+          ))}
         </div>
         <div className="min-w-0 lg:order-1">
           <CodeBlock code={code} highlightLine={step.line} label={codeLabel} />
@@ -105,23 +107,36 @@ export default function TreeVisualizer({
       <details className="mt-4 rounded-xl border-2 border-stone-900 bg-white p-3">
         <summary className="cursor-pointer font-semibold">Ubah masukan</summary>
         <form onSubmit={handleSubmit} noValidate className="mt-3">
-          <label htmlFor={inputId} className="block font-medium">
-            {inputLabel}
-          </label>
           <p id={hintId} className="text-sm text-stone-700">
             {inputHint}
           </p>
+          <label htmlFor={arrayId} className="mt-2 block font-medium">
+            Array (terurut naik)
+          </label>
           <input
-            id={inputId}
+            id={arrayId}
             type="text"
-            value={text}
-            onChange={(e) => setText(e.target.value)}
+            value={fields.array}
+            onChange={(e) => setFields({ ...fields, array: e.target.value })}
             aria-invalid={error ? 'true' : undefined}
-            aria-describedby={error ? `${hintId} ${errorId}` : hintId}
+            aria-describedby={describedBy}
             className="mt-1 min-h-12 w-full rounded-lg border-2 border-stone-900 bg-white px-3 text-base"
           />
+          <label htmlFor={xId} className="mt-3 block font-medium">
+            Nilai yang dicari (x)
+          </label>
+          <input
+            id={xId}
+            type="text"
+            inputMode="numeric"
+            value={fields.x}
+            onChange={(e) => setFields({ ...fields, x: e.target.value })}
+            aria-invalid={error ? 'true' : undefined}
+            aria-describedby={describedBy}
+            className="mt-1 min-h-12 w-40 rounded-lg border-2 border-stone-900 bg-white px-3 text-base"
+          />
           {error && (
-            <p id={errorId} role="alert" className="mt-1 font-medium text-red-800">
+            <p id={errorId} role="alert" className="mt-2 font-medium text-red-800">
               {error}
             </p>
           )}
