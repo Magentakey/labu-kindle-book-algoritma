@@ -71,7 +71,7 @@
     "title": "Dynamic Programming – Perkalian Rantai Matriks",
     "desc": "Urutan perkalian matriks paling efisien",
     "hasText": false,
-    "visualizer": null,
+    "visualizer": "matrixChainTable",
     "challenge": "dp-rantai-matriks"
   },
   {
@@ -80,7 +80,7 @@
     "title": "Dynamic Programming – Longest Common Subsequence (LCS)",
     "desc": "Subsequence bersama terpanjang",
     "hasText": false,
-    "visualizer": null,
+    "visualizer": "lcsTable",
     "challenge": "dp-lcs"
   },
   {

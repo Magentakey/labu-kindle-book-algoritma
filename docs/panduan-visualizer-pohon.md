@@ -48,7 +48,23 @@ Pohon biner ditulis dalam urutan level, `null` untuk anak yang tidak ada. Pohon 
 
 Jangan menambah atau menghapus baris pada kode tanpa menyesuaikan nomor `line` di langkah. `npm test` akan menangkap kesalahannya.
 
+## Jenis visualizer lain
+
+Field `kind` pada entri `registry.js` memilih komponen yang dipakai halaman Materi:
+
+| `kind` | Komponen | Dipakai untuk |
+| --- | --- | --- |
+| (tanpa kind) | `AlgoVisualizer` | Diagram batang: insertion sort, merge sort |
+| `tree` | `TreeVisualizer` | Pohon: BFS, DFS, Huffman, pohon rekursi |
+| `search` | `SearchVisualizer` | Binary search (array terurut, nilai x, diagram batang) |
+| `table` | `DpVisualizer` | Tabel DP: LCS (`lcsTable`) dan rantai matriks (`matrixChainTable`) |
+
+Visualizer `table` menerima langkah berbentuk `{ line, note, view: { table, panels, labels } }`, dengan
+`table = { caption, corner, rowHeaders, colHeaders, cells }` dan setiap sel `{ text, sub, mark, glyph }`.
+`mark` adalah kunci pada `DP_STATUS` (`src/components/DpTable/dpStatuses.js`): `empty`, `filled`, `current`, `source`, `path`, `unused`.
+Isian masukannya didaftarkan lewat `fields` (satu isian teks per kunci), misalnya `x` dan `y` untuk LCS.
+
 ## Belum tercakup
 
-MST (Prim, Kruskal) dan Dijkstra bekerja pada graf, bukan pohon, sehingga butuh visualizer graf tersendiri
+Tabel DP untuk materi lain (misalnya knapsack) bisa memakai `kind: 'table'` yang sama. MST (Prim, Kruskal) dan Dijkstra bekerja pada graf, bukan pohon, sehingga butuh visualizer graf tersendiri
 (simpul bebas posisi, sisi berbobot, dan sisi yang terpilih).

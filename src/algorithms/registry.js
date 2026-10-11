@@ -12,6 +12,8 @@ import { formatHuffmanInput, huffmanTreeCode, huffmanTreeSteps, parseHuffmanInpu
 import { formatRecurrenceInput, parseRecurrenceInput, randomRecurrenceInput, recurrenceTreeCode, recurrenceTreeSteps } from './recurrenceTree.js'
 import { formatTreeInput, parseTreeInput, randomTreeTokens } from '../lib/binaryTree.js'
 import { parseArrayInput, randomArray } from '../lib/parseArray.js'
+import { lcsCode, lcsSteps, formatLcsInput, parseLcsInput, randomLcsInput } from './lcsTable.js'
+import { matrixChainCode, matrixChainSteps, formatMatrixChainInput, parseMatrixChainInput, randomMatrixChainInput } from './matrixChainTable.js'
 import { binarySearchCode, binarySearchSteps, formatBinarySearchInput, parseBinarySearchInput, randomBinarySearchInput } from './binarySearch.js'
 
 // Pohon biner dalam urutan level (null = anak tidak ada). [1, 2, 3, 4, 5] adalah pohon pada gambar contoh.
@@ -34,7 +36,8 @@ const binaryTreeInput = {
 
 /**
  * Daftar visualizer. Kuncinya sama dengan field `visualizer` di materials.json
- * (boleh satu kunci atau daftar kunci). `kind: 'tree'` memakai TreeVisualizer, `kind: 'search'` memakai SearchVisualizer;
+ * (boleh satu kunci atau daftar kunci). `kind: 'tree'` memakai TreeVisualizer, `kind: 'search'` memakai SearchVisualizer,
+ * `kind: 'table'` memakai DpVisualizer (tabel DP);
  * tanpa `kind` memakai AlgoVisualizer.
  * Menambah algoritma baru = menambah satu entri di sini.
  */
@@ -177,5 +180,50 @@ export const visualizers = {
     ],
     buildSteps: binarySearchSteps,
     legend: ['range', 'compare', 'discarded', 'found'],
+  },
+  lcsTable: {
+    kind: 'table',
+    title: 'Tabel LCS',
+    code: lcsCode,
+    codeLabel: 'Kode LCS',
+    initialInput: { x: 'ABCBDAB', y: 'BDCABA' }, // contoh klasik: LCS = BCBA, panjang 4
+    fields: [
+      { key: 'x', label: 'String x (baris tabel)' },
+      { key: 'y', label: 'String y (kolom tabel)' },
+    ],
+    parseInput: parseLcsInput,
+    formatInput: formatLcsInput,
+    randomInput: () => randomLcsInput(),
+    inputHint: 'Masing-masing 1 sampai 7 karakter, hanya huruf dan angka. Huruf besar dan kecil dianggap berbeda.',
+    presets: [
+      { label: 'Contoh klasik: ABCBDAB dan BDCABA', value: { x: 'ABCBDAB', y: 'BDCABA' } },
+      { label: 'Tidak ada yang sama: ABC dan XYZ', value: { x: 'ABC', y: 'XYZ' } },
+      { label: 'Sama persis: ALGO dan ALGO', value: { x: 'ALGO', y: 'ALGO' } },
+      { label: 'Subsequence: ACE dan ABCDE', value: { x: 'ACE', y: 'ABCDE' } },
+    ],
+    buildSteps: lcsSteps,
+    legend: ['empty', 'filled', 'current', 'source', 'path'],
+  },
+  matrixChainTable: {
+    kind: 'table',
+    title: 'Tabel perkalian rantai matriks',
+    code: matrixChainCode,
+    codeLabel: 'Kode rantai matriks',
+    initialInput: [30, 35, 15, 5, 10, 20, 25], // contoh klasik: biaya 15125, ((A1(A2A3))((A4A5)A6))
+    fields: [{ key: 'dims', label: 'Ukuran matriks (dims)' }],
+    parseInput: parseMatrixChainInput,
+    formatInput: formatMatrixChainInput,
+    randomInput: () => randomMatrixChainInput(),
+    inputHint:
+      'Angka dipisah koma. Matriks Ai berukuran dims[i-1] × dims[i], jadi n matriks butuh n + 1 angka. ' +
+      'Isi 3 sampai 7 angka (2 sampai 6 matriks), tiap angka 1 sampai 99. Contoh: 10, 30, 5, 60.',
+    presets: [
+      { label: 'Contoh klasik (6 matriks)', value: [30, 35, 15, 5, 10, 20, 25] },
+      { label: 'Contoh soal: 10, 30, 5, 60', value: [10, 30, 5, 60] },
+      { label: 'Dua matriks: 10, 20, 30', value: [10, 20, 30] },
+      { label: 'Ukuran sama: 10, 10, 10, 10, 10', value: [10, 10, 10, 10, 10] },
+    ],
+    buildSteps: matrixChainSteps,
+    legend: ['empty', 'filled', 'current', 'source', 'path', 'unused'],
   },
 }

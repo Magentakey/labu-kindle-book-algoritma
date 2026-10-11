@@ -11,8 +11,9 @@ const MarkdownView = lazy(() => import('../components/MarkdownView/MarkdownView.
 const AlgoVisualizer = lazy(() => import('../components/AlgoVisualizer/AlgoVisualizer.jsx'))
 const TreeVisualizer = lazy(() => import('../components/TreeVisualizer/TreeVisualizer.jsx'))
 const SearchVisualizer = lazy(() => import('../components/SearchVisualizer/SearchVisualizer.jsx'))
+const DpVisualizer = lazy(() => import('../components/DpVisualizer/DpVisualizer.jsx'))
 
-const VISUALIZER_BY_KIND = { tree: TreeVisualizer, search: SearchVisualizer }
+const VISUALIZER_BY_KIND = { tree: TreeVisualizer, search: SearchVisualizer, table: DpVisualizer }
 const ChallengeIDE = lazy(() => import('../components/ChallengeIDE/ChallengeIDE.jsx'))
 
 const placeholderClass = 'mt-2 rounded-xl border-2 border-dashed border-stone-700 bg-orange-100 p-4'
