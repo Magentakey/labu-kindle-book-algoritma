@@ -3,6 +3,7 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import CodeBlock from '../CodeBlock/CodeBlock.jsx'
 import { resolveLanguage } from '../../lib/codeLanguages.js'
+import rehypeHeadingIds from '../../lib/rehypeHeadingIds.js'
 
 // Path gambar yang diawali "/" (mis. /materi/insertion-sort/diagram.png) menunjuk ke folder public/
 // dan perlu diberi awalan base situs (/labu-kindle-book-algoritma/) agar jalan di GitHub Pages.
@@ -17,8 +18,18 @@ const focusRing = 'focus-visible:outline-4 focus-visible:outline-offset-2 focus-
 
 // Judul di file materi dimulai dari "##" karena <h1> sudah dipakai halaman.
 // "#" (h1) dan "#####" ke atas dipetakan ke tingkat terdekat agar urutan judul tidak rusak.
-const H2 = ({ children }) => <h2 className="mt-8 text-xl font-semibold first:mt-0">{children}</h2>
-const H3 = ({ children }) => <h3 className="mt-6 text-lg font-semibold">{children}</h3>
+// `id` (bila ada) diberikan plugin rehypeHeadingIds untuk tautan sidebar. scroll-mt menyisakan ruang
+// di bawah bilah atas yang menempel di layar sempit, dan outline-none karena judul hanya difokus lewat kode.
+const H2 = ({ children, id }) => (
+  <h2 id={id} tabIndex={id ? -1 : undefined} className="scroll-mt-16 mt-8 text-xl font-semibold outline-none first:mt-0">
+    {children}
+  </h2>
+)
+const H3 = ({ children, id }) => (
+  <h3 id={id} tabIndex={id ? -1 : undefined} className="scroll-mt-16 mt-6 text-lg font-semibold outline-none">
+    {children}
+  </h3>
+)
 const H4 = ({ children }) => <h4 className="mt-4 font-semibold">{children}</h4>
 
 function Link({ href, children }) {
@@ -106,12 +117,14 @@ const components = {
 /**
  * Menampilkan teks materi (Markdown) dengan gaya aplikasi.
  * HTML mentah sengaja tidak diaktifkan: teks diperlakukan sebagai data, bukan kode.
- * @param {{ text: string }} props
+ * @param {{ text: string, idPrefix?: string }} props
+ *   `idPrefix`: bila diisi, judul h1-h3 diberi id (untuk daftar isi). Dikosongkan untuk Markdown di dalam blok.
  */
-export default function MarkdownView({ text }) {
+export default function MarkdownView({ text, idPrefix }) {
+  const rehypePlugins = idPrefix ? [[rehypeHeadingIds, { prefix: idPrefix }]] : []
   return (
     <div className="min-w-0 break-words text-base">
-      <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>
+      <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={rehypePlugins} components={components}>
         {text}
       </ReactMarkdown>
     </div>

@@ -13,6 +13,16 @@ Setiap materi adalah satu file Markdown. Aplikasi menampilkannya dengan susunan:
 4. Jalankan `npm run check:content`. Perbaiki semua **ERROR**. **SARAN** boleh ditunda tetapi sebaiknya diperbaiki.
 5. Jalankan `npm run dev`, buka materinya, dan baca hasilnya di layar lebar dan layar HP.
 
+## Daftar isi di sidebar
+
+Halaman materi punya sidebar kiri berisi daftar isi **materi itu saja**. Isinya dibuat otomatis dari file materi:
+
+- Judul `##` menjadi item utama, judul `###` menjadi anak item di bawahnya. Judul `####` ke bawah tidak ikut.
+- **Visualisasi** dan **Soal Challenge** muncul otomatis bila materi memilikinya, sesuai urutan di halaman.
+- Judul di dalam blok (`:::tabs`, `:::steps`, `:::quiz`, `:::reveal`) tidak ikut, karena bukan bagian utama halaman.
+
+Jadi cukup tulis judul yang jelas dan singkat, karena teks judul itulah yang dibaca di daftar isi.
+
 ## Aturan penulisan
 
 Aturan ini dijaga otomatis oleh `npm run check:content` dan `npm test`. Alasannya hampir selalu aksesibilitas

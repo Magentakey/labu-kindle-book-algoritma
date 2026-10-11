@@ -1,10 +1,14 @@
-import { lazy, Suspense, useEffect, useRef, useState } from 'react'
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import materials from '../content/materials.json'
 import { visualizers } from '../algorithms/registry.js'
 import { loadChallenge } from '../lib/loadChallenge.js'
 import { loadMaterialText } from '../lib/loadMaterialText.js'
 import { splitContent } from '../lib/splitContent.js'
+import { buildToc } from '../lib/tableOfContents.js'
+import MaterialSidebar, { SidebarTopBar } from '../components/MaterialSidebar/MaterialSidebar.jsx'
+import { useActiveSection } from '../components/MaterialSidebar/useActiveSection.js'
+import { useSidebar } from '../components/MaterialSidebar/useSidebar.js'
 
 // Bagian berat dimuat hanya saat dibutuhkan (react-markdown, Prism, visualizer).
 const MarkdownView = lazy(() => import('../components/MarkdownView/MarkdownView.jsx'))
@@ -90,12 +94,18 @@ function VisualizerSection({ keys }) {
   const list = [].concat(keys)
   return (
     <section aria-labelledby="sec-visual" className="mt-8">
-      <h2 id="sec-visual" className="text-xl font-semibold">Visualisasi</h2>
+      <h2 id="sec-visual" tabIndex={-1} className="scroll-mt-16 text-xl font-semibold outline-none">
+        Visualisasi
+      </h2>
       {list.map((key) => {
         const entry = visualizers[key]
         return (
           <div key={key} className={list.length > 1 ? 'mt-6' : ''}>
-            {list.length > 1 && entry?.title && <h3 className="text-lg font-semibold">{entry.title}</h3>}
+            {list.length > 1 && entry?.title && (
+              <h3 id={`vis-${key}`} tabIndex={-1} className="scroll-mt-16 text-lg font-semibold outline-none">
+                {entry.title}
+              </h3>
+            )}
             {entry ? (
               <VisualizerView entry={entry} />
             ) : (
@@ -130,59 +140,81 @@ function MaterialPage({ m }) {
     }
   }, [m.id])
 
-  const segments = splitContent(state.text, {
-    hasVisualizer: Boolean(m.visualizer),
-    hasChallenge: Boolean(m.challenge),
-  })
+  const segments = useMemo(
+    () => splitContent(state.text, { hasVisualizer: Boolean(m.visualizer), hasChallenge: Boolean(m.challenge) }),
+    [state.text, m.visualizer, m.challenge],
+  )
+
+  // Daftar isi sidebar: hanya bagian materi ini (judul teks, Visualisasi, Soal Challenge).
+  const toc = useMemo(
+    () =>
+      buildToc(segments, {
+        visualizers: [].concat(m.visualizer ?? []).map((key) => ({ id: key, title: visualizers[key]?.title })),
+      }),
+    [segments, m.visualizer],
+  )
+  const loading = state.status === 'loading'
+  const activeId = useActiveSection(loading ? [] : toc.map((i) => i.id))
+  const sectionLabel = toc.find((i) => i.id === activeId)?.text
+  const { open, setOpen, desktop } = useSidebar()
+  const openerRef = useRef(null)
 
   return (
-    <main id="konten" tabIndex={-1} className="min-h-screen bg-orange-50 text-stone-900 outline-none">
-      <div className="mx-auto max-w-5xl px-6 py-8">
-        <Link
-          to="/"
-          className="underline focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-stone-900"
-        >
-          ← Kembali ke daftar materi
-        </Link>
+    <div className="min-h-screen bg-orange-50 text-stone-900 lg:flex">
+      <MaterialSidebar
+        material={m}
+        items={toc}
+        loading={loading}
+        activeId={activeId}
+        open={open}
+        desktop={desktop}
+        onClose={() => setOpen(false)}
+        openerRef={openerRef}
+      />
+      <main id="konten" tabIndex={-1} className="min-w-0 flex-1 outline-none">
+        <SidebarTopBar open={open} onOpen={() => setOpen(true)} openerRef={openerRef} sectionLabel={loading ? null : sectionLabel} />
+        <div className="mx-auto max-w-5xl px-6 py-8">
+          <h1 ref={headingRef} tabIndex={-1} className="text-2xl font-bold outline-none">
+            Materi {m.no}: {m.title}
+          </h1>
 
-        <h1 ref={headingRef} tabIndex={-1} className="mt-4 text-2xl font-bold outline-none">
-          Materi {m.no}: {m.title}
-        </h1>
+          {state.status === 'loading' && <Loading />}
+          {(state.status === 'missing' || state.status === 'error') && <TextNotice status={state.status} />}
 
-        {state.status === 'loading' && <Loading />}
-        {(state.status === 'missing' || state.status === 'error') && <TextNotice status={state.status} />}
-
-        {state.status !== 'loading' &&
-          segments.map((seg, i) => {
-            if (seg.type === 'markdown') {
+          {state.status !== 'loading' &&
+            segments.map((seg, i) => {
+              if (seg.type === 'markdown') {
+                return (
+                  <div key={i} className="mt-6 max-w-3xl">
+                    <Suspense fallback={<Loading />}>
+                      <MarkdownView text={seg.text} idPrefix={`b${i}`} />
+                    </Suspense>
+                  </div>
+                )
+              }
+              if (seg.type === 'visualizer') return <VisualizerSection key={i} keys={m.visualizer} />
+              if (seg.type !== 'challenge') {
+                const wide = seg.type === 'growth' || seg.type === 'trace'
+                return (
+                  <div key={i} className={`mt-6 ${wide ? 'max-w-5xl' : 'max-w-3xl'}`}>
+                    <Suspense fallback={<Loading />}>
+                      <Block segment={seg} />
+                    </Suspense>
+                  </div>
+                )
+              }
               return (
-                <div key={i} className="mt-6 max-w-3xl">
-                  <Suspense fallback={<Loading />}>
-                    <MarkdownView text={seg.text} />
-                  </Suspense>
-                </div>
+                <section key={i} aria-labelledby="sec-soal" className="mt-8">
+                  <h2 id="sec-soal" tabIndex={-1} className="scroll-mt-16 text-xl font-semibold outline-none">
+                    Soal Challenge
+                  </h2>
+                  <ChallengeSection id={m.challenge} />
+                </section>
               )
-            }
-            if (seg.type === 'visualizer') return <VisualizerSection key={i} keys={m.visualizer} />
-            if (seg.type !== 'challenge') {
-              const wide = seg.type === 'growth' || seg.type === 'trace'
-              return (
-                <div key={i} className={`mt-6 ${wide ? 'max-w-5xl' : 'max-w-3xl'}`}>
-                  <Suspense fallback={<Loading />}>
-                    <Block segment={seg} />
-                  </Suspense>
-                </div>
-              )
-            }
-            return (
-              <section key={i} aria-labelledby="sec-soal" className="mt-8">
-                <h2 id="sec-soal" className="text-xl font-semibold">Soal Challenge</h2>
-                <ChallengeSection id={m.challenge} />
-              </section>
-            )
-          })}
-      </div>
-    </main>
+            })}
+        </div>
+      </main>
+    </div>
   )
 }
 

@@ -1,1 +1,18 @@
 @import "tailwindcss";
+
+/* Laci daftar isi (layar sempit) masuk dari kiri saat dibuka. Dimatikan bila pengguna meminta gerak dikurangi. */
+@keyframes sidebar-in {
+  from {
+    opacity: 0;
+    transform: translateX(-1.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (max-width: 1023px) and (prefers-reduced-motion: no-preference) {
+  .sidebar-drawer {
+    animation: sidebar-in 160ms ease-out;
+  }
+}
