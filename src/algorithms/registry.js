@@ -14,6 +14,13 @@ import { formatTreeInput, parseTreeInput, randomTreeTokens } from '../lib/binary
 import { parseArrayInput, randomArray } from '../lib/parseArray.js'
 import { lcsCode, lcsSteps, formatLcsInput, parseLcsInput, randomLcsInput } from './lcsTable.js'
 import { matrixChainCode, matrixChainSteps, formatMatrixChainInput, parseMatrixChainInput, randomMatrixChainInput } from './matrixChainTable.js'
+import {
+  activitySelectionCode,
+  activitySelectionSteps,
+  formatActivityInput,
+  parseActivityInput,
+  randomActivityInput,
+} from './activitySelection.js'
 import { binarySearchCode, binarySearchSteps, formatBinarySearchInput, parseBinarySearchInput, randomBinarySearchInput } from './binarySearch.js'
 
 // Pohon biner dalam urutan level (null = anak tidak ada). [1, 2, 3, 4, 5] adalah pohon pada gambar contoh.
@@ -37,7 +44,8 @@ const binaryTreeInput = {
 /**
  * Daftar visualizer. Kuncinya sama dengan field `visualizer` di materials.json
  * (boleh satu kunci atau daftar kunci). `kind: 'tree'` memakai TreeVisualizer, `kind: 'search'` memakai SearchVisualizer,
- * `kind: 'table'` memakai DpVisualizer (tabel DP), `kind: 'plot'` memakai AsymptoticGraph (grafik fungsi);
+ * `kind: 'table'` memakai DpVisualizer (tabel DP), `kind: 'plot'` memakai AsymptoticGraph (grafik fungsi),
+ * `kind: 'timeline'` memakai TimelineVisualizer (garis waktu aktivitas);
  * tanpa `kind` memakai AlgoVisualizer.
  * Menambah algoritma baru = menambah satu entri di sini.
  */
@@ -225,6 +233,34 @@ export const visualizers = {
     ],
     buildSteps: matrixChainSteps,
     legend: ['empty', 'filled', 'current', 'source', 'path', 'unused'],
+  },
+  activitySelection: {
+    kind: 'timeline',
+    title: 'Garis waktu Activity Selection',
+    code: activitySelectionCode,
+    codeLabel: 'Kode activity selection',
+    chartCaption: 'Garis waktu aktivitas',
+    // Contoh klasik (CLRS, 11 aktivitas): hasilnya a1, a4, a8, a11 = 4 aktivitas. Sama dengan test case pertama soal challenge.
+    initialInput: { start: [1, 3, 0, 5, 3, 5, 6, 8, 8, 2, 12], finish: [4, 5, 6, 7, 9, 9, 10, 11, 12, 14, 16] },
+    fields: [
+      { key: 'start', label: 'Waktu mulai (start)' },
+      { key: 'finish', label: 'Waktu selesai (finish)' },
+    ],
+    parseInput: parseActivityInput,
+    formatInput: formatActivityInput,
+    randomInput: () => randomActivityInput(),
+    inputHint:
+      'Aktivitas ke-i berjalan dari start[i] sampai finish[i]. Isi kedua baris dengan jumlah angka yang sama (1 sampai 12 aktivitas), ' +
+      'bilangan bulat 0 sampai 30, dan finish harus lebih besar dari start. Data tidak harus terurut. Contoh: start 1, 3, 5 dan finish 3, 5, 7.',
+    presets: [
+      { label: 'Contoh klasik (11 aktivitas)', value: { start: [1, 3, 0, 5, 3, 5, 6, 8, 8, 2, 12], finish: [4, 5, 6, 7, 9, 9, 10, 11, 12, 14, 16] } },
+      { label: 'Data tidak terurut (soal challenge)', value: { start: [12, 5, 8, 3, 0, 2, 6, 8, 3, 5, 1], finish: [16, 9, 12, 5, 6, 14, 10, 11, 9, 7, 4] } },
+      { label: 'Hanya bersentuhan: semua dipilih', value: { start: [1, 3, 5], finish: [3, 5, 7] } },
+      { label: 'Satu aktivitas panjang menutup semua', value: { start: [1, 2, 3], finish: [10, 10, 10] } },
+      { label: 'Yang paling awal mulai bukan yang terbaik', value: { start: [0, 1, 5, 8], finish: [10, 3, 7, 9] } },
+    ],
+    buildSteps: activitySelectionSteps,
+    legend: ['normal', 'current', 'selected', 'rejected'],
   },
   growthPlot: {
     kind: 'plot',

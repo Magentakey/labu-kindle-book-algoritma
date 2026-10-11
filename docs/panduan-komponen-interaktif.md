@@ -13,7 +13,7 @@ Aturan umum: tulis penanda di barisnya sendiri dengan baris kosong di atas dan b
 (tidak ada blok di dalam blok). Penanda satu baris `::trace` dan `::growth` boleh ditaruh di dalam blok.
 Penanda di dalam blok kode (` ``` `) diabaikan.
 
-Visualizer langkah demi langkah (`::visualizer`: diagram batang, pohon, tabel DP, binary search) berbeda dari
+Visualizer langkah demi langkah (`::visualizer`: diagram batang, pohon, tabel DP, binary search, grafik asimtotik, garis waktu) berbeda dari
 komponen di panduan ini. Cara memakai dan menambahnya ada di [`docs/panduan-visualizer-pohon.md`](panduan-visualizer-pohon.md)
 dan [`docs/panduan-menulis-materi.md`](panduan-menulis-materi.md).
 

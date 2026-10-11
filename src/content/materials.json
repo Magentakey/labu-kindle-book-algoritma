@@ -89,7 +89,7 @@
     "title": "Algoritma Greedy – An Activity Selection Problem",
     "desc": "Memilih aktivitas sebanyak mungkin",
     "hasText": false,
-    "visualizer": null,
+    "visualizer": "activitySelection",
     "challenge": "greedy-activity-selection"
   },
   {

@@ -59,6 +59,7 @@ Field `kind` pada entri `registry.js` memilih komponen yang dipakai halaman Mate
 | `search` | `SearchVisualizer` | Binary search (array terurut, nilai x, diagram batang) |
 | `table` | `DpVisualizer` | Tabel DP: LCS (`lcsTable`) dan rantai matriks (`matrixChainTable`) |
 | `plot` | `AsymptoticGraph` | Grafik fungsi untuk materi 3 sampai 5 (lihat bagian "Grafik asimtotik") |
+| `timeline` | `TimelineVisualizer` | Garis waktu aktivitas untuk materi 10.1 (lihat bagian "Garis waktu Activity Selection") |
 
 Visualizer `table` menerima langkah berbentuk `{ line, note, view: { table, panels, labels } }`, dengan
 `table = { caption, corner, rowHeaders, colHeaders, cells }` dan setiap sel `{ text, sub, mark, glyph }`.
@@ -85,6 +86,25 @@ kunci jawaban soal challenge materi 3 dan 4, jadi grafik dan soal tidak bisa sal
 ditambahkan di `FUNCTIONS` dengan `rank` yang benar, ditambah gayanya di `FN_STYLE` pada `AsymptoticGraph.jsx`.
 
 Kurva dibedakan oleh pola garis, bentuk penanda, dan legenda teks, tidak hanya warna. Seluruh isi grafik juga tersedia sebagai tabel nilai di bawahnya.
+
+## Garis waktu Activity Selection (materi 10.1)
+
+Kunci `activitySelection` di `materials.json`. Aktivitas digambar sebagai batang pada sumbu waktu yang sama, satu baris per aktivitas
+(dinamai a1, a2, ... menurut urutan masukan; di kode, a1 adalah indeks 0). Algoritmanya sama dengan solusi soal challenge:
+urutkan menurut waktu selesai, lalu ambil aktivitas yang `start[i] >= akhir`.
+
+- Garis putus-putus vertikal menandai `akhir`, yaitu waktu selesai aktivitas terpilih yang terakhir. Batang yang mulainya di kiri garis itu bentrok.
+- Baris paling bawah ("Jadwal") menumpuk aktivitas terpilih dalam satu lajur. Panel di bawahnya berisi daftar `pilih` dan tabel keputusan tiap aktivitas.
+- Satu langkah = satu baris kode yang berjalan. Baris 3 dan 4 (inisialisasi) digabung dalam satu langkah, jadi `line` bisa berupa larik `[3, 4]`.
+  Jumlah langkahnya 4 + 2n + 2k untuk n aktivitas dan k yang terpilih (contoh klasik: 34).
+- Status batang (`TIMELINE_STATUS` di `src/components/TimelineChart/timelineStatuses.js`): `normal`, `current`, `selected`, `rejected`.
+  Seperti visualizer lain, tiap status dibedakan oleh pola, simbol, dan teks, tidak hanya warna.
+- Isian masukan ada dua, `start` dan `finish`, sama dengan parameter soal challenge. Batasnya 1 sampai 12 aktivitas, waktu bilangan bulat 0 sampai 30, dan `finish` harus lebih besar dari `start`.
+  Data tidak harus terurut. Contoh siap pakai mencakup data klasik, data tidak terurut dari soal challenge, aktivitas yang hanya bersentuhan, dan kasus saat aktivitas yang paling awal mulai bukan pilihan terbaik.
+
+Garis waktu memakai HTML/CSS (bukan SVG) agar ukuran huruf tetap terbaca di layar sempit, dan daftarnya adalah `<ol>` sungguhan dengan teks tersembunyi untuk pembaca layar.
+Tes di `src/algorithms/activitySelection.test.js` mencocokkan hasil dengan pembanding yang mencoba semua himpunan bagian dan dengan semua test case soal challenge,
+sehingga visualizer dan soal tidak bisa saling bertentangan.
 
 ## Belum tercakup
 
