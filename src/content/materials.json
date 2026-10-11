@@ -23,7 +23,7 @@
     "title": "Pertumbuhan Fungsi Running Time",
     "desc": "Cara membandingkan laju pertumbuhan fungsi",
     "hasText": true,
-    "visualizer": null,
+    "visualizer": "growthPlot",
     "challenge": "pertumbuhan-fungsi"
   },
   {
@@ -32,7 +32,7 @@
     "title": "Notasi Asimtotik (Θ, O, Ω)",
     "desc": "Batas atas, bawah, dan ketat",
     "hasText": true,
-    "visualizer": null,
+    "visualizer": "boundPlot",
     "challenge": "notasi-asimtotik"
   },
   {
@@ -41,7 +41,7 @@
     "title": "Notasi Asimtotik Little-Oh (o) & Little-Omega (ω)",
     "desc": "Batas yang tidak ketat",
     "hasText": true,
-    "visualizer": null,
+    "visualizer": "littlePlot",
     "challenge": "little-o-omega"
   },
   {

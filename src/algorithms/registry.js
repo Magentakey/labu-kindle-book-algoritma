@@ -37,7 +37,7 @@ const binaryTreeInput = {
 /**
  * Daftar visualizer. Kuncinya sama dengan field `visualizer` di materials.json
  * (boleh satu kunci atau daftar kunci). `kind: 'tree'` memakai TreeVisualizer, `kind: 'search'` memakai SearchVisualizer,
- * `kind: 'table'` memakai DpVisualizer (tabel DP);
+ * `kind: 'table'` memakai DpVisualizer (tabel DP), `kind: 'plot'` memakai AsymptoticGraph (grafik fungsi);
  * tanpa `kind` memakai AlgoVisualizer.
  * Menambah algoritma baru = menambah satu entri di sini.
  */
@@ -225,5 +225,49 @@ export const visualizers = {
     ],
     buildSteps: matrixChainSteps,
     legend: ['empty', 'filled', 'current', 'source', 'path', 'unused'],
+  },
+  growthPlot: {
+    kind: 'plot',
+    mode: 'compare',
+    title: 'Grafik laju pertumbuhan fungsi',
+    // Fungsi A dikali c, lalu dibandingkan dengan B. c = 1, A = n², B = 2ⁿ sama dengan contoh soal challenge materi 3.
+    initialInput: { a: 'n^2', b: '2^n', mult: 1, extras: ['n', 'n log n'] },
+    initialView: { n: 10, xMax: 30, scale: 'log' },
+    presets: [
+      { label: 'Soal materi: n² vs 2ⁿ', value: { a: 'n^2', b: '2^n', mult: 1, extras: [] } },
+      { label: 'Konstanta besar: 50·n² vs 2ⁿ', value: { a: 'n^2', b: '2^n', mult: 50, extras: [] } },
+      { label: 'n log n vs n²', value: { a: 'n log n', b: 'n^2', mult: 1, extras: ['n'] } },
+      { label: 'Semua kelas dasar', value: { a: 'log n', b: '2^n', mult: 1, extras: ['1', 'n', 'n log n', 'n^2', 'n^3'] } },
+    ],
+  },
+  boundPlot: {
+    kind: 'plot',
+    mode: 'bound',
+    title: 'Grafik batas asimtotik (O, Ω, Θ)',
+    // f(n) = 3n² + 10n + 5 dengan c1 = 1 dan c2 = 4: n₀ = 11, contoh pada soal challenge materi 4.
+    initialInput: { a: 3, b: 10, c: 5, c1: 1, c2: 4, notation: 'Theta' },
+    initialView: { n: 11, xMax: 30, scale: 'linear' },
+    presets: [
+      { label: 'Contoh soal: n₀ = 11', value: { a: 3, b: 10, c: 5, c1: 1, c2: 4, notation: 'Theta' } },
+      { label: 'c2 terlalu kecil (tidak ada n₀)', value: { a: 3, b: 10, c: 5, c1: 1, c2: 2, notation: 'Theta' } },
+      { label: 'c1 lebih besar dari a', value: { a: 3, b: 10, c: 5, c1: 4, c2: 5, notation: 'Theta' } },
+      { label: 'Tanpa suku kecil: n₀ = 1', value: { a: 3, b: 0, c: 0, c1: 3, c2: 3, notation: 'Theta' } },
+      { label: 'Hanya batas atas O', value: { a: 2, b: 0, c: 100, c1: 1, c2: 3, notation: 'O' } },
+    ],
+  },
+  littlePlot: {
+    kind: 'plot',
+    mode: 'little',
+    title: 'Grafik rasio untuk o dan ω',
+    // ci = indeks pada C_VALUES (src/lib/asymptotic.js); 3 berarti c = 0,5.
+    initialInput: { f: 'n', g: 'n^2', ci: 3 },
+    initialView: { n: 10, xMax: 40, scale: 'log' },
+    presets: [
+      { label: 'n = o(n²)', value: { f: 'n', g: 'n^2', ci: 3 } },
+      { label: 'n² = ω(n)', value: { f: 'n^2', g: 'n', ci: 5 } },
+      { label: 'n² dan n²: Θ, bukan o', value: { f: 'n^2', g: 'n^2', ci: 2 } },
+      { label: '2ⁿ = ω(n³)', value: { f: '2^n', g: 'n^3', ci: 7 } },
+      { label: 'n vs n log n: butuh n besar', value: { f: 'n', g: 'n log n', ci: 0 } },
+    ],
   },
 }

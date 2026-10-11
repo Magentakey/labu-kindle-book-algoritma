@@ -58,11 +58,33 @@ Field `kind` pada entri `registry.js` memilih komponen yang dipakai halaman Mate
 | `tree` | `TreeVisualizer` | Pohon: BFS, DFS, Huffman, pohon rekursi |
 | `search` | `SearchVisualizer` | Binary search (array terurut, nilai x, diagram batang) |
 | `table` | `DpVisualizer` | Tabel DP: LCS (`lcsTable`) dan rantai matriks (`matrixChainTable`) |
+| `plot` | `AsymptoticGraph` | Grafik fungsi untuk materi 3 sampai 5 (lihat bagian "Grafik asimtotik") |
 
 Visualizer `table` menerima langkah berbentuk `{ line, note, view: { table, panels, labels } }`, dengan
 `table = { caption, corner, rowHeaders, colHeaders, cells }` dan setiap sel `{ text, sub, mark, glyph }`.
 `mark` adalah kunci pada `DP_STATUS` (`src/components/DpTable/dpStatuses.js`): `empty`, `filled`, `current`, `source`, `path`, `unused`.
 Isian masukannya didaftarkan lewat `fields` (satu isian teks per kunci), misalnya `x` dan `y` untuk LCS.
+
+## Grafik asimtotik (materi 3 sampai 5)
+
+Berbeda dari visualizer lain, grafik ini tidak berjalan per langkah. Pembaca menggeser slider dan langsung melihat kurvanya berubah,
+jadi tidak ada kode yang menyala dan tidak ada tombol Berikutnya. Ada tiga mode, dipilih lewat `mode` pada entri `registry.js`:
+
+| Kunci di `materials.json` | Materi | `mode` | Isi |
+| --- | --- | --- | --- |
+| `growthPlot` | 3 (Pertumbuhan Fungsi) | `compare` | Dua fungsi A dan B (A bisa dikali konstanta c), kurva pembanding lain, dan titik di mana kurva saling menyalip |
+| `boundPlot` | 4 (Θ, O, Ω) | `bound` | f(n) = a·n² + b·n + c terjepit di antara c1·n² dan c2·n², dengan n₀ untuk O, Ω, atau Θ |
+| `littlePlot` | 5 (o dan ω) | `little` | Rasio f(n)/g(n) terhadap garis c, dengan n₀ untuk definisi o dan ω |
+
+Entri registry untuk `kind: 'plot'` berisi `mode`, `title`, `initialInput`, `initialView` (`n`, `xMax`, `scale`), dan `presets`.
+Bentuk `initialInput` bergantung pada mode: `{ a, b, mult, extras }` untuk `compare` (a dan b adalah kunci di `FUNCTIONS`),
+`{ a, b, c, c1, c2, notation }` untuk `bound`, dan `{ f, g, ci }` untuk `little` (`ci` adalah indeks pada `C_VALUES`).
+
+Semua perhitungannya ada di `src/lib/asymptotic.js` sebagai fungsi murni dan dites di `asymptotic.test.js`. Tes itu mencocokkan hasilnya dengan
+kunci jawaban soal challenge materi 3 dan 4, jadi grafik dan soal tidak bisa saling bertentangan. Kelas fungsi baru (misalnya n·log²n)
+ditambahkan di `FUNCTIONS` dengan `rank` yang benar, ditambah gayanya di `FN_STYLE` pada `AsymptoticGraph.jsx`.
+
+Kurva dibedakan oleh pola garis, bentuk penanda, dan legenda teks, tidak hanya warna. Seluruh isi grafik juga tersedia sebagai tabel nilai di bawahnya.
 
 ## Belum tercakup
 
