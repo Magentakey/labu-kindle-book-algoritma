@@ -3,7 +3,8 @@ import { useId } from 'react'
 export function ListPanel({ title, items, empty }) {
   const uid = useId()
   return (
-    <section aria-labelledby={uid} className="mt-3 rounded-xl border-2 border-stone-900 bg-white p-3 text-stone-900">
+    // role="group" (bukan <section>) agar judul yang sama di dua visualizer pada satu halaman tidak menjadi landmark kembar.
+    <div role="group" aria-labelledby={uid} className="mt-3 rounded-xl border-2 border-stone-900 bg-white p-3 text-stone-900">
       <p id={uid} className="text-sm font-semibold">
         {title}
       </p>
@@ -23,7 +24,7 @@ export function ListPanel({ title, items, empty }) {
           ))}
         </ol>
       )}
-    </section>
+    </div>
   )
 }
 

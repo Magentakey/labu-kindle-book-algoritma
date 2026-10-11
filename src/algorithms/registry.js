@@ -21,6 +21,10 @@ import {
   parseActivityInput,
   randomActivityInput,
 } from './activitySelection.js'
+import { bfsGraphCode, bfsGraphSteps, dfsGraphCode, dfsGraphSteps } from './graphTraversal.js'
+import { kruskalCode, kruskalSteps, primCode, primSteps } from './graphMst.js'
+import { bellmanFordCode, bellmanFordSteps, dijkstraCode, dijkstraSteps } from './graphShortest.js'
+import { formatGraphInput, parseGraphFields, randomGraph } from './graphCommon.js'
 import { binarySearchCode, binarySearchSteps, formatBinarySearchInput, parseBinarySearchInput, randomBinarySearchInput } from './binarySearch.js'
 
 // Pohon biner dalam urutan level (null = anak tidak ada). [1, 2, 3, 4, 5] adalah pohon pada gambar contoh.
@@ -41,11 +45,69 @@ const binaryTreeInput = {
   ],
 }
 
+
+// Graf: tiga isian (n, edges, start) sama dengan parameter soal challenge. Masing-masing jenis graf punya aturan sendiri
+// (tak berarah/berarah, berbobot atau tidak) yang dipakai bersama oleh pembaca masukan, pemformat, dan pengacaknya.
+const graphEntry = (kind, extra) => ({
+  kind: 'graph',
+  parseInput: (f) => parseGraphFields(f, kind),
+  formatInput: (v) => formatGraphInput(v, kind),
+  randomInput: () => randomGraph(kind),
+  ...extra,
+})
+
+const nField = { key: 'n', label: 'Jumlah simpul (n)' }
+const edgesField = (label) => ({ key: 'edges', label })
+
+const unweightedKind = { directed: false, weighted: false, needStart: true, startLabel: 'simpul awal' }
+const mstKind = { directed: false, weighted: true, needStart: false, connected: true }
+const primKind = { ...mstKind, needStart: true, startLabel: 'simpul awal' }
+const dijkstraKind = { directed: true, weighted: true, needStart: true, startLabel: 'simpul sumber (source)' }
+const bellmanKind = { ...dijkstraKind, minWeight: -9, potentialTrick: true }
+
+// Graf pada test case soal challenge, supaya visualizer dan soal tidak bisa saling bertentangan.
+const TRAVERSAL_HINT =
+  'Graf tak berarah dengan simpul bernomor 0 sampai n-1 (n maksimal 9, sisi maksimal 16). Tulis sisi sebagai u-v dipisah koma, misalnya 0-1, 0-2. ' +
+  'Graf boleh tidak terhubung; simpul yang tidak terjangkau dari simpul awal tidak ikut dikunjungi.'
+const TRAVERSAL_PRESETS = [
+  { label: 'Graf dengan siklus (soal challenge)', value: { n: 5, edges: [[0, 2], [0, 1], [1, 3], [2, 3], [3, 4]], start: 0 } },
+  { label: 'Siklus 4 simpul, mulai dari 2', value: { n: 4, edges: [[0, 1], [1, 2], [2, 3], [3, 0]], start: 2 } },
+  { label: 'Pohon, mulai dari simpul 3', value: { n: 6, edges: [[0, 1], [0, 2], [0, 3], [3, 4], [4, 5]], start: 3 } },
+  { label: 'Dua komponen: sebagian tak terjangkau', value: { n: 4, edges: [[0, 1], [2, 3]], start: 0 } },
+  { label: 'Satu simpul tanpa sisi', value: { n: 1, edges: [], start: 0 } },
+]
+
+const MST_CLASSIC = {
+  n: 9,
+  edges: [[0, 1, 4], [0, 7, 8], [1, 2, 8], [1, 7, 11], [2, 3, 7], [2, 8, 2], [2, 5, 4], [3, 4, 9], [3, 5, 14], [4, 5, 10], [5, 6, 2], [6, 7, 1], [6, 8, 6], [7, 8, 7]],
+}
+const MST_PRESETS = [
+  { label: 'Contoh klasik (9 simpul, total 37)', value: { ...MST_CLASSIC, start: 0 } },
+  { label: 'Segitiga (3 simpul, total 3)', value: { n: 3, edges: [[0, 1, 1], [1, 2, 2], [0, 2, 3]], start: 0 } },
+  { label: 'Semua bobot sama (siklus 4 simpul)', value: { n: 4, edges: [[0, 1, 1], [1, 2, 1], [2, 3, 1], [3, 0, 1]], start: 0 } },
+  { label: 'Satu sisi sangat berat dibuang', value: { n: 4, edges: [[0, 1, 1], [1, 2, 1], [2, 3, 1], [0, 3, 99]], start: 0 } },
+]
+const MST_HINT =
+  'Graf tak berarah yang terhubung, simpul bernomor 0 sampai n-1 (n maksimal 9, sisi maksimal 16). Tulis sisi sebagai u-v:bobot dipisah koma, ' +
+  'misalnya 0-1:4, 1-2:2. Bobot bilangan bulat 0 sampai 99.'
+
+const SHORTEST_PRESETS = [
+  { label: 'Contoh klasik (5 simpul)', value: { n: 5, edges: [[0, 1, 10], [0, 3, 5], [1, 2, 1], [1, 3, 2], [3, 1, 3], [3, 2, 9], [3, 4, 2], [2, 4, 4], [4, 0, 7], [4, 2, 6]], start: 0 } },
+  { label: 'Jalan langsung lebih mahal', value: { n: 3, edges: [[0, 2, 10], [0, 1, 3], [1, 2, 3]], start: 0 } },
+  { label: 'Sebagian tidak terjangkau (−1)', value: { n: 4, edges: [[0, 1, 2], [1, 2, 3]], start: 0 } },
+  { label: 'Bobot nol', value: { n: 3, edges: [[0, 1, 0], [1, 2, 0]], start: 0 } },
+  { label: 'Ada siklus, sumber di simpul 1', value: { n: 4, edges: [[0, 1, 1], [1, 2, 1], [2, 0, 1], [2, 3, 5]], start: 1 } },
+]
+const SHORTEST_HINT =
+  'Graf berarah dengan simpul bernomor 0 sampai n-1 (n maksimal 9, sisi maksimal 16). Tulis sisi sebagai u>v:bobot, artinya panah dari u ke v, ' +
+  'misalnya 0>1:4, 1>2:2. Dua arah antara simpul yang sama ditulis sebagai dua sisi. '
+
 /**
  * Daftar visualizer. Kuncinya sama dengan field `visualizer` di materials.json
  * (boleh satu kunci atau daftar kunci). `kind: 'tree'` memakai TreeVisualizer, `kind: 'search'` memakai SearchVisualizer,
  * `kind: 'table'` memakai DpVisualizer (tabel DP), `kind: 'plot'` memakai AsymptoticGraph (grafik fungsi),
- * `kind: 'timeline'` memakai TimelineVisualizer (garis waktu aktivitas);
+ * `kind: 'timeline'` memakai TimelineVisualizer (garis waktu aktivitas),
+ * `kind: 'graph'` memakai GraphVisualizer (graf: BFS, DFS, Prim, Kruskal, Dijkstra, Bellman-Ford);
  * tanpa `kind` memakai AlgoVisualizer.
  * Menambah algoritma baru = menambah satu entri di sini.
  */
@@ -262,6 +324,88 @@ export const visualizers = {
     buildSteps: activitySelectionSteps,
     legend: ['normal', 'current', 'selected', 'rejected'],
   },
+  bfsGraph: graphEntry(unweightedKind, {
+    title: 'BFS pada graf',
+    code: bfsGraphCode,
+    codeLabel: 'Kode BFS pada graf',
+    canvasLabel: 'Graf yang ditelusuri BFS',
+    initialInput: TRAVERSAL_PRESETS[0].value,
+    fields: [nField, edgesField('Sisi (u-v)'), { key: 'start', label: 'Simpul awal (start)' }],
+    inputHint: TRAVERSAL_HINT,
+    presets: TRAVERSAL_PRESETS,
+    buildSteps: bfsGraphSteps,
+    legend: ['normal', 'queued', 'current', 'visited'],
+    edgeLegend: ['normal', 'considered', 'chosen', 'rejected'],
+  }),
+  dfsGraph: graphEntry(unweightedKind, {
+    title: 'DFS pada graf',
+    code: dfsGraphCode,
+    codeLabel: 'Kode DFS pada graf',
+    canvasLabel: 'Graf yang ditelusuri DFS',
+    initialInput: TRAVERSAL_PRESETS[0].value,
+    fields: [nField, edgesField('Sisi (u-v)'), { key: 'start', label: 'Simpul awal (start)' }],
+    inputHint: TRAVERSAL_HINT,
+    presets: TRAVERSAL_PRESETS,
+    buildSteps: dfsGraphSteps,
+    legend: ['normal', 'current', 'waiting', 'visited'],
+    edgeLegend: ['normal', 'considered', 'chosen', 'rejected'],
+  }),
+  prim: graphEntry(primKind, {
+    title: 'Algoritma Prim',
+    code: primCode,
+    codeLabel: 'Kode Prim',
+    canvasLabel: 'Graf berbobot yang diproses Prim',
+    initialInput: MST_PRESETS[0].value,
+    fields: [nField, edgesField('Sisi (u-v:bobot)'), { key: 'start', label: 'Simpul awal (start)' }],
+    inputHint: MST_HINT,
+    presets: MST_PRESETS,
+    buildSteps: primSteps,
+    legend: ['normal', 'queued', 'current', 'visited'],
+    edgeLegend: ['normal', 'considered', 'chosen', 'rejected'],
+  }),
+  kruskal: graphEntry(mstKind, {
+    title: 'Algoritma Kruskal',
+    code: kruskalCode,
+    codeLabel: 'Kode Kruskal',
+    canvasLabel: 'Graf berbobot yang diproses Kruskal',
+    initialInput: { n: MST_CLASSIC.n, edges: MST_CLASSIC.edges },
+    fields: [nField, edgesField('Sisi (u-v:bobot)')],
+    inputHint: MST_HINT,
+    presets: MST_PRESETS.map((p) => ({ label: p.label, value: { n: p.value.n, edges: p.value.edges } })),
+    buildSteps: kruskalSteps,
+    legend: ['normal', 'current', 'visited'],
+    edgeLegend: ['normal', 'considered', 'chosen', 'rejected'],
+  }),
+  dijkstra: graphEntry(dijkstraKind, {
+    title: 'Algoritma Dijkstra',
+    code: dijkstraCode,
+    codeLabel: 'Kode Dijkstra',
+    canvasLabel: 'Graf berarah yang diproses Dijkstra',
+    initialInput: SHORTEST_PRESETS[0].value,
+    fields: [nField, edgesField('Sisi (u>v:bobot)'), { key: 'start', label: 'Simpul sumber (source)' }],
+    inputHint: SHORTEST_HINT + 'Bobot bilangan bulat 0 sampai 99 (Dijkstra tidak mendukung bobot negatif).',
+    presets: SHORTEST_PRESETS,
+    buildSteps: dijkstraSteps,
+    legend: ['normal', 'queued', 'current', 'visited'],
+    edgeLegend: ['normal', 'considered', 'chosen'],
+  }),
+  bellmanFord: graphEntry(bellmanKind, {
+    title: 'Algoritma Bellman-Ford',
+    code: bellmanFordCode,
+    codeLabel: 'Kode Bellman-Ford',
+    canvasLabel: 'Graf berarah yang diproses Bellman-Ford',
+    initialInput: SHORTEST_PRESETS[0].value,
+    fields: [nField, edgesField('Sisi (u>v:bobot)'), { key: 'start', label: 'Simpul sumber (source)' }],
+    inputHint: SHORTEST_HINT + 'Bobot bilangan bulat −9 sampai 99; bobot negatif boleh. Bila ada siklus negatif yang terjangkau, algoritma melaporkannya.',
+    presets: [
+      ...SHORTEST_PRESETS.slice(0, 3),
+      { label: 'Bobot negatif tanpa siklus negatif', value: { n: 5, edges: [[0, 1, 6], [0, 3, 7], [1, 2, 5], [1, 3, 8], [1, 4, -4], [2, 1, -2], [3, 2, -3], [3, 4, 9], [4, 0, 2], [4, 2, 7]], start: 0 } },
+      { label: 'Siklus negatif (jarak tak terhingga turun)', value: { n: 3, edges: [[0, 1, 1], [1, 2, -3], [2, 1, 1]], start: 0 } },
+    ],
+    buildSteps: bellmanFordSteps,
+    legend: ['normal', 'waiting', 'current', 'visited'],
+    edgeLegend: ['normal', 'considered', 'chosen'],
+  }),
   growthPlot: {
     kind: 'plot',
     mode: 'compare',

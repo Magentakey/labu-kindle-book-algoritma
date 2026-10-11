@@ -361,8 +361,8 @@ test('materials.json: setiap kunci visualizer ada di registry, dan pohon dipakai
   assert.deepEqual(keysOf('merge-sort'), ['mergeSort', 'mergeSortTree'])
   assert.deepEqual(keysOf('recurrence-master'), ['recurrenceTree'])
   assert.deepEqual(keysOf('greedy-huffman'), ['huffmanTree'])
-  assert.deepEqual(keysOf('graph-bfs'), ['bfsTree'])
-  assert.deepEqual(keysOf('graph-dfs'), ['dfsTree'])
+  assert.deepEqual(keysOf('graph-bfs'), ['bfsGraph', 'bfsTree']) // graf dulu, pohon tetap ada
+  assert.deepEqual(keysOf('graph-dfs'), ['dfsGraph', 'dfsTree'])
 })
 
 test('registry: tombol Acak tersedia untuk kelima visualizer pohon dan hasilnya selalu valid', () => {

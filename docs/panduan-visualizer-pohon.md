@@ -60,6 +60,7 @@ Field `kind` pada entri `registry.js` memilih komponen yang dipakai halaman Mate
 | `table` | `DpVisualizer` | Tabel DP: LCS (`lcsTable`) dan rantai matriks (`matrixChainTable`) |
 | `plot` | `AsymptoticGraph` | Grafik fungsi untuk materi 3 sampai 5 (lihat bagian "Grafik asimtotik") |
 | `timeline` | `TimelineVisualizer` | Garis waktu aktivitas untuk materi 10.1 (lihat bagian "Garis waktu Activity Selection") |
+| `graph` | `GraphVisualizer` | Graf untuk materi 11.1, 11.2, 12, dan 13 (lihat bagian "Visualizer graf") |
 
 Visualizer `table` menerima langkah berbentuk `{ line, note, view: { table, panels, labels } }`, dengan
 `table = { caption, corner, rowHeaders, colHeaders, cells }` dan setiap sel `{ text, sub, mark, glyph }`.
@@ -106,7 +107,30 @@ Garis waktu memakai HTML/CSS (bukan SVG) agar ukuran huruf tetap terbaca di laya
 Tes di `src/algorithms/activitySelection.test.js` mencocokkan hasil dengan pembanding yang mencoba semua himpunan bagian dan dengan semua test case soal challenge,
 sehingga visualizer dan soal tidak bisa saling bertentangan.
 
+## Visualizer graf (materi 11.1, 11.2, 12, dan 13)
+
+Enam entri `kind: 'graph'` di `registry.js`, semuanya memakai `GraphVisualizer` dan `GraphCanvas`:
+
+| Kunci di `materials.json` | Materi | Graf | Hasil |
+| --- | --- | --- | --- |
+| `bfsGraph`, `dfsGraph` | 11.1, 11.2 | tak berarah, tanpa bobot, boleh tidak terhubung | urutan kunjungan |
+| `prim`, `kruskal` | 12 | tak berarah, berbobot 0 sampai 99, harus terhubung | total bobot pohon rentang minimum |
+| `dijkstra`, `bellmanFord` | 13 | berarah, berbobot (Dijkstra 0 sampai 99, Bellman-Ford −9 sampai 99) | jarak dari sumber |
+
+Materi 11.1 dan 11.2 tetap menampilkan visualizer pohon (`bfsTree`, `dfsTree`) sesudah visualizer graf.
+
+- **Masukan** berupa tiga isian teks yang sama dengan parameter soal challenge: jumlah simpul `n`, daftar sisi, dan simpul awal (`start` atau `source`).
+  Sisi ditulis `u-v` (tak berarah), `u-v:bobot` (berbobot), atau `u>v:bobot` (berarah). Batasnya: n maksimal 9, sisi maksimal 16, tanpa sisi ke diri sendiri dan tanpa sisi ganda.
+  Pembaca masukan, pemformat, dan pengacak ada di `src/algorithms/graphCommon.js` (`parseGraphFields`, `formatGraphInput`, `randomGraph`) dan dikonfigurasi per algoritma lewat objek `kind` di `registry.js`.
+- **Letak simpul** otomatis melingkar (`layoutCircle`), jadi tidak ada koordinat yang perlu ditulis. Label bobot ditempatkan oleh `src/lib/graphLabels.js` agar menghindari simpul dan label lain.
+- **Status** (`src/components/GraphCanvas/graphStatuses.js`): simpul memakai pola yang sama dengan pohon (`normal`, `queued`, `current`, `waiting`, `visited`); sisi punya `normal`, `considered`, `chosen`, `rejected`
+  yang dibedakan oleh tebal garis, pola putus-putus, simbol, dan teks. Arti tiap status berbeda per algoritma, dan diisi lewat `view.labels` dan `view.edgeLabels`.
+- Satu langkah = satu baris kode yang berjalan (atau beberapa baris yang selalu berjalan bersama, misalnya membangun daftar tetangga). Panel di bawah gambar menampilkan antrean, tumpukan, tabel jarak, atau urutan sisi.
+- **Kode yang tampil dieksekusi apa adanya di tes** (`src/algorithms/graph.test.js`) dan dicocokkan dengan semua test case soal challenge. Hasil juga dicocokkan dengan pembanding independen pada graf acak:
+  brute force semua himpunan sisi untuk MST, dan Floyd-Warshall untuk Dijkstra dan Bellman-Ford (termasuk bobot negatif dan deteksi siklus negatif).
+- **Bellman-Ford mengembalikan `Infinity`, bukan −1, untuk simpul yang tidak terjangkau**, karena dengan bobot negatif jarak −1 bisa benar-benar terjadi. Dijkstra tetap memakai −1 seperti soal challenge.
+- Menambah visualizer graf baru = menulis fungsi langkah yang menghasilkan `{ line, note, view }` dengan `makeView(...)`, lalu satu entri di `registry.js` memakai `graphEntry(kind, {...})`.
+
 ## Belum tercakup
 
-Tabel DP untuk materi lain (misalnya knapsack) bisa memakai `kind: 'table'` yang sama. MST (Prim, Kruskal) dan Dijkstra bekerja pada graf, bukan pohon, sehingga butuh visualizer graf tersendiri
-(simpul bebas posisi, sisi berbobot, dan sisi yang terpilih).
+Tabel DP untuk materi lain (misalnya knapsack) bisa memakai `kind: 'table'` yang sama. Visualizer graf belum mendukung posisi simpul buatan sendiri (selalu melingkar) dan belum mendukung graf lebih dari 9 simpul.

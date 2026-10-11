@@ -19,8 +19,9 @@ const SearchVisualizer = lazy(() => import('../components/SearchVisualizer/Searc
 const DpVisualizer = lazy(() => import('../components/DpVisualizer/DpVisualizer.jsx'))
 const AsymptoticGraph = lazy(() => import('../components/AsymptoticGraph/AsymptoticGraph.jsx'))
 const TimelineVisualizer = lazy(() => import('../components/TimelineVisualizer/TimelineVisualizer.jsx'))
+const GraphVisualizer = lazy(() => import('../components/GraphVisualizer/GraphVisualizer.jsx'))
 
-const VISUALIZER_BY_KIND = { tree: TreeVisualizer, search: SearchVisualizer, table: DpVisualizer, plot: AsymptoticGraph, timeline: TimelineVisualizer }
+const VISUALIZER_BY_KIND = { tree: TreeVisualizer, search: SearchVisualizer, table: DpVisualizer, plot: AsymptoticGraph, timeline: TimelineVisualizer, graph: GraphVisualizer }
 const ChallengeIDE = lazy(() => import('../components/ChallengeIDE/ChallengeIDE.jsx'))
 
 const placeholderClass = 'mt-2 rounded-xl border-2 border-dashed border-stone-700 bg-orange-100 p-4'

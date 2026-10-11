@@ -107,7 +107,10 @@
     "title": "Algoritma Graph – Breadth First Search (BFS)",
     "desc": "Penelusuran graf per level",
     "hasText": false,
-    "visualizer": "bfsTree",
+    "visualizer": [
+      "bfsGraph",
+      "bfsTree"
+    ],
     "challenge": "graph-bfs"
   },
   {
@@ -116,7 +119,10 @@
     "title": "Algoritma Graph – Depth First Search (DFS)",
     "desc": "Penelusuran graf sedalam mungkin",
     "hasText": false,
-    "visualizer": "dfsTree",
+    "visualizer": [
+      "dfsGraph",
+      "dfsTree"
+    ],
     "challenge": "graph-dfs"
   },
   {
@@ -125,7 +131,10 @@
     "title": "Minimum Spanning Tree (MST) – Algoritma Prim & Kruskal",
     "desc": "Pohon rentang dengan bobot minimum",
     "hasText": false,
-    "visualizer": null,
+    "visualizer": [
+      "prim",
+      "kruskal"
+    ],
     "challenge": "mst"
   },
   {
@@ -134,7 +143,10 @@
     "title": "Single Source Shortest Path – Algoritma Dijkstra & Bellman-Ford",
     "desc": "Jarak terpendek dari satu sumber",
     "hasText": false,
-    "visualizer": null,
+    "visualizer": [
+      "dijkstra",
+      "bellmanFord"
+    ],
     "challenge": "shortest-path"
   }
 ]
