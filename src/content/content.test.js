@@ -6,6 +6,9 @@ import { dirname, join } from 'node:path'
 import { auditContent } from '../../scripts/auditContent.js'
 import { checkMarkdown } from '../lib/checkMarkdown.js'
 import { runTests } from '../lib/runTests.js'
+import { splitContent } from '../lib/splitContent.js'
+import { runTrace, traces } from '../algorithms/traces.js'
+import { existsSync } from 'node:fs'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '../..')
 
@@ -90,5 +93,63 @@ test('soal challenge: input dan expected bisa disimpan di JSON dan setiap soal p
     assert.ok(c.testCases.length >= 4, `${file}: minimal 4 test case (termasuk kasus tepi)`)
     const serialized = JSON.stringify(c.testCases)
     assert.ok(!serialized.includes('null'), `${file}: null di test case biasanya tanda Infinity/NaN yang gagal disimpan; pakai -1 atau nilai lain`)
+  }
+})
+
+const materialFiles = () =>
+  readdirSync(join(root, 'src/content/materials'))
+    .filter((f) => f.endsWith('.md'))
+    .map((f) => ({ file: f, md: readFileSync(join(root, 'src/content/materials', f), 'utf8') }))
+
+test('gambar yang dirujuk materi 1 ada filenya di public/ (materi lain hanya diberi saran oleh check:content)', () => {
+  const { md } = materialFiles().find((f) => f.file === 'algoritma-pemrograman.md')
+  const paths = [...md.matchAll(/!\[[^\]]*\]\((\/[^)\s]+)\)/g)].map((m) => m[1])
+  assert.ok(paths.length >= 1)
+  for (const path of paths) assert.ok(existsSync(join(root, 'public', path)), `gambar ${path} tidak ditemukan di public/`)
+})
+
+test('materi 1 memakai semua jenis komponen interaktif dan semua peraga yang dirujuk ada', () => {
+  const md = readFileSync(join(root, 'src/content/materials/algoritma-pemrograman.md'), 'utf8')
+  const m = JSON.parse(readFileSync(join(root, 'src/content/materials.json'), 'utf8')).find((x) => x.id === 'algoritma-pemrograman')
+  const segs = splitContent(md, { hasVisualizer: Boolean(m.visualizer), hasChallenge: Boolean(m.challenge) })
+  const types = new Set(segs.map((s) => s.type))
+  for (const t of ['steps', 'tabs', 'quiz', 'reveal', 'growth', 'trace']) {
+    const inTabs = segs.filter((s) => s.type === 'tabs').flatMap((s) => s.items.flatMap((i) => i.segments.map((x) => x.type)))
+    assert.ok(types.has(t) || inTabs.includes(t), `materi 1 belum memakai komponen "${t}"`)
+  }
+  assert.equal(segs.find((s) => s.type === 'steps').items.length, 6, 'enam karakteristik algoritma')
+  const used = [...md.matchAll(/^::trace (\S+)$/gm)].map((m) => m[1])
+  assert.deepEqual(used.sort(), ['bilangan-max', 'binary-search-iteratif', 'binary-search-rekursif', 'jumlah-n-bil'])
+  assert.equal(segs.at(-1).type, 'challenge', 'soal challenge tetap paling akhir')
+  const order = segs.map((x) => x.type)
+  assert.ok(order.includes('visualizer'), 'visualizer binary search ditempatkan eksplisit di teks, bukan otomatis di akhir')
+  assert.ok(order.indexOf('visualizer') < order.indexOf('challenge'), 'visualizer sebelum challenge')
+  assert.match(segs[order.indexOf('visualizer') + 1].text, /^## F\. Latihan Binary Search/, 'teks sesudah penanda diawali judul ##')
+})
+
+test('tabel jawaban latihan binary search di materi 1 cocok dengan hasil peraga', () => {
+  const md = readFileSync(join(root, 'src/content/materials/algoritma-pemrograman.md'), 'utf8')
+  const rows = [...md.matchAll(/^\| (\d+) \| (\d+) \| (\d+|–) \| (\d+|–) \| ([^|]+) \| ([^|]+) \|$/gm)].map((m) => ({ p: +m[1], n: +m[2], mid: m[3], aMid: m[4] }))
+  assert.equal(rows.length, 4)
+
+  const def = traces['binary-search-iteratif']
+  const r = runTrace(def, Object.fromEntries(def.inputs.map((i) => [i.key, i.value])))
+  const A = [5, 8, 9, 10, 14, 20]
+  const fromTrace = r.steps
+    .filter((s) => s.line === 1)
+    .map((s) => ({ p: +s.vars.find((v) => v.name === 'p').value, n: +s.vars.find((v) => v.name === 'n').value }))
+  assert.deepEqual(rows.map(({ p, n }) => ({ p, n })), fromTrace, 'p dan n tiap pemeriksaan')
+  for (const row of rows.filter((x) => x.mid !== '–')) {
+    assert.equal(row.mid, String(Math.floor((row.p + row.n) / 2)))
+    assert.equal(row.aMid, String(A[Number(row.mid) - 1]))
+  }
+  assert.match(r.steps.at(-1).note, /NIL/)
+})
+
+test('isian bawaan peraga binary search di materi sama dengan soal latihan (x = 12, A = 5, 8, 9, 10, 14, 20)', () => {
+  for (const id of ['binary-search-iteratif', 'binary-search-rekursif']) {
+    const vals = Object.fromEntries(traces[id].inputs.map((i) => [i.key, i.value]))
+    assert.equal(vals.A, '5, 8, 9, 10, 14, 20')
+    assert.equal(vals.x, '12')
   }
 })

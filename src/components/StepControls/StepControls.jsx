@@ -35,11 +35,11 @@ export default function StepControls({ player }) {
         <button type="button" onClick={toggle} className={secondaryButtonClass}>
           {running ? (
             <>
-              <span aria-hidden="true">⏸&nbsp;</span>Jeda
+              <span aria-hidden="true">{'⏸\uFE0E'}&nbsp;</span>Jeda
             </>
           ) : (
             <>
-              <span aria-hidden="true">▶&nbsp;</span>Putar otomatis
+              <span aria-hidden="true">{'▶\uFE0E'}&nbsp;</span>Putar otomatis
             </>
           )}
         </button>

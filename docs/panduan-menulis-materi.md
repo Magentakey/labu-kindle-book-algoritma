@@ -46,6 +46,13 @@ Tulis di barisnya sendiri, dengan baris kosong di atas dan bawahnya:
 - Tanpa penanda, visualisasi tampil setelah semua teks dan challenge paling akhir.
 - Satu penanda per materi. Teks setelah penanda sebaiknya diawali judul `##`.
 
+## Komponen interaktif di dalam teks
+
+Selain `::visualizer` dan `::challenge`, teks materi bisa memakai slide bernomor, tab, jawaban lipat, kuis,
+penjelajah laju pertumbuhan, dan peraga pseudocode. Cara menulis, aturan, dan contohnya ada di
+[`docs/panduan-komponen-interaktif.md`](panduan-komponen-interaktif.md). Contoh materi lengkap:
+`src/content/materials/algoritma-pemrograman.md`.
+
 ## Bahasa blok kode
 
 Diwarnai: `javascript` (`js`), `typescript` (`ts`), `python` (`py`), `c`, `cpp`, `go`, `rust`, `kotlin`, `swift`,

@@ -33,7 +33,7 @@ export function TablePanel({ caption, headers, rows, activeRow }) {
       // Tabel yang lebar bisa digeser, jadi areanya harus bisa difokus keyboard (WCAG 2.1.1).
       // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
       tabIndex={0}
-      role="region"
+      role="group"
       aria-label={caption}
       className="mt-3 overflow-x-auto rounded-xl border-2 border-stone-900 bg-white text-stone-900 focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-stone-900"
     >
@@ -58,7 +58,7 @@ export function TablePanel({ caption, headers, rows, activeRow }) {
               {row.map((cell, c) =>
                 c === 0 ? (
                   <th key={c} scope="row" className="px-3 py-2 text-left font-semibold">
-                    {r === activeRow && <span aria-hidden="true">▶ </span>}
+                    {r === activeRow && <span aria-hidden="true">{'▶\uFE0E'} </span>}
                     {cell}
                   </th>
                 ) : (

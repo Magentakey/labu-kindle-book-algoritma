@@ -67,7 +67,7 @@ export default function TreeCanvas({ nodes, labels = {}, legend = Object.keys(TR
         // Area gulir harus bisa difokus keyboard (WCAG 2.1.1), maka tabIndex sengaja dipakai.
         // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
         tabIndex={0}
-        role="region"
+        role="group"
         aria-label={`${label}, area yang bisa digeser`}
         className="overflow-x-auto focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-stone-900"
       >

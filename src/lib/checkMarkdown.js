@@ -1,5 +1,8 @@
 import { scanLines } from './markdownLines.js'
-import { MARKERS } from './splitContent.js'
+import { CONTAINERS, LEAF_MARKERS, MARKERS, parseDirective } from './splitContent.js'
+import { TRACE_IDS } from '../algorithms/traces.js'
+import { GROWTH_KEYS } from './growth.js'
+import { quizProblem } from './quiz.js'
 import { SUPPORTED_LANGUAGES, isKnownLanguage } from './codeLanguages.js'
 
 /**
@@ -19,6 +22,10 @@ const VAGUE_LINK = /^(klik|klik di sini|klik disini|di sini|disini|link|tautan|h
 
 const withoutInlineCode = (text) => text.replace(/`[^`]*`/g, '')
 
+const OPTION_LINE = /^\s*[-*]\s+\[( |x|X)\]\s+(.*)$/
+const ITEM_MARKERS = ['slide', 'tab', 'question', 'explain']
+const CONTAINER_NAMES = Object.keys(CONTAINERS)
+
 /**
  * Memeriksa satu file materi terhadap aturan penulisan di docs/panduan-menulis-materi.md.
  * Error = akan merusak tampilan atau aksesibilitas (npm test gagal).
@@ -36,6 +43,106 @@ export function checkMarkdown(md) {
   let lastLevel = 1 // judul halaman (h1) sudah dipakai aplikasi, jadi isi mulai dari ##
   let afterMarker = false
   const seenMarkers = new Set()
+  /** Blok yang sedang terbuka: { name, line, items, hasContent, q } */
+  let box = null
+
+  const finishQuestion = () => {
+    if (!box?.q) return
+    const problem = quizProblem({ prompt: box.q.prompt, options: box.q.options })
+    if (problem) add(box.q.line, 'error', 'quiz-question', `Pertanyaan kuis tidak sah: ${problem}.`)
+    box.q = null
+  }
+
+  const closeBox = () => {
+    finishQuestion()
+    const { name, line, items } = box
+    const label = CONTAINERS[name].label
+    if ((name === 'steps' || name === 'tabs') && items < 2) {
+      add(line, 'error', 'block-few-items', `Blok :::${name} butuh minimal 2 ${label} (ada ${items}). Tulis ::${CONTAINERS[name].item} Judul untuk tiap ${label}.`)
+    }
+    if (name === 'quiz' && items < 1) add(line, 'error', 'block-few-items', 'Blok :::quiz butuh minimal 1 pertanyaan. Tulis ::question Teks pertanyaan.')
+    box = null
+  }
+
+  function handleDirective(l, trimmed) {
+    const d = parseDirective(trimmed)
+    if (!d) {
+      add(l.no, 'error', 'marker-unknown', `Baris diawali "::" tetapi bukan penanda yang dikenal: "${trimmed}".`)
+      return
+    }
+
+    if (d.kind === 'close') {
+      if (box) closeBox()
+      else add(l.no, 'error', 'block-stray-close', 'Penutup ":::" tanpa blok yang dibuka.')
+      return
+    }
+
+    if (d.kind === 'open') {
+      if (box) {
+        add(l.no, 'error', 'block-nested', `Blok tidak boleh bersarang: tutup :::${box.name} (baris ${box.line}) dengan ":::" sebelum membuka blok baru.`)
+      } else if (!CONTAINERS[d.name]) {
+        add(l.no, 'error', 'block-unknown', `Blok ":::${d.name}" tidak dikenal. Yang tersedia: ${CONTAINER_NAMES.map((n) => `:::${n}`).join(', ')}.`)
+      } else {
+        box = { name: d.name, line: l.no, items: 0, hasContent: false, q: null }
+        if (!d.args) {
+          const severity = d.name === 'reveal' ? 'error' : 'warning'
+          add(l.no, severity, 'block-title', `Beri judul pada blok: ":::${d.name} Judul". Judul dibacakan pembaca layar${d.name === 'reveal' ? ' dan menjadi teks tombol buka-tutup' : ''}.`)
+        }
+      }
+      return
+    }
+
+    const { name, args } = d
+
+    if (MARKERS[`::${name}`]) {
+      const type = MARKERS[`::${name}`]
+      if (args) add(l.no, 'error', 'marker-unknown', `Penanda ::${name} tidak memakai tambahan teks ("${args}").`)
+      else if (box) add(l.no, 'error', 'marker-in-block', `::${name} tidak boleh di dalam blok :::${box.name}. Tulis di luar blok.`)
+      else if (seenMarkers.has(type)) add(l.no, 'error', 'marker-duplicate', `Penanda ::${name} sudah dipakai sebelumnya. Hanya satu per materi.`)
+      else {
+        seenMarkers.add(type)
+        afterMarker = true
+        lastLevel = 1
+      }
+      return
+    }
+
+    if (LEAF_MARKERS.includes(name)) {
+      if (name === 'trace') {
+        if (!args) add(l.no, 'error', 'trace-id', `::trace butuh id peraga. Yang tersedia: ${TRACE_IDS.join(', ')}.`)
+        else if (!TRACE_IDS.includes(args)) add(l.no, 'error', 'trace-unknown', `Peraga "${args}" tidak ada. Yang tersedia: ${TRACE_IDS.join(', ')}.`)
+      } else {
+        for (const key of args ? args.split(',').map((k) => k.trim()).filter(Boolean) : []) {
+          if (!GROWTH_KEYS.includes(key)) add(l.no, 'error', 'growth-unknown', `Kelas "${key}" tidak dikenal untuk ::growth. Yang tersedia: ${GROWTH_KEYS.join(', ')}.`)
+        }
+      }
+      if (box) box.hasContent = true
+      return
+    }
+
+    if (ITEM_MARKERS.includes(name)) {
+      if (name === 'explain') {
+        if (box?.name === 'quiz' && box.q) box.q.explaining = true
+        else add(l.no, 'error', 'item-outside', '::explain hanya boleh sesudah ::question di dalam blok :::quiz.')
+        return
+      }
+      if (!box || CONTAINERS[box.name].item !== name) {
+        const owner = Object.entries(CONTAINERS).find(([, c]) => c.item === name)?.[0]
+        add(l.no, 'error', 'item-outside', `::${name} hanya boleh di dalam blok :::${owner}.`)
+        return
+      }
+      if (!args) add(l.no, 'error', 'item-title', `::${name} butuh judul. Contoh: ::${name} Judul.`)
+      if (name === 'question') {
+        finishQuestion()
+        box.q = { line: l.no, prompt: args, options: [], explaining: false }
+      }
+      box.items++
+      box.hasContent = true
+      return
+    }
+
+    add(l.no, 'error', 'marker-unknown', `Penanda ::${name} tidak dikenal. Yang tersedia: ${[...Object.keys(MARKERS), ...LEAF_MARKERS.map((n) => `::${n}`), ...ITEM_MARKERS.map((n) => `::${n}`)].join(', ')}.`)
+  }
 
   lines.forEach((l, idx) => {
     const prev = idx > 0 ? lines[idx - 1] : null
@@ -53,23 +160,30 @@ export function checkMarkdown(md) {
     const text = l.text
     const trimmed = text.trim()
 
-    // Penanda tempat visualizer / challenge
+    // Penanda dan blok (::nama, :::nama, :::)
     if (trimmed.startsWith('::')) {
-      const type = MARKERS[trimmed]
-      if (!type) {
-        add(l.no, 'error', 'marker-unknown', `Penanda "${trimmed}" tidak dikenal. Yang tersedia: ${Object.keys(MARKERS).join(', ')}.`)
-      } else if (seenMarkers.has(type)) {
-        add(l.no, 'error', 'marker-duplicate', `Penanda ${trimmed} sudah dipakai sebelumnya. Hanya satu per materi.`)
-      } else {
-        seenMarkers.add(type)
-        afterMarker = true
-        lastLevel = 1
-      }
+      handleDirective(l, trimmed)
       return
+    }
+
+    // Isi di dalam blok
+    if (box && trimmed) {
+      if (CONTAINERS[box.name].item && box.items === 0) {
+        add(l.no, 'warning', 'block-intro-ignored', `Teks sebelum ::${CONTAINERS[box.name].item} pertama di dalam :::${box.name} tidak ditampilkan. Pindahkan ke luar blok.`)
+      }
+      if (box.name === 'quiz' && box.q && !box.q.explaining) {
+        const m = OPTION_LINE.exec(text)
+        if (m) box.q.options.push({ text: m[2].trim(), correct: m[1].toLowerCase() === 'x' })
+      }
+      if (box.name !== 'quiz') box.hasContent = true
     }
 
     // Judul
     const h = HEADING.exec(text)
+    if (h && box) {
+      add(l.no, 'warning', 'heading-in-block', `Judul di dalam blok :::${box.name} merusak urutan judul halaman. Pakai judul item (::${CONTAINERS[box.name].item ?? 'slide'} Judul) atau teks biasa.`)
+      return
+    }
     if (h) {
       const level = h[1].length
       const title = h[2].replace(/\s+#+\s*$/, '').trim()
@@ -131,6 +245,11 @@ export function checkMarkdown(md) {
       add(l.no, 'warning', 'latex', 'Rumus LaTeX tidak didukung. Tulis rumus dengan simbol Unicode (Θ, Ω, ≤, ², log₂) atau dalam `kode`.')
     }
   })
+
+  if (box) {
+    add(box.line, 'error', 'block-unclosed', `Blok :::${box.name} tidak ditutup. Tambahkan baris ":::" di akhir blok.`)
+    finishQuestion()
+  }
 
   if (unclosedFenceLine) {
     add(unclosedFenceLine, 'error', 'code-unclosed', 'Blok kode tidak ditutup. Seluruh teks sesudahnya akan ikut menjadi kode.')

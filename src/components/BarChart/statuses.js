@@ -42,6 +42,13 @@ export const STATUS = {
       'repeating-linear-gradient(0deg, transparent 0 5px, #374151 5px 6px), ' +
       'repeating-linear-gradient(90deg, transparent 0 5px, #374151 5px 6px), #e5e7eb',
   },
+  // Peraga penelusuran pseudocode (untuk binary search dipakai range, compare, discarded, dan found di bawah)
+  current: {
+    label: 'sedang diproses',
+    glyph: '▶\uFE0E', // \uFE0E memaksa tampil sebagai simbol teks, bukan emoji berwarna
+    fill: 'conic-gradient(#fbcfe8 25%, #9d174d 0 50%, #fbcfe8 0 75%, #9d174d 0) 0 0 / 10px 10px',
+  },
+  done: { label: 'sudah diproses', glyph: '+', fill: '#bfdbfe' },
   range: {
     label: 'rentang yang sedang diproses',
     glyph: '[ ]',

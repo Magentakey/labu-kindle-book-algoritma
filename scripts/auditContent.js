@@ -39,6 +39,16 @@ export function auditContent(root) {
         }
       }
     }
+    // Gambar yang dirujuk harus ada di public/ (kalau tidak, pembaca melihat kotak kosong).
+    const scanned = scanLines(md).lines
+    for (const l of scanned) {
+      if (l.inFence) continue
+      for (const m of l.text.matchAll(/!\[[^\]]*\]\((\/[^)\s]+)\)/g)) {
+        if (!existsSync(join(root, 'public', m[1]))) {
+          issues.push({ line: l.no, severity: 'warning', rule: 'image-missing', message: `Gambar ${m[1]} belum ada di folder public/. Pembaca akan melihat kotak gambar kosong.` })
+        }
+      }
+    }
     return { file, id, issues: issues.sort((a, b) => a.line - b.line) }
   })
 

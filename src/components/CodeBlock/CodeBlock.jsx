@@ -36,9 +36,10 @@ export default function CodeBlock({
         {({ tokens, style, getLineProps, getTokenProps }) => (
           <pre
             // Area scroll harus bisa difokus keyboard (WCAG 2.1.1), maka tabIndex sengaja dipakai.
+            // role="group" (bukan "region") agar banyak blok kode di satu halaman tidak menjadi landmark kembar.
             // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
             tabIndex={0}
-            role="region"
+            role="group"
             aria-label={label}
             style={style}
             className="overflow-x-auto py-2 text-sm leading-6 focus-visible:outline-4 focus-visible:-outline-offset-4 focus-visible:outline-stone-900"
@@ -60,7 +61,7 @@ export default function CodeBlock({
                   >
                     {isActive && <span className="sr-only">Baris {no}, baris aktif: </span>}
                     <span aria-hidden="true" className="w-4 shrink-0 select-none text-center">
-                      {isActive ? '▶' : ''}
+                      {isActive ? '▶\uFE0E' : ''}
                     </span>
                     <span aria-hidden="true" className="w-8 shrink-0 select-none pr-3 text-right text-stone-700">
                       {no}

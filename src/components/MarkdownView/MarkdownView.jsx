@@ -54,7 +54,7 @@ function Table({ children }) {
       // Tabel lebar harus bisa digeser dengan keyboard (WCAG 2.1.1).
       // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
       tabIndex={0}
-      role="region"
+      role="group"
       aria-label="Tabel, bisa digeser ke samping"
       className={`my-4 overflow-x-auto rounded-xl border-2 border-stone-900 bg-white focus-visible:outline-4 focus-visible:-outline-offset-4 focus-visible:outline-stone-900`}
     >

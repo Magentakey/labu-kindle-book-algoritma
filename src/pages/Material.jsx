@@ -8,6 +8,7 @@ import { splitContent } from '../lib/splitContent.js'
 
 // Bagian berat dimuat hanya saat dibutuhkan (react-markdown, Prism, visualizer).
 const MarkdownView = lazy(() => import('../components/MarkdownView/MarkdownView.jsx'))
+const Block = lazy(() => import('../components/Blocks/Blocks.jsx'))
 const AlgoVisualizer = lazy(() => import('../components/AlgoVisualizer/AlgoVisualizer.jsx'))
 const TreeVisualizer = lazy(() => import('../components/TreeVisualizer/TreeVisualizer.jsx'))
 const SearchVisualizer = lazy(() => import('../components/SearchVisualizer/SearchVisualizer.jsx'))
@@ -163,6 +164,16 @@ function MaterialPage({ m }) {
               )
             }
             if (seg.type === 'visualizer') return <VisualizerSection key={i} keys={m.visualizer} />
+            if (seg.type !== 'challenge') {
+              const wide = seg.type === 'growth' || seg.type === 'trace'
+              return (
+                <div key={i} className={`mt-6 ${wide ? 'max-w-5xl' : 'max-w-3xl'}`}>
+                  <Suspense fallback={<Loading />}>
+                    <Block segment={seg} />
+                  </Suspense>
+                </div>
+              )
+            }
             return (
               <section key={i} aria-labelledby="sec-soal" className="mt-8">
                 <h2 id="sec-soal" className="text-xl font-semibold">Soal Challenge</h2>

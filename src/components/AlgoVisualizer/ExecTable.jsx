@@ -24,7 +24,7 @@ export default function ExecTable({ rows, activeLine, current, total }) {
         // Area geser harus bisa difokus keyboard (WCAG 2.1.1).
         // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
         tabIndex={0}
-        role="region"
+        role="group"
         aria-label="Tabel hitungan eksekusi (bisa digeser)"
         className="mt-2 overflow-x-auto focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-stone-900"
       >
