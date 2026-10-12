@@ -157,7 +157,20 @@ test('setiap langkah: baris valid, catatan diawali "Baris N", variabel dan penan
 })
 
 test('teks baris pseudocode cocok dengan nomor langkah di materi', () => {
+  const insertionSortLines = [
+    /^for j = 2 to length\[A\]/,
+    /key = A\[j\]/,
+    /i = j - 1/,
+    /while i > 0 and A\[i\] > key/,
+    /A\[i \+ 1\] = A\[i\]/,
+    /i = i - 1/,
+    /A\[i \+ 1\] = key/,
+  ]
   const expect = {
+    'insertion-sort': insertionSortLines,
+    'insertion-sort-best': insertionSortLines,
+    'insertion-sort-worst': insertionSortLines,
+    'cari-bil-k': [/^for i = 1 to A\.length/, /if \(k == A\[i\]\)/, /then return i/, /^return -1/],
     'bilangan-max': [/^max = bil1/, /^if \(max < bil2\)/, /then max = bil2/, /^if \(max < bil3\)/, /then max = bil3/, /^return max/],
     'jumlah-n-bil': [/^jumlah = 0/, /^for i = 1 to n/, /jumlah = jumlah \+ A\[i\]/, /^return jumlah/],
     'binary-search-iteratif': [/^while p ≤ n/, /mid = ⌊/, /if \(x == A\[mid\]\)/, /return mid/, /else if x > A\[mid\]/, /p = mid \+ 1/, /else n = mid - 1/, /^return NIL/],

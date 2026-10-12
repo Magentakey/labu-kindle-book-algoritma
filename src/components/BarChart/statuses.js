@@ -24,6 +24,14 @@ export const STATUS = {
     glyph: 'K',
     fill: 'repeating-linear-gradient(90deg, #fde047 0 5px, #854d0e 5px 7px)',
   },
+  // Peraga pseudocode insertion sort: sel yang kosong-sementara karena isinya sudah disalin ke kanan
+  gap: {
+    label: 'celah tempat key',
+    glyph: '◇',
+    fill:
+      'repeating-linear-gradient(45deg, transparent 0 4px, #7f1d1d 4px 5px), ' +
+      'repeating-linear-gradient(-45deg, transparent 0 4px, #7f1d1d 4px 5px), #fecaca',
+  },
   // Merge sort
   left: {
     label: 'bagian kiri',

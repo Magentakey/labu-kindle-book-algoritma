@@ -115,15 +115,40 @@ Pembaca mengisi masukan, lalu menjalankan pseudocode baris demi baris sambil mel
 ::trace bilangan-max
 ```
 
-Id yang tersedia: `bilangan-max`, `jumlah-n-bil`, `binary-search-iteratif`, `binary-search-rekursif`.
+Id yang tersedia: `bilangan-max`, `jumlah-n-bil`, `binary-search-iteratif`, `binary-search-rekursif`, `insertion-sort`,
+`insertion-sort-best`, `insertion-sort-worst`, `cari-bil-k`.
 
 Nomor baris pada peraga **sama dengan nomor langkah di materi**, jadi tulis pseudocode di materi dengan nomor yang sama.
+
+Blok kode selalu menampilkan nomor baris otomatis di pinggir. Agar nomornya sama dengan nomor langkah, tulis pseudocode
+di materi **tanpa nomor sendiri dan tanpa baris judul fungsi** (sebut nama fungsinya di kalimat sebelum blok), seperti di
+`insertion-sort.md`. Kalau tidak, pembaca melihat dua kolom nomor yang tidak sejajar.
+
+### Peraga dengan tabel cost dan jumlah operasi
+
+Untuk materi analisis *running time*, peraga bisa menampilkan tabel cost dan jumlah operasi tiap baris, seperti tabel di
+materi. Tabel itu muncul bila definisi peraga punya `cost` dan setiap langkah punya `counts` (berapa kali tiap baris sudah
+terbaca sampai langkah itu). Dipakai oleh `insertion-sort`, `insertion-sort-best`, `insertion-sort-worst`, dan `cari-bil-k`.
+
+```javascript
+cost: {
+  formulaLabel: 'Jumlah operasi',            // judul kolom rumus
+  note: 'Keterangan singkat di atas tabel.',
+  rows: [{ line: 1, cost: 'c₁', formula: 'n' }, /* satu entri per baris kode, berurutan */],
+}
+```
+
+`presets` (opsional) menambah tombol contoh masukan siap pakai di atas peraga:
+`presets: [{ label: 'Kasus terbaik: 2, 4, 12', values: { A: '2, 4, 12' } }]`. Kunci di `values` harus sama dengan `key` isian.
+Judul peraga (`title`) harus unik di antara semua peraga karena dipakai sebagai nama bagian oleh pembaca layar, dan tesnya
+akan gagal bila ada yang kembar.
 
 ### Menambah peraga baru
 
 1. Buat pembangun langkah di `src/algorithms/traces/<nama>.js`: fungsi yang menerima masukan dan mengembalikan daftar
    langkah `{ line, note, vars, array }`. Catatan setiap langkah diawali `Baris N:`.
-2. Daftarkan di `src/algorithms/traces.js` (judul, pseudocode, isian masukan, dan `build`).
+2. Daftarkan di `src/algorithms/traces.js` (judul, pseudocode, isian masukan, dan `build`). Langkah boleh memuat `counts`
+   bila peraga memakai tabel cost (lihat bagian di atas).
 3. Tambahkan tes di `src/algorithms/traces.test.js`. **Bandingkan hasil akhirnya dengan implementasi biasa** untuk banyak
    masukan acak, supaya peraga tidak mengajarkan hal yang salah.
 4. Pakai di materi dengan `::trace <id>`.

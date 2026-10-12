@@ -1,6 +1,8 @@
 import { parseArrayInput, MIN_VALUE, MAX_VALUE } from '../lib/parseArray.js'
 import { bilanganMaxCode, bilanganMaxTrace } from './traces/bilanganMax.js'
 import { jumlahBilCode, jumlahBilTrace } from './traces/jumlahBil.js'
+import { insertionSortCost, insertionSortPseudoCode, insertionSortPseudoTrace } from './traces/insertionSortPseudo.js'
+import { cariBilKCode, cariBilKCost, cariBilKTrace } from './traces/cariBilK.js'
 import {
   binarySearchIterCode,
   binarySearchIterTrace,
@@ -16,6 +18,7 @@ import {
  * @property {Array<{ name: string, value: string }>} vars  nilai variabel SESUDAH baris itu dijalankan
  * @property {{ title: string, values: number[], marks: string[], indexBase: number } | null} array
  * @property {string[]} [stack]  tumpukan panggilan (rekursif)
+ * @property {Record<number, number>} [counts]  berapa kali tiap baris sudah terbaca SAMPAI langkah ini (untuk analisis running time)
  */
 
 /**
@@ -28,12 +31,66 @@ import {
  * @property {(values: Record<string, any>) => string|null} [validate]  pesan kesalahan, atau null bila masukan sah
  * @property {(values: Record<string, any>) => TraceStep[]} build
  * @property {string[]} [legend]  status yang dipakai array (kunci STATUS)
+ * @property {{ formulaLabel: string, note: string, rows: Array<{ line: number, cost: string, formula: string }> }} [cost]
+ *   bila ada (dan langkah punya `counts`), peraga menampilkan tabel cost dan jumlah operasi tiap baris
+ * @property {Array<{ label: string, values: Record<string, string> }>} [presets]  tombol contoh masukan siap pakai
  */
 
 const intInput = (key, value, label = key) => ({ key, label, kind: 'int', value: String(value) })
 
+const insertionSortPresets = [
+  { label: 'Contoh materi: 12, 10, 15, 7', values: { A: '12, 10, 15, 7' } },
+  { label: 'Kasus terbaik: 2, 4, 12, 15, 30', values: { A: '2, 4, 12, 15, 30' } },
+  { label: 'Kasus terburuk: 30, 15, 12, 4, 2', values: { A: '30, 15, 12, 4, 2' } },
+]
+
+// Judul harus unik antarperaga di satu halaman: dipakai sebagai nama bagian (landmark) oleh pembaca layar.
+const insertionSortTrace = (title, value, intro) => ({
+  title,
+  intro,
+  code: insertionSortPseudoCode,
+  codeLabel: 'Pseudocode INSERTION_SORT',
+  inputs: [{ key: 'A', label: 'Array A', kind: 'array', value }],
+  build: insertionSortPseudoTrace,
+  legend: ['normal', 'sorted', 'key', 'compare', 'gap', 'shift', 'placed'],
+  cost: insertionSortCost,
+  presets: insertionSortPresets,
+})
+
+const cariBilKPresets = [
+  { label: 'k tidak ada (kasus terburuk)', values: { A: '7, 3, 9, 4', k: '5' } },
+  { label: 'k ada di tengah', values: { A: '7, 3, 9, 4', k: '9' } },
+  { label: 'k ada di awal (kasus terbaik)', values: { A: '7, 3, 9, 4', k: '7' } },
+]
+
 /** @type {Record<string, TraceDef>} */
 export const traces = {
+  'insertion-sort': insertionSortTrace(
+    'INSERTION_SORT(A)',
+    '12, 10, 15, 7',
+    'Mengurutkan array dari kecil ke besar. Isian awal adalah contoh di materi (12, 10, 15, 7). Perhatikan baris mana yang dilewati saat while bernilai FALSE.',
+  ),
+  'insertion-sort-best': insertionSortTrace(
+    'INSERTION_SORT(A), kasus terbaik',
+    '2, 4, 12, 15, 30',
+    'Kasus terbaik: array sudah terurut dari kecil ke besar. Perhatikan bahwa langkah 4 hanya dibaca 1 kali pada setiap loop, sedangkan langkah 5 dan 6 tidak pernah dibaca.',
+  ),
+  'insertion-sort-worst': insertionSortTrace(
+    'INSERTION_SORT(A), kasus terburuk',
+    '30, 15, 12, 4, 2',
+    'Kasus terburuk: array terurut dari besar ke kecil. Perhatikan bahwa langkah 4 dibaca j kali pada loop ke j, karena key selalu bergeser sampai ke ujung kiri.',
+  ),
+  'cari-bil-k': {
+    title: 'CARI_BIL_K(A, k)',
+    intro: 'Mencari bilangan k di dalam array A. Isian awal adalah kasus terburuk, yaitu k tidak ada di array.',
+    code: cariBilKCode,
+    codeLabel: 'Pseudocode CARI_BIL_K',
+    inputs: [{ key: 'A', label: 'Array A', kind: 'array', value: '7, 3, 9, 4' }, intInput('k', 5, 'Bilangan k yang dicari')],
+    build: cariBilKTrace,
+    legend: ['normal', 'current', 'done', 'found'],
+    cost: cariBilKCost,
+    presets: cariBilKPresets,
+  },
   'bilangan-max': {
     title: 'BILANGAN_MAX(bil1, bil2, bil3)',
     intro: 'Menentukan bilangan terbesar dari tiga bilangan. Ubah nilainya, lalu jalankan lagi.',

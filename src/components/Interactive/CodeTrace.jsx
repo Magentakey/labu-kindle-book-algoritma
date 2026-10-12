@@ -2,6 +2,7 @@ import { useId, useMemo, useState } from 'react'
 import CodeBlock from '../CodeBlock/CodeBlock.jsx'
 import { runTrace } from '../../algorithms/traces.js'
 import IndexedArray from './IndexedArray.jsx'
+import TraceCostTable from './TraceCostTable.jsx'
 import { focusRing, primaryButton, secondaryButton } from './styles.js'
 
 /**
@@ -86,6 +87,24 @@ export default function CodeTrace({ def }) {
           Nilai contoh
         </button>
       </div>
+      {def.presets && (
+        <div role="group" aria-label="Contoh masukan siap pakai" className="mt-3 flex flex-wrap gap-2">
+          {def.presets.map((p) => (
+            <button
+              key={p.label}
+              type="button"
+              onClick={() => {
+                const next = { ...texts, ...p.values }
+                setTexts(next)
+                apply(next, `Dijalankan dengan contoh: ${p.label}.`)
+              }}
+              className={secondaryButton}
+            >
+              {p.label}
+            </button>
+          ))}
+        </div>
+      )}
       {error && (
         <p id={`${uid}-error`} role="alert" className="mt-2 font-medium">
           {error}
@@ -168,6 +187,12 @@ export default function CodeTrace({ def }) {
               )}
             </div>
           </div>
+
+          {def.cost && step.counts && (
+            <div className="mt-4">
+              <TraceCostTable code={def.code} cost={def.cost} counts={step.counts} activeLine={step.line} />
+            </div>
+          )}
         </>
       )}
     </section>

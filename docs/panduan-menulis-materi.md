@@ -63,6 +63,12 @@ penjelajah laju pertumbuhan, dan peraga pseudocode. Cara menulis, aturan, dan co
 [`docs/panduan-komponen-interaktif.md`](panduan-komponen-interaktif.md). Contoh materi lengkap:
 `src/content/materials/algoritma-pemrograman.md`.
 
+## Pseudocode bernomor
+
+Blok kode menampilkan nomor baris otomatis di pinggir. Jangan menulis nomor sendiri di dalam blok, dan taruh nama fungsi di
+kalimat sebelum blok, supaya nomor di pinggir sama dengan nomor langkah yang dirujuk teks dan peraga `::trace`.
+Contohnya ada di `src/content/materials/insertion-sort.md`.
+
 ## Bahasa blok kode
 
 Diwarnai: `javascript` (`js`), `typescript` (`ts`), `python` (`py`), `c`, `cpp`, `go`, `rust`, `kotlin`, `swift`,
