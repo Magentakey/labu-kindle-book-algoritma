@@ -42,3 +42,13 @@ Gambar SVG rumus disembunyikan dari pembaca layar. Sebagai gantinya tiap rumus p
 - `MarkdownView` memuat MathJax hanya bila teks berisi `$`. Bundle utama tidak bertambah. Chunk MathJax sekitar 1,6 MB (570 kB terkompresi) dan ikut di-precache PWA.
 - `vite.config.js` mendefinisikan `PACKAGE_VERSION` karena MathJax kalau tidak akan memanggil `eval('require')`.
 - Paket TeX (`ams`, `noerrors`) di-import eksplisit di `rehypeMath.js`. Jangan dihapus: bundler membuangnya dan `aligned` berhenti bekerja (ada tesnya).
+
+## Yang tetap teks biasa
+
+- Pseudocode dan isi array (mis. `A = 3 10 8 20 5`, `q = ⌊(p + r)/2⌋` di blok kode): tetap di blok kode atau teks biasa, karena itu kode, bukan rumus.
+- Isian peraga (`::limit`, `::master`, `::bound`, `::ratio`, `::growth`) dan teks yang menjelaskan cara mengetiknya: tulis dengan backtick, mis. `n^2`.
+- Hasil di dalam komponen interaktif (hasil `::bound`, `::master`, `::limit`, tabel `::trace`) dan soal challenge belum memakai MathJax.
+
+## Menulis tes untuk teks berisi rumus
+
+Tes lama yang mencari string Unicode di teks materi perlu disesuaikan. Contohnya ada di `recurrence-master.test.js`: fungsi `norm()` mengubah TeX dan Unicode ke bentuk polos sebelum dibandingkan, sehingga asersi tetap membaca rumus yang sama dengan definisinya.

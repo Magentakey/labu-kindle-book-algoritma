@@ -13,13 +13,13 @@ Materi ini mengacu pada buku Thomas H. Cormen, halaman 30 sampai 37. Algoritma *
 ***Combine*** : menggabungkan solusi masing-masing submasalah sehingga membentuk solusi masalah semula.
 :::
 
-Algoritma *Divide and Conquer* diterapkan, antara lain, pada permasalahan mengurutkan n bilangan (*sorting*) yang disimpan dalam sebuah *array* A satu dimensi (berukuran 1 x n). Contohnya adalah algoritma **Merge Sort**, yaitu mengurutkan n bilangan yang disimpan dalam *array* A dari kecil ke besar.
+Algoritma *Divide and Conquer* diterapkan, antara lain, pada permasalahan mengurutkan $n$ bilangan (*sorting*) yang disimpan dalam sebuah *array* A satu dimensi (berukuran 1 x $n$). Contohnya adalah algoritma **Merge Sort**, yaitu mengurutkan $n$ bilangan yang disimpan dalam *array* A dari kecil ke besar.
 
 | Tahap | Secara umum | Pada Merge Sort |
 | --- | --- | --- |
-| Divide | Membagi masalah menjadi beberapa submasalah | Membagi *array* A yang berisi n bilangan menjadi 2 *sub-array* |
+| Divide | Membagi masalah menjadi beberapa submasalah | Membagi *array* A yang berisi $n$ bilangan menjadi 2 *sub-array* |
 | Conquer | Menyelesaikan tiap submasalah secara rekursif | Mengurutkan bilangan di dalam masing-masing *sub-array* (secara rekursif) |
-| Combine | Menggabungkan solusi submasalah | Menggabungkan kedua *sub-array* sehingga n bilangan di dalam *array* A terurut dari kecil ke besar |
+| Combine | Menggabungkan solusi submasalah | Menggabungkan kedua *sub-array* sehingga $n$ bilangan di dalam *array* A terurut dari kecil ke besar |
 
 :::quiz Cek pemahaman: Divide and Conquer
 ::question Pada Merge Sort, tahap apa yang menggabungkan dua sub-array yang sudah terurut menjadi satu array terurut?
@@ -55,13 +55,13 @@ Penjelasan tiap langkah, dengan nomor yang sama seperti nomor baris di pinggir b
 Jika nilai p lebih kecil dari nilai r, bagian *array* itu berisi lebih dari satu bilangan sehingga masih perlu dibagi. Jika tidak (p sama dengan r), bagian itu hanya berisi satu bilangan dan sudah terurut, sehingga fungsi langsung selesai. Inilah kasus dasar rekursi.
 
 ::slide Langkah 2: q = ⌊(p + r)/2⌋
-Membagi *array* A menjadi 2 *sub-array*. Tanda ⌊ ⌋ menyatakan pembulatan ke bawah, misalnya ⌊7/2⌋ = 3.
+Membagi *array* A menjadi 2 *sub-array*. Tanda $\lfloor\,\rfloor$ menyatakan pembulatan ke bawah, misalnya $\lfloor \frac{7}{2} \rfloor = 3$.
 
 ::slide Langkah 3: MERGE_SORT(A, p, q)
 Fungsi memanggil dirinya sendiri sampai bilangan di dalam *array* A pada indeks p sampai q terurut dari kecil ke besar.
 
 ::slide Langkah 4: MERGE_SORT(A, q+1, r)
-Fungsi memanggil dirinya sendiri sampai bilangan di dalam *array* A pada indeks q+1 sampai r terurut dari kecil ke besar.
+Fungsi memanggil dirinya sendiri sampai bilangan di dalam *array* A pada indeks $q+1$ sampai r terurut dari kecil ke besar.
 
 ::slide Langkah 5: MERGE(A, p, q, r)
 Algoritma untuk menggabungkan dua *sub-array* yang masing-masing berisi bilangan yang sudah terurut dari kecil ke besar, menjadi satu *array* berisi bilangan yang sudah terurut dari kecil ke besar.
@@ -82,9 +82,9 @@ Gambar berikut menunjukkan pembagian *array* (panah merah ke bawah) sampai tiap 
 Pada contoh di atas:
 
 - p awal adalah 1 dan r awal adalah 7.
-- Pada langkah 2 didapat nilai q = ⌊(1 + 7)/2⌋ = 4.
-- Langkah 3 dan 4 adalah pemanggilan fungsi terhadap dirinya sendiri, jadi kembali ke langkah 1 dengan nilai p dan r yang baru. Pemanggilan itu berhenti apabila nilai p tidak lagi lebih kecil dari r. Artinya isi bilangan pada *array* A di indeks 1 sampai q dan di indeks q+1 sampai r masing-masing sudah terurut dari kecil ke besar.
-- Langkah 5, MERGE(A, p, q, r), menggabungkan dua bagian (*array* A indeks p sampai q dengan *array* A indeks q+1 sampai r) menjadi satu *array* A yang berisi bilangan sudah terurut dari kecil ke besar.
+- Pada langkah 2 didapat nilai $q = \lfloor \frac{1 + 7}{2} \rfloor = 4$.
+- Langkah 3 dan 4 adalah pemanggilan fungsi terhadap dirinya sendiri, jadi kembali ke langkah 1 dengan nilai p dan r yang baru. Pemanggilan itu berhenti apabila nilai p tidak lagi lebih kecil dari r. Artinya isi bilangan pada *array* A di indeks 1 sampai q dan di indeks $q+1$ sampai r masing-masing sudah terurut dari kecil ke besar.
+- Langkah 5, MERGE(A, p, q, r), menggabungkan dua bagian (*array* A indeks p sampai q dengan *array* A indeks $q+1$ sampai r) menjadi satu *array* A yang berisi bilangan sudah terurut dari kecil ke besar.
 
 ### Algoritma MERGE
 
@@ -92,7 +92,7 @@ Pseudocode MERGE(A, p, q, r) ada di buku Thomas H. Cormen pada halaman 31, dan p
 
 ![Pseudocode MERGE(A, p, q, r) dari buku Cormen halaman 31, 17 baris. Baris 1 sampai 2 menghitung n1 = q − p + 1 dan n2 = r − q. Baris 3 sampai 7 membuat array L dan R lalu menyalin A[p..q] ke L dan A[q+1..r] ke R. Baris 8 sampai 9 mengisi elemen terakhir L dan R dengan tak hingga. Baris 10 sampai 11 mengisi i dan j dengan 1. Baris 12 sampai 17 mengisi A[k] untuk k dari p sampai r dengan L[i] bila L[i] ≤ R[j], dan dengan R[j] bila tidak, sambil menambah i atau j.](/materi/merge-sort/pseudocode-merge.png)
 
-Gagasannya, dua bagian yang sudah terurut disalin ke *array* L dan R, lalu tiap elemen A[k] diisi dengan yang lebih kecil dari elemen terdepan L dan R. Elemen terakhir L dan R diisi ∞ sebagai penanda, sehingga salah satu bagian yang habis lebih dulu tidak perlu diperiksa secara khusus.
+Gagasannya, dua bagian yang sudah terurut disalin ke *array* L dan R, lalu tiap elemen A[k] diisi dengan yang lebih kecil dari elemen terdepan L dan R. Elemen terakhir L dan R diisi $\infty$ sebagai penanda, sehingga salah satu bagian yang habis lebih dulu tidak perlu diperiksa secara khusus.
 
 :::quiz Cek pemahaman: algoritma Merge Sort
 ::question Pada MERGE_SORT(A, 1, 7), berapa nilai q pada langkah 2?
@@ -100,19 +100,19 @@ Gagasannya, dua bagian yang sudah terurut disalin ke *array* L dan R, lalu tiap 
 - [x] 4
 - [ ] 7
 ::explain
-q = ⌊(1 + 7)/2⌋ = ⌊8/2⌋ = 4. Jadi array dibagi menjadi indeks 1 sampai 4 dan indeks 5 sampai 7.
+$q = \lfloor \frac{1 + 7}{2} \rfloor = \lfloor \frac{8}{2} \rfloor = 4$. Jadi array dibagi menjadi indeks 1 sampai 4 dan indeks 5 sampai 7.
 ::question Pada MERGE_SORT(A, 3, 3), apa yang terjadi?
 - [ ] Array dibagi menjadi dua bagian
-- [x] Syarat p < r tidak terpenuhi, sehingga fungsi langsung selesai tanpa memanggil apa pun
-- [ ] MERGE dipanggil dengan q = 3
+- [x] Syarat $p < r$ tidak terpenuhi, sehingga fungsi langsung selesai tanpa memanggil apa pun
+- [ ] MERGE dipanggil dengan $q = 3$
 ::explain
 Karena 3 tidak lebih kecil dari 3, bagian itu hanya berisi satu bilangan dan sudah terurut. Inilah kasus dasar rekursi.
-::question Untuk apa elemen ∞ diisi di akhir array L dan R pada MERGE?
+::question Untuk apa elemen $\infty$ diisi di akhir array L dan R pada MERGE?
 - [ ] Supaya array L dan R berukuran sama
 - [x] Sebagai penanda, sehingga salah satu bagian yang habis lebih dulu tidak perlu diperiksa secara khusus
 - [ ] Supaya hasil penggabungan terurut menurun
 ::explain
-Nilai ∞ lebih besar dari semua bilangan di array. Setelah salah satu bagian habis, perbandingan selalu memilih elemen bagian yang lain.
+Nilai $\infty$ lebih besar dari semua bilangan di array. Setelah salah satu bagian habis, perbandingan selalu memilih elemen bagian yang lain.
 :::
 
 ## C. Analisis Running Time
@@ -121,42 +121,44 @@ Running time Merge Sort disusun dari tiga tahap:
 
 :::steps Menyusun running time Merge Sort
 ::slide 1. Divide: D(n)
-Pada proses ***divide***, yaitu membagi persoalan menjadi 2 bagian, *running time*nya adalah konstanta, ditulis D(n) = Θ(1).
+Pada proses ***divide***, yaitu membagi persoalan menjadi 2 bagian, *running time*nya adalah konstanta, ditulis $D(n) = \Theta (1)$.
 
 ::slide 2. Conquer: 2T(n/2)
-Pada proses ***conquer***, yaitu menyelesaikan setiap bagian, masing-masing bagian terdiri dari n/2 bilangan, maka *running time* untuk proses *conquer* adalah 2T(n/2).
+Pada proses ***conquer***, yaitu menyelesaikan setiap bagian, masing-masing bagian terdiri dari $\frac{n}{2}$ bilangan, maka *running time* untuk proses *conquer* adalah $2T\left(\frac{n}{2}\right)$.
 
 ::slide 3. Combine: C(n)
-Pada proses ***combine***, yaitu menggabungkan 2 bagian yang sudah terurut menjadi n bilangan yang terurut, *running time*nya adalah Θ(n), ditulis C(n) = Θ(n).
+Pada proses ***combine***, yaitu menggabungkan 2 bagian yang sudah terurut menjadi $n$ bilangan yang terurut, *running time*nya adalah $\Theta (n)$, ditulis $C(n) = \Theta (n)$.
 
 ::slide 4. Jumlahkan ketiganya
-*Running time* dari proses pengurutan n bilangan menggunakan algoritma *divide and conquer* adalah:
+*Running time* dari proses pengurutan $n$ bilangan menggunakan algoritma *divide and conquer* adalah:
 
-```text
-T(n) = D(n) + 2T(n/2) + C(n)
-T(n) = Θ(1) + 2T(n/2) + Θ(n)
-     = 2T(n/2) + Θ(n) + Θ(1)
-     = 2T(n/2) + Θ(n),   untuk n > 1
-```
+$$
+\begin{aligned}
+T(n) &= D(n) + 2T\left(\frac{n}{2}\right) + C(n) \\
+T(n) &= \Theta(1) + 2T\left(\frac{n}{2}\right) + \Theta(n) \\
+&= 2T\left(\frac{n}{2}\right) + \Theta(n) + \Theta(1) \\
+&= 2T\left(\frac{n}{2}\right) + \Theta(n), \quad \text{untuk } n > 1
+\end{aligned}
+$$
 
-Suku Θ(1) diserap oleh Θ(n) karena suku yang tumbuh paling cepat yang menentukan.
+Suku $\Theta (1)$ diserap oleh $\Theta (n)$ karena suku yang tumbuh paling cepat yang menentukan.
 :::
 
 Bentuk *running time* di atas disebut bentuk **recurrence**, yaitu suatu fungsi *running time* yang di dalamnya mengandung fungsi *running time*. Cara menyelesaikan recurrence dibahas pada materi 7.
 
 :::quiz Cek pemahaman: running time Merge Sort
 ::question Berapa running time tahap Combine pada Merge Sort?
-- [ ] Θ(1)
-- [x] Θ(n)
-- [ ] 2T(n/2)
+- [ ] $\Theta (1)$
+- [x] $\Theta (n)$
+- [ ] $2T\left(\frac{n}{2}\right)$
 ::explain
-Menggabungkan dua bagian terurut menjadi n bilangan terurut harus menyentuh setiap bilangan, sehingga C(n) = Θ(n). Tahap Divide sendiri hanya Θ(1).
-::question Mengapa tahap Conquer bernilai 2T(n/2)?
-- [ ] Karena array dibagi menjadi n bagian
-- [x] Karena ada dua submasalah, masing-masing berukuran n/2
+Menggabungkan dua bagian terurut menjadi $n$ bilangan terurut harus menyentuh setiap bilangan, sehingga $C(n) = \Theta (n)$. Tahap Divide sendiri hanya $\Theta (1)$.
+::question Mengapa tahap Conquer bernilai $2T\left(\frac{n}{2}\right)$?
+- [ ] Karena array dibagi menjadi $n$ bagian
+- [x] Karena ada dua submasalah, masing-masing berukuran $\frac{n}{2}$
 - [ ] Karena tahap ini selalu memakan waktu 2 satuan
 ::explain
-Array dibagi menjadi dua sub-array berukuran sekitar n/2, dan masing-masing diurutkan dengan algoritma yang sama, sehingga totalnya 2T(n/2).
+Array dibagi menjadi dua sub-array berukuran sekitar $\frac{n}{2}$, dan masing-masing diurutkan dengan algoritma yang sama, sehingga totalnya $2T\left(\frac{n}{2}\right)$.
 :::
 
 ## D. Contoh Soal
@@ -165,27 +167,27 @@ Tuliskan langkah-langkah algoritma Merge Sort dalam mengurutkan bilangan-bilanga
 
 :::steps Penelusuran MERGE_SORT(A, 1, 5)
 ::slide 1. MERGE_SORT(A, 1, 5)
-1. if p < r: **True**, sebab 1 < 5.
-2. q = ⌊(1 + 5)/2⌋ = 3.
+1. if $p < r$: **True**, sebab $1 < 5$.
+2. $q = \lfloor \frac{1 + 5}{2} \rfloor = 3$.
 3. MERGE_SORT(A, 1, 3).
 
 ::slide 2. MERGE_SORT(A, 1, 3)
-1. if p < r: **True**, sebab 1 < 3.
-2. q = ⌊(1 + 3)/2⌋ = 2.
+1. if $p < r$: **True**, sebab $1 < 3$.
+2. $q = \lfloor \frac{1 + 3}{2} \rfloor = 2$.
 3. MERGE_SORT(A, 1, 2).
 
 ::slide 3. MERGE_SORT(A, 1, 2)
-1. if p < r: **True**, sebab 1 < 2.
-2. q = ⌊(1 + 2)/2⌋ = 1.
+1. if $p < r$: **True**, sebab $1 < 2$.
+2. $q = \lfloor \frac{1 + 2}{2} \rfloor = 1$.
 3. MERGE_SORT(A, 1, 1).
 
 ::slide 4. MERGE_SORT(A, 1, 1)
-1. if p < r: **False**, sebab 1 tidak lebih kecil dari 1.
+1. if $p < r$: **False**, sebab 1 tidak lebih kecil dari 1.
 
 Kembali ke fungsi yang memanggil MERGE_SORT(A, 1, 1), yaitu MERGE_SORT(A, 1, 2), lanjut langkah 4.
 
 ::slide 5. Kembali ke MERGE_SORT(A, 1, 2)
-4. MERGE_SORT(A, 2, 2): if p < r **False**, sebab 2 tidak lebih kecil dari 2. Kembali ke MERGE_SORT(A, 1, 2), lanjut langkah 5.
+4. MERGE_SORT(A, 2, 2): if $p < r$ **False**, sebab 2 tidak lebih kecil dari 2. Kembali ke MERGE_SORT(A, 1, 2), lanjut langkah 5.
 5. MERGE(A, 1, 1, 2), yaitu menggabungkan bilangan 3 dan bilangan 10 menjadi satu *array* terurut:
 
 ```text
@@ -195,7 +197,7 @@ A = 3  10  8  20  5
 Langkah 5 selesai, berarti MERGE_SORT(A, 1, 2) selesai. Kembali ke MERGE_SORT(A, 1, 3), lanjut langkah 4.
 
 ::slide 6. Kembali ke MERGE_SORT(A, 1, 3)
-4. MERGE_SORT(A, 3, 3): if p < r **False**, sebab 3 tidak lebih kecil dari 3. Kembali ke MERGE_SORT(A, 1, 3), lanjut langkah 5.
+4. MERGE_SORT(A, 3, 3): if $p < r$ **False**, sebab 3 tidak lebih kecil dari 3. Kembali ke MERGE_SORT(A, 1, 3), lanjut langkah 5.
 5. MERGE(A, 1, 2, 3), yaitu menggabungkan *array* 3 10 dengan bilangan 8 menjadi satu *array* terurut:
 
 ```text
@@ -210,10 +212,10 @@ Setelah MERGE_SORT(A, 1, 3) selesai, kembali ke MERGE_SORT(A, 1, 5), lanjut lang
 
 **MERGE_SORT(A, 4, 5)**
 
-1. if p < r: True, sebab 4 < 5.
-2. q = ⌊(4 + 5)/2⌋ = 4.
-3. MERGE_SORT(A, 4, 4): if p < r False, sebab 4 tidak lebih kecil dari 4. Kembali, lanjut langkah 4.
-4. MERGE_SORT(A, 5, 5): if p < r False, sebab 5 tidak lebih kecil dari 5. Kembali, lanjut langkah 5.
+1. if $p < r$: True, sebab $4 < 5$.
+2. $q = \lfloor \frac{4 + 5}{2} \rfloor = 4$.
+3. MERGE_SORT(A, 4, 4): if $p < r$ False, sebab 4 tidak lebih kecil dari 4. Kembali, lanjut langkah 4.
+4. MERGE_SORT(A, 5, 5): if $p < r$ False, sebab 5 tidak lebih kecil dari 5. Kembali, lanjut langkah 5.
 5. MERGE(A, 4, 4, 5), yaitu menggabungkan bilangan 20 dan bilangan 5 menjadi 5 20:
 
 ```text
@@ -251,7 +253,7 @@ Tahap *combine* inilah yang dikerjakan pada soal challenge di akhir materi, yait
 - [x] 4
 - [ ] 3
 ::explain
-q = ⌊(4 + 5)/2⌋ = ⌊9/2⌋ = 4, sehingga array dibagi menjadi indeks 4 dan indeks 5.
+$q = \lfloor \frac{4 + 5}{2} \rfloor = \lfloor \frac{9}{2} \rfloor = 4$, sehingga array dibagi menjadi indeks 4 dan indeks 5.
 ::question Setelah MERGE(A, 1, 2, 3) pada contoh, seperti apa isi A?
 - [ ] 3 10 8 20 5
 - [x] 3 8 10 20 5
@@ -268,7 +270,7 @@ Dua visualisasi di bawah memperlihatkan Merge Sort yang sama dari dua sisi: diag
 - Isi *array* dengan 3 10 8 20 5, yaitu contoh soal di bagian D, lalu ikuti urutan pemanggilan di pohon.
 - Perhatikan bahwa pohon pemanggilan selalu terbagi dua pada tiap tingkat, sesuai tahap Divide.
 
-Kode di visualisasi berbeda sedikit dari pseudocode di materi ini. Indeksnya mulai dari 0, bukan 1, dan batasnya bernama lo dan hi, bukan p dan r. Kodenya memakai satu *array* penampung sementara, bukan dua *array* L dan R dengan ∞. Cara kerjanya sama: dua bagian terurut digabung dengan mengambil yang lebih kecil dari ujung depan keduanya.
+Kode di visualisasi berbeda sedikit dari pseudocode di materi ini. Indeksnya mulai dari 0, bukan 1, dan batasnya bernama lo dan hi, bukan p dan r. Kodenya memakai satu *array* penampung sementara, bukan dua *array* L dan R dengan $\infty$. Cara kerjanya sama: dua bagian terurut digabung dengan mengambil yang lebih kecil dari ujung depan keduanya.
 
 ::visualizer
 
@@ -277,12 +279,12 @@ Kode di visualisasi berbeda sedikit dari pseudocode di materi ini. Indeksnya mul
 | Hal | Isi |
 | --- | --- |
 | Tiga tahap | Divide (bagi), Conquer (selesaikan secara rekursif), Combine (gabungkan) |
-| Divide pada Merge Sort | q = ⌊(p + r)/2⌋, running time D(n) = Θ(1) |
-| Conquer pada Merge Sort | Dua pemanggilan MERGE_SORT berukuran sekitar n/2, running time 2T(n/2) |
-| Combine pada Merge Sort | MERGE(A, p, q, r), running time C(n) = Θ(n) |
+| Divide pada Merge Sort | $q = \lfloor \frac{p + r}{2} \rfloor$, running time $D(n) = \Theta (1)$ |
+| Conquer pada Merge Sort | Dua pemanggilan MERGE_SORT berukuran sekitar $\frac{n}{2}$, running time $2T\left(\frac{n}{2}\right)$ |
+| Combine pada Merge Sort | MERGE(A, p, q, r), running time $C(n) = \Theta (n)$ |
 | Kasus dasar | p tidak lebih kecil dari r: bagian berisi satu bilangan dan sudah terurut |
-| Recurrence | T(n) = 2T(n/2) + Θ(n), untuk n > 1 |
+| Recurrence | $T(n) = 2T\left(\frac{n}{2}\right) + \Theta (n)$, untuk $n > 1$ |
 
 - Merge Sort mengurutkan *array* dengan membaginya terus sampai tiap bagian berisi satu bilangan, lalu menggabungkannya kembali dalam keadaan terurut.
 - Tahap yang paling banyak bekerja adalah *combine*, karena menggabungkan dua bagian terurut harus menyentuh setiap bilangan.
-- Bentuk recurrence T(n) = 2T(n/2) + Θ(n) diselesaikan pada materi 7.
+- Bentuk recurrence $T(n) = 2T\left(\frac{n}{2}\right) + \Theta (n)$ diselesaikan pada materi 7.

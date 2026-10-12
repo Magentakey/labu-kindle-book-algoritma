@@ -59,17 +59,17 @@ test('angka di rangkuman rasio cocok dengan perhitungan', () => {
   const keys = ['1', 'log n', 'n', 'n log n', 'n^2', 'n^3']
   keys.forEach((k, i) => assert.ok(Math.abs(ratioValue(k, 5, 25) - want[i]) < 1e-9, k))
   const row = (label) => md.split('\n').find((l) => l.startsWith(`| ${label} |`))
-  assert.match(row('c₇ 2ⁿ'), new RegExp(`\\| ${formatGrowth(ratioValue('2^n', 5, 25)).replace(/\./g, '\\.')} \\|$`))
-  assert.match(row('c₈ n!'), /1,29 × 10²³/)
+  assert.match(row('$c_7 2^n$'), new RegExp(`\\| ${formatGrowth(ratioValue('2^n', 5, 25)).replace(/\./g, '\\.')} \\|$`))
+  assert.match(row('$c_8 n!$'), /1\{,\}29 \\times 10\^\{23\}/)
   assert.equal(formatGrowth(ratioValue('n!', 5, 25)), '1,29 × 10²³')
 })
 
 test('jawaban contoh soal di materi cocok dengan perhitungan', () => {
   assert.ok(Math.abs(ratioValue('n log n', 4, 1024) - 1280) < 1e-9)
   assert.equal(ratioValue('n^2', 4, 1024), 65536)
-  assert.ok(md.includes('1280 × T detik') && md.includes('65536 × T detik'))
-  assert.ok(md.includes('3276,8 T') && 65536 / 20 === 3276.8)
-  assert.ok(md.includes('32768 T') && 65536 / 2 === 32768)
+  assert.ok(md.includes('$1280\\,T$ detik') && md.includes('$65536\\,T$ detik'))
+  assert.ok(md.includes('3276{,}8\\,T') && 65536 / 20 === 3276.8)
+  assert.ok(md.includes('32768\\,T') && 65536 / 2 === 32768)
 })
 
 test('klaim di bagian grafik cocok dengan n² dan 2ⁿ (sama dengan soal challenge: n = 5)', () => {

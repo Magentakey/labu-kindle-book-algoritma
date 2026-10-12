@@ -39,7 +39,7 @@ Aturan ini dijaga otomatis oleh `npm run check:content` dan `npm test`. Alasanny
 | Blok kode punya nama bahasa | tiga backtick lalu `javascript` | Pewarnaan sintaks. Pseudocode: `text` |
 | Tautan punya teks bermakna | `[Wikipedia: Merge sort](https://...)` | Jangan "klik di sini". Daftar tautan dibaca tanpa konteks |
 | Tanpa HTML | tidak ada `<div>`, `<br>`, `<img>` | HTML mentah dibuang demi keamanan |
-| Rumus pakai TeX di antara `$` | `$\Theta(n^2)$`; judul tetap Unicode `Θ(n²)` | Lihat [panduan-rumus.md](panduan-rumus.md). Materi yang belum dikonversi masih memakai Unicode |
+| Rumus pakai TeX di antara `$` | `$\Theta(n^2)$`; judul tetap Unicode `Θ(n²)` | Lihat [panduan-rumus.md](panduan-rumus.md). Semua materi teks sudah memakai TeX. Pseudocode dan isian peraga (mis. `4 ; 2 ; n^2`) tetap teks biasa |
 
 ## Penanda tempat fitur interaktif
 

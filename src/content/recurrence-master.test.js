@@ -12,6 +12,23 @@ import { analyzeMaster } from '../lib/masterCase.js'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '../..')
 const md = readFileSync(join(root, 'src/content/materials/recurrence-master.md'), 'utf8')
+
+// Teks materi memakai TeX ($...$). Supaya asersi tetap membaca rumus yang sama dengan definisinya,
+// kedua sisi dinormalkan ke bentuk polos (tanpa $, spasi, kurung, dan perintah TeX).
+const SUP = { '⁰': 0, '¹': 1, '²': 2, '³': 3, '⁴': 4, '⁵': 5, '⁶': 6, '⁷': 7, '⁸': 8, '⁹': 9 }
+const SUB = { '₀': 0, '₁': 1, '₂': 2, '₃': 3, '₄': 4, '₅': 5, '₆': 6, '₇': 7, '₈': 8, '₉': 9 }
+function norm(t) {
+  let s = String(t).replace(/\\left|\\right|\\,|\\quad|\$/g, '')
+  for (let i = 0; i < 4; i++) s = s.replace(/\\t?frac\{([^{}]*)\}\{([^{}]*)\}/g, '$1/$2')
+  s = s.replace(/\\sqrt\{?(\w)\}?/g, '√$1').replace(/\\sqrt (\w)/g, '√$1')
+  const map = { '\\Theta': 'Θ', '\\Omega': 'Ω', '\\epsilon': 'ε', '\\cdot': '·', '\\le': '≤', '\\ge': '≥', '\\approx': '≈', '\\log': 'log', '\\lg': 'lg' }
+  for (const [k, v] of Object.entries(map)) s = s.split(k).join(v)
+  s = s.replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]+/g, (m) => '^' + [...m].map((c) => SUP[c]).join(''))
+  s = s.replace(/[₀₁₂₃₄₅₆₇₈₉]+/g, (m) => '_' + [...m].map((c) => SUB[c]).join(''))
+  return s.replace(/[\s{}()]/g, '').replace(/−/g, '-')
+}
+const nmd = norm(md)
+const has = (s) => nmd.includes(norm(s))
 const meta = JSON.parse(readFileSync(join(root, 'src/content/materials.json'), 'utf8')).find((m) => m.id === 'recurrence-master')
 const challenge = JSON.parse(readFileSync(join(root, 'src/content/challenges/recurrence-master.json'), 'utf8'))
 const segs = splitContent(md, { hasVisualizer: Boolean(meta.visualizer), hasChallenge: Boolean(meta.challenge) })
@@ -105,8 +122,8 @@ const CASES = [
 
 test('kasus dan hasil tiap recurrence di teks sama dengan perhitungan Metode Master independen', () => {
   for (const c of CASES) {
-    assert.ok(md.includes(c.text), `teks memuat ${c.text}`)
-    assert.ok(md.includes(c.hasil), `teks memuat hasil ${c.hasil}`)
+    assert.ok(has(c.text), `teks memuat ${c.text}`)
+    assert.ok(has(c.hasil), `teks memuat hasil ${c.hasil}`)
     const r = master(c.a, c.b, c.e)
     assert.equal(r.kasus, c.kasus, c.text)
     if (r.kasus === 3) assert.ok(r.regular, `${c.text}: syarat tambahan terpenuhi`)
@@ -143,7 +160,7 @@ test('angka di teks: log, rentang ε, dan konstanta c pada syarat tambahan', () 
   assert.equal(lg(1, 2), 0)
   assert.equal(lg(5, 2).toFixed(2), '2.32')
   assert.equal(lg(3, 2).toFixed(2), '1.58')
-  assert.ok(md.includes('n^2,32') && md.includes('≈ 1,58'))
+  assert.ok(has('n^2,32') && has('≈ 1,58'))
   // ε yang ditulis di teks harus benar-benar memenuhi pertidaksamaan pangkat
   const eps = [
     { f: 0.5, g: 1, sign: -1, max: 0.5, text: '0 < ε ≤ 1/2' }, // O(n^(1 − ε)): 1/2 ≤ 1 − ε
@@ -152,14 +169,14 @@ test('angka di teks: log, rentang ε, dan konstanta c pada syarat tambahan', () 
     { f: 3, g: lg(5, 2), sign: 1, max: 0.67, text: '0 < ε ≤ 0,67' }, // soal 2: 3 ≥ 2,32 + ε
   ]
   for (const x of eps) {
-    assert.ok(md.includes(x.text), x.text)
+    assert.ok(has(x.text), x.text)
     const ok = (e) => (x.sign < 0 ? x.f <= x.g - e + 1e-12 : x.f >= x.g + e - 1e-12)
     assert.ok(ok(x.max), `${x.text}: batas atas ε harus memenuhi`)
     assert.ok(ok(1e-6), `${x.text}: ε kecil memenuhi`)
   }
   // dokumen menulis 0 < ε < 0,68 untuk soal 2, tetapi ε = 0,679 melanggar: 2,3219 + 0,679 > 3. Teks memakai 0,67.
   assert.ok(lg(5, 2) + 0.679 > 3)
-  assert.ok(!md.includes('0,68'))
+  assert.ok(!has('0,68'))
   // syarat tambahan kasus 3: a·f(n/b) = c·f(n)
   const reg = (a, b, e) => a / b ** e
   assert.ok(Math.abs(reg(1, 5 / 3, 1) - 3 / 5) < 1e-12)
@@ -167,7 +184,7 @@ test('angka di teks: log, rentang ε, dan konstanta c pada syarat tambahan', () 
   assert.ok(Math.abs(reg(1, 2, 1) - 1 / 2) < 1e-12)
   assert.ok(Math.abs(reg(3, 2, 2) - 3 / 4) < 1e-12)
   assert.ok(Math.abs(reg(2, 2, 3) - 1 / 4) < 1e-12)
-  for (const s of ['c = 3/5', 'c = 5/8', 'c = 1/2', 'c = 3/4', 'c = 1/4', '(3/5)·n', '(5/8)·n³', '(1/4)·n³', '(3/4)·n²']) assert.ok(md.includes(s), s)
+  for (const s of ['c = 3/5', 'c = 5/8', 'c = 1/2', 'c = 3/4', 'c = 1/4', '(3/5)·n', '(5/8)·n³', '(1/4)·n³', '(3/4)·n²']) assert.ok(has(s), s)
 })
 
 test('contoh di luar tiga kasus: T(n) = 2T(n/2) + n log n, rasio f(n)/g(n) = log n tidak terbatas tetapi lebih kecil dari n^ε', () => {
@@ -180,7 +197,7 @@ test('contoh di luar tiga kasus: T(n) = 2T(n/2) + n log n, rasio f(n)/g(n) = log
     const m = Math.ceil(2 / eps) * 200 // cukup besar sampai 2^(ε·m) melampaui m
     assert.ok(2 ** (eps * m) > m, `ε = ${eps}: n^ε melampaui log n pada m = ${m}`)
   }
-  assert.ok(md.includes('T(n) = 2T(n/2) + n log n'))
+  assert.ok(has('T(n) = 2T(n/2) + n log n'))
 })
 
 test('contoh siap pakai visualisasi: kasus, biaya terbesar, dan catatan langkah akhir sesuai tabel di teks', () => {
@@ -195,7 +212,7 @@ test('contoh siap pakai visualisasi: kasus, biaya terbesar, dan catatan langkah 
   for (const x of expected) {
     const p = presets.find((q) => q.label === x.label)
     assert.ok(p, x.label)
-    assert.ok(md.includes(x.label), `teks memuat ${x.label}`)
+    assert.ok(has(x.label), `teks memuat ${x.label}`)
     const { a, b, c, k } = p.value
     assert.equal(master(a, b, c).kasus, x.kasus, x.label)
     const steps = recurrenceTreeSteps({ a, b, c, k })
@@ -208,8 +225,8 @@ test('contoh siap pakai visualisasi: kasus, biaya terbesar, dan catatan langkah 
   }
   // Batas isian yang disebut di teks
   assert.deepEqual(visualizers.recurrenceTree.parseInput('3, 4, 2, 3').ok, true)
-  assert.ok(md.includes('panel "Ubah masukan"'))
-  for (const s of ['a dari 1 sampai 3', 'b dari 2 sampai 4', 'c dari 0 sampai 2', 'k dari 1 sampai 3']) assert.ok(md.includes(s), s)
+  assert.ok(has('panel "Ubah masukan"'))
+  for (const s of ['a dari 1 sampai 3', 'b dari 2 sampai 4', 'c dari 0 sampai 2', 'k dari 1 sampai 3']) assert.ok(has(s), s)
 })
 
 test('soal challenge: T(n) = 2T(n/2) + n sama dengan n·log₂ n + n, dan teks menyebut hubungannya dengan kasus 2', () => {
@@ -219,11 +236,11 @@ test('soal challenge: T(n) = 2T(n/2) + n sama dengan n·log₂ n + n, dan teks m
     assert.equal(tc.expected, T(2, 2, 1, n), `rekursi level demi level, n = ${n}`)
   }
   assert.equal(master(2, 2, 1).kasus, 2)
-  assert.ok(md.includes('Soal challenge di akhir menghitung T(n) = 2T(n/2) + n'))
+  assert.ok(has('Soal challenge di akhir menghitung T(n) = 2T(n/2) + n'))
 })
 
 test('tabel tiga kasus dan rangkuman memuat rumus yang sama dengan definisi', () => {
-  for (const s of ['n^(log_b a − ε)', 'n^(log_b a + ε)', 'Θ(n^(log_b a) · log n)', 'a·f(n/b) ≤ c·f(n)', 'a ≥ 1', 'b > 1', 'g(n) = n^(log_b a)']) assert.ok(md.includes(s), s)
+  for (const s of ['n^(log_b a − ε)', 'n^(log_b a + ε)', 'Θ(n^(log_b a) · log n)', 'a·f(n/b) ≤ c·f(n)', 'a ≥ 1', 'b > 1', 'g(n) = n^(log_b a)']) assert.ok(has(s), s)
   assert.equal(md.match(/^## [A-H]\. /gm).length, 8, 'bagian A sampai H berurutan')
   assert.deepEqual(md.match(/^## ([A-H])\. /gm).map((s) => s[3]), ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'])
 })
@@ -237,27 +254,27 @@ test('peraga penentu kasus (::master): isian awal adalah soal 2, dan tabel isian
   const before = segs.slice(0, idx).map((x) => x.text ?? '').join('\n')
   assert.ok(before.includes('## F. Contoh Soal') && !before.includes('## G.'), 'peraga ada di bagian F')
   // tabel "isian yang bisa dicoba": tiap baris dicek ke mesin dan ke CASES di atas
-  const rows = [...md.matchAll(/^\| (\S[^|]*?) ; ([^|]*?) ; ([^|]*?) \| ([^|]+) \| ([^|]+?) \| ([^|]+) \|$/gm)].filter((m) => /^\d+$/.test(m[1].trim()))
+  const rows = [...md.matchAll(/^\| `(\S[^|`]*?) ; ([^|`]*?) ; ([^|`]*?)` \| ([^|]+) \| ([^|]+?) \| ([^|]+) \|$/gm)].filter((m) => /^\d+$/.test(m[1].trim()))
   assert.equal(rows.length, 5)
   for (const [, a, b, f, rec, kasus, hasil] of rows) {
-    assert.ok(md.includes(rec.trim()), rec)
+    assert.ok(has(rec.trim()), rec)
     const r = analyzeMaster({ a: a.trim(), b: b.trim(), f: f.trim() })
     assert.equal(r.error, undefined, rec)
     if (kasus === 'tidak ada') assert.equal(r.kase, null, rec)
     else {
       assert.equal(String(r.kase), kasus, rec)
-      assert.equal(r.result, hasil.trim(), rec)
+      assert.equal(norm(r.result), norm(hasil), rec)
     }
   }
   // empat dari lima baris adalah recurrence yang sudah dibahas di CASES, dan kasusnya sama
   for (const c of CASES.filter((x) => ['T(n) = 9T(n/3) + n', 'T(n) = 4T(n/2) + n²', 'T(n) = T(3n/5) + n'].includes(x.text))) {
-    assert.ok(rows.some((row) => row[4].trim() === c.text), c.text)
-    assert.equal(rows.find((row) => row[4].trim() === c.text)[5], String(c.kasus))
+    assert.ok(rows.some((row) => norm(row[4]) === norm(c.text)), c.text)
+    assert.equal(rows.find((row) => norm(row[4]) === norm(c.text))[5], String(c.kasus))
   }
   // batas isian yang disebut di teks
   assert.ok(analyzeMaster({ a: '99', b: '1,5', f: 'n^(3/2) log^3 n' }).error === undefined)
   assert.ok(analyzeMaster({ a: '100', b: '2', f: 'n' }).error)
-  assert.ok(md.includes('a adalah bilangan bulat 1 sampai 99') && md.includes('sampai pangkat 3'))
+  assert.ok(has('a adalah bilangan bulat 1 sampai 99') && has('sampai pangkat 3'))
   // contoh "n log n" di catatan bagian F dan di tabel sama-sama tidak tercakup
   assert.equal(analyzeMaster({ a: '2', b: '2', f: 'n log n' }).kase, null)
   assert.equal(master(2, 2, 1).kasus, 2)

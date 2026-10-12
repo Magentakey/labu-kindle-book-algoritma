@@ -80,7 +80,7 @@ test('tabel n₀ untuk 2n = o(n²): 2n < c·n² dicek dengan brute force', () =>
   for (const [c, n0] of Object.entries(want)) {
     assert.equal(n0Of((n) => 2 * n < Number(c) * n * n), n0, `c = ${c}`)
     // baris tabel di materi
-    const row = md.split('\n').find((l) => l.startsWith(`| ${String(c).replace('.', ',')} | n > `))
+    const row = md.split('\n').find((l) => l.startsWith(`| ${String(c).replace('.', ',')} | $n > `))
     assert.ok(row?.endsWith(`| ${n0} |`), `baris c = ${c}: ${row}`)
   }
 })
@@ -90,7 +90,7 @@ test('tabel n₀ untuk n²/2 = ω(n): c·n < n²/2 dicek dengan brute force', ()
   for (const [c, n0] of Object.entries(want)) {
     assert.equal(n0Of((n) => Number(c) * n < (n * n) / 2), n0, `c = ${c}`)
   }
-  assert.ok(md.includes('| 100 | n > 200 | 201 |'))
+  assert.ok(md.includes('| 100 | $n > 200$ | 201 |'))
 })
 
 test('2n² ≠ o(n²) dan n²/2 ≠ ω(n²): c = 1 tidak pernah terpenuhi, tetapi Big-Oh dengan c = 2 dan Ω dengan c = 1/2 terpenuhi', () => {
@@ -141,5 +141,5 @@ test('klaim di kalimat pengantar pemeriksa cocok dengan hasil hitung', () => {
   assert.equal(t3('1/2').o.n0, 4)
   assert.equal(t3('1/10').o.status, 'never')
   assert.equal(t3('4').limitText.startsWith('3/7'), true)
-  for (const s of ['n₀ bergeser menjadi 21', 'n₀ bergeser menjadi 201', 'sejak n₀ = 4', 'sejak n₀ = 1']) assert.ok(md.includes(s), s)
+  for (const s of ['$n_0$ bergeser menjadi 21', '$n_0$ bergeser menjadi 201', 'sejak $n_0 = 4$', 'sejak $n_0 = 1$']) assert.ok(md.includes(s), s)
 })

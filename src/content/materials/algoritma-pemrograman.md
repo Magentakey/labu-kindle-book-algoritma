@@ -83,7 +83,7 @@ Algoritma harus selesai dalam jumlah langkah yang terbatas. Program yang tidak p
 - [ ] 48
 - [x] 24
 ::explain
-Luas segitiga = ½ × alas × tinggi = ½ × 8 × 6 = 24.
+$\text{Luas segitiga} = \frac{1}{2} \times \text{alas} \times \text{tinggi} = \frac{1}{2} \times 8 \times 6 = 24$.
 ::question Berapa jumlah input dan output yang dimiliki sebuah algoritma?
 - [ ] Tepat satu input dan tepat satu output
 - [x] Nol atau lebih input, dan satu atau lebih output
@@ -197,7 +197,7 @@ Struktur ini dipakai untuk **mengambil keputusan** berdasarkan kondisi tertentu.
 ::tab Pengulangan (Iteration/Loop)
 Struktur ini memungkinkan algoritma **mengulang** sekelompok langkah sampai kondisi tertentu terpenuhi. Ada berbagai jenis *loop*, seperti `for`, `while`, dan `do-while`.
 
-**Contoh masalah:** tentukan jumlah dari *n* bilangan yang tersimpan dalam sebuah *array* (larik) A berukuran 1×n. Misalkan ada 3 bilangan yang tersimpan sebagai berikut:
+**Contoh masalah:** tentukan jumlah dari *n* bilangan yang tersimpan dalam sebuah *array* (larik) A berukuran $1 \times n$. Misalkan ada 3 bilangan yang tersimpan sebagai berikut:
 
 | Index | 1 | 2 | 3 |
 | --- | --- | --- | --- |
@@ -239,7 +239,7 @@ Pernyataan `if` memilih satu cabang eksekusi berdasarkan kondisi, yaitu struktur
 
 ## D. Kompleksitas Algoritma
 
-Kompleksitas algoritma mengacu pada analisis tentang seberapa efisien suatu algoritma dalam hal waktu dan ruang yang dibutuhkan untuk menyelesaikan masalah seiring dengan ukuran *input*-nya. Notasi kompleksitas di bawah ini ditulis dalam bentuk Big-Oh (O).
+Kompleksitas algoritma mengacu pada analisis tentang seberapa efisien suatu algoritma dalam hal waktu dan ruang yang dibutuhkan untuk menyelesaikan masalah seiring dengan ukuran *input*-nya. Notasi kompleksitas di bawah ini ditulis dalam bentuk Big-Oh ($O$).
 
 Geser ukuran input *n* dan perhatikan bagaimana nilai tiap kelas tumbuh. Kelas yang tumbuh paling lambat adalah yang paling efisien.
 
@@ -249,15 +249,15 @@ Semakin rendah kompleksitas algoritma, semakin efisien algoritma tersebut dalam 
 
 :::quiz Cek pemahaman: kompleksitas
 ::question Untuk mengurutkan input yang sangat besar, algoritma mana yang lebih efisien?
-- [ ] Insertion-Sort dengan O(n²)
-- [x] Merge-Sort dengan O(n log n)
+- [ ] Insertion-Sort dengan $O(n^2)$
+- [x] Merge-Sort dengan $O(n \log n)$
 - [ ] Keduanya sama saja
 ::explain
-Untuk n besar, n log n tumbuh jauh lebih lambat daripada n². Coba geser nilai n pada tabel di atas untuk melihat bedanya.
+Untuk $n$ besar, $n \log n$ tumbuh jauh lebih lambat daripada $n^2$. Coba geser nilai $n$ pada tabel di atas untuk melihat bedanya.
 ::question Mengakses elemen array dengan indeks tertentu termasuk kompleksitas apa?
-- [x] O(1), konstanta
-- [ ] O(n), linier
-- [ ] O(log n), logaritmik
+- [x] $O(1)$, konstanta
+- [ ] $O(n)$, linier
+- [ ] $O(\log n)$, logaritmik
 ::explain
 Waktu aksesnya tetap, tidak bergantung pada ukuran array.
 :::
@@ -271,7 +271,7 @@ Dalam membuat algoritma sebagai langkah penyelesaian suatu permasalahan, dapat d
 
 ### Contoh: Binary Search
 
-Selidiki apakah suatu bilangan sembarang x terdapat di dalam array A yang berisi n bilangan dan sudah terurut dari kecil ke besar. Di sini p adalah indeks pertama array A dan n adalah indeks terakhirnya. Tanda ⌊ ⌋ berarti pembulatan ke bawah.
+Selidiki apakah suatu bilangan sembarang x terdapat di dalam array A yang berisi n bilangan dan sudah terurut dari kecil ke besar. Di sini p adalah indeks pertama array A dan n adalah indeks terakhirnya. Tanda $\lfloor\,\rfloor$ berarti pembulatan ke bawah.
 
 :::tabs Binary Search: iteratif dan rekursif
 ::tab Iteratif

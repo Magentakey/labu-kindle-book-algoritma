@@ -121,7 +121,7 @@ test('penelusuran contoh soal {3, 10, 8, 20, 5} sama dengan eksekusi pseudocode'
   assert.deepEqual(r.merges.map((m) => m.A.join('  ')), ['3  10  8  20  5', '3  8  10  20  5', '3  8  10  5  20', '3  5  8  10  20'])
   // setiap hasil yang disebut di teks dan di kelanjutan latihan ada di berkas
   for (const line of ['A = 3  10  8  20  5', 'A = 3  8  10  20  5', 'A = 3  8  10  5  20', 'A = 3  5  8  10  20']) assert.ok(md.includes(line), line)
-  for (const s of ['q = ⌊(1 + 5)/2⌋ = 3', 'q = ⌊(1 + 3)/2⌋ = 2', 'q = ⌊(1 + 2)/2⌋ = 1', 'q = ⌊(4 + 5)/2⌋ = 4']) assert.ok(md.includes(s), s)
+  for (const s of ['q = \\lfloor \\frac{1 + 5}{2} \\rfloor = 3', 'q = \\lfloor \\frac{1 + 3}{2} \\rfloor = 2', 'q = \\lfloor \\frac{1 + 2}{2} \\rfloor = 1', 'q = \\lfloor \\frac{4 + 5}{2} \\rfloor = 4']) assert.ok(md.includes(s), s)
   for (const s of ['MERGE(A, 1, 1, 2)', 'MERGE(A, 1, 2, 3)', 'MERGE(A, 4, 4, 5)', 'MERGE(A, 1, 3, 5)']) assert.ok(md.includes(s), s)
 })
 
@@ -134,7 +134,7 @@ test('contoh 7 bilangan: q = 4 dan hasil antara pada diagram', () => {
     ['27 38', '3 43', '3 27 38 43', '9 82', '9 10 82', '3 9 10 27 38 43 82'],
     'diagram: tiap penggabungan',
   )
-  for (const s of ['3 27 38 43 dan 9 10 82', '3 9 10 27 38 43 82', 'q = ⌊(1 + 7)/2⌋ = 4']) assert.ok(md.includes(s), s)
+  for (const s of ['3 27 38 43 dan 9 10 82', '3 9 10 27 38 43 82', 'q = \\lfloor \\frac{1 + 7}{2} \\rfloor = 4']) assert.ok(md.includes(s), s)
 })
 
 test('pembanding sama dengan sort biasa pada 500 array acak (termasuk nilai kembar dan negatif)', () => {
@@ -163,7 +163,7 @@ test('contoh di bagian visualisasi bisa dimasukkan dan menghasilkan array teruru
 })
 
 test('rumus running time di teks: T(n) = 2T(n/2) + Θ(n) dan penjumlahan D, conquer, combine', () => {
-  for (const s of ['D(n) = Θ(1)', 'C(n) = Θ(n)', '2T(n/2)', '= 2T(n/2) + Θ(n),   untuk n > 1', 'T(n) = 2T(n/2) + Θ(n), untuk n > 1', 'T(n) = D(n) + 2T(n/2) + C(n)']) assert.ok(md.includes(s), s)
+  for (const s of ['D(n) = \\Theta (1)', 'C(n) = \\Theta (n)', '2T\\left(\\frac{n}{2}\\right)', '&= 2T\\left(\\frac{n}{2}\\right) + \\Theta(n), \\quad \\text{untuk } n > 1', 'T(n) = 2T\\left(\\frac{n}{2}\\right) + \\Theta (n)$, untuk $n > 1', 'T(n) &= D(n) + 2T\\left(\\frac{n}{2}\\right) + C(n)']) assert.ok(md.includes(s), s)
   // MERGE menyentuh tiap bilangan sekali: jumlah isian A[k] pada satu tingkat rekursi sama dengan n.
   for (const n of [2, 4, 8, 16, 32]) {
     const a = Array.from({ length: n }, (_, i) => n - i)
