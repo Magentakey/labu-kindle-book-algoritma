@@ -386,6 +386,29 @@ g(n) = n^(log₂ 2) = n, lebih kecil dari f(n) = n³. Syarat tambahan: 2·(n/2)�
 Tiga kasus tidak mencakup semua f(n). Contohnya T(n) = 2T(n/2) + n log n. Di sini g(n) = n, dan f(n) = n log n memang tumbuh lebih cepat dari g(n), tetapi hanya lebih cepat sebesar faktor log n, bukan sebesar n^ε untuk suatu ε > 0. Jadi tidak ada kasus yang berlaku, dan Metode Master tidak bisa dipakai pada recurrence itu. Untuk soal seperti itu dipakai metode lain, misalnya metode substitusi.
 :::
 
+### Mencoba Penentu Kasus Metode Master
+
+Peraga di bawah mengerjakan empat langkah di bagian B untuk recurrence apa pun yang Anda isi. Isi a, b, dan f(n), lalu baca langkah penyelesaiannya satu per satu: nilai g(n), perbandingan pangkat n, rentang ε, syarat tambahan kasus 3, dan hasil Θ. Isian awal adalah soal 2 di atas, yaitu T(n) = 5T(n/2) + n³.
+
+::master 5 ; 2 ; n^3
+
+Beberapa isian yang bisa dicoba (tombol "Kembalikan contoh" memulihkan isian awal):
+
+| a ; b ; f(n) | Recurrence | Kasus | Hasil |
+| --- | --- | --- | --- |
+| 9 ; 3 ; n | T(n) = 9T(n/3) + n | 1 | Θ(n²) |
+| 4 ; 2 ; n^2 | T(n) = 4T(n/2) + n² | 2 | Θ(n² · log n) |
+| 1 ; 5/3 ; n | T(n) = T(3n/5) + n | 3 | Θ(n) |
+| 3 ; 2 ; n | T(n) = 3T(n/2) + n | 1 | Θ(n^(log₂ 3)) ≈ Θ(n^1,58) |
+| 2 ; 2 ; n log n | T(n) = 2T(n/2) + n log n | tidak ada | Metode Master tidak bisa dipakai |
+
+Beberapa hal yang perlu diketahui tentang isiannya:
+
+- a adalah bilangan bulat 1 sampai 99, dan b boleh pecahan. Untuk T(3n/5) tulis b = 5/3, seperti di contoh kasus 3.
+- f(n) berbentuk n^p dengan p ≥ 0, boleh pecahan atau desimal (n^1,5, √n), dan boleh dikali log n sampai pangkat 3 (n log n, n² log n). Koefisien di depannya, misalnya 3n², tidak memengaruhi hasil Θ.
+- Bila pangkat n pada f(n) sama dengan g(n) tetapi f(n) punya faktor log n tambahan, hasilnya "tidak ada kasus yang berlaku", sama seperti catatan T(n) = 2T(n/2) + n log n di atas.
+- Bila ε dan c tidak bisa ditulis sebagai pecahan sederhana (misalnya karena log₂ 5 bukan bilangan bulat), peraga menulis perkiraan desimal dan batas ε dibulatkan ke bawah, jadi nilainya pasti memenuhi.
+
 ## G. Mencoba Visualisasi Pohon Rekursi
 
 Visualisasi di bawah membuka pohon rekursi untuk T(n) = a·T(n/b) + nᶜ, level demi level, dengan tabel biaya tiap level. Ukuran masalah dibuat n = bᵏ, dan kasus dasar (n = 1) berbiaya 1. Dari pohon ini terlihat asal tiga kasus Metode Master: letak biaya terbesar menentukan hasilnya.

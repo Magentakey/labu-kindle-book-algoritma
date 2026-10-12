@@ -8,6 +8,7 @@ import { splitContent } from '../lib/splitContent.js'
 import { buildToc } from '../lib/tableOfContents.js'
 import { visualizers } from '../algorithms/registry.js'
 import { recurrenceTreeSteps } from '../algorithms/recurrenceTree.js'
+import { analyzeMaster } from '../lib/masterCase.js'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '../..')
 const md = readFileSync(join(root, 'src/content/materials/recurrence-master.md'), 'utf8')
@@ -81,6 +82,7 @@ test('daftar isi sidebar materi 7', () => {
     'Contoh Kasus 1: T(n) = 2T(n/2) + √n',
     'Contoh Kasus 2: T(n) = 4T(n/2) + n²',
     'Contoh Kasus 3: T(n) = T(3n/5) + n',
+    'Mencoba Penentu Kasus Metode Master',
   ])
 })
 
@@ -224,4 +226,39 @@ test('tabel tiga kasus dan rangkuman memuat rumus yang sama dengan definisi', ()
   for (const s of ['n^(log_b a − ε)', 'n^(log_b a + ε)', 'Θ(n^(log_b a) · log n)', 'a·f(n/b) ≤ c·f(n)', 'a ≥ 1', 'b > 1', 'g(n) = n^(log_b a)']) assert.ok(md.includes(s), s)
   assert.equal(md.match(/^## [A-H]\. /gm).length, 8, 'bagian A sampai H berurutan')
   assert.deepEqual(md.match(/^## ([A-H])\. /gm).map((s) => s[3]), ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'])
+})
+
+test('peraga penentu kasus (::master): isian awal adalah soal 2, dan tabel isian di teks cocok dengan mesin', () => {
+  const masters = segs.flatMap((x) => (x.type === 'master' ? [x] : []))
+  assert.equal(masters.length, 1)
+  assert.deepEqual({ a: masters[0].a, b: masters[0].b, f: masters[0].f }, { a: '5', b: '2', f: 'n^3' })
+  // peraga berada di bagian F, sebelum bagian G
+  const idx = segs.findIndex((x) => x.type === 'master')
+  const before = segs.slice(0, idx).map((x) => x.text ?? '').join('\n')
+  assert.ok(before.includes('## F. Contoh Soal') && !before.includes('## G.'), 'peraga ada di bagian F')
+  // tabel "isian yang bisa dicoba": tiap baris dicek ke mesin dan ke CASES di atas
+  const rows = [...md.matchAll(/^\| (\S[^|]*?) ; ([^|]*?) ; ([^|]*?) \| ([^|]+) \| ([^|]+?) \| ([^|]+) \|$/gm)].filter((m) => /^\d+$/.test(m[1].trim()))
+  assert.equal(rows.length, 5)
+  for (const [, a, b, f, rec, kasus, hasil] of rows) {
+    assert.ok(md.includes(rec.trim()), rec)
+    const r = analyzeMaster({ a: a.trim(), b: b.trim(), f: f.trim() })
+    assert.equal(r.error, undefined, rec)
+    if (kasus === 'tidak ada') assert.equal(r.kase, null, rec)
+    else {
+      assert.equal(String(r.kase), kasus, rec)
+      assert.equal(r.result, hasil.trim(), rec)
+    }
+  }
+  // empat dari lima baris adalah recurrence yang sudah dibahas di CASES, dan kasusnya sama
+  for (const c of CASES.filter((x) => ['T(n) = 9T(n/3) + n', 'T(n) = 4T(n/2) + n²', 'T(n) = T(3n/5) + n'].includes(x.text))) {
+    assert.ok(rows.some((row) => row[4].trim() === c.text), c.text)
+    assert.equal(rows.find((row) => row[4].trim() === c.text)[5], String(c.kasus))
+  }
+  // batas isian yang disebut di teks
+  assert.ok(analyzeMaster({ a: '99', b: '1,5', f: 'n^(3/2) log^3 n' }).error === undefined)
+  assert.ok(analyzeMaster({ a: '100', b: '2', f: 'n' }).error)
+  assert.ok(md.includes('a adalah bilangan bulat 1 sampai 99') && md.includes('sampai pangkat 3'))
+  // contoh "n log n" di catatan bagian F dan di tabel sama-sama tidak tercakup
+  assert.equal(analyzeMaster({ a: '2', b: '2', f: 'n log n' }).kase, null)
+  assert.equal(master(2, 2, 1).kasus, 2)
 })

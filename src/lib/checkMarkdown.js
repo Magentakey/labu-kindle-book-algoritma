@@ -5,6 +5,7 @@ import { GROWTH_KEYS } from './growth.js'
 import { parseRatioArgs } from './ratio.js'
 import { parseBoundArgs } from './boundCheck.js'
 import { parseLimitArgs } from './limitCheck.js'
+import { parseMasterArgs } from './masterCase.js'
 import { quizProblem } from './quiz.js'
 import { SUPPORTED_LANGUAGES, isKnownLanguage } from './codeLanguages.js'
 
@@ -123,6 +124,9 @@ export function checkMarkdown(md) {
       } else if (name === 'limit') {
         const { bad } = parseLimitArgs(args)
         if (bad) add(l.no, 'error', 'limit-args', `::limit: ${bad}`)
+      } else if (name === 'master') {
+        const { bad } = parseMasterArgs(args)
+        if (bad) add(l.no, 'error', 'master-args', `::master: ${bad}`)
       } else if (name === 'bound') {
         const { bad } = parseBoundArgs(args)
         if (bad) add(l.no, 'error', 'bound-args', `::bound: ${bad}`)

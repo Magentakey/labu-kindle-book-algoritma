@@ -29,6 +29,7 @@ dan [`docs/panduan-menulis-materi.md`](panduan-menulis-materi.md).
 | Peraga pseudocode | `::trace id` | Menjalankan pseudocode baris demi baris dengan masukan sendiri |
 | Pemeriksa batas asimtotik | `::bound Notasi ; p, q, r ; g ; konstanta` | Mencari n₀ untuk Θ, O, atau Ω dengan tabel f(n)/g(n) |
 | Pemeriksa limit o dan ω | `::limit f ; g ; c` | Menentukan limit f(n)/g(n) dan n₀ untuk c tertentu |
+| Penentu kasus Metode Master | `::master a ; b ; f` | Menyelesaikan T(n) = aT(n/b) + f(n) langkah demi langkah dan menentukan kasus 1, 2, atau 3 |
 
 ## Slide bernomor: `:::steps`
 
@@ -159,6 +160,35 @@ Tiga bagian dipisah titik koma, yaitu `f(n) ; g(n) ; c`:
   `npm run check:content`.
 - Mesinnya ada di `src/lib/limitCheck.js` (memakai bilangan rasional dari `src/lib/boundCheck.js`) dan dites di
   `src/lib/limitCheck.test.js`, termasuk dengan pembanding brute force.
+
+## Penentu kasus Metode Master: `::master`
+
+Pembaca mengisi a, b, dan f(n) untuk T(n) = a·T(n/b) + f(n), lalu membaca penyelesaiannya langkah demi langkah seperti slide
+di materi 7: tentukan a, b, f(n); hitung g(n) = n^(log_b a); bandingkan; periksa syarat tambahan (hanya kasus 3); simpulkan.
+
+```text
+::master 5 ; 2 ; n^3
+::master 1 ; 5/3 ; n
+::master 2 ; 2 ; n log n
+```
+
+Tiga bagian dipisah titik koma, yaitu `a ; b ; f(n)`:
+
+- **a** adalah bilangan bulat 1 sampai 99.
+- **b** adalah bilangan lebih dari 1, boleh pecahan atau desimal (`3`, `5/3`, `1,5`). Untuk T(3n/5) tulis `5/3`.
+- **f(n)** berbentuk n^p dengan p ≥ 0 dan boleh dikali log n sampai pangkat 3. Contoh: `n`, `n^2` (atau `n²`), `n^1,5`, `n^(3/2)`,
+  `√n`, `1`, `log n`, `n log n`, `n^2 log^2 n`. **Pangkat pecahan wajib memakai kurung** (`n^(3/2)`), sebab `n^3/2` dibaca n³/2.
+  Koefisien di depan (`3n^2`) boleh ada dan tidak memengaruhi hasil Θ.
+- Perbandingan p dengan log_b a dilakukan eksak dengan bilangan bulat besar (a^s dibanding b^r untuk p = r/s), bukan dengan
+  desimal. Jadi kasus 2 tidak terlewat saat log_b a tepat sama dengan p (misalnya T(n) = 2T(n/4) + √n).
+- log_b a yang rasional ditulis eksak (`n^2`), yang lain ditulis `n^(log₂ 5) ≈ n^2,32`. Batas ε yang tidak eksak dibulatkan
+  **ke bawah** (0,679 menjadi 0,67), jadi nilai yang ditampilkan pasti memenuhi.
+- Faktor log: kasus 1 dan 3 tetap berlaku (ε harus **lebih kecil** dari selisih pangkat, tidak boleh sama). Bila pangkat n pada
+  f(n) sama dengan g(n) tetapi ada faktor log, hasilnya "tidak ada kasus yang berlaku", sesuai tiga kasus yang diajarkan di materi.
+- Isian di materi menjadi isian awal. Tombol "Kembalikan contoh" memulihkannya. Argumen yang salah ditolak oleh
+  `npm run check:content`. Boleh dipakai berkali-kali di satu materi dan boleh ditaruh di dalam blok.
+- Mesinnya ada di `src/lib/masterCase.js` dan dites di `src/lib/masterCase.test.js`, termasuk dengan perhitungan numerik T(n)
+  level demi level pada lebih dari 700 kombinasi.
 
 ## Peraga pseudocode: `::trace id`
 
