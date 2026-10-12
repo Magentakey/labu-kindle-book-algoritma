@@ -70,7 +70,7 @@
     "no": "8",
     "title": "Dynamic Programming – Perkalian Rantai Matriks",
     "desc": "Urutan perkalian matriks paling efisien",
-    "hasText": false,
+    "hasText": true,
     "visualizer": "matrixChainTable",
     "challenge": "dp-rantai-matriks"
   },
