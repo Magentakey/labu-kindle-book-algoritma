@@ -27,6 +27,7 @@ dan [`docs/panduan-menulis-materi.md`](panduan-menulis-materi.md).
 | Kuis | `:::quiz` dengan `::question` | Cek pemahaman pilihan ganda |
 | Penjelajah pertumbuhan | `::growth` | Membandingkan O(1), O(log n), O(n), dan seterusnya |
 | Peraga pseudocode | `::trace id` | Menjalankan pseudocode baris demi baris dengan masukan sendiri |
+| Pemeriksa batas asimtotik | `::bound Notasi ; p, q, r ; g ; konstanta` | Mencari n₀ untuk Θ, O, atau Ω dengan tabel f(n)/g(n) |
 
 ## Slide bernomor: `:::steps`
 
@@ -105,6 +106,31 @@ Tabel interaktif dengan penggeser ukuran input *n* yang menampilkan nilai tiap k
 
 Tanpa argumen, semua kelas ditampilkan. Kelas yang tersedia: `1`, `log n`, `n`, `n log n`, `n^2`, `n^3`, `2^n`, `n!`.
 Menambah kelas baru: edit `src/lib/growth.js`.
+
+## Pemeriksa batas asimtotik: `::bound`
+
+Pembaca mengisi f(n) = p·n² + q·n + r, memilih g(n) dan konstanta, lalu melihat tabel f(n) / g(n) untuk n = 1, 2, 3, …
+beserta n₀ terkecil, seperti langkah mencoba nilai n pada pembuktian dengan definisi (materi 4).
+
+```text
+::bound Theta ; 2, -3, 1 ; n^2 ; 3/4, 2
+::bound O ; 1/2, -3, 0 ; n^2 ; 1/2
+::bound Omega ; 0, 10, -20 ; n ; 10/3
+```
+
+Empat bagian dipisah titik koma:
+
+1. **Notasi:** `Theta`, `O`, atau `Omega`.
+2. **Koefisien f(n):** tiga bilangan `p, q, r` untuk p·n² + q·n + r (boleh negatif).
+3. **g(n):** `1`, `n`, `n^2`, atau `n^3`. Bagian ini boleh dihilangkan, bawaannya `n^2`.
+4. **Konstanta:** `c₁, c₂` untuk Theta, atau satu `c` untuk O dan Omega. Harus positif.
+
+- Bilangan boleh bulat (`-3`), pecahan (`3/4`), atau desimal (`0,5`). Batas: bilangan bulat sampai 3 digit, penyebut sampai 2 digit.
+- Isian di materi menjadi isian awal. Tombol "Kembalikan contoh" memulihkannya. Argumen yang salah ditolak oleh `npm run check:content`.
+- n₀ dihitung eksak dengan bilangan rasional, bukan dengan memeriksa sampai n tertentu. Bila n₀ lebih dari 100000, pemeriksa
+  menampilkan "lebih dari 100000" dan tidak menebak.
+- Rumusnya ada di `src/lib/boundCheck.js` dan dites di `src/lib/boundCheck.test.js`, termasuk dengan pembanding brute force.
+- Boleh dipakai berkali-kali di satu materi. Sama dengan `::ratio`, penanda ini boleh ditaruh di dalam blok.
 
 ## Peraga pseudocode: `::trace id`
 

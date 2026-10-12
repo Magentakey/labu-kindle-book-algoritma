@@ -1,5 +1,6 @@
 import { scanLines } from './markdownLines.js'
 import { parseRatioArgs } from './ratio.js'
+import { parseBoundArgs } from './boundCheck.js'
 
 /**
  * Penanda satu baris untuk fitur halaman (tanpa argumen). Tetap diekspor untuk pemeriksa aturan penulisan.
@@ -21,7 +22,7 @@ export const CONTAINERS = {
 }
 
 /** Penanda satu baris dengan argumen, boleh dipakai di mana saja (juga di dalam blok). */
-export const LEAF_MARKERS = ['growth', 'trace', 'ratio']
+export const LEAF_MARKERS = ['growth', 'trace', 'ratio', 'bound']
 
 const OPEN = /^:::\s*([a-z]+)\b\s*(.*)$/
 const MARKER = /^::([a-z]+)(?!:)\b\s*(.*)$/
@@ -53,10 +54,14 @@ function leafSegment(d) {
     const { keys, n1, n2 } = parseRatioArgs(d.args)
     return { type: 'ratio', keys, n1, n2 }
   }
+  if (d.name === 'bound') {
+    const { notation, coefs, g, consts } = parseBoundArgs(d.args)
+    return { type: 'bound', notation, coefs, g, consts }
+  }
   return { type: 'trace', id: d.args }
 }
 
-/** Isi item/blok: teks Markdown dan penanda satu baris (growth, trace, ratio). */
+/** Isi item/blok: teks Markdown dan penanda satu baris (growth, trace, ratio, bound). */
 function parseInline(lines) {
   const segments = []
   let buffer = []

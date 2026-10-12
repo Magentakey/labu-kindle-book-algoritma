@@ -3,6 +3,7 @@ import { CONTAINERS, LEAF_MARKERS, MARKERS, parseDirective } from './splitConten
 import { TRACE_IDS } from '../algorithms/traces.js'
 import { GROWTH_KEYS } from './growth.js'
 import { parseRatioArgs } from './ratio.js'
+import { parseBoundArgs } from './boundCheck.js'
 import { quizProblem } from './quiz.js'
 import { SUPPORTED_LANGUAGES, isKnownLanguage } from './codeLanguages.js'
 
@@ -118,6 +119,9 @@ export function checkMarkdown(md) {
           if (!GROWTH_KEYS.includes(key)) add(l.no, 'error', 'ratio-unknown', `Kelas "${key}" tidak dikenal untuk ::ratio. Yang tersedia: ${GROWTH_KEYS.join(', ')}.`)
         }
         if (bad) add(l.no, 'error', 'ratio-n', `::ratio: ${bad}`)
+      } else if (name === 'bound') {
+        const { bad } = parseBoundArgs(args)
+        if (bad) add(l.no, 'error', 'bound-args', `::bound: ${bad}`)
       } else {
         for (const key of args ? args.split(',').map((k) => k.trim()).filter(Boolean) : []) {
           if (!GROWTH_KEYS.includes(key)) add(l.no, 'error', 'growth-unknown', `Kelas "${key}" tidak dikenal untuk ::growth. Yang tersedia: ${GROWTH_KEYS.join(', ')}.`)
