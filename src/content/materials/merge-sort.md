@@ -231,6 +231,18 @@ A = 3  5  8  10  20
 Langkah 5 selesai, berarti MERGE_SORT(A, 1, 5) selesai dan *array* sudah terurut dari kecil ke besar.
 :::
 
+### Peraga: Penelusuran MERGE_SORT
+
+Setelah mencoba sendiri, jalankan peraga berikut. Isian awalnya adalah contoh soal di atas, jadi hasilnya bisa dibandingkan dengan slide dan kelanjutan latihan. Geser langkah satu per satu dan perhatikan tiga hal:
+
+- Baris yang menyala sama dengan nomor langkah pada pseudocode, dan nilai p, q, r di tabel adalah milik pemanggilan yang sedang berjalan.
+- Tumpukan panggilan bertambah saat langkah 3 atau 4 memanggil MERGE_SORT lagi, dan berkurang saat pemanggilan selesai.
+- MERGE (langkah 5) baru dikerjakan sesudah kedua bagian selesai, sehingga bilangan yang sudah terurut bertambah dari bawah ke atas.
+
+Peraga ini menampilkan MERGE sebagai satu langkah. Cara kerja di dalamnya ada di gambar pseudocode MERGE pada bagian B. Peraga menerima sampai 8 bilangan dan memakai indeks mulai dari 1, sama dengan materi.
+
+::trace merge-sort
+
 Tahap *combine* inilah yang dikerjakan pada soal challenge di akhir materi, yaitu menggabungkan dua *array* yang sudah terurut.
 
 :::quiz Cek pemahaman: penelusuran contoh soal

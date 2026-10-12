@@ -3,6 +3,7 @@ import { bilanganMaxCode, bilanganMaxTrace } from './traces/bilanganMax.js'
 import { jumlahBilCode, jumlahBilTrace } from './traces/jumlahBil.js'
 import { insertionSortCost, insertionSortPseudoCode, insertionSortPseudoTrace } from './traces/insertionSortPseudo.js'
 import { cariBilKCode, cariBilKCost, cariBilKTrace } from './traces/cariBilK.js'
+import { mergeSortPseudoCode, mergeSortPseudoTrace } from './traces/mergeSortPseudo.js'
 import {
   binarySearchIterCode,
   binarySearchIterTrace,
@@ -63,6 +64,13 @@ const cariBilKPresets = [
   { label: 'k ada di awal (kasus terbaik)', values: { A: '7, 3, 9, 4', k: '7' } },
 ]
 
+const mergeSortPresets = [
+  { label: 'Contoh soal materi: 3, 10, 8, 20, 5', values: { A: '3, 10, 8, 20, 5' } },
+  { label: 'Diagram materi: 38, 27, 43, 3, 9, 82, 10', values: { A: '38, 27, 43, 3, 9, 82, 10' } },
+  { label: 'Sudah terurut: 1, 2, 3, 4', values: { A: '1, 2, 3, 4' } },
+  { label: 'Satu bilangan: 7', values: { A: '7' } },
+]
+
 /** @type {Record<string, TraceDef>} */
 export const traces = {
   'insertion-sort': insertionSortTrace(
@@ -90,6 +98,17 @@ export const traces = {
     legend: ['normal', 'current', 'done', 'found'],
     cost: cariBilKCost,
     presets: cariBilKPresets,
+  },
+  'merge-sort': {
+    title: 'MERGE_SORT(A, p, r)',
+    intro:
+      'Mengurutkan array dengan Divide and Conquer. Isian awal adalah contoh soal di materi (3, 10, 8, 20, 5). Perhatikan tumpukan panggilan: tiap pemanggilan punya p, q, dan r sendiri, dan MERGE baru dikerjakan setelah kedua bagian selesai.',
+    code: mergeSortPseudoCode,
+    codeLabel: 'Pseudocode MERGE_SORT',
+    inputs: [{ key: 'A', label: 'Array A', kind: 'array', value: '3, 10, 8, 20, 5' }],
+    build: mergeSortPseudoTrace,
+    legend: ['normal', 'range', 'left', 'right', 'sorted', 'merged'],
+    presets: mergeSortPresets,
   },
   'bilangan-max': {
     title: 'BILANGAN_MAX(bil1, bil2, bil3)',

@@ -170,7 +170,7 @@ Pembaca mengisi masukan, lalu menjalankan pseudocode baris demi baris sambil mel
 ```
 
 Id yang tersedia: `bilangan-max`, `jumlah-n-bil`, `binary-search-iteratif`, `binary-search-rekursif`, `insertion-sort`,
-`insertion-sort-best`, `insertion-sort-worst`, `cari-bil-k`.
+`insertion-sort-best`, `insertion-sort-worst`, `cari-bil-k`, `merge-sort`.
 
 Nomor baris pada peraga **sama dengan nomor langkah di materi**, jadi tulis pseudocode di materi dengan nomor yang sama.
 
@@ -196,6 +196,14 @@ cost: {
 `presets: [{ label: 'Kasus terbaik: 2, 4, 12', values: { A: '2, 4, 12' } }]`. Kunci di `values` harus sama dengan `key` isian.
 Judul peraga (`title`) harus unik di antara semua peraga karena dipakai sebagai nama bagian oleh pembaca layar, dan tesnya
 akan gagal bila ada yang kembar.
+
+### Peraga rekursif dengan tumpukan panggilan
+
+`binary-search-rekursif` dan `merge-sort` mengisi `stack` pada tiap langkah (daftar teks, panggilan terdalam di akhir).
+Tabel variabel menampilkan p, q, r milik **pemanggilan yang sedang berjalan**, jadi nilainya kembali ke milik pemanggil
+saat pemanggilan selesai. `merge-sort` menampilkan MERGE sebagai satu langkah (baris 5), dan status sel `left`/`right`
+(dibagi), `sorted` (satu bilangan), serta `merged` (hasil MERGE) menunjukkan bagian yang sudah terurut. Banyak langkahnya
+6n − 5, dan tesnya membandingkan urutan pemanggilan serta isi A tiap MERGE dengan eksekusi independen dari pseudocode.
 
 ### Menambah peraga baru
 

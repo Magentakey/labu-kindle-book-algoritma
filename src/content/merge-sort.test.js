@@ -59,7 +59,7 @@ test('materi 6 bersih dari error dan saran', () => {
 
 test('materi 6 memakai komponen yang sama dengan materi 1 sampai 5', () => {
   const types = segs.map((s) => s.type)
-  for (const t of ['steps', 'quiz', 'reveal', 'visualizer', 'challenge']) assert.ok(types.includes(t), `belum ada komponen ${t}`)
+  for (const t of ['steps', 'quiz', 'reveal', 'trace', 'visualizer', 'challenge']) assert.ok(types.includes(t), `belum ada komponen ${t}`)
   assert.equal(types.at(-1), 'challenge', 'soal challenge tetap paling akhir')
   assert.deepEqual(meta.visualizer, ['mergeSort', 'mergeSortTree'])
   const steps = segs.filter((s) => s.type === 'steps')
@@ -81,7 +81,7 @@ test('daftar isi sidebar materi 6', () => {
     'F. Rangkuman',
     'Soal Challenge',
   ])
-  assert.deepEqual(items.filter((i) => i.level === 3).map((i) => i.text), ['Contoh: Array dengan 7 Bilangan', 'Algoritma MERGE'])
+  assert.deepEqual(items.filter((i) => i.level === 3).map((i) => i.text), ['Contoh: Array dengan 7 Bilangan', 'Algoritma MERGE', 'Peraga: Penelusuran MERGE_SORT'])
 })
 
 test('gambar ada di berkas dan dirujuk dengan teks alternatif', () => {

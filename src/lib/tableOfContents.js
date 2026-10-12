@@ -38,7 +38,9 @@ export function plainHeadingText(raw) {
   return String(raw ?? '')
     .replace(/\s+#+\s*$/, '')
     .replace(/!?\[([^\]]*)\]\([^)]*\)/g, '$1')
-    .replace(/[`*_]/g, '')
+    .replace(/[`*]/g, '')
+    // Garis bawah hanya penanda miring bila di tepi kata; di tengah kata (MERGE_SORT) ia bagian dari teks, seperti di CommonMark.
+    .replace(/(^|[^\p{L}\p{N}])_+|_+(?=[^\p{L}\p{N}]|$)/gu, '$1')
     .replace(/\\(.)/g, '$1')
     .trim()
 }

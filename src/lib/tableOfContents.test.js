@@ -22,6 +22,8 @@ test('plainHeadingText membuang sintaks Markdown sebaris', () => {
   assert.equal(plainHeadingText('Pakai `for` dan **tebal**'), 'Pakai for dan tebal')
   assert.equal(plainHeadingText('Lihat [Wikipedia](https://x.id)'), 'Lihat Wikipedia')
   assert.equal(plainHeadingText('Judul ##'), 'Judul')
+  assert.equal(plainHeadingText('Peraga: Penelusuran MERGE_SORT'), 'Peraga: Penelusuran MERGE_SORT', 'garis bawah di tengah kata dipertahankan')
+  assert.equal(plainHeadingText('Fungsi _miring_ dan MERGE_SORT_2'), 'Fungsi miring dan MERGE_SORT_2')
 })
 
 test('markdownHeadings: hanya tingkat 1-3, tidak membaca isi blok kode', () => {
