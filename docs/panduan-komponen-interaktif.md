@@ -28,6 +28,7 @@ dan [`docs/panduan-menulis-materi.md`](panduan-menulis-materi.md).
 | Penjelajah pertumbuhan | `::growth` | Membandingkan O(1), O(log n), O(n), dan seterusnya |
 | Peraga pseudocode | `::trace id` | Menjalankan pseudocode baris demi baris dengan masukan sendiri |
 | Pemeriksa batas asimtotik | `::bound Notasi ; p, q, r ; g ; konstanta` | Mencari n₀ untuk Θ, O, atau Ω dengan tabel f(n)/g(n) |
+| Pemeriksa limit o dan ω | `::limit f ; g ; c` | Menentukan limit f(n)/g(n) dan n₀ untuk c tertentu |
 
 ## Slide bernomor: `:::steps`
 
@@ -131,6 +132,33 @@ Empat bagian dipisah titik koma:
   menampilkan "lebih dari 100000" dan tidak menebak.
 - Rumusnya ada di `src/lib/boundCheck.js` dan dites di `src/lib/boundCheck.test.js`, termasuk dengan pembanding brute force.
 - Boleh dipakai berkali-kali di satu materi. Sama dengan `::ratio`, penanda ini boleh ditaruh di dalam blok.
+
+## Pemeriksa limit o dan ω: `::limit`
+
+Pembaca mengisi f(n), g(n), dan c, lalu melihat nilai limit f(n)/g(n), golongannya (o, ω, atau Θ), dan n₀ terkecil untuk
+c itu, seperti pada pembuktian dengan limit di materi 5. Tabelnya membandingkan f(n) dengan c·g(n) untuk n = 1, 2, 3, …
+
+```text
+::limit 2n ; n^2 ; 1/2
+::limit n^2/2 ; n ; 10
+::limit 3n^2 + 5 ; 7n^2 ; 4
+```
+
+Tiga bagian dipisah titik koma, yaitu `f(n) ; g(n) ; c`:
+
+- **f(n) dan g(n)** adalah polinom berpangkat paling tinggi 3, ditulis seperti di materi: `2n`, `n^2` (atau `n²`), `n²/2`,
+  `3n^2 + 10n + 5`, `1/2n^2 - 3n`. Suku dengan pangkat tertinggi harus positif karena keduanya fungsi *running time*.
+- **c** adalah konstanta positif: bilangan bulat (`2`), pecahan (`3/4`), atau desimal (`0,5`). Bilangan bulat sampai 3 digit,
+  penyebut sampai 2 digit.
+- Golongan ditentukan dari derajat dan koefisien terdepan: derajat f lebih kecil berarti o, lebih besar berarti ω, dan sama
+  berarti Θ (bukan o dan bukan ω). Bagian ini sama dengan solusi soal challenge materi 5.
+- Untuk c yang dipilih, n₀ dihitung eksak dengan bilangan rasional untuk dua pertaksamaan sekaligus, yaitu
+  0 ≤ f(n) < c·g(n) (o) dan 0 ≤ c·g(n) < f(n) (ω). Pada Θ selalu ada c yang gagal, dan itu yang ditunjukkan sebagai alasan
+  mengapa bukan o atau ω. Bila n₀ lebih dari 100000, pemeriksa menulis "lebih dari 100000" dan tidak menebak.
+- Isian di materi menjadi isian awal, dan tombol "Kembalikan contoh" memulihkannya. Argumen yang salah ditolak oleh
+  `npm run check:content`.
+- Mesinnya ada di `src/lib/limitCheck.js` (memakai bilangan rasional dari `src/lib/boundCheck.js`) dan dites di
+  `src/lib/limitCheck.test.js`, termasuk dengan pembanding brute force.
 
 ## Peraga pseudocode: `::trace id`
 

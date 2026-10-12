@@ -31,7 +31,7 @@ const gcd = (a, b) => {
   while (b) [a, b] = [b, a % b]
   return a
 }
-const rat = (n, d = 1n) => {
+export const rat = (n, d = 1n) => {
   if (d < 0n) {
     n = -n
     d = -d
@@ -39,11 +39,11 @@ const rat = (n, d = 1n) => {
   const g = gcd(n, d) || 1n
   return { n: n / g, d: d / g }
 }
-const add = (a, b) => rat(a.n * b.d + b.n * a.d, a.d * b.d)
-const sub = (a, b) => rat(a.n * b.d - b.n * a.d, a.d * b.d)
-const mul = (a, b) => rat(a.n * b.n, a.d * b.d)
-const ZERO = rat(0n)
-const sign = (a) => (a.n > 0n ? 1 : a.n < 0n ? -1 : 0)
+export const add = (a, b) => rat(a.n * b.d + b.n * a.d, a.d * b.d)
+export const sub = (a, b) => rat(a.n * b.d - b.n * a.d, a.d * b.d)
+export const mul = (a, b) => rat(a.n * b.n, a.d * b.d)
+export const ZERO = rat(0n)
+export const sign = (a) => (a.n > 0n ? 1 : a.n < 0n ? -1 : 0)
 
 /**
  * Teks → bilangan rasional, atau null. Menerima 7, -3, 3/4, 0,5, 0.5, dan tanda minus Unicode.
@@ -63,7 +63,7 @@ export function parseRational(text) {
   return rat(m[1] === '-' ? -num : num, 10n ** BigInt(frac.length))
 }
 
-function fmtRat(r) {
+export function fmtRat(r) {
   return (r.d === 1n ? String(r.n) : `${r.n}/${r.d}`).replace('-', '−')
 }
 
@@ -85,18 +85,18 @@ const polyScale = (a, c) => a.map((x) => mul(x, c))
 const lcm = (a, b) => (a / gcd(a, b)) * b
 
 /** Polinom rasional → bilangan bulat dengan penyebut bersama (tanda dipertahankan). */
-function toInts(poly) {
+export function toInts(poly) {
   const L = poly.reduce((acc, r) => lcm(acc, r.d), 1n)
   return poly.map((r) => r.n * (L / r.d))
 }
 
-function evalInts(ints, n) {
+export function evalInts(ints, n) {
   let v = 0n
   for (let i = ints.length - 1; i >= 0; i--) v = v * n + ints[i]
   return v
 }
 
-function leadIndex(ints) {
+export function leadIndex(ints) {
   for (let i = ints.length - 1; i >= 0; i--) if (ints[i] !== 0n) return i
   return -1
 }

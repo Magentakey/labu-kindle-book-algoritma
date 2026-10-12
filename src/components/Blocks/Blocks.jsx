@@ -3,6 +3,7 @@ import CodeTrace from '../Interactive/CodeTrace.jsx'
 import GrowthExplorer from '../Interactive/GrowthExplorer.jsx'
 import RatioExplorer from '../Interactive/RatioExplorer.jsx'
 import BoundChecker from '../Interactive/BoundChecker.jsx'
+import LimitChecker from '../Interactive/LimitChecker.jsx'
 import Quiz from '../Interactive/Quiz.jsx'
 import Reveal from '../Interactive/Reveal.jsx'
 import Stepper from '../Interactive/Stepper.jsx'
@@ -48,6 +49,8 @@ export default function Block({ segment: seg }) {
       return <RatioExplorer keys={seg.keys} n1={seg.n1} n2={seg.n2} />
     case 'bound':
       return <BoundChecker notation={seg.notation} coefs={seg.coefs} g={seg.g} consts={seg.consts} />
+    case 'limit':
+      return <LimitChecker f={seg.f} g={seg.g} c={seg.c} />
     case 'trace':
       return traces[seg.id] ? (
         <CodeTrace key={seg.id} def={traces[seg.id]} />
