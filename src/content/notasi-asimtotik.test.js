@@ -84,7 +84,7 @@ test('contoh Θ: 2n² − 3n + 1 = Θ(n²) dengan c₁ = 3/4, c₂ = 2, n₀ = 2
   assert.equal(n0Of((n) => (3 / 4) * n * n <= f(n) && f(n) <= 2 * n * n), 2)
   // c₁ positif tidak mungkin dipakai di n = 1
   assert.equal(f(1) >= 0.01 * 1, false)
-  assert.ok(md.includes('c₁ = 3/4,  c₂ = 2,  n₀ = 2'))
+  assert.ok(md.includes('c_1 = \\frac{3}{4}, \\quad c_2 = 2, \\quad n_0 = 2'))
 })
 
 test('contoh O: ½n² − 3n = O(n²) dengan c = ½, n₀ = 6', () => {
@@ -93,7 +93,7 @@ test('contoh O: ½n² − 3n = O(n²) dengan c = ½, n₀ = 6', () => {
   assert.equal(f(6), 0)
   assert.ok(Math.abs(f(7) / 49 - 1 / 14) < 1e-12)
   assert.equal(n0Of((n) => f(n) >= 0 && f(n) <= 0.5 * n * n), 6)
-  assert.ok(md.includes('c = ½,  n₀ = 6'))
+  assert.ok(md.includes('c = \\frac{1}{2}, \\quad n_0 = 6'))
 })
 
 test('contoh Ω: 10n − 20 = Ω(n) dengan c = 10/3, n₀ = 3', () => {
@@ -103,13 +103,13 @@ test('contoh Ω: 10n − 20 = Ω(n) dengan c = 10/3, n₀ = 3', () => {
   assert.ok(Math.abs(f(3) / 3 - 10 / 3) < 1e-12)
   assert.equal(f(4) / 4, 5)
   assert.equal(n0Of((n) => (10 / 3) * n <= f(n) && f(n) >= 0), 3)
-  assert.ok(md.includes('c = 10/3,  n₀ = 3'))
+  assert.ok(md.includes('c = \\frac{10}{3}, \\quad n_0 = 3'))
 })
 
 test('contoh bawaan visualizer cocok dengan soal challenge dan dengan materi', () => {
   const r = boundAnalysis({ a: 3, b: 10, c: 5, c1: 1, c2: 4, notation: 'Theta' })
   assert.equal(r.n0, 11)
-  assert.ok(md.includes('n₀ = 11'))
+  assert.ok(md.includes('$n_0 = 11$'))
   assert.equal(boundAnalysis({ a: 3, b: 10, c: 5, c1: 1, c2: 2, notation: 'Theta' }).holds, false, 'c₂ < a: tidak ada n₀')
   assert.equal(boundAnalysis({ a: 3, b: 10, c: 5, c1: 4, c2: 5, notation: 'Theta' }).holds, false, 'c₁ > a: tidak ada n₀')
 })
@@ -122,5 +122,5 @@ test('klaim di kalimat pengantar pemeriksa cocok dengan hasil hitung', () => {
   assert.equal(run('Omega', ['0', '10', '-20'], 'n', ['5']).n0, 4)
   assert.equal(run('Omega', ['0', '10', '-20'], 'n', ['9']).n0, 20)
   assert.equal(run('Omega', ['0', '10', '-20'], 'n', ['11']).status, 'never')
-  for (const s of ['n₀ bergeser menjadi 3', 'menjadi 4', 'menjadi 20 untuk c = 9']) assert.ok(md.includes(s), s)
+  for (const s of ['$n_0$ bergeser menjadi 3', 'menjadi 4', 'menjadi 20 untuk $c = 9$']) assert.ok(md.includes(s), s)
 })

@@ -16,3 +16,17 @@
     animation: sidebar-in 160ms ease-out;
   }
 }
+
+/* Rumus MathJax (SVG). Lihat src/lib/rehypeMath.js. Warna mengikuti teks sekitarnya (currentColor). */
+mjx-container[jax='SVG'] { direction: ltr; }
+mjx-container[jax='SVG'] > svg { overflow: visible; min-height: 1px; min-width: 1px; }
+.math-inline mjx-container { display: inline-block; }
+.math-display {
+  display: block;
+  margin: 1rem 0;
+  overflow-x: auto;
+  border-radius: 0.5rem;
+}
+.math-display:focus-visible { outline: 4px solid #1c1917; outline-offset: -4px; }
+.math-display mjx-container[display='true'] { display: block; width: max-content; min-width: 100%; margin: 0; padding: 0.25rem 0; text-align: center; }
+.math-error { color: #b91c1c; background: #fee2e2; border-radius: 0.25rem; padding: 0.1rem 0.4rem; }

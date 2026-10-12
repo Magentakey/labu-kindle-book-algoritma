@@ -1,9 +1,10 @@
-import { Children } from 'react'
+import { Children, Fragment, Suspense, use } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import CodeBlock from '../CodeBlock/CodeBlock.jsx'
 import { resolveLanguage } from '../../lib/codeLanguages.js'
 import rehypeHeadingIds from '../../lib/rehypeHeadingIds.js'
+import { hasMath } from '../../lib/hasMath.js'
 
 // Path gambar yang diawali "/" (mis. /materi/insertion-sort/diagram.png) menunjuk ke folder public/
 // dan perlu diberi awalan base situs (/labu-kindle-book-algoritma/) agar jalan di GitHub Pages.
@@ -114,19 +115,50 @@ const components = {
   td: Td,
 }
 
+// MathJax besar (sekitar 1 MB sebelum kompresi), jadi dimuat hanya saat teks benar-benar berisi rumus ($...$).
+// Hasilnya disimpan di modul ini sehingga rumus kedua dan seterusnya tidak memuat ulang.
+let mathPromise
+function loadMath() {
+  mathPromise ??= Promise.all([import('remark-math'), import('../../lib/rehypeMath.js')]).then(([remark, rehype]) => ({
+    remarkMath: remark.default,
+    rehypeMath: rehype.default,
+  }))
+  return mathPromise
+}
+
+// Mode inline (teks kuis): paragraf dibuang pembungkusnya supaya muat di dalam tombol atau label.
+const inlineComponents = { ...components, p: ({ children }) => <Fragment>{children}</Fragment> }
+
+function Rendered({ text, idPrefix, inline, math }) {
+  const remarkPlugins = math ? [remarkGfm, math.remarkMath] : [remarkGfm]
+  const rehypePlugins = [...(idPrefix ? [[rehypeHeadingIds, { prefix: idPrefix }]] : []), ...(math ? [math.rehypeMath] : [])]
+  const Wrapper = inline ? 'span' : 'div'
+  return (
+    <Wrapper className="min-w-0 break-words text-base">
+      <ReactMarkdown remarkPlugins={remarkPlugins} rehypePlugins={rehypePlugins} components={inline ? inlineComponents : components}>
+        {text}
+      </ReactMarkdown>
+    </Wrapper>
+  )
+}
+
+function WithMath(props) {
+  return <Rendered {...props} math={use(loadMath())} />
+}
+
 /**
  * Menampilkan teks materi (Markdown) dengan gaya aplikasi.
  * HTML mentah sengaja tidak diaktifkan: teks diperlakukan sebagai data, bukan kode.
- * @param {{ text: string, idPrefix?: string }} props
+ * Rumus ditulis dengan TeX: $...$ di dalam kalimat, dan $$ pada baris sendiri untuk rumus yang berdiri sendiri.
+ * @param {{ text: string, idPrefix?: string, inline?: boolean }} props
  *   `idPrefix`: bila diisi, judul h1-h3 diberi id (untuk daftar isi). Dikosongkan untuk Markdown di dalam blok.
+ *   `inline`: tanpa pembungkus paragraf, untuk kalimat pendek di dalam tombol atau label (teks kuis).
  */
-export default function MarkdownView({ text, idPrefix }) {
-  const rehypePlugins = idPrefix ? [[rehypeHeadingIds, { prefix: idPrefix }]] : []
+export default function MarkdownView({ text, idPrefix, inline = false }) {
+  if (!hasMath(text)) return <Rendered text={text} idPrefix={idPrefix} inline={inline} math={null} />
   return (
-    <div className="min-w-0 break-words text-base">
-      <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={rehypePlugins} components={components}>
-        {text}
-      </ReactMarkdown>
-    </div>
+    <Suspense fallback={<p role="status" className="my-3 text-stone-700">Memuat rumus…</p>}>
+      <WithMath text={text} idPrefix={idPrefix} inline={inline} />
+    </Suspense>
   )
 }

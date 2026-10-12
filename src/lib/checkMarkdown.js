@@ -21,7 +21,8 @@ const HEADING = /^ {0,3}(#{1,6})(?=\s|$)\s*(.*?)\s*$/
 const TABLE_DELIMITER = /^\s*\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)*\|?\s*$/
 const BOLD_ONLY_LINE = /^\s*(\*\*|__)[^*_]+(\*\*|__)\s*:?\s*$/
 const RAW_HTML = /<\/?[a-zA-Z][\w-]*(\s[^>]*)?\/?>/
-const LATEX = /\$\$|\\\(|\\\[|\\(frac|sum|Theta|Omega|theta|omega|cdot|infty|lim|leq|geq)\b/
+const TEX_PAREN = /\\\(|\\\[/
+const TITLE_MARKER = /^::+(steps|tabs|reveal|quiz|slide|tab)\b/
 const VAGUE_LINK = /^(klik|klik di sini|klik disini|di sini|disini|link|tautan|here|click here|baca selengkapnya|selengkapnya)$/i
 
 const withoutInlineCode = (text) => text.replace(/`[^`]*`/g, '')
@@ -49,6 +50,7 @@ export function checkMarkdown(md) {
   const seenMarkers = new Set()
   /** Blok yang sedang terbuka: { name, line, items, hasContent, q } */
   let box = null
+  let inMath = null // nomor baris pembuka rumus tampil ($$) yang belum ditutup
 
   const finishQuestion = () => {
     if (!box?.q) return
@@ -179,8 +181,21 @@ export function checkMarkdown(md) {
     const text = l.text
     const trimmed = text.trim()
 
+    // Rumus tampil: baris "$$" pembuka sampai baris "$$" penutup. Isinya TeX, bukan Markdown, jadi tidak diperiksa aturan lain.
+    if (inMath) {
+      if (trimmed === '$$') inMath = null
+      return
+    }
+    if (trimmed === '$$') {
+      inMath = l.no
+      return
+    }
+
     // Penanda dan blok (::nama, :::nama, :::)
     if (trimmed.startsWith('::')) {
+      if (TITLE_MARKER.test(trimmed) && trimmed.includes('$')) {
+        add(l.no, 'warning', 'math-title', 'Rumus di judul blok atau slide tidak dirender. Tulis dengan simbol Unicode (Θ, ≤, ², n₀).')
+      }
       handleDirective(l, trimmed)
       return
     }
@@ -212,6 +227,7 @@ export function checkMarkdown(md) {
         add(l.no, 'error', 'heading-skip', `Tingkat judul melompat (dari ${lastLevel === 1 ? 'judul halaman' : '#'.repeat(lastLevel)} ke ${'#'.repeat(level)}). Turun satu tingkat saja per langkah.`)
       }
       if (!title) add(l.no, 'error', 'heading-empty', 'Judul kosong.')
+      if (title.includes('$')) add(l.no, 'warning', 'math-title', 'Rumus di judul tidak dirender dan akan tampil sebagai TeX di daftar isi. Tulis judul dengan simbol Unicode (Θ, ≤, ², n₀).')
       lastLevel = Math.max(level, 2)
       afterMarker = false
       return
@@ -260,10 +276,19 @@ export function checkMarkdown(md) {
       else if (VAGUE_LINK.test(label)) add(l.no, 'warning', 'link-vague', `Teks tautan "${label}" tidak menjelaskan tujuan. Tulis nama halaman yang dituju.`)
     }
 
-    if (LATEX.test(plain)) {
-      add(l.no, 'warning', 'latex', 'Rumus LaTeX tidak didukung. Tulis rumus dengan simbol Unicode (Θ, Ω, ≤, ², log₂) atau dalam `kode`.')
+    if (TEX_PAREN.test(plain)) {
+      add(l.no, 'warning', 'math-delimiter', 'Pembatas rumus \\( \\) dan \\[ \\] tidak dikenali. Pakai $...$ di dalam kalimat, dan $$ pada baris sendiri untuk rumus tampil.')
+    }
+    // Satu $ yang tidak berpasangan di baris yang sama membuat rumus menelan teks sesudahnya. Untuk tanda dolar biasa, tulis \$.
+    const dollars = (plain.replace(/\\\$/g, '').match(/\$/g) ?? []).length
+    if (dollars % 2 === 1) {
+      add(l.no, 'error', 'math-dollar', 'Tanda $ tidak berpasangan di baris ini. Rumus harus dibuka dan ditutup dengan $ di baris yang sama. Untuk tanda dolar biasa, tulis \\$.')
     }
   })
+
+  if (inMath) {
+    add(inMath, 'error', 'math-unclosed', 'Rumus tampil "$$" tidak ditutup. Tambahkan baris "$$" di akhir rumus.')
+  }
 
   if (box) {
     add(box.line, 'error', 'block-unclosed', `Blok :::${box.name} tidak ditutup. Tambahkan baris ":::" di akhir blok.`)

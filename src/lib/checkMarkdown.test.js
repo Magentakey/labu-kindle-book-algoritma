@@ -91,10 +91,23 @@ test('setelah penanda: teks tanpa judul diperingatkan, judul ### langsung ditola
   assert.deepEqual(rules('## A\n::visualizer\n### B'), ['heading-skip'])
 })
 
-test('rumus LaTeX diperingatkan, tanda dolar biasa aman', () => {
-  assert.deepEqual(rules('Biaya $5 dan $10'), [])
-  assert.deepEqual(rules('$$\\frac{a}{b}$$'), ['latex'])
-  assert.deepEqual(rules('Pakai `\\frac` di kode'), [])
+test('rumus: $...$ dan $$ blok sah, $ tunggal salah, \\( \\) diperingatkan', () => {
+  assert.deepEqual(rules('Nilai $f(n) = n^2$ di sini'), [])
+  assert.deepEqual(rules('Rumus:\n\n$$\n\\frac{a}{b} < c\n$$\n\nSelesai.'), [])
+  assert.deepEqual(rules('Biaya \\$5 dan \\$10'), [])
+  assert.deepEqual(rules('Biaya $5 saja'), ['math-dollar'])
+  assert.deepEqual(rules('Pakai `$` di kode'), [])
+  assert.deepEqual(rules('Rumus \\(x\\) lama'), ['math-delimiter'])
+  assert.deepEqual(rules('Rumus:\n\n$$\nx^2\n'), ['math-unclosed'])
+})
+
+test('isi rumus tampil tidak diperiksa sebagai Markdown', () => {
+  assert.deepEqual(rules('## A\n\n$$\n# bukan judul\n<b>\n$$\n'), [])
+})
+
+test('rumus di judul diperingatkan', () => {
+  assert.deepEqual(rules('## Contoh $n^2$'), ['math-title'])
+  assert.deepEqual(rules('## A\n\n:::steps Bukti $n^2$\n::slide 1. Satu\nIsi\n::slide 2. Dua\nIsi\n:::'), ['math-title'])
 })
 
 test('teks tebal satu baris yang berdiri sendiri diperingatkan', () => {

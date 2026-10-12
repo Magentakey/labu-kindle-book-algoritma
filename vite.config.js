@@ -2,9 +2,14 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
+import { readFileSync } from 'node:fs'
+
+const mathjaxVersion = JSON.parse(readFileSync('node_modules/mathjax-full/package.json', 'utf8')).version
 
 export default defineConfig({
   base: '/labu-kindle-book-algoritma/',
+  // MathJax membaca versinya lewat eval('require') bila konstanta ini tidak ada, dan itu gagal di browser.
+  define: { PACKAGE_VERSION: JSON.stringify(mathjaxVersion) },
   plugins: [
     react(),
     tailwindcss(),
