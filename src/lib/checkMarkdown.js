@@ -2,6 +2,7 @@ import { scanLines } from './markdownLines.js'
 import { CONTAINERS, LEAF_MARKERS, MARKERS, parseDirective } from './splitContent.js'
 import { TRACE_IDS } from '../algorithms/traces.js'
 import { GROWTH_KEYS } from './growth.js'
+import { parseRatioArgs } from './ratio.js'
 import { quizProblem } from './quiz.js'
 import { SUPPORTED_LANGUAGES, isKnownLanguage } from './codeLanguages.js'
 
@@ -111,6 +112,12 @@ export function checkMarkdown(md) {
       if (name === 'trace') {
         if (!args) add(l.no, 'error', 'trace-id', `::trace butuh id peraga. Yang tersedia: ${TRACE_IDS.join(', ')}.`)
         else if (!TRACE_IDS.includes(args)) add(l.no, 'error', 'trace-unknown', `Peraga "${args}" tidak ada. Yang tersedia: ${TRACE_IDS.join(', ')}.`)
+      } else if (name === 'ratio') {
+        const { keys, bad } = parseRatioArgs(args)
+        for (const key of keys ?? []) {
+          if (!GROWTH_KEYS.includes(key)) add(l.no, 'error', 'ratio-unknown', `Kelas "${key}" tidak dikenal untuk ::ratio. Yang tersedia: ${GROWTH_KEYS.join(', ')}.`)
+        }
+        if (bad) add(l.no, 'error', 'ratio-n', `::ratio: ${bad}`)
       } else {
         for (const key of args ? args.split(',').map((k) => k.trim()).filter(Boolean) : []) {
           if (!GROWTH_KEYS.includes(key)) add(l.no, 'error', 'growth-unknown', `Kelas "${key}" tidak dikenal untuk ::growth. Yang tersedia: ${GROWTH_KEYS.join(', ')}.`)

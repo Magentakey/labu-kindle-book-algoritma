@@ -1,6 +1,7 @@
 import MarkdownView from '../MarkdownView/MarkdownView.jsx'
 import CodeTrace from '../Interactive/CodeTrace.jsx'
 import GrowthExplorer from '../Interactive/GrowthExplorer.jsx'
+import RatioExplorer from '../Interactive/RatioExplorer.jsx'
 import Quiz from '../Interactive/Quiz.jsx'
 import Reveal from '../Interactive/Reveal.jsx'
 import Stepper from '../Interactive/Stepper.jsx'
@@ -42,6 +43,8 @@ export default function Block({ segment: seg }) {
     }
     case 'growth':
       return <GrowthExplorer keys={seg.keys} />
+    case 'ratio':
+      return <RatioExplorer keys={seg.keys} n1={seg.n1} n2={seg.n2} />
     case 'trace':
       return traces[seg.id] ? (
         <CodeTrace key={seg.id} def={traces[seg.id]} />
