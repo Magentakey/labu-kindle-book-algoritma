@@ -79,7 +79,7 @@
     "no": "9",
     "title": "Dynamic Programming – Longest Common Subsequence (LCS)",
     "desc": "Subsequence bersama terpanjang",
-    "hasText": false,
+    "hasText": true,
     "visualizer": "lcsTable",
     "challenge": "dp-lcs"
   },
