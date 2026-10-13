@@ -200,7 +200,7 @@ Pembaca mengisi masukan, lalu menjalankan pseudocode baris demi baris sambil mel
 ```
 
 Id yang tersedia: `bilangan-max`, `jumlah-n-bil`, `binary-search-iteratif`, `binary-search-rekursif`, `insertion-sort`,
-`insertion-sort-best`, `insertion-sort-worst`, `cari-bil-k`, `merge-sort`, `matrix-chain-order`.
+`insertion-sort-best`, `insertion-sort-worst`, `cari-bil-k`, `merge-sort`, `matrix-chain-order`, `lcs-length`, `print-lcs`.
 
 Nomor baris pada peraga **sama dengan nomor langkah di materi**, jadi tulis pseudocode di materi dengan nomor yang sama.
 
@@ -247,6 +247,23 @@ dan barisan p sebagai array berindeks 0 dengan status `factor` untuk tiga nilai 
 - Tesnya (`traces.matrixChain.test.js`) membandingkan urutan baris dengan eksekusi pseudocode apa adanya pada 300 barisan acak,
   dan tabel m dan s akhir dengan hitungan semua urutan pengurungan.
 - Pseudocode peraga harus sama persis dengan blok pseudocode di `dp-rantai-matriks.md`, dan ada tes yang menjaganya.
+
+### Peraga string dengan tabel c dan b: `lcs-length` dan `print-lcs`
+
+Dua peraga materi 9 (LCS) memakai masukan **teks**: isian `kind: 'text'` dengan `max` (batas karakter). `runTrace` hanya
+menerima huruf dan angka, 1 sampai `max` karakter (di sini 7, sama dengan visualizer tabel LCS), dan pesan galatnya menyebut
+nama isian. Kuncinya `X` dan `Y`, jadi tombol contoh (`presets`) memakai `{ X: '...', Y: '...' }`.
+
+- `lcs-length` (18 baris) mengisi satu tabel yang memuat c dan b sekaligus: angka adalah c[i,j], panah kecil (`sub`) adalah b[i,j].
+  Tabel baru tampil sesudah baris 3. Sel yang diisi ditandai `current`, dan sel sumbernya ditandai `source` dengan glyph panah
+  (↖ di baris 11, ↑ dan ← di baris 13, lalu satu sel di baris 14 atau 16). Contoh materi 247 langkah.
+- `print-lcs` (8 baris) menghitung tabel b lebih dulu (tidak ditelusuri), lalu menelusurinya rekursif seperti `merge-sort`:
+  `stack` bertambah di baris 4, 7, 8 dan berkurang saat selesai, dan baris variabel `Tercetak` hanya bertambah di baris 5.
+  Sel pemanggilan berjalan ditandai `current`, sel yang pernah dimasuki `path`. Contoh materi 34 langkah.
+- Panah ditulis dengan `\uFE0E` agar tampil sebagai simbol teks, bukan emoji berwarna.
+- Tesnya (`traces.lcs.test.js`) membandingkan urutan baris dengan eksekusi pseudocode apa adanya pada 300 pasangan string acak,
+  tabel akhir dengan hitungan rekursi murni, dan urutan pemanggilan serta huruf tercetak dengan PRINT-LCS referensi.
+  `dp-lcs.test.js` menjaga pseudocode peraga sama persis dengan blok di materi dan angka langkah yang tertulis di teks.
 
 ### Menambah peraga baru
 

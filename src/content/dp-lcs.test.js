@@ -94,7 +94,7 @@ test('materi 9 bersih dari error dan saran', () => {
 test('materi 9 memakai komponen yang sama dengan materi sebelumnya', () => {
   assert.equal(meta.hasText, true)
   const types = segs.map((s) => s.type)
-  for (const t of ['steps', 'quiz', 'visualizer', 'challenge']) assert.ok(types.includes(t), `belum ada komponen ${t}`)
+  for (const t of ['steps', 'quiz', 'trace', 'visualizer', 'challenge']) assert.ok(types.includes(t), `belum ada komponen ${t}`)
   assert.equal(types.at(-1), 'challenge', 'soal challenge tetap paling akhir')
   const steps = segs.filter((s) => s.type === 'steps')
   assert.deepEqual(
@@ -126,8 +126,10 @@ test('daftar isi sidebar materi 9', () => {
     'Subbarisan',
     'Mencari dengan Brute Force',
     'Pseudocode',
+    'Peraga: Penelusuran LCS-LENGTH',
     'Pseudocode',
     'Contoh: PRINT-LCS(b, X, 7, 6)',
+    'Peraga: Penelusuran PRINT-LCS',
   ])
 })
 
@@ -325,4 +327,30 @@ test('teks selaras dengan soal challenge dan visualizer', () => {
   assert.ok(registry.includes("initialInput: { x: 'ABCBDAB', y: 'BDCABA' }"), 'isian awal visualizer sama dengan contoh teks')
   assert.ok(registry.includes('1 sampai 7 karakter') && md.includes('1 sampai 7 karakter'))
   assert.equal(lcsString(X, Y), 'BCBA')
+})
+
+test('peraga ::trace dipasang di bagian B dan D, dan angka langkah di teks cocok dengan peraga', async () => {
+  const { traces, runTrace } = await import('../algorithms/traces.js')
+  const traceSegs = segs.filter((s) => s.type === 'trace')
+  assert.deepEqual(traceSegs.map((t) => t.id), ['lcs-length', 'print-lcs'])
+  const types = segs.map((s) => s.type)
+  assert.ok(types.lastIndexOf('trace') < types.indexOf('visualizer'), 'peraga sebelum visualizer')
+  const steps = (id, X, Y) => runTrace(traces[id], { X, Y }).steps.length
+  assert.equal(steps('lcs-length', X, Y), 247)
+  assert.equal(steps('lcs-length', 'ABC', 'XYZ'), 72)
+  assert.equal(steps('lcs-length', 'ACE', 'ABCDE'), 103)
+  assert.equal(steps('print-lcs', X, Y), 34)
+  assert.equal(steps('print-lcs', 'ABC', 'XYZ'), 14)
+  assert.equal(steps('print-lcs', 'ALGO', 'ALGO'), 18)
+  for (const s of ['247 langkah', '(72 langkah)', '(103 langkah)', '34 langkah', '(14 langkah, tidak ada yang tercetak)', '(18 langkah)']) {
+    assert.ok(md.includes(s), s)
+  }
+  // tabel akhir peraga LCS-LENGTH sama dengan tabel teks di bagian C
+  const last = runTrace(traces['lcs-length'], { X, Y }).steps.at(-1).tables[0].table.cells
+  const rows = readTable('| Tabel c dan b')
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      assert.equal(`${last[i][j].sub}${last[i][j].text}`, rows[i][j + 1], `sel [${i},${j}]`)
+    }
+  }
 })

@@ -140,6 +140,17 @@ Anggota yang sama memperpanjang LCS dari sel kiri-atas sebanyak satu, sehingga $
 Pada langkah 13 sampai 15, jika sel atas lebih besar atau sama dengan sel kiri maka $c[i,j]$ diambil dari sel atas dan $b[i,j] = \uparrow$.
 :::
 
+### Peraga: Penelusuran LCS-LENGTH
+
+Peraga di bawah menjalankan pseudocode LCS-LENGTH di atas **baris demi baris**, dengan masukan yang bisa Anda ubah sendiri. Isian awalnya contoh materi ($X$ = ABCBDAB dan $Y$ = BDCABA), jadi tabel di langkah terakhir harus sama dengan gambar di bagian C.
+
+- Baris kode yang menyala sama dengan nomor langkah di atas. Tabel variabel menampilkan $i$, $j$, $x_i$, $y_j$, serta isi $c[i,j]$ dan $b[i,j]$.
+- Satu tabel memuat $c$ dan $b$ sekaligus: angka adalah $c[i,j]$, dan panah kecil di bawahnya adalah $b[i,j]$.
+- Sel yang sedang diisi ditandai ▶, dan sel sumbernya ditandai panah yang menunjukkan arah asalnya (langkah 11, 13, 14, dan 16).
+- Contoh materi memerlukan 247 langkah karena tiap perulangan dicatat setiap putaran. Contoh siap pakai yang lebih singkat: ABC dan XYZ (72 langkah), serta ACE dan ABCDE (103 langkah). Masing-masing barisan 1 sampai 7 karakter, hanya huruf dan angka.
+
+::trace lcs-length
+
 ## C. Tabel c dan Tabel b untuk Contoh
 
 Tabel berikut adalah hasil menjalankan langkah 4 sampai 17 LCS-LENGTH untuk $X = \{A, B, C, B, D, A, B\}$ dan $Y = \{B, D, C, A, B, A\}$. Di setiap sel, angka adalah isi tabel $c$ dan panah adalah isi tabel $b$.
@@ -293,6 +304,17 @@ Langkah 5 hanya dijalankan pada cabang $b[i,j] = \nwarrow$, dan letaknya sesudah
 ::explain
 Panah $\leftarrow$ menjalankan langkah 8: PRINT-LCS$(b, X, i, j-1)$, jadi dari $(3, 4)$ menjadi $(3, 3)$.
 :::
+
+### Peraga: Penelusuran PRINT-LCS
+
+Peraga ini menjalankan PRINT-LCS baris demi baris. Tabel $b$ dihitung lebih dulu dari dua barisan isian (tanpa ditelusuri), lalu penelusuran dimulai dari PRINT-LCS$(b, X, m, n)$. Isian awalnya contoh materi, jadi urutan pemanggilan dan huruf yang tercetak harus sama dengan tabel dan slide di atas, yaitu B, C, B, A.
+
+- **Tumpukan panggilan** bertambah saat baris 4, 7, atau 8 memanggil dirinya, dan berkurang saat pemanggilan selesai. Tabel variabel menampilkan $i$, $j$, dan $b[i,j]$ milik pemanggilan yang sedang berjalan.
+- Pada tabel, sel pemanggilan yang sedang berjalan ditandai ▶, dan sel yang sudah pernah dimasuki ditandai ★. Itulah sel berlatar abu-abu pada gambar di bagian C.
+- Perhatikan kapan baris "Tercetak" bertambah: **hanya di baris 5**, saat pemanggilan kembali, bukan saat turun.
+- Contoh materi memerlukan 34 langkah. Contoh siap pakai yang lebih singkat: ABC dan XYZ (14 langkah, tidak ada yang tercetak), dan ALGO dan ALGO (18 langkah).
+
+::trace print-lcs
 
 ## E. Mencoba Visualisasi Tabel
 

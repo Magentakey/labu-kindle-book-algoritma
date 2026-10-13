@@ -5,6 +5,7 @@ import { insertionSortCost, insertionSortPseudoCode, insertionSortPseudoTrace } 
 import { cariBilKCode, cariBilKCost, cariBilKTrace } from './traces/cariBilK.js'
 import { mergeSortPseudoCode, mergeSortPseudoTrace } from './traces/mergeSortPseudo.js'
 import { checkMatrixChainP, matrixChainPseudoCode, matrixChainPseudoTrace } from './traces/matrixChainPseudo.js'
+import { LCS_PSEUDO_MAX, lcsLengthPseudoCode, lcsLengthPseudoTrace, printLcsPseudoCode, printLcsPseudoTrace } from './traces/lcsPseudo.js'
 import {
   binarySearchIterCode,
   binarySearchIterTrace,
@@ -31,7 +32,7 @@ import {
  * @property {string} intro       satu kalimat pengantar
  * @property {string} code        pseudocode, satu baris kode per baris (nomor baris = nomor langkah di materi)
  * @property {string} codeLabel
- * @property {Array<{ key: string, label: string, kind: 'int' | 'array', value: string }>} inputs
+ * @property {Array<{ key: string, label: string, kind: 'int' | 'array' | 'text', value: string, max?: number }>} inputs
  * @property {(values: Record<string, any>) => string|null} [validate]  pesan kesalahan, atau null bila masukan sah
  * @property {(values: Record<string, any>) => TraceStep[]} build
  * @property {string[]} [legend]  status yang dipakai array (kunci STATUS)
@@ -80,6 +81,15 @@ const matrixChainPresets = [
   { label: 'Soal kuis: 10, 30, 5, 60', values: { p: '10, 30, 5, 60' } },
   { label: 'Dua matriks: 10, 20, 30', values: { p: '10, 20, 30' } },
 ]
+
+const lcsPresets = [
+  { label: 'Contoh materi: ABCBDAB dan BDCABA', values: { X: 'ABCBDAB', Y: 'BDCABA' } },
+  { label: 'Tidak ada yang sama: ABC dan XYZ', values: { X: 'ABC', Y: 'XYZ' } },
+  { label: 'Sama persis: ALGO dan ALGO', values: { X: 'ALGO', Y: 'ALGO' } },
+  { label: 'Subsequence: ACE dan ABCDE', values: { X: 'ACE', Y: 'ABCDE' } },
+]
+
+const textInput = (key, value, label, max) => ({ key, label, kind: 'text', value, max })
 
 /** @type {Record<string, TraceDef>} */
 export const traces = {
@@ -132,6 +142,28 @@ export const traces = {
     legend: ['normal', 'factor'],
     presets: matrixChainPresets,
   },
+  'lcs-length': {
+    title: 'LCS-LENGTH(X, Y)',
+    intro:
+      'Mengisi tabel c (panjang LCS) dan tabel b (panah asal) untuk dua barisan. Isian awal adalah contoh di materi (ABCBDAB dan BDCABA), jadi tabel akhirnya sama dengan gambar di bagian C. Perhatikan sel sumber yang bertanda panah: dari sanalah isi sel yang sedang dihitung berasal.',
+    code: lcsLengthPseudoCode,
+    codeLabel: 'Pseudocode LCS-LENGTH',
+    inputs: [textInput('X', 'ABCBDAB', 'Barisan X (baris tabel)', LCS_PSEUDO_MAX), textInput('Y', 'BDCABA', 'Barisan Y (kolom tabel)', LCS_PSEUDO_MAX)],
+    build: lcsLengthPseudoTrace,
+    legend: [],
+    presets: lcsPresets,
+  },
+  'print-lcs': {
+    title: 'PRINT-LCS(b, X, i, j)',
+    intro:
+      'Menelusuri tabel b dari sel kanan-bawah untuk mencetak LCS. Tabel b dihitung lebih dulu dari dua barisan isian. Isian awal adalah contoh di materi, yang menghasilkan B, C, B, A. Perhatikan tumpukan panggilan: huruf dicetak saat pemanggilan kembali ke baris 5, bukan saat turun.',
+    code: printLcsPseudoCode,
+    codeLabel: 'Pseudocode PRINT-LCS',
+    inputs: [textInput('X', 'ABCBDAB', 'Barisan X (baris tabel)', LCS_PSEUDO_MAX), textInput('Y', 'BDCABA', 'Barisan Y (kolom tabel)', LCS_PSEUDO_MAX)],
+    build: printLcsPseudoTrace,
+    legend: [],
+    presets: lcsPresets,
+  },
   'bilangan-max': {
     title: 'BILANGAN_MAX(bil1, bil2, bil3)',
     intro: 'Menentukan bilangan terbesar dari tiga bilangan. Ubah nilainya, lalu jalankan lagi.',
@@ -183,7 +215,13 @@ export function runTrace(def, texts) {
   const values = {}
   for (const input of def.inputs) {
     const text = String(texts[input.key] ?? '').trim()
-    if (input.kind === 'int') {
+    if (input.kind === 'text') {
+      // Barisan karakter (huruf dan angka saja), panjang 1 sampai input.max.
+      if (text === '') return { ok: false, error: `${input.label} tidak boleh kosong.` }
+      if (!/^[A-Za-z0-9]+$/.test(text)) return { ok: false, error: `${input.label} hanya boleh berisi huruf dan angka, tanpa spasi atau tanda baca.` }
+      if (text.length > input.max) return { ok: false, error: `${input.label} maksimal ${input.max} karakter (Anda mengisi ${text.length}).` }
+      values[input.key] = text
+    } else if (input.kind === 'int') {
       if (!/^-?\d+$/.test(text)) return { ok: false, error: `${input.label} harus berupa bilangan bulat.` }
       const v = Number(text)
       if (v < MIN_VALUE || v > MAX_VALUE) return { ok: false, error: `${input.label} harus di antara ${MIN_VALUE} dan ${MAX_VALUE}.` }

@@ -70,7 +70,7 @@ export default function CodeTrace({ def }) {
                 if (e.key === 'Enter') apply(texts, 'Dijalankan dengan masukan baru.')
               }}
               aria-describedby={error ? `${uid}-error` : undefined}
-              className={`mt-1 min-h-12 rounded-xl border-2 border-stone-900 bg-white px-3 ${input.kind === 'array' ? 'w-56' : 'w-24'} ${focusRing}`}
+              className={`mt-1 min-h-12 rounded-xl border-2 border-stone-900 bg-white px-3 ${input.kind === 'array' ? 'w-56' : input.kind === 'text' ? 'w-40' : 'w-24'} ${focusRing}`}
             />
           </div>
         ))}
