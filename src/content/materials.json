@@ -97,7 +97,7 @@
     "no": "10.2",
     "title": "Algoritma Greedy – Huffman Code",
     "desc": "Kompresi dengan kode prefiks",
-    "hasText": false,
+    "hasText": true,
     "visualizer": "huffmanTree",
     "challenge": "greedy-huffman"
   },
