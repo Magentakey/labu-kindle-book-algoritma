@@ -8,6 +8,7 @@ import { splitContent } from '../lib/splitContent.js'
 import { buildToc } from '../lib/tableOfContents.js'
 import { parseGraphFields } from '../algorithms/graphCommon.js'
 import { dfsGraphSteps } from '../algorithms/graphTraversal.js'
+import { traces, runTrace } from '../algorithms/traces.js'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '../..')
 const md = readFileSync(join(root, 'src/content/materials/graph-dfs.md'), 'utf8')
@@ -112,7 +113,7 @@ test('materi 11.2 bersih dari error dan saran', () => {
 
 test('materi 11.2 memakai komponen yang sama dengan materi sebelumnya', () => {
   const types = segs.map((x) => x.type)
-  for (const t of ['steps', 'quiz', 'visualizer', 'challenge']) assert.ok(types.includes(t), `belum ada komponen ${t}`)
+  for (const t of ['steps', 'quiz', 'trace', 'visualizer', 'challenge']) assert.ok(types.includes(t), `belum ada komponen ${t}`)
   assert.equal(types.at(-1), 'challenge', 'soal challenge tetap paling akhir')
   assert.deepEqual(stepsBlocks.map((x) => x.items.length), [3, 5, 3, 16], 'DFS(G), DFS-VISIT, running time, penelusuran')
   assert.deepEqual(quizzes.map((q) => q.questions.length), [3, 4, 3, 5], 'kuis di bagian A sampai D')
@@ -131,7 +132,7 @@ test('daftar isi sidebar materi 11.2', () => {
     'F. Rangkuman',
     'Soal Challenge',
   ])
-  assert.deepEqual(items.filter((i) => i.level === 3).map((i) => i.text), ['Warna simpul', 'Timestamp', 'Pseudocode', 'Adjacency-list masukan', 'Penelusuran', 'Hasil penelusuran'])
+  assert.deepEqual(items.filter((i) => i.level === 3).map((i) => i.text), ['Warna simpul', 'Timestamp', 'Pseudocode', 'Adjacency-list masukan', 'Penelusuran', 'Hasil penelusuran', 'Peraga: Penelusuran DFS'])
 })
 
 test('pseudocode DFS (7 baris) dan DFS-VISIT (10 baris) sama dengan dokumen', () => {
@@ -309,4 +310,26 @@ test('catatan tentang visualizer: hanya tak berarah, satu simpul awal, urutan ku
     assert.deepEqual(solve(n, edges, start), expect, 'solusi challenge = urutan kunjungan')
   }
   assert.match(challenge.description, /bernomor lebih kecil/)
+})
+
+test('peraga ::trace dfs: di akhir bagian D setelah kuis, dan angka di teks cocok dengan peraga', () => {
+  const types = segs.map((x) => x.type)
+  const iTrace = types.indexOf('trace')
+  assert.equal(types.filter((t) => t === 'trace').length, 1)
+  assert.equal(segs[iTrace].id, 'dfs')
+  assert.ok(traces.dfs, 'id dfs terdaftar')
+  // sebelum peraga: kuis bagian D; sesudahnya: bagian E
+  assert.equal(segs[iTrace - 1].type, 'markdown')
+  assert.match(segs[iTrace - 1].text, /^### Peraga: Penelusuran DFS/m)
+  assert.equal(types[iTrace - 2], 'quiz')
+  assert.match(segs[iTrace + 1].text, /^## E\. Mencoba Visualisasi/)
+  // angka yang disebut di teks
+  const r = runTrace(traces.dfs, { G: 'u: v, x; v: y; w: y, z; x: v; y: x; z: z' })
+  assert.ok(r.ok)
+  assert.match(segs[iTrace - 1].text, new RegExp(`dalam ${r.steps.length} langkah`))
+  assert.equal(r.steps.length, 85)
+  assert.match(segs[iTrace - 1].text, /baris 1 sampai 7 adalah DFS/)
+  assert.match(segs[iTrace - 1].text, /dikurangi 7/)
+  // isian awal peraga = adjacency-list di tabel bagian D
+  for (const [u, list] of Object.entries(ADJ)) assert.ok(traces.dfs.inputs[0].value.includes(`${u}: ${list.join(', ')}`), u)
 })

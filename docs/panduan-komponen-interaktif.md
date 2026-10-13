@@ -200,7 +200,7 @@ Pembaca mengisi masukan, lalu menjalankan pseudocode baris demi baris sambil mel
 ```
 
 Id yang tersedia: `bilangan-max`, `jumlah-n-bil`, `binary-search-iteratif`, `binary-search-rekursif`, `insertion-sort`,
-`insertion-sort-best`, `insertion-sort-worst`, `cari-bil-k`, `merge-sort`, `matrix-chain-order`, `lcs-length`, `print-lcs`, `greedy-activity-selector`, `huffman`, `bfs`.
+`insertion-sort-best`, `insertion-sort-worst`, `cari-bil-k`, `merge-sort`, `matrix-chain-order`, `lcs-length`, `print-lcs`, `greedy-activity-selector`, `huffman`, `bfs`, `dfs`.
 
 Nomor baris pada peraga **sama dengan nomor langkah di materi**, jadi tulis pseudocode di materi dengan nomor yang sama.
 
@@ -316,6 +316,27 @@ berbeda dan frekuensi 1 sampai 99, sama dengan visualizer pohon Huffman.
   Banyak langkah: 6 + 8R + 2D (R simpul terjangkau, D jumlah panjang daftar tetangga simpul terjangkau). Contoh materi: 110 langkah.
 - Tes `traces.bfs.test.js` membandingkan urutan baris dan isi Q dengan eksekusi pseudocode pada 300 graf acak, jarak dengan Floyd-Warshall pada 200 graf,
   perubahan atribut hanya di baris yang benar, dan hasil contoh materi dengan Gambar 3.
+
+### Peraga dua prosedur dengan tumpukan dan tabel atribut: `dfs`
+
+`::trace dfs` menjalankan DFS(G) dan DFS-VISIT(G, u) pada graf berarah yang ditulis sebagai adjacency-list.
+
+- **Satu blok kode 17 baris**: baris 1 sampai 7 adalah DFS(G) dan baris 8 sampai 17 adalah DFS-VISIT(G, u). Di materi, DFS-VISIT bernomor 1 sampai 10,
+  jadi nomor peraga = nomor materi + `DFS_VISIT_OFFSET` (7). Catatan langkah untuk baris 8 sampai 17 berbentuk `Baris 11 (DFS-VISIT baris 4, panggilan ke-2, kedalaman 3): ...`,
+  supaya cocok dengan kedua penomoran (tes umum mewajibkan catatan diawali `Baris <nomor peraga>`). Pseudocode peraga harus sama dengan gabungan dua blok di `graph-dfs.md`.
+- Isian: hanya `G` (isian bebas, aturan sama dengan BFS lewat `parseAdjacencyInput`; tidak ada simpul awal). **Urutan penulisan simpul adalah urutan G.V**, yang menentukan
+  akar pohon, dan urutan tetangga adalah urutan Adj. Pemeriksa: `checkDfsInput` (`traces/dfsPseudo.js`).
+- Tabel atribut (`DpTable`): `color`, `d`, `f`, `π` per simpul, dengan status yang sama seperti BFS (`empty`, `gray`, `black`, `current`, `source`).
+  `current` dipakai di baris 5 sampai 7 (u milik DFS(G)) dan baris 8 sampai 14, jadi di baris 15 sampai 17 simpul terlihat berubah menjadi BLACK.
+  Tidak ada status baru di `dpStatuses.js`.
+- `step.stack`: `DFS(G)` di dasar, lalu satu `DFS-VISIT(G, u)` per simpul GRAY. Bingkai ditambah saat baris 14 (atau 7) selesai dan dibuang setelah baris 17.
+- Daftar teks: tetangga u (baris 11 sampai 14), busur yang sudah diperiksa di baris 12 beserta jenisnya (tree, B, F, C, diputuskan dari warna tujuan dan `u.d < v.d`),
+  urutan simpul selesai, dan di langkah terakhir DFS-forest dalam bentuk akar(anak, anak).
+- Baris 1 sampai 3 ditampilkan ringkas. Header for baris 5 dicatat tiap simpul (ditambah satu pemeriksaan akhir), dan header for baris 11 tiap tetangga
+  (ditambah satu pemeriksaan akhir). Banyak langkah: 5 + 11n + 2D − R (n simpul, D jumlah panjang semua daftar tetangga, R banyak akar). Contoh materi: 85 langkah.
+- Graf tak berarah harus ditulis di kedua daftar. Tiap arah dijelajahi sebagai busur sendiri, jadi satu sisi bisa tercatat dua kali, dan sisi kedua itu bisa berjenis F.
+- Tes `traces.dfs.test.js` membandingkan urutan baris dan kedalaman tumpukan dengan DFS rekursif pada 300 graf acak, memeriksa timestamp (menutup 1 sampai 2n, interval
+  bersarang atau terpisah, jenis busur sesuai interval) pada 200 graf, perubahan atribut hanya di baris yang benar, dan hasil contoh dengan bagian D materi 11.2.
 
 ### Menambah peraga baru
 

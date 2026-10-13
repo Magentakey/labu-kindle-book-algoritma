@@ -7,6 +7,7 @@ import { mergeSortPseudoCode, mergeSortPseudoTrace } from './traces/mergeSortPse
 import { checkMatrixChainP, matrixChainPseudoCode, matrixChainPseudoTrace } from './traces/matrixChainPseudo.js'
 import { GREEDY_LIMITS, checkGreedyInput, greedyActivityCode, greedyActivityTrace } from './traces/greedyActivity.js'
 import { bfsPseudoCode, bfsPseudoTrace, checkBfsInput } from './traces/bfsPseudo.js'
+import { checkDfsInput, dfsPseudoCode, dfsPseudoTrace } from './traces/dfsPseudo.js'
 import { checkHuffmanInput, huffmanPseudoCode, huffmanPseudoTrace } from './traces/huffmanPseudo.js'
 import { LCS_PSEUDO_MAX, lcsLengthPseudoCode, lcsLengthPseudoTrace, printLcsPseudoCode, printLcsPseudoTrace } from './traces/lcsPseudo.js'
 import {
@@ -106,6 +107,16 @@ const bfsPresets = [
   { label: 'Graf tak berarah Gambar 1, mulai dari 1', values: { G: '1: 2, 5; 2: 1, 5, 3, 4; 3: 2, 4; 4: 2, 5, 3; 5: 4, 1, 2', s: '1' } },
   { label: 'Graf berarah Gambar 2, mulai dari 3 (ada yang tak terjangkau)', values: { G: '1: 2, 4; 2: 5; 3: 6, 5; 4: 2; 5: 4; 6: 6', s: '3' } },
   { label: 'Satu simpul tanpa tetangga', values: { G: 'a:', s: 'a' } },
+]
+
+const dfsExample = 'u: v, x; v: y; w: y, z; x: v; y: x; z: z'
+
+const dfsPresets = [
+  { label: 'Contoh materi: graf berarah u v w / x y z', values: { G: dfsExample } },
+  { label: 'Urutan V berbeda: w ditulis lebih dulu', values: { G: 'w: y, z; u: v, x; v: y; x: v; y: x; z: z' } },
+  { label: 'Satu pohon: rantai a, b, c', values: { G: 'a: b; b: c; c:' } },
+  { label: 'Tiga simpul tanpa busur (tiga pohon)', values: { G: 'a:; b:; c:' } },
+  { label: 'Siklus a, b, c (ada busur B)', values: { G: 'a: b; b: c; c: a' } },
 ]
 
 const lcsPresets = [
@@ -231,6 +242,18 @@ export const traces = {
     build: bfsPseudoTrace,
     legend: [],
     presets: bfsPresets,
+  },
+  dfs: {
+    title: 'DFS(G) dan DFS-VISIT(G, u)',
+    intro:
+      'Menelusuri graf secara mendalam: simpul diberi warna WHITE, GRAY, lalu BLACK, dan tiap simpul mendapat dua timestamp, u.d (ditemukan) dan u.f (selesai). Baris 1 sampai 7 adalah DFS(G), dan baris 8 sampai 17 adalah DFS-VISIT(G, u), yang di materi bernomor 1 sampai 10. Isian awal adalah contoh materi (graf berarah u v w / x y z), jadi hasilnya sama dengan graf akhir di bagian D. Graf ditulis sebagai adjacency-list, dan urutan penulisan simpul adalah urutan V. Maksimal 8 simpul.',
+    code: dfsPseudoCode,
+    codeLabel: 'Pseudocode DFS dan DFS-VISIT',
+    inputs: [{ key: 'G', label: 'Adjacency-list G (simpul: tetangga; ...)', kind: 'free', value: dfsExample }],
+    validate: checkDfsInput,
+    build: dfsPseudoTrace,
+    legend: [],
+    presets: dfsPresets,
   },
   'bilangan-max': {
     title: 'BILANGAN_MAX(bil1, bil2, bil3)',

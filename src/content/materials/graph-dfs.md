@@ -387,13 +387,26 @@ Langkah 7 DFS$(G)$ dipanggil untuk $u$ (putaran 1) dan $w$ (putaran 3). Simpul $
 Setelah $w.d = 9$, simpul $z$ ditemukan ($time = 10$) dan langsung selesai karena hanya punya busur $(z, z)$ ke dirinya sendiri ($time = 11$). Simpul $w$ baru selesai sesudahnya, dengan $w.f = 12$.
 :::
 
+### Peraga: Penelusuran DFS
+
+Peraga ini menjalankan pseudocode DFS$(G)$ dan DFS-VISIT$(G, u)$ baris demi baris pada graf berarah yang Anda isi. Isian awalnya adalah contoh di bagian D (graf $u, v, w, x, y, z$), jadi tabel akhirnya sama dengan graf akhir dan tabel nilai di atas, dan seluruh penelusuran berjalan dalam 85 langkah.
+
+- Kedua prosedur ada dalam **satu blok kode bernomor 1 sampai 17**: baris 1 sampai 7 adalah DFS$(G)$, dan baris 8 sampai 17 adalah DFS-VISIT$(G, u)$. Nomor baris DFS-VISIT di materi (1 sampai 10) sama dengan nomor di peraga dikurangi 7. Karena itu catatan tiap langkah menyebut keduanya, misalnya "Baris 11 (DFS-VISIT baris 4)".
+- Tabel **Atribut tiap simpul** menunjukkan warna, $d$, $f$, dan $\pi$ tiap simpul. Warnanya dibedakan lewat pola, simbol, dan teks, tidak hanya warna: WHITE (kosong), GRAY (◐), dan BLACK (●). Simpul $u$ yang sedang diproses bertanda ▶, dan tetangga $v$ yang sedang diperiksa bertanda khusus.
+- **Tumpukan panggilan** menunjukkan DFS$(G)$ di dasar dan satu bingkai DFS-VISIT untuk tiap simpul GRAY. Bingkai bertambah di baris 7 dan 14, dan hilang di baris 17. Saat bingkai hilang, itulah *backtrack*.
+- Daftar **Busur yang sudah diperiksa** mencatat jenis tiap busur (*tree*, B, F, atau C) pada saat baris 12 dibaca, sesuai tabel jenis busur di atas. Daftar **Urutan simpul selesai** mengumpulkan simpul menurut $f$ naik, dan di langkah terakhir muncul *DFS-forest* dalam bentuk akar(anak, anak).
+- Baris 1 sampai 3 (perulangan inisialisasi) ditampilkan ringkas: tiap baris satu langkah yang berlaku untuk semua simpul sekaligus. Mulai baris 4, satu langkah sama dengan satu baris yang dibaca, termasuk baris 11 saat tetangga sudah habis (*end for*).
+- Isiannya *adjacency-list*: simpul, titik dua, lalu tetangganya, dipisah titik koma, misalnya `u: v, x; v: y`. **Urutan penulisan simpul adalah urutan $V$**, yang menentukan akar pohon pada baris 5 sampai 7. Coba tombol "Urutan V berbeda": graf yang sama menghasilkan akar dan bentuk *forest* lain, tetapi timestamp tetap memenuhi aturan interval bersarang. Maksimal 8 simpul. Untuk graf tak berarah, tulis tiap sisi di kedua daftar. Peraga menjelajahi tiap arah sebagai busur sendiri, jadi satu sisi bisa muncul dua kali di daftar jenis busur.
+
+::trace dfs
+
 ## E. Mencoba Visualisasi
 
 Visualisasi di bawah ini menjalankan DFS pada graf, lalu menampilkan juga DFS pada pohon biner sebagai kasus khusus. Pada graf, tiap langkah menyorot baris kode, mewarnai simpul, dan menunjukkan tumpukan pemanggilan serta urutan kunjungan.
 
 Beberapa hal agar tidak bingung membandingkan dengan materi:
 
-- Visualisasi graf hanya menerima graf **tak berarah**, sedangkan contoh bagian D adalah graf berarah. Hasilnya tidak bisa dibandingkan langsung dengan contoh itu.
+- Visualisasi graf hanya menerima graf **tak berarah**, sedangkan contoh bagian D adalah graf berarah. Hasilnya tidak bisa dibandingkan langsung dengan contoh itu. Untuk mengulang contoh berarah tersebut, gunakan peraga penelusuran di akhir bagian D.
 - Visualisasi **bernomor 0 sampai $n - 1$** dan indeks mulai dari 0. Kodenya berbentuk JavaScript, jadi nomor barisnya berbeda dari pseudocode di bagian B.
 - Visualisasi menelusuri dari **satu simpul awal** saja (*start*), tanpa langkah DFS$(G)$ yang mengulang untuk simpul sisanya. Karena itu ia tidak membentuk *DFS-forest*, dan simpul yang tidak terjangkau dari simpul awal tidak ikut dikunjungi.
 - Kodenya tidak menghitung $u.d$, $u.f$, maupun $u.\pi$. Ia memakai larik `dikunjungi` dan mencatat **urutan kunjungan**, yaitu urutan $u.d$ naik. Angka kecil `#k` di bawah simpul adalah kunjungan ke-$k$. Tumpukan pemanggilan menunjukkan simpul GRAY di materi.
