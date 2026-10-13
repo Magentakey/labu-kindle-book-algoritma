@@ -118,7 +118,7 @@
     "no": "11.2",
     "title": "Algoritma Graph – Depth First Search (DFS)",
     "desc": "Penelusuran graf sedalam mungkin",
-    "hasText": false,
+    "hasText": true,
     "visualizer": [
       "dfsGraph",
       "dfsTree"
