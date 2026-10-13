@@ -200,7 +200,7 @@ Pembaca mengisi masukan, lalu menjalankan pseudocode baris demi baris sambil mel
 ```
 
 Id yang tersedia: `bilangan-max`, `jumlah-n-bil`, `binary-search-iteratif`, `binary-search-rekursif`, `insertion-sort`,
-`insertion-sort-best`, `insertion-sort-worst`, `cari-bil-k`, `merge-sort`, `matrix-chain-order`, `lcs-length`, `print-lcs`, `greedy-activity-selector`, `huffman`, `bfs`, `dfs`.
+`insertion-sort-best`, `insertion-sort-worst`, `cari-bil-k`, `merge-sort`, `matrix-chain-order`, `lcs-length`, `print-lcs`, `greedy-activity-selector`, `huffman`, `bfs`, `dfs`, `mst-kruskal`, `mst-prim`.
 
 Nomor baris pada peraga **sama dengan nomor langkah di materi**, jadi tulis pseudocode di materi dengan nomor yang sama.
 
@@ -337,6 +337,40 @@ berbeda dan frekuensi 1 sampai 99, sama dengan visualizer pohon Huffman.
 - Graf tak berarah harus ditulis di kedua daftar. Tiap arah dijelajahi sebagai busur sendiri, jadi satu sisi bisa tercatat dua kali, dan sisi kedua itu bisa berjenis F.
 - Tes `traces.dfs.test.js` membandingkan urutan baris dan kedalaman tumpukan dengan DFS rekursif pada 300 graf acak, memeriksa timestamp (menutup 1 sampai 2n, interval
   bersarang atau terpisah, jenis busur sesuai interval) pada 200 graf, perubahan atribut hanya di baris yang benar, dan hasil contoh dengan bagian D materi 11.2.
+
+### Peraga Kruskal dengan himpunan terpisah: `mst-kruskal`
+
+`::trace mst-kruskal` menjalankan MST-KRUSKAL(G, w) pada graf tak berarah berbobot.
+
+- Isian bebas (`kind: 'free'`): `V` (daftar simpul, dipisah koma) dan `E` (sisi `u-v:bobot`, dipisah koma). **Urutan penulisan V adalah urutan G.V**, dan **urutan penulisan E adalah urutan G.E
+  sebelum diurutkan**. Pengurutan di baris 4 stabil, jadi sisi berbobot sama tetap menurut urutan penulisan. Batas bersama (`traces/mstCommon.js`): 2 sampai 9 simpul, maksimal 16 sisi,
+  bobot 0 sampai 99, nama simpul 1 sampai 2 huruf atau angka, tanpa loop dan sisi ganda, dan graf harus terhubung (`checkConnected`). Pemeriksa: `checkKruskalInput` (`traces/kruskalPseudo.js`).
+- Tidak ada komponen baru. Himpunan terpisah (hasil MAKE-SET dan UNION) ditampilkan sebagai daftar teks `step.lists`, bersama daftar himpunan A. Tabel **sisi terurut** memakai `DpTable`
+  dengan status yang sudah ada: `current` (▶, sisi yang diperiksa), `path` (★, diterima), `unused` (berpola garis, ditolak), `empty` (belum diperiksa). Keterangan statusnya diganti lewat `labels`.
+  Tabel baru muncul setelah baris 4. Tidak ada status baru di `dpStatuses.js`.
+- Variabel `FIND-SET(u)` dan `FIND-SET(v)` hanya terisi di baris 6 sampai 8. Sisi yang ditolak sudah bertanda di tabel pada langkah baris 6 (hasil uji FALSE), sedangkan sisi yang diterima
+  bertanda saat baris 7 dibaca.
+- Baris 2 dan 3 ditampilkan ringkas (satu langkah per baris untuk semua simpul). Header for baris 5 dicatat tiap sisi, ditambah satu pemeriksaan akhir. Banyak langkah: 2m + 2n + 4
+  (m sisi, n simpul, graf terhubung). Contoh materi: 50 langkah.
+- Preset penting: "Urutan seperti gambar buku" menulis (a,h) sebelum (b,c), sehingga pohonnya lain dari tabel dokumen tetapi totalnya tetap 37. Di materi ini dijelaskan lewat jawaban lipat bagian C.
+- Tes `traces.mst.test.js` membandingkan urutan baris, sisi yang diterima, himpunan setelah tiap sisi, dan total dengan Kruskal biasa pada 300 graf acak (bobot kecil supaya sering seri),
+  serta kolom UNION contoh materi, dan memeriksa pesan kesalahan isian.
+
+### Peraga Prim dengan Q, tetangga, dan sisi tebal: `mst-prim`
+
+`::trace mst-prim` menjalankan MST-PRIM(G, w, r) pada graf yang ditulis sebagai adjacency-list berbobot.
+
+- Isian: `G` (isian bebas) berbentuk `a: b(4), h(8); b: a(4), ...`, dan `r` (akar, teks 1 sampai 2 karakter). **Urutan penulisan simpul adalah urutan G.V dan urutan Q**, yang memutus seri
+  EXTRACT-MIN. Urutan tetangga adalah urutan Adj. Tiap sisi harus ditulis di kedua daftar dengan bobot sama (pemeriksa melaporkan sisi yang hanya tercatat satu arah atau berbobot beda).
+  Batas sama dengan Kruskal lewat `mstCommon.js`; daftar tetangga paling banyak 32 butir (16 sisi dua arah). Pemeriksa: `checkPrimInput` (`traces/primPseudo.js`).
+- Tabel atribut (`DpTable`): `key` dan `π` per simpul, dengan status `empty` (masih di Q), `black` (●, sudah di-extract, abu-abu di gambar materi), `current` (u), dan `source` (v). Keterangannya
+  diganti lewat `labels`. `key` dan `π` baru terisi mulai baris 2 dan 3.
+- Daftar teks: Q menurut urutan penulisan dengan key dalam kurung, tetangga u beserta bobot (baris 8 sampai 11), sisi tebal (v.π, v) saat ini (berganti saat baris 10 mengganti induk),
+  dan di langkah terakhir pohon rentang minimum beserta total (jumlah key semua simpul).
+- Baris 1 sampai 3 ditampilkan ringkas. Baris 6 dibaca tiap putaran (ditambah satu pemeriksaan akhir), dan header for baris 8 tiap tetangga (ditambah satu pemeriksaan akhir).
+  Banyak langkah: 6 + 3n + 2D + 2U (D jumlah panjang semua daftar tetangga, U banyak pembaruan key, yaitu pasangan baris 10 dan 11). Contoh materi: 113 langkah.
+- Tes `traces.mst.test.js` membandingkan urutan baris, simpul yang di-extract, dan total dengan Prim biasa (akar dan urutan tetangga acak) serta dengan Kruskal pada 300 graf acak, nilai key
+  tiap putaran contoh dengan panel (a) sampai (i) dokumen, dan aturan seri putaran 3 (c dan h sama-sama 8). Tes yang sama memastikan pseudocode kedua peraga persis sama dengan blok di `mst.md`, dan `mst.test.js` menjaga letak peraga serta angka langkah di teks materi.
 
 ### Menambah peraga baru
 

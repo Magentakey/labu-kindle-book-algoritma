@@ -7,6 +7,7 @@ import { checkMarkdown } from '../lib/checkMarkdown.js'
 import { splitContent } from '../lib/splitContent.js'
 import { buildToc } from '../lib/tableOfContents.js'
 import { kruskalSteps, primSteps } from '../algorithms/graphMst.js'
+import { runTrace, traces } from '../algorithms/traces.js'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '../..')
 const md = readFileSync(join(root, 'src/content/materials/mst.md'), 'utf8')
@@ -357,6 +358,29 @@ test('catatan visualizer: nomor 0 sampai 8, Kruskal stabil menerima (a,h), Prim 
   const want = DOC_TREE.map((e) => key2(String(idx[e[0]]), String(idx[e[1]]))).sort()
   assert.deepEqual(got, want, 'Prim visualizer = pohon dokumen')
   assert.ok(md.includes('`0-1`') && md.includes('`2-8`'))
+})
+
+test('peraga ::trace: Kruskal di akhir bagian C, Prim di akhir bagian E, dan angka di teks sesuai eksekusi', () => {
+  const traceSegs = segs.filter((x) => x.type === 'trace')
+  assert.deepEqual(traceSegs.map((x) => x.id), ['mst-kruskal', 'mst-prim'])
+  const at = (id) => segs.findIndex((x) => x.type === 'trace' && x.id === id)
+  assert.match(segs[at('mst-kruskal') + 1].text, /^## D\. Algoritma Prim/)
+  assert.match(segs[at('mst-prim') + 1].text, /^## F\. Analisis Running Time/)
+  // isian awal peraga adalah contoh materi dan menghasilkan total 37
+  for (const id of ['mst-kruskal', 'mst-prim']) {
+    const def = traces[id]
+    const r = runTrace(def, Object.fromEntries(def.inputs.map((i) => [i.key, i.value])))
+    assert.ok(r.ok, r.error)
+    assert.match(r.steps.at(-1).note, /total bobot 37/, id)
+    const word = id === 'mst-kruskal' ? 'Kruskal' : 'Prim'
+    assert.ok(md.includes(`### Peraga: Penelusuran ${word}`), `subbagian peraga ${word}`)
+    assert.ok(md.includes(`yaitu ${r.steps.length} langkah untuk contoh`), `jumlah langkah ${word} di teks = ${r.steps.length}`)
+  }
+  // rumus jumlah langkah di teks: 2m + 2n + 4 (Kruskal) dan 6 + 3n + 2D + 2U (Prim)
+  assert.ok(md.includes('$2m + 2n + 4$') && md.includes('$6 + 3n + 2D + 2U$'))
+  assert.equal(EDGES.length * 2 + V.length * 2 + 4, 50)
+  const D = EDGES.length * 2
+  assert.equal(6 + 3 * V.length + 2 * D + 2 * PR.loops.reduce((a, l) => a + l.upd.length, 0), 113)
 })
 
 test('aturan umum MST berlaku pada 200 graf acak: Kruskal = Prim = n-1 sisi', () => {

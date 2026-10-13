@@ -9,6 +9,8 @@ import { GREEDY_LIMITS, checkGreedyInput, greedyActivityCode, greedyActivityTrac
 import { bfsPseudoCode, bfsPseudoTrace, checkBfsInput } from './traces/bfsPseudo.js'
 import { checkDfsInput, dfsPseudoCode, dfsPseudoTrace } from './traces/dfsPseudo.js'
 import { checkHuffmanInput, huffmanPseudoCode, huffmanPseudoTrace } from './traces/huffmanPseudo.js'
+import { checkKruskalInput, kruskalPseudoCode, kruskalPseudoTrace } from './traces/kruskalPseudo.js'
+import { checkPrimInput, primPseudoCode, primPseudoTrace } from './traces/primPseudo.js'
 import { LCS_PSEUDO_MAX, lcsLengthPseudoCode, lcsLengthPseudoTrace, printLcsPseudoCode, printLcsPseudoTrace } from './traces/lcsPseudo.js'
 import {
   binarySearchIterCode,
@@ -117,6 +119,25 @@ const dfsPresets = [
   { label: 'Satu pohon: rantai a, b, c', values: { G: 'a: b; b: c; c:' } },
   { label: 'Tiga simpul tanpa busur (tiga pohon)', values: { G: 'a:; b:; c:' } },
   { label: 'Siklus a, b, c (ada busur B)', values: { G: 'a: b; b: c; c: a' } },
+]
+
+const kruskalVertices = 'a, b, c, d, e, f, g, h, i'
+
+const kruskalPresets = [
+  { label: 'Contoh materi: 9 simpul, 14 sisi (urutan sisi seperti hasil langkah 4)', values: { V: kruskalVertices, E: 'h-g:1, c-i:2, g-f:2, a-b:4, c-f:4, g-i:6, c-d:7, h-i:7, b-c:8, a-h:8, d-e:9, e-f:10, b-h:11, d-f:14' } },
+  { label: 'Urutan seperti gambar buku: (a,h) ditulis lebih dulu dari (b,c)', values: { V: kruskalVertices, E: 'a-b:4, a-h:8, b-c:8, b-h:11, c-d:7, c-i:2, c-f:4, d-e:9, d-f:14, e-f:10, f-g:2, g-h:1, g-i:6, h-i:7' } },
+  { label: 'Semua bobot sama (MST tidak unik)', values: { V: 'a, b, c', E: 'a-b:1, b-c:1, a-c:1' } },
+  { label: 'Graf yang sudah berupa pohon (tidak ada sisi ditolak)', values: { V: 'a, b, c, d', E: 'a-b:3, b-c:1, c-d:2' } },
+]
+
+const primExample =
+  'a: b(4), h(8); b: a(4), c(8), h(11); c: b(8), i(2), f(4), d(7); d: c(7), e(9), f(14); e: d(9), f(10); f: c(4), d(14), e(10), g(2); g: f(2), h(1), i(6); h: a(8), b(11), g(1), i(7); i: c(2), g(6), h(7)'
+
+const primPresets = [
+  { label: 'Contoh materi: akar a, 9 simpul', values: { G: primExample, r: 'a' } },
+  { label: 'Graf yang sama, akar e (urutan extract berbeda)', values: { G: primExample, r: 'e' } },
+  { label: 'Semua bobot sama (MST tidak unik)', values: { G: 'a: b(1), c(1); b: a(1), c(1); c: a(1), b(1)', r: 'a' } },
+  { label: 'Dua simpul saja', values: { G: 'a: b(5); b: a(5)', r: 'a' } },
 ]
 
 const lcsPresets = [
@@ -254,6 +275,36 @@ export const traces = {
     build: dfsPseudoTrace,
     legend: [],
     presets: dfsPresets,
+  },
+  'mst-kruskal': {
+    title: 'MST-KRUSKAL(G, w)',
+    intro:
+      'Membangun pohon rentang minimum dengan menambah sisi paling ringan yang tidak membentuk siklus. Isian awal adalah contoh materi (9 simpul, 14 sisi, sisi sudah tertulis menurut urutan hasil langkah 4), jadi tabelnya sama dengan tabel di bagian C dan totalnya 37. Simpul ditulis di V, sisi ditulis di E sebagai u-v:bobot. Graf harus terhubung, maksimal 9 simpul dan 16 sisi, bobot 0 sampai 99. Coba tombol urutan gambar buku untuk melihat pohon lain dengan total yang sama.',
+    code: kruskalPseudoCode,
+    codeLabel: 'Pseudocode MST-KRUSKAL',
+    inputs: [
+      { key: 'V', label: 'Simpul V (dipisah koma)', kind: 'free', value: kruskalVertices },
+      { key: 'E', label: 'Sisi E (u-v:bobot, dipisah koma)', kind: 'free', value: kruskalPresets[0].values.E },
+    ],
+    validate: checkKruskalInput,
+    build: kruskalPseudoTrace,
+    legend: [],
+    presets: kruskalPresets,
+  },
+  'mst-prim': {
+    title: 'MST-PRIM(G, w, r)',
+    intro:
+      'Membangun pohon rentang minimum dengan membesarkan satu pohon dari akar r, memakai antrean Q berisi simpul dengan key terkecil. Isian awal adalah contoh materi (akar a), jadi nilai key tiap putaran sama dengan panel (a) sampai (i) di bagian E dan totalnya 37. Graf ditulis sebagai adjacency-list berbobot: simpul, titik dua, lalu tetangga dengan bobot dalam kurung, dipisah titik koma. Urutan penulisan simpul adalah urutan Q. Tulis tiap sisi di kedua daftar dengan bobot sama. Graf harus terhubung, maksimal 9 simpul dan 16 sisi, bobot 0 sampai 99.',
+    code: primPseudoCode,
+    codeLabel: 'Pseudocode MST-PRIM',
+    inputs: [
+      { key: 'G', label: 'Adjacency-list G (simpul: tetangga(bobot); ...)', kind: 'free', value: primExample },
+      textInput('r', 'a', 'Akar r', 2),
+    ],
+    validate: checkPrimInput,
+    build: primPseudoTrace,
+    legend: [],
+    presets: primPresets,
   },
   'bilangan-max': {
     title: 'BILANGAN_MAX(bil1, bil2, bil3)',

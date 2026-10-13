@@ -298,6 +298,17 @@ Dari 14 sisi, 8 diterima (jumlah simpul dikurangi 1), sehingga $14 - 8 = 6$ dito
 Jumlah bobot 8 sisi pada $A$: $1 + 2 + 2 + 4 + 4 + 7 + 8 + 9 = 37$.
 :::
 
+### Peraga: Penelusuran Kruskal
+
+Peraga ini menjalankan pseudocode MST-KRUSKAL$(G, w)$ baris demi baris pada graf yang Anda isi. Isian awalnya adalah contoh di bagian C, dengan sisi sudah ditulis menurut urutan hasil langkah 4, jadi sisi yang diterima, himpunan $A$, dan himpunan terpisah pada tiap langkah sama dengan tabel hasil di atas.
+
+- Tabel **Sisi terurut menurut bobot** muncul setelah langkah 4. Sisi yang sedang diperiksa bertanda ▶, sisi yang diterima bertanda ★ dan tertulis "diterima", dan sisi yang ditolak berpola garis diagonal dan tertulis "ditolak", jadi statusnya tidak hanya dibedakan lewat warna.
+- Daftar **Himpunan terpisah** menunjukkan hasil MAKE-SET dan UNION saat ini, dan daftar **Himpunan A** menunjukkan sisi yang sudah dipilih. Pada langkah 6, variabel FIND-SET$(u)$ dan FIND-SET$(v)$ menunjukkan isi kedua himpunan yang dibandingkan. Bila keduanya sama, sisi ditolak dan langkah 7 dan 8 dilewati.
+- Baris 2 dan 3 (perulangan inisialisasi) ditampilkan ringkas: tiap baris satu langkah yang berlaku untuk semua simpul sekaligus. Mulai baris 4, satu langkah sama dengan satu baris yang dibaca, termasuk baris 5 saat sisi sudah habis (*end for*). Karena itu graf dengan $n$ simpul dan $m$ sisi selalu memakai $2m + 2n + 4$ langkah, yaitu 50 langkah untuk contoh.
+- Simpul ditulis di isian V, dan sisi ditulis di isian E sebagai `u-v:bobot`, misalnya `a-b:4`. **Sisi berbobot sama tetap menurut urutan penulisannya** (pengurutan stabil). Coba tombol "Urutan seperti gambar buku": sisi $(a,h)$ ditulis sebelum $(b,c)$, jadi $(a,h)$ diterima dan $(b,c)$ ditolak. Pohonnya berbeda, tetapi total bobotnya tetap 37, seperti pada jawaban lipat di atas. Graf harus terhubung, maksimal 9 simpul dan 16 sisi, dengan bobot 0 sampai 99.
+
+::trace mst-kruskal
+
 ## D. Algoritma Prim
 
 Algoritma Prim membangun satu pohon yang dimulai dari simpul awal (akar $r$). Pada tiap langkah, pohon dibesarkan dengan menambahkan simpul di luar pohon yang paling murah dijangkau dari pohon.
@@ -596,6 +607,17 @@ Pada putaran 5, $f$ memberi $e.key = 10$. Pada putaran 8, $d$ memberi $w(d,e) = 
 Jumlah $key$ semua simpul: $0 + 4 + 8 + 7 + 9 + 4 + 2 + 1 + 2 = 37$.
 :::
 
+### Peraga: Penelusuran Prim
+
+Peraga ini menjalankan pseudocode MST-PRIM$(G, w, r)$ baris demi baris pada graf berbobot yang Anda isi. Isian awalnya adalah contoh di bagian E (akar $a$), jadi nilai $key$ pada akhir tiap putaran sama dengan panel (a) sampai (i) dan dengan tabel perubahan di atas.
+
+- Tabel **Atribut tiap simpul** menunjukkan $key$ dan $\pi$ tiap simpul. Simpul yang masih di $Q$ berlatar putih, simpul yang sudah di-extract bertanda ● (abu-abu pada gambar), simpul $u$ yang baru di-extract bertanda ▶, dan tetangga $v$ yang sedang diperiksa bertanda khusus, jadi statusnya tidak hanya dibedakan lewat warna.
+- Daftar **Himpunan Q** menuliskan simpul yang tersisa menurut urutan penulisan, dengan $key$ di dalam kurung. Daftar **Tetangga** menunjukkan $Adj[u]$ beserta bobotnya, dan daftar **Sisi tebal** adalah sisi $(v.\pi, v)$ saat ini, yaitu sisi yang digambar tebal pada panel materi. Saat langkah 10 mengganti $h.\pi$ dari $a$ menjadi $i$ lalu $g$, sisi tebalnya ikut berganti. Di langkah terakhir muncul pohon rentang minimum dan totalnya.
+- Baris 1 sampai 3 (perulangan inisialisasi) ditampilkan ringkas: tiap baris satu langkah yang berlaku untuk semua simpul sekaligus. Mulai baris 4, satu langkah sama dengan satu baris yang dibaca, termasuk header *for* di baris 8 tiap tetangga (ditambah satu pemeriksaan akhir saat tetangga habis) dan baris 6 saat $Q$ sudah kosong. Dengan $n$ simpul, $D$ = jumlah panjang semua $Adj$, dan $U$ = banyak pembaruan $key$, banyaknya langkah selalu $6 + 3n + 2D + 2U$, yaitu 113 langkah untuk contoh.
+- Isiannya *adjacency-list* berbobot: simpul, titik dua, lalu tetangga dengan bobot dalam kurung, dipisah titik koma, misalnya `a: b(4), h(8)`. Tulis tiap sisi di kedua daftar dengan bobot yang sama. **Urutan penulisan simpul adalah urutan $Q$**, yang memutus seri EXTRACT-MIN: pada contoh, $c$ dan $h$ sama-sama bernilai 8, dan $c$ keluar lebih dulu karena ditulis lebih dulu. Coba tombol "akar e": urutan extract berubah, tetapi total bobotnya tetap 37. Graf harus terhubung, maksimal 9 simpul dan 16 sisi, dengan bobot 0 sampai 99.
+
+::trace mst-prim
+
 ## F. Analisis Running Time
 
 Bagian ini tambahan dari buku Cormen (tidak ada di dokumen kuliah). Ringkasan ini untuk graf terhubung dengan $\lvert V \rvert$ simpul dan $\lvert E \rvert$ sisi, sehingga $\lvert E \rvert \ge \lvert V \rvert - 1$.
@@ -644,6 +666,7 @@ Beberapa hal agar tidak bingung membandingkan dengan materi:
 - Kruskal pada visualisasi mengurutkan sisi dengan **urutan stabil**: sisi berbobot sama tetap menurut urutan penulisannya. Pada contoh klasik, `0-7` $(a,h)$ ditulis sebelum `1-2` $(b,c)$, sehingga $(a,h)$ diterima dan $(b,c)$ ditolak. Pohonnya berbeda dari tabel di bagian C, tetapi total bobotnya tetap 37, seperti dibahas di jawaban lipat bagian C.
 - Prim pada visualisasi memilih simpul dengan $key$ terkecil lewat **pemindaian larik**, bukan antrean prioritas. Hasilnya sama, hanya waktunya $O(V^2)$. Bila $key$ sama, simpul bernomor lebih kecil dipilih lebih dulu, sama dengan urutan $Q$ di bagian E. Urutan tetangga mengikuti urutan penulisan sisi, jadi urutan $Adj[c]$ bisa berbeda dari tabel bagian E, tetapi pohon dan total bobotnya sama.
 - Tombol contoh dan isian ada di panel "Ubah masukan". Contoh "Semua bobot sama" menunjukkan MST yang tidak unik.
+- Visualisasi ini menunjukkan jalannya algoritma pada graf. Untuk menelusuri **pseudocode bagian B dan D baris demi baris** pada contoh materi, gunakan peraga penelusuran di akhir bagian C (Kruskal) dan bagian E (Prim).
 
 ::visualizer
 
