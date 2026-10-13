@@ -70,7 +70,7 @@ export default function CodeTrace({ def }) {
                 if (e.key === 'Enter') apply(texts, 'Dijalankan dengan masukan baru.')
               }}
               aria-describedby={error ? `${uid}-error` : undefined}
-              className={`mt-1 min-h-12 rounded-xl border-2 border-stone-900 bg-white px-3 ${input.kind === 'array' ? (input.limits?.maxLength > 8 ? 'w-80 max-w-full' : 'w-56') : input.kind === 'text' ? 'w-40' : 'w-24'} ${focusRing}`}
+              className={`mt-1 min-h-12 rounded-xl border-2 border-stone-900 bg-white px-3 ${input.kind === 'array' ? (input.limits?.maxLength > 8 ? 'w-80 max-w-full' : 'w-56') : input.kind === 'free' ? 'w-80 max-w-full' : input.kind === 'text' ? 'w-40' : 'w-24'} ${focusRing}`}
             />
           </div>
         ))}
@@ -173,6 +173,21 @@ export default function CodeTrace({ def }) {
                   })}
                 </tbody>
               </table>
+
+              {step.lists?.map((l) => (
+                <div key={l.title}>
+                  <p className="font-semibold">{l.title}</p>
+                  {l.items.length ? (
+                    <ul className="mt-1 list-disc space-y-1 pl-6 font-mono text-sm">
+                      {l.items.map((it, i) => (
+                        <li key={i}>{it}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="mt-1 text-sm">{l.empty ?? 'kosong'}</p>
+                  )}
+                </div>
+              ))}
 
               {step.stack && (
                 <div>

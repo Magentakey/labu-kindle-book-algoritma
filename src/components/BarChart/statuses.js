@@ -99,4 +99,20 @@ export const STATUS = {
       'repeating-linear-gradient(0deg, transparent 0 5px, #7f1d1d 5px 6px), ' +
       'repeating-linear-gradient(90deg, transparent 0 5px, #7f1d1d 5px 6px), #fecaca',
   },
+  // Peraga HUFFMAN: simpul yang dikeluarkan dari Q (anak kiri x dan anak kanan y) dan simpul gabungan baru z
+  childLeft: {
+    label: 'anak kiri (x, hasil EXTRACT-MIN pertama)',
+    glyph: 'x',
+    fill: 'repeating-linear-gradient(135deg, #93c5fd 0 5px, #1e3a8a 5px 7px)',
+  },
+  childRight: {
+    label: 'anak kanan (y, hasil EXTRACT-MIN kedua)',
+    glyph: 'y',
+    fill: 'radial-gradient(#78350f 1.6px, transparent 1.7px) 0 0 / 8px 8px, #fcd34d',
+  },
+  newNode: {
+    label: 'simpul gabungan baru (z)',
+    glyph: 'z',
+    fill: 'repeating-linear-gradient(-45deg, #86efac 0 6px, #166534 6px 8px)',
+  },
 }

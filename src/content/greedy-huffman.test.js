@@ -84,6 +84,7 @@ test('daftar isi sidebar materi 10.2', () => {
     'G. Rangkuman',
     'Soal Challenge',
   ])
+  assert.deepEqual(items.filter((i) => i.level === 3).map((i) => i.text), ['Contoh Masalah', 'Menghitung Panjang Bit', 'Pseudocode', 'Peraga: Penelusuran HUFFMAN', 'Menghitung Biaya dari Tabel Kode', 'Menghitung Biaya dari Simpul Gabungan', 'Perbandingan dengan Pohon Panjang Bit Tetap', 'Waktu Eksekusi'])
 })
 
 test('hitungan bit di bagian A cocok dengan data dokumen', () => {

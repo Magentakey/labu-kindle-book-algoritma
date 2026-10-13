@@ -200,7 +200,7 @@ Pembaca mengisi masukan, lalu menjalankan pseudocode baris demi baris sambil mel
 ```
 
 Id yang tersedia: `bilangan-max`, `jumlah-n-bil`, `binary-search-iteratif`, `binary-search-rekursif`, `insertion-sort`,
-`insertion-sort-best`, `insertion-sort-worst`, `cari-bil-k`, `merge-sort`, `matrix-chain-order`, `lcs-length`, `print-lcs`, `greedy-activity-selector`.
+`insertion-sort-best`, `insertion-sort-worst`, `cari-bil-k`, `merge-sort`, `matrix-chain-order`, `lcs-length`, `print-lcs`, `greedy-activity-selector`, `huffman`.
 
 Nomor baris pada peraga **sama dengan nomor langkah di materi**, jadi tulis pseudocode di materi dengan nomor yang sama.
 
@@ -285,6 +285,21 @@ bisa diulang dan hasilnya tidak optimal.
 - Tesnya (`traces.greedy.test.js`) membandingkan urutan baris dengan eksekusi pseudocode apa adanya pada 300 masukan acak, kalimat
   "optimal" atau "TIDAK optimal" dengan brute force semua himpunan bagian, dan memastikan A hanya berubah di baris 2 dan 6 serta k di baris 3 dan 7.
   `greedy-activity-selection.test.js` menjaga pseudocode peraga sama persis dengan blok di materi, dan tombol contoh sama dengan tabel latihan.
+
+### Peraga dengan antrean dan pohon: `huffman`
+
+Peraga materi 10.2 menjalankan HUFFMAN(C) (9 baris). Isiannya pasangan `simbol:frekuensi` (contoh `a:45, b:13`), 2 sampai 8 simbol
+berbeda dan frekuensi 1 sampai 99, sama dengan visualizer pohon Huffman.
+
+- Isian bertipe `free` adalah teks bebas. Bentuknya diperiksa oleh `validate` (di sini `checkHuffmanInput`), bukan oleh `runTrace`.
+- Langkah boleh memuat `lists`: daftar teks berjudul unik di bawah tabel variabel. Peraga ini memakainya untuk isi Q,
+  simpul gabungan yang sudah dibuat, dan (di langkah terakhir) kode Huffman tiap simbol.
+- Status baru: `childLeft` (x, anak kiri), `childRight` (y, anak kanan), dan `newNode` (z yang baru dimasukkan ke Q).
+- Antrean diurutkan naik menurut frekuensi. Bila seri, simpul yang lebih dulu dibuat didahulukan, sama dengan visualizer.
+  Daun ditulis `simbol:frekuensi` dan simpul gabungan `zk:frekuensi` (k = nomor putaran).
+- Header perulangan (baris 3) dicatat tiap putaran, termasuk pemeriksaan terakhir. Banyak langkah: 6n - 2.
+- Tes `traces.huffman.test.js` membandingkan urutan baris dan isi Q dengan eksekusi pseudocode pada 300 masukan acak, serta kode,
+  sifat prefiks, dan biaya (sama dengan jumlah semua z.freq) pada 200 masukan acak.
 
 ### Menambah peraga baru
 

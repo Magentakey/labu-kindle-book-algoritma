@@ -6,6 +6,7 @@ import { cariBilKCode, cariBilKCost, cariBilKTrace } from './traces/cariBilK.js'
 import { mergeSortPseudoCode, mergeSortPseudoTrace } from './traces/mergeSortPseudo.js'
 import { checkMatrixChainP, matrixChainPseudoCode, matrixChainPseudoTrace } from './traces/matrixChainPseudo.js'
 import { GREEDY_LIMITS, checkGreedyInput, greedyActivityCode, greedyActivityTrace } from './traces/greedyActivity.js'
+import { checkHuffmanInput, huffmanPseudoCode, huffmanPseudoTrace } from './traces/huffmanPseudo.js'
 import { LCS_PSEUDO_MAX, lcsLengthPseudoCode, lcsLengthPseudoTrace, printLcsPseudoCode, printLcsPseudoTrace } from './traces/lcsPseudo.js'
 import {
   binarySearchIterCode,
@@ -22,6 +23,7 @@ import {
  * @property {Array<{ name: string, value: string }>} vars  nilai variabel SESUDAH baris itu dijalankan
  * @property {{ title: string, values: number[], marks: string[], indexBase: number } | null} array
  * @property {Array<{ title: string, values: number[], marks: string[], indexBase: number }>} [arrays]  beberapa array sekaligus (misalnya s dan f); judulnya harus berbeda
+ * @property {Array<{ title: string, items: string[], empty?: string }>} [lists]  daftar teks (misalnya isi antrean atau simpul pohon), judul harus berbeda
  * @property {string[]} [stack]  tumpukan panggilan (rekursif)
  * @property {Array<{ table: { caption: string, corner: string, rowHeaders: string[], colHeaders: string[], cells: Array<Array<{ text: string, sub?: string, mark: string, glyph?: string }>> }, labels?: Record<string, string>, legend?: string[] }>} [tables]
  *   tabel DP (misalnya tabel m dan s) pada langkah ini, tampil di bawah kode dan variabel
@@ -34,7 +36,7 @@ import {
  * @property {string} intro       satu kalimat pengantar
  * @property {string} code        pseudocode, satu baris kode per baris (nomor baris = nomor langkah di materi)
  * @property {string} codeLabel
- * @property {Array<{ key: string, label: string, kind: 'int' | 'array' | 'text', value: string, max?: number, limits?: { maxLength?: number, minValue?: number, maxValue?: number } }>} inputs
+ * @property {Array<{ key: string, label: string, kind: 'int' | 'array' | 'text' | 'free', value: string, max?: number, limits?: { maxLength?: number, minValue?: number, maxValue?: number } }>} inputs
  * @property {(values: Record<string, any>) => string|null} [validate]  pesan kesalahan, atau null bila masukan sah
  * @property {(values: Record<string, any>) => TraceStep[]} build
  * @property {string[]} [legend]  status yang dipakai array (kunci STATUS)
@@ -89,6 +91,13 @@ const greedyPresets = [
   { label: 'Latihan a: urut start time (tidak optimal)', values: { s: '0, 1, 2, 3, 3, 5, 5, 6, 8, 8, 12', f: '6, 4, 14, 5, 9, 7, 9, 10, 11, 12, 16' } },
   { label: 'Latihan b: urut durasi (kebetulan optimal)', values: { s: '3, 5, 1, 8, 5, 6, 8, 12, 0, 3, 2', f: '5, 7, 4, 11, 9, 10, 12, 16, 6, 9, 14' } },
   { label: 'Contoh tandingan urut durasi: 3 aktivitas', values: { s: '4, 0, 5', f: '6, 5, 10' } },
+]
+
+const huffmanPresets = [
+  { label: 'Contoh materi: a:45 sampai f:5', values: { C: 'a:45, b:13, c:12, d:16, e:9, f:5' } },
+  { label: 'Frekuensi Fibonacci (pohon miring)', values: { C: 'a:1, b:1, c:2, d:3, e:5, f:8' } },
+  { label: 'Frekuensi sama (aturan seri)', values: { C: 'a:3, b:3, c:3, d:3' } },
+  { label: 'Dua simbol saja', values: { C: 'a:7, b:2' } },
 ]
 
 const lcsPresets = [
@@ -188,6 +197,18 @@ export const traces = {
     legend: ['normal', 'current', 'compare', 'chosen', 'skipped'],
     presets: greedyPresets,
   },
+  huffman: {
+    title: 'HUFFMAN(C)',
+    intro:
+      'Membangun pohon Huffman dengan algoritma Greedy: gabungkan dua simpul berfrekuensi terkecil, ulangi sampai tinggal satu. Isian awal adalah contoh materi (a:45, b:13, c:12, d:16, e:9, f:5), hasilnya kode a = 0 dan biaya 224. Isian berupa pasangan simbol:frekuensi, 2 sampai 8 simbol berbeda, frekuensi 1 sampai 99.',
+    code: huffmanPseudoCode,
+    codeLabel: 'Pseudocode HUFFMAN',
+    inputs: [{ key: 'C', label: 'Himpunan C (simbol:frekuensi)', kind: 'free', value: 'a:45, b:13, c:12, d:16, e:9, f:5' }],
+    validate: checkHuffmanInput,
+    build: huffmanPseudoTrace,
+    legend: ['normal', 'childLeft', 'childRight', 'newNode'],
+    presets: huffmanPresets,
+  },
   'bilangan-max': {
     title: 'BILANGAN_MAX(bil1, bil2, bil3)',
     intro: 'Menentukan bilangan terbesar dari tiga bilangan. Ubah nilainya, lalu jalankan lagi.',
@@ -244,6 +265,9 @@ export function runTrace(def, texts) {
       if (text === '') return { ok: false, error: `${input.label} tidak boleh kosong.` }
       if (!/^[A-Za-z0-9]+$/.test(text)) return { ok: false, error: `${input.label} hanya boleh berisi huruf dan angka, tanpa spasi atau tanda baca.` }
       if (text.length > input.max) return { ok: false, error: `${input.label} maksimal ${input.max} karakter (Anda mengisi ${text.length}).` }
+      values[input.key] = text
+    } else if (input.kind === 'free') {
+      // Teks bebas: bentuknya diperiksa oleh def.validate.
       values[input.key] = text
     } else if (input.kind === 'int') {
       if (!/^-?\d+$/.test(text)) return { ok: false, error: `${input.label} harus berupa bilangan bulat.` }

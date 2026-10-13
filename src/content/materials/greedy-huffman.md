@@ -252,6 +252,17 @@ Sebelum putaran 3, $Q$ berisi 14, d:16, 25, a:45. Dua yang terkecil adalah 14 da
 Anak kiri adalah hasil EXTRACT-MIN pertama, yaitu simpul yang frekuensinya paling kecil. Karena $45 < 55$, a:45 keluar lebih dulu dan menjadi anak kiri.
 :::
 
+### Peraga: Penelusuran HUFFMAN
+
+Peraga di bawah ini menjalankan pseudocode HUFFMAN baris demi baris. Nomor baris yang menyala sama dengan nomor langkah di bagian C. Isian awalnya adalah contoh materi (a:45, b:13, c:12, d:16, e:9, f:5), jadi seluruh langkahnya (34 langkah) bisa dibandingkan dengan slide dan tabel di atas.
+
+- Daftar **Isi Q** menunjukkan antrean yang selalu terurut naik. Daun ditulis `simbol:frekuensi` (misalnya f:5), dan simbol gabungan ditulis `zk:frekuensi`, dengan $k$ putaran pembuatannya (misalnya z1:14).
+- Setelah baris 5 dan 6, array kedua menunjukkan simpul **x** (anak kiri) dan **y** (anak kanan) yang baru dikeluarkan dari Q. Setelah baris 8, simpul baru **z** bertanda di dalam Q.
+- Di langkah terakhir muncul kode tiap simbol dan biaya totalnya.
+- Isiannya pasangan `simbol:frekuensi` dipisah koma, 2 sampai 8 simbol berbeda, frekuensi 1 sampai 99. Coba tombol "Frekuensi sama" untuk melihat aturan seri: simpul yang lebih dulu dibuat dikeluarkan lebih dulu.
+
+::trace huffman
+
 ## E. Kode Huffman dari Pohon
 
 Pohon Huffman yang sudah jadi dipakai untuk membaca kode tiap karakter. Beri label **0** pada garis ke anak kiri dan **1** pada garis ke anak kanan. Kode sebuah karakter adalah deretan label dari **akar** sampai **daun** karakter itu.
