@@ -80,4 +80,10 @@ export const STATUS = {
     glyph: '✓',
     fill: 'repeating-linear-gradient(-45deg, #6ee7b7 0 6px, #047857 6px 8px)',
   },
+  // Peraga MATRIX-CHAIN-ORDER: tiga nilai p yang dikalikan pada baris q = ...
+  factor: {
+    label: 'faktor pada q (p[i-1], p[k], p[j])',
+    glyph: '◆',
+    fill: 'repeating-linear-gradient(135deg, #f0abfc 0 4px, #86198f 4px 6px)',
+  },
 }

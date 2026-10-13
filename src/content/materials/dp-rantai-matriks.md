@@ -258,6 +258,22 @@ $j = i + l - 1 = 2 + 3 - 1 = 4$. Jadi yang dihitung adalah $m[2,4]$, yaitu ranta
 Biaya $m[i,j]$ memakai $m[i,k]$ dan $m[k+1,j]$, yang rantainya lebih pendek. Itulah cara kerja *bottom-up*.
 :::
 
+### Peraga: Penelusuran MATRIX-CHAIN-ORDER
+
+Peraga berikut menjalankan 14 baris pseudocode di atas satu langkah demi satu langkah, dengan barisan $p$ yang bisa Anda ubah. Nomor baris yang menyala sama dengan nomor langkah di materi. Isian awalnya contoh materi, $p = \{30, 35, 15, 5, 10, 20, 25\}$, sehingga hasil akhirnya harus sama dengan bagian E: $m[1,6] = 15.125$.
+
+::trace matrix-chain-order
+
+Beberapa hal yang bisa diamati:
+
+- **Baris 10** menampilkan $q$ untuk satu titik pecah $k$. Dua sel yang dijumlahkan ditandai **Ki** ($m[i,k]$) dan **Ka** ($m[k+1,j]$) di tabel $m$, dan tiga nilai $p$ yang dikalikan ditandai ◆ di barisan $p$.
+- **Baris 11 sampai 13** hanya memperbarui $m[i,j]$ dan $s[i,j]$ bila $q$ lebih kecil dari nilai yang tersimpan. Bila tidak, baris 12 dan 13 dilewati.
+- Untuk melihat **Contoh 2** di bagian E, tekan "Berikutnya" sampai variabel $i = 2$ dan $j = 5$. Baris 10 akan menampilkan $q$ untuk $k = 2, 3, 4$ berturut-turut: 13.000, 7.125, lalu 11.375.
+- Angka kecil $k$ di bawah isi sel tabel $m$ sama dengan isi sel di tabel $s$.
+- Pada langkah terakhir, sel yang terpakai pada urutan optimal ditandai ★, dan urutan pengurungannya ditulis di catatan langkah.
+
+Contoh materi menghasilkan 240 langkah karena tiap baris perulangan dibaca satu kali tiap putaran, ditambah satu kali saat perulangan selesai. Untuk mencoba cepat, tekan tombol contoh tiga matriks (47 langkah). Peraga menerima 2 sampai 6 matriks, yaitu 3 sampai 7 angka positif.
+
 ## E. Tabel m dan Tabel s
 
 Hasil menjalankan MATRIX-CHAIN-ORDER untuk $p = \{30, 35, 15, 5, 10, 20, 25\}$ berupa tabel $m$ dan tabel $s$. Gambar berikut menyusunnya sebagai segitiga: $i$ dibaca ke kiri-bawah, $j$ dibaca ke kanan-bawah, dan diagonal paling bawah adalah $m[i,i] = 0$.

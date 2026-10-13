@@ -62,7 +62,7 @@ test('materi 8 bersih dari error dan saran', () => {
 test('materi 8 memakai komponen yang sama dengan materi sebelumnya', () => {
   assert.equal(meta.hasText, true)
   const types = segs.map((s) => s.type)
-  for (const t of ['steps', 'quiz', 'visualizer', 'challenge']) assert.ok(types.includes(t), `belum ada komponen ${t}`)
+  for (const t of ['steps', 'quiz', 'trace', 'visualizer', 'challenge']) assert.ok(types.includes(t), `belum ada komponen ${t}`)
   assert.equal(types.at(-1), 'challenge', 'soal challenge tetap paling akhir')
   const steps = segs.filter((s) => s.type === 'steps')
   assert.deepEqual(
@@ -94,6 +94,7 @@ test('daftar isi sidebar materi 8', () => {
     'Jumlah Operasi Perkalian',
     'Barisan p sebagai masukan',
     'Pseudocode',
+    'Peraga: Penelusuran MATRIX-CHAIN-ORDER',
     'Tabel m: biaya minimum',
     'Tabel s: titik pecah terbaik',
     'Menyusun urutan perkalian dari tabel s',
@@ -231,4 +232,17 @@ test('teks selaras dengan soal challenge dan visualizer', () => {
   // contoh 10, 30, 5, 60 di soal challenge sama dengan contoh kuis
   assert.equal(solveMatrixChain([10, 30, 5, 60]).cost, 4500)
   assert.match(challenge.description, /4500/)
+})
+
+test('peraga ::trace matrix-chain-order dipasang di bagian D dan angka di teks cocok dengan peraga', async () => {
+  const { traces, runTrace } = await import('../algorithms/traces.js')
+  const trace = segs.find((s) => s.type === 'trace')
+  assert.equal(trace.id, 'matrix-chain-order')
+  const types = segs.map((s) => s.type)
+  assert.ok(types.indexOf('trace') < types.indexOf('visualizer'))
+  const steps = (p) => runTrace(traces['matrix-chain-order'], { p }).steps.length
+  assert.equal(steps(P.join(', ')), 240)
+  assert.equal(steps('2, 3, 8, 5'), 47)
+  assert.ok(md.includes('240 langkah') && md.includes('(47 langkah)'))
+  assert.equal(traces['matrix-chain-order'].inputs[0].value, P.join(', '))
 })

@@ -1,6 +1,7 @@
 import { useId, useMemo, useState } from 'react'
 import CodeBlock from '../CodeBlock/CodeBlock.jsx'
 import { runTrace } from '../../algorithms/traces.js'
+import DpTable from '../DpTable/DpTable.jsx'
 import IndexedArray from './IndexedArray.jsx'
 import TraceCostTable from './TraceCostTable.jsx'
 import { focusRing, primaryButton, secondaryButton } from './styles.js'
@@ -187,6 +188,16 @@ export default function CodeTrace({ def }) {
               )}
             </div>
           </div>
+
+          {step.tables && (
+            <div className="mt-4 grid gap-4 lg:grid-cols-2">
+              {step.tables.map((t) => (
+                <div key={t.table.caption} className="min-w-0">
+                  <DpTable table={t.table} labels={t.labels} legend={t.legend} />
+                </div>
+              ))}
+            </div>
+          )}
 
           {def.cost && step.counts && (
             <div className="mt-4">

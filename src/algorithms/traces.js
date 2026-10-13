@@ -4,6 +4,7 @@ import { jumlahBilCode, jumlahBilTrace } from './traces/jumlahBil.js'
 import { insertionSortCost, insertionSortPseudoCode, insertionSortPseudoTrace } from './traces/insertionSortPseudo.js'
 import { cariBilKCode, cariBilKCost, cariBilKTrace } from './traces/cariBilK.js'
 import { mergeSortPseudoCode, mergeSortPseudoTrace } from './traces/mergeSortPseudo.js'
+import { checkMatrixChainP, matrixChainPseudoCode, matrixChainPseudoTrace } from './traces/matrixChainPseudo.js'
 import {
   binarySearchIterCode,
   binarySearchIterTrace,
@@ -19,6 +20,8 @@ import {
  * @property {Array<{ name: string, value: string }>} vars  nilai variabel SESUDAH baris itu dijalankan
  * @property {{ title: string, values: number[], marks: string[], indexBase: number } | null} array
  * @property {string[]} [stack]  tumpukan panggilan (rekursif)
+ * @property {Array<{ table: { caption: string, corner: string, rowHeaders: string[], colHeaders: string[], cells: Array<Array<{ text: string, sub?: string, mark: string, glyph?: string }>> }, labels?: Record<string, string>, legend?: string[] }>} [tables]
+ *   tabel DP (misalnya tabel m dan s) pada langkah ini, tampil di bawah kode dan variabel
  * @property {Record<number, number>} [counts]  berapa kali tiap baris sudah terbaca SAMPAI langkah ini (untuk analisis running time)
  */
 
@@ -71,6 +74,13 @@ const mergeSortPresets = [
   { label: 'Satu bilangan: 7', values: { A: '7' } },
 ]
 
+const matrixChainPresets = [
+  { label: 'Contoh materi: 6 matriks', values: { p: '30, 35, 15, 5, 10, 20, 25' } },
+  { label: 'Tiga matriks: 2, 3, 8, 5', values: { p: '2, 3, 8, 5' } },
+  { label: 'Soal kuis: 10, 30, 5, 60', values: { p: '10, 30, 5, 60' } },
+  { label: 'Dua matriks: 10, 20, 30', values: { p: '10, 20, 30' } },
+]
+
 /** @type {Record<string, TraceDef>} */
 export const traces = {
   'insertion-sort': insertionSortTrace(
@@ -109,6 +119,18 @@ export const traces = {
     build: mergeSortPseudoTrace,
     legend: ['normal', 'range', 'left', 'right', 'sorted', 'merged'],
     presets: mergeSortPresets,
+  },
+  'matrix-chain-order': {
+    title: 'MATRIX-CHAIN-ORDER(p)',
+    intro:
+      'Mengisi tabel m (biaya minimum) dan tabel s (titik pecah terbaik) untuk rantai matriks. Isian awal adalah contoh di materi (6 matriks). Perhatikan sel Ki dan Ka: dua sel yang dijumlahkan pada baris 10, bersama tiga nilai p bertanda ◆.',
+    code: matrixChainPseudoCode,
+    codeLabel: 'Pseudocode MATRIX-CHAIN-ORDER',
+    inputs: [{ key: 'p', label: 'Barisan p (ukuran matriks)', kind: 'array', value: '30, 35, 15, 5, 10, 20, 25' }],
+    validate: ({ p }) => checkMatrixChainP(p),
+    build: matrixChainPseudoTrace,
+    legend: ['normal', 'factor'],
+    presets: matrixChainPresets,
   },
   'bilangan-max': {
     title: 'BILANGAN_MAX(bil1, bil2, bil3)',

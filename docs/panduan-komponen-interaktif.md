@@ -200,7 +200,7 @@ Pembaca mengisi masukan, lalu menjalankan pseudocode baris demi baris sambil mel
 ```
 
 Id yang tersedia: `bilangan-max`, `jumlah-n-bil`, `binary-search-iteratif`, `binary-search-rekursif`, `insertion-sort`,
-`insertion-sort-best`, `insertion-sort-worst`, `cari-bil-k`, `merge-sort`.
+`insertion-sort-best`, `insertion-sort-worst`, `cari-bil-k`, `merge-sort`, `matrix-chain-order`.
 
 Nomor baris pada peraga **sama dengan nomor langkah di materi**, jadi tulis pseudocode di materi dengan nomor yang sama.
 
@@ -234,6 +234,19 @@ Tabel variabel menampilkan p, q, r milik **pemanggilan yang sedang berjalan**, j
 saat pemanggilan selesai. `merge-sort` menampilkan MERGE sebagai satu langkah (baris 5), dan status sel `left`/`right`
 (dibagi), `sorted` (satu bilangan), serta `merged` (hasil MERGE) menunjukkan bagian yang sudah terurut. Banyak langkahnya
 6n − 5, dan tesnya membandingkan urutan pemanggilan serta isi A tiap MERGE dengan eksekusi independen dari pseudocode.
+
+### Peraga dengan tabel DP
+
+`matrix-chain-order` (materi 8) mengisi `tables` pada tiap langkah: daftar `{ table, labels, legend }` yang ditampilkan dengan komponen
+`DpTable` di bawah kode dan variabel (dua kolom di layar lebar). Bentuk `table` sama dengan visualizer tabel DP
+(`caption`, `corner`, `rowHeaders`, `colHeaders`, `cells` berisi `{ text, sub, mark, glyph }`). Peraga ini menampilkan tabel m dan s,
+dan barisan p sebagai array berindeks 0 dengan status `factor` untuk tiga nilai yang dikalikan pada baris 10.
+
+- Masukan `p` berupa 3 sampai 7 bilangan bulat positif (2 sampai 6 matriks). Isian awalnya contoh materi (240 langkah).
+- Tiap baris perulangan dibaca sekali tiap putaran ditambah sekali saat kondisinya tidak terpenuhi lagi, seperti `jumlah-n-bil`.
+- Tesnya (`traces.matrixChain.test.js`) membandingkan urutan baris dengan eksekusi pseudocode apa adanya pada 300 barisan acak,
+  dan tabel m dan s akhir dengan hitungan semua urutan pengurungan.
+- Pseudocode peraga harus sama persis dengan blok pseudocode di `dp-rantai-matriks.md`, dan ada tes yang menjaganya.
 
 ### Menambah peraga baru
 
