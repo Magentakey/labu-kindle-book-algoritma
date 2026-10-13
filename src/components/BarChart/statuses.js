@@ -86,4 +86,17 @@ export const STATUS = {
     glyph: '◆',
     fill: 'repeating-linear-gradient(135deg, #f0abfc 0 4px, #86198f 4px 6px)',
   },
+  // Peraga GREEDY-ACTIVITY-SELECTOR: aktivitas yang masuk ke himpunan A dan yang dilewati karena bentrok
+  chosen: {
+    label: 'dipilih (masuk ke A)',
+    glyph: 'A',
+    fill: 'repeating-linear-gradient(-45deg, #86efac 0 6px, #166534 6px 8px)',
+  },
+  skipped: {
+    label: 'dilewati (bentrok dengan aktivitas terakhir di A)',
+    glyph: '×',
+    fill:
+      'repeating-linear-gradient(0deg, transparent 0 5px, #7f1d1d 5px 6px), ' +
+      'repeating-linear-gradient(90deg, transparent 0 5px, #7f1d1d 5px 6px), #fecaca',
+  },
 }

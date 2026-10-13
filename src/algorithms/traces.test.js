@@ -147,10 +147,12 @@ test('setiap langkah: baris valid, catatan diawali "Baris N", variabel dan penan
       assert.ok(Number.isInteger(s.line) && s.line >= 1 && s.line <= codeLines.length, `${id} baris ${s.line}`)
       assert.ok(s.note.startsWith(`Baris ${s.line}`), s.note)
       assert.ok(s.vars.length > 0 && s.vars.every((v) => typeof v.name === 'string' && typeof v.value === 'string'))
-      if (s.array) {
-        assert.equal(s.array.marks.length, s.array.values.length)
-        assert.ok(s.array.marks.every((m) => STATUS[m]), `${id} status tak dikenal ${s.array.marks}`)
-        for (const m of s.array.marks) assert.ok(def.legend.includes(m), `${id}: ${m} tidak ada di legend`)
+      const arrays = s.arrays ?? (s.array ? [s.array] : [])
+      assert.equal(new Set(arrays.map((a) => a.title)).size, arrays.length, `${id}: judul array harus berbeda`)
+      for (const a of arrays) {
+        assert.equal(a.marks.length, a.values.length)
+        assert.ok(a.marks.every((m) => STATUS[m]), `${id} status tak dikenal ${a.marks}`)
+        for (const m of a.marks) assert.ok(def.legend.includes(m), `${id}: ${m} tidak ada di legend`)
       }
     }
   }
@@ -217,6 +219,16 @@ test('teks baris pseudocode cocok dengan nomor langkah di materi', () => {
       /^elseif b\[i, j\] == "↑"$/,
       /^ +PRINT-LCS\(b, X, i-1, j\)$/,
       /^else PRINT-LCS\(b, X, i, j-1\)$/,
+    ],
+    'greedy-activity-selector': [
+      /^n = s\.length$/,
+      /^A = \{a_1\}$/,
+      /^k = 1$/,
+      /^for m = 2 to n$/,
+      /^ +if s\[m\] >= f\[k\]$/,
+      /^ +A = A ∪ \{a_m\}$/,
+      /^ +k = m$/,
+      /^return A$/,
     ],
     'bilangan-max': [/^max = bil1/, /^if \(max < bil2\)/, /then max = bil2/, /^if \(max < bil3\)/, /then max = bil3/, /^return max/],
     'jumlah-n-bil': [/^jumlah = 0/, /^for i = 1 to n/, /jumlah = jumlah \+ A\[i\]/, /^return jumlah/],

@@ -296,6 +296,18 @@ Prosedur memilih $a_1$ pada $[4, 6)$, lalu $a_2$ pada $[0, 5)$ dan $a_3$ pada $[
 
 Pada start time, hasilnya jelas tidak optimal. Pada durasi, hasilnya tidak selalu optimal. Karena itu urutan menurut **finish time** yang dipakai: aktivitas yang selesai paling awal menyisakan waktu paling banyak untuk aktivitas berikutnya.
 
+### Peraga: Penelusuran GREEDY-ACTIVITY-SELECTOR
+
+Peraga di bawah menjalankan pseudocode GREEDY-ACTIVITY-SELECTOR baris demi baris dengan array $s$ dan $f$ yang bisa Anda isi sendiri. Berbeda dengan visualisasi di bagian G, peraga ini **tidak mengurutkan data lebih dulu**. Data dibaca persis menurut urutan masukan, sehingga latihan di atas bisa diulang dan hasilnya bisa dibandingkan.
+
+- Isian awalnya himpunan $S$ di materi ini (31 langkah, hasil $\{a_1, a_4, a_8, a_{11}\}$). Penelusurannya sama dengan tabel di bagian E.
+- Empat tombol contoh siap pakai: contoh materi, latihan a (urut start time, hasil 3 aktivitas), latihan b (urut durasi, hasil 4 aktivitas), dan contoh tandingan tiga aktivitas (hasil hanya 1).
+- Pada langkah terakhir, peraga menyebut apakah jumlah aktivitas yang terpilih sama dengan maksimum untuk data itu. Pada latihan a dan contoh tandingan, jawabannya tidak.
+- Peraga menerima 1 sampai 12 aktivitas dan waktu 0 sampai 30. Kedua array harus sama panjang, dan tiap $f_i$ harus lebih besar dari $s_i$. Nomor aktivitas ditulis $a_1$ sampai $a_n$ menurut urutan masukan, dan indeks array dimulai dari 1, sama dengan pseudocode.
+- Sel yang dipilih ditandai **A**, sel yang dilewati ditandai **×**, dan dua sel yang dibandingkan di baris 5 ($s[m]$ dan $f[k]$) ditandai **?**.
+
+::trace greedy-activity-selector
+
 :::quiz Cek pemahaman: urutan data
 ::question Jika data diurutkan menurut start time pada himpunan contoh, berapa aktivitas yang dipilih prosedur?
 - [ ] 4, dan hasilnya optimal
@@ -318,7 +330,7 @@ Visualisasi di bawah ini menggambar tiap aktivitas sebagai batang pada sumbu wak
 Beberapa hal agar tidak bingung membandingkan dengan pseudocode:
 
 - Isiannya dua baris, `start` dan `finish`, sama dengan array $s$ dan $f$. Contoh siap pakai ada di panel "Ubah masukan". Jumlah aktivitas 1 sampai 12, waktu 0 sampai 30, dan finish harus lebih besar dari start.
-- Visualisasi **selalu mengurutkan lebih dulu menurut finish time**, jadi data yang belum terurut pun diterima dan batangnya berpindah baris. Karena itu visualisasi ini tidak bisa dipakai untuk mengulang latihan di bagian F, yang memang memakai urutan lain.
+- Visualisasi **selalu mengurutkan lebih dulu menurut finish time**, jadi data yang belum terurut pun diterima dan batangnya berpindah baris. Karena itu visualisasi ini tidak bisa dipakai untuk mengulang latihan di bagian F. Untuk latihan itu, pakai peraga penelusuran di bagian F, yang membaca data menurut urutan masukan.
 - Visualisasi menamai aktivitas $a_1$ sampai $a_n$ menurut urutan masukan, sedangkan di kodenya $a_1$ adalah indeks 0. Sebelum pengurutan, $a_i$ pada visualisasi adalah $a_i$ pada tabel isian Anda.
 - Kodenya tidak memakai $k$. Waktu selesai aktivitas terakhir yang dipilih disimpan di variabel `akhir` (awalnya tak hingga negatif, sehingga aktivitas pertama pasti terpilih), dan yang terpilih ditaruh di array `pilih`. Garis putus-putus bertanda "akhir" menunjukkan nilai itu: batang yang mulainya di kiri garis bentrok.
 

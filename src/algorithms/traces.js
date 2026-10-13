@@ -5,6 +5,7 @@ import { insertionSortCost, insertionSortPseudoCode, insertionSortPseudoTrace } 
 import { cariBilKCode, cariBilKCost, cariBilKTrace } from './traces/cariBilK.js'
 import { mergeSortPseudoCode, mergeSortPseudoTrace } from './traces/mergeSortPseudo.js'
 import { checkMatrixChainP, matrixChainPseudoCode, matrixChainPseudoTrace } from './traces/matrixChainPseudo.js'
+import { GREEDY_LIMITS, checkGreedyInput, greedyActivityCode, greedyActivityTrace } from './traces/greedyActivity.js'
 import { LCS_PSEUDO_MAX, lcsLengthPseudoCode, lcsLengthPseudoTrace, printLcsPseudoCode, printLcsPseudoTrace } from './traces/lcsPseudo.js'
 import {
   binarySearchIterCode,
@@ -20,6 +21,7 @@ import {
  * @property {string} note   penjelasan langkah (Bahasa Indonesia)
  * @property {Array<{ name: string, value: string }>} vars  nilai variabel SESUDAH baris itu dijalankan
  * @property {{ title: string, values: number[], marks: string[], indexBase: number } | null} array
+ * @property {Array<{ title: string, values: number[], marks: string[], indexBase: number }>} [arrays]  beberapa array sekaligus (misalnya s dan f); judulnya harus berbeda
  * @property {string[]} [stack]  tumpukan panggilan (rekursif)
  * @property {Array<{ table: { caption: string, corner: string, rowHeaders: string[], colHeaders: string[], cells: Array<Array<{ text: string, sub?: string, mark: string, glyph?: string }>> }, labels?: Record<string, string>, legend?: string[] }>} [tables]
  *   tabel DP (misalnya tabel m dan s) pada langkah ini, tampil di bawah kode dan variabel
@@ -32,7 +34,7 @@ import {
  * @property {string} intro       satu kalimat pengantar
  * @property {string} code        pseudocode, satu baris kode per baris (nomor baris = nomor langkah di materi)
  * @property {string} codeLabel
- * @property {Array<{ key: string, label: string, kind: 'int' | 'array' | 'text', value: string, max?: number }>} inputs
+ * @property {Array<{ key: string, label: string, kind: 'int' | 'array' | 'text', value: string, max?: number, limits?: { maxLength?: number, minValue?: number, maxValue?: number } }>} inputs
  * @property {(values: Record<string, any>) => string|null} [validate]  pesan kesalahan, atau null bila masukan sah
  * @property {(values: Record<string, any>) => TraceStep[]} build
  * @property {string[]} [legend]  status yang dipakai array (kunci STATUS)
@@ -80,6 +82,13 @@ const matrixChainPresets = [
   { label: 'Tiga matriks: 2, 3, 8, 5', values: { p: '2, 3, 8, 5' } },
   { label: 'Soal kuis: 10, 30, 5, 60', values: { p: '10, 30, 5, 60' } },
   { label: 'Dua matriks: 10, 20, 30', values: { p: '10, 20, 30' } },
+]
+
+const greedyPresets = [
+  { label: 'Contoh materi (terurut menurut finish time)', values: { s: '1, 3, 0, 5, 3, 5, 6, 8, 8, 2, 12', f: '4, 5, 6, 7, 9, 9, 10, 11, 12, 14, 16' } },
+  { label: 'Latihan a: urut start time (tidak optimal)', values: { s: '0, 1, 2, 3, 3, 5, 5, 6, 8, 8, 12', f: '6, 4, 14, 5, 9, 7, 9, 10, 11, 12, 16' } },
+  { label: 'Latihan b: urut durasi (kebetulan optimal)', values: { s: '3, 5, 1, 8, 5, 6, 8, 12, 0, 3, 2', f: '5, 7, 4, 11, 9, 10, 12, 16, 6, 9, 14' } },
+  { label: 'Contoh tandingan urut durasi: 3 aktivitas', values: { s: '4, 0, 5', f: '6, 5, 10' } },
 ]
 
 const lcsPresets = [
@@ -164,6 +173,21 @@ export const traces = {
     legend: [],
     presets: lcsPresets,
   },
+  'greedy-activity-selector': {
+    title: 'GREEDY-ACTIVITY-SELECTOR(s, f)',
+    intro:
+      'Memilih aktivitas saling kompatibel dengan algoritma Greedy. Data dibaca menurut urutan masukan dan TIDAK diurutkan lebih dulu. Isian awal adalah contoh materi (sudah terurut menurut finish time, hasil 4 aktivitas). Coba tombol latihan a, latihan b, dan contoh tandingan untuk melihat kapan hasilnya tidak optimal.',
+    code: greedyActivityCode,
+    codeLabel: 'Pseudocode GREEDY-ACTIVITY-SELECTOR',
+    inputs: [
+      { key: 's', label: 'Array s (start time)', kind: 'array', value: '1, 3, 0, 5, 3, 5, 6, 8, 8, 2, 12', limits: GREEDY_LIMITS },
+      { key: 'f', label: 'Array f (finish time)', kind: 'array', value: '4, 5, 6, 7, 9, 9, 10, 11, 12, 14, 16', limits: GREEDY_LIMITS },
+    ],
+    validate: checkGreedyInput,
+    build: greedyActivityTrace,
+    legend: ['normal', 'current', 'compare', 'chosen', 'skipped'],
+    presets: greedyPresets,
+  },
   'bilangan-max': {
     title: 'BILANGAN_MAX(bil1, bil2, bil3)',
     intro: 'Menentukan bilangan terbesar dari tiga bilangan. Ubah nilainya, lalu jalankan lagi.',
@@ -227,7 +251,7 @@ export function runTrace(def, texts) {
       if (v < MIN_VALUE || v > MAX_VALUE) return { ok: false, error: `${input.label} harus di antara ${MIN_VALUE} dan ${MAX_VALUE}.` }
       values[input.key] = v
     } else {
-      const r = parseArrayInput(text)
+      const r = parseArrayInput(text, input.limits)
       if (!r.ok) return { ok: false, error: `${input.label}: ${r.error}` }
       values[input.key] = r.values
     }

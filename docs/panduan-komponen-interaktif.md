@@ -200,7 +200,7 @@ Pembaca mengisi masukan, lalu menjalankan pseudocode baris demi baris sambil mel
 ```
 
 Id yang tersedia: `bilangan-max`, `jumlah-n-bil`, `binary-search-iteratif`, `binary-search-rekursif`, `insertion-sort`,
-`insertion-sort-best`, `insertion-sort-worst`, `cari-bil-k`, `merge-sort`, `matrix-chain-order`, `lcs-length`, `print-lcs`.
+`insertion-sort-best`, `insertion-sort-worst`, `cari-bil-k`, `merge-sort`, `matrix-chain-order`, `lcs-length`, `print-lcs`, `greedy-activity-selector`.
 
 Nomor baris pada peraga **sama dengan nomor langkah di materi**, jadi tulis pseudocode di materi dengan nomor yang sama.
 
@@ -264,6 +264,27 @@ nama isian. Kuncinya `X` dan `Y`, jadi tombol contoh (`presets`) memakai `{ X: '
 - Tesnya (`traces.lcs.test.js`) membandingkan urutan baris dengan eksekusi pseudocode apa adanya pada 300 pasangan string acak,
   tabel akhir dengan hitungan rekursi murni, dan urutan pemanggilan serta huruf tercetak dengan PRINT-LCS referensi.
   `dp-lcs.test.js` menjaga pseudocode peraga sama persis dengan blok di materi dan angka langkah yang tertulis di teks.
+
+### Peraga dengan dua array: `greedy-activity-selector`
+
+Peraga materi 10.1 menjalankan GREEDY-ACTIVITY-SELECTOR (8 baris) menurut **urutan masukan, tanpa pengurutan**. Itu pembeda dari
+visualizer garis waktu, yang selalu mengurutkan menurut finish time lebih dulu. Jadi latihan bagian F (urut start time atau durasi)
+bisa diulang dan hasilnya tidak optimal.
+
+- Langkah boleh memuat `arrays` (daftar array dengan judul berbeda) sebagai pengganti `array`. Peraga ini menampilkan array `s` dan `f`;
+  legenda status hanya dicetak di bawah array pertama.
+- Isian bertipe `array` boleh punya `limits` (`maxLength`, `minValue`, `maxValue`) yang diteruskan ke `parseArrayInput`. Peraga ini memakai
+  batas yang sama dengan visualizer: 1 sampai 12 aktivitas, waktu 0 sampai 30. Kedua array harus sama panjang dan tiap `f[i] > s[i]`.
+- Status baru: `chosen` (masuk ke A, glyph A) dan `skipped` (dilewati karena bentrok, glyph ×). Dua sel yang dibandingkan di baris 5
+  (`s[m]` dan `f[k]`) memakai `compare`, dan `m` di baris 4 memakai `current`.
+- Header perulangan (baris 4) dicatat tiap putaran, termasuk pemeriksaan terakhir saat `m > n`. Banyak langkah:
+  3 + 2(n − 1) + 2(|A| − 1) + 2. Contoh materi 31 langkah.
+- Langkah terakhir menyebut apakah jumlah aktivitas yang terpilih sama dengan maksimum untuk data itu (dihitung dengan mengurutkan menurut
+  finish time, dan dicek ke brute force di tes). Empat tombol contoh: contoh materi (4), latihan a (3, tidak optimal), latihan b (4), dan
+  contoh tandingan tiga aktivitas (1 padahal maksimumnya 2).
+- Tesnya (`traces.greedy.test.js`) membandingkan urutan baris dengan eksekusi pseudocode apa adanya pada 300 masukan acak, kalimat
+  "optimal" atau "TIDAK optimal" dengan brute force semua himpunan bagian, dan memastikan A hanya berubah di baris 2 dan 6 serta k di baris 3 dan 7.
+  `greedy-activity-selection.test.js` menjaga pseudocode peraga sama persis dengan blok di materi, dan tombol contoh sama dengan tabel latihan.
 
 ### Menambah peraga baru
 

@@ -7,6 +7,7 @@ import { checkMarkdown } from '../lib/checkMarkdown.js'
 import { splitContent } from '../lib/splitContent.js'
 import { buildToc } from '../lib/tableOfContents.js'
 import { activitySelection } from '../algorithms/activitySelection.js'
+import { traces, runTrace } from '../algorithms/traces.js'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '../..')
 const md = readFileSync(join(root, 'src/content/materials/greedy-activity-selection.md'), 'utf8')
@@ -107,7 +108,7 @@ test('daftar isi sidebar materi 10.1', () => {
     'H. Rangkuman',
     'Soal Challenge',
   ])
-  assert.deepEqual(items.filter((i) => i.level === 3).map((i) => i.text), ['Definisi', 'Contoh Himpunan Aktivitas', 'Pseudocode', 'Waktu Eksekusi'])
+  assert.deepEqual(items.filter((i) => i.level === 3).map((i) => i.text), ['Definisi', 'Contoh Himpunan Aktivitas', 'Pseudocode', 'Waktu Eksekusi', 'Peraga: Penelusuran GREEDY-ACTIVITY-SELECTOR'])
 })
 
 test('tabel contoh sama dengan data di dokumen dan terurut menurut finish time', () => {
@@ -250,4 +251,40 @@ test('teks selaras dengan soal challenge dan visualizer', () => {
   // visualizer mengurutkan lebih dulu menurut finish time: data terurut start time tetap menghasilkan 4
   const ta = activityTables()[4]
   assert.equal(activitySelection(ta.s, ta.f).length, 4)
+})
+
+test('peraga ::trace greedy-activity-selector: ada di bagian F, pseudocode dan angka di teks sama dengan peraga', () => {
+  const def = traces['greedy-activity-selector']
+  const types = segs.map((x) => x.type)
+  assert.equal(segs.filter((x) => x.type === 'trace').length, 1)
+  const trace = segs.find((x) => x.type === 'trace')
+  assert.equal(trace.id, 'greedy-activity-selector')
+  // peraga di bagian F, sesudah contoh tandingan dan sebelum kuis F
+  const iTrace = types.indexOf('trace')
+  assert.ok(segs[iTrace - 1].text.includes('Hasil optimal pada b **kebetulan**'), 'sesudah contoh tandingan')
+  assert.match(segs[iTrace - 1].text, /^### Peraga: Penelusuran GREEDY-ACTIVITY-SELECTOR$/m)
+  assert.equal(segs[iTrace + 1].type, 'quiz')
+  // pseudocode peraga sama persis dengan blok pseudocode di materi
+  const block = [...md.matchAll(/```pseudocode\n([\s\S]*?)```/g)][0][1].trimEnd()
+  assert.equal(def.code, block)
+  // isian awal = tabel contoh, dan angka yang disebut di teks cocok dengan hasil peraga
+  assert.deepEqual(def.inputs.map((i) => i.value), [S.join(', '), F.join(', ')])
+  const results = def.presets.map((p) => {
+    const r = runTrace(def, p.values)
+    return [r.steps.length, r.steps.at(-1).vars.find((v) => v.name === 'A').value]
+  })
+  assert.deepEqual(results, [[31, '{a1, a4, a8, a11}'], [29, '{a1, a8, a11}'], [31, '{a1, a2, a4, a8}'], [9, '{a1}']])
+  assert.ok(md.includes('(31 langkah, hasil $\\{a_1, a_4, a_8, a_{11}\\}$)'))
+  assert.ok(md.includes('latihan a (urut start time, hasil 3 aktivitas)'))
+  assert.ok(md.includes('latihan b (urut durasi, hasil 4 aktivitas)'))
+  assert.ok(md.includes('contoh tandingan tiga aktivitas (hasil hanya 1)'))
+  assert.ok(md.includes('Peraga menerima 1 sampai 12 aktivitas dan waktu 0 sampai 30'))
+  // data latihan pada tombol contoh sama dengan tabel latihan di teks
+  const [, , , , ta, tb, tc] = activityTables()
+  assert.equal(def.presets[1].values.s, ta.s.join(', '))
+  assert.equal(def.presets[1].values.f, ta.f.join(', '))
+  assert.equal(def.presets[2].values.s, tb.s.join(', '))
+  assert.equal(def.presets[2].values.f, tb.f.join(', '))
+  assert.equal(def.presets[3].values.s, tc.s.join(', '))
+  assert.equal(def.presets[3].values.f, tc.f.join(', '))
 })

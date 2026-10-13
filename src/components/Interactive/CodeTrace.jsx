@@ -70,7 +70,7 @@ export default function CodeTrace({ def }) {
                 if (e.key === 'Enter') apply(texts, 'Dijalankan dengan masukan baru.')
               }}
               aria-describedby={error ? `${uid}-error` : undefined}
-              className={`mt-1 min-h-12 rounded-xl border-2 border-stone-900 bg-white px-3 ${input.kind === 'array' ? 'w-56' : input.kind === 'text' ? 'w-40' : 'w-24'} ${focusRing}`}
+              className={`mt-1 min-h-12 rounded-xl border-2 border-stone-900 bg-white px-3 ${input.kind === 'array' ? (input.limits?.maxLength > 8 ? 'w-80 max-w-full' : 'w-56') : input.kind === 'text' ? 'w-40' : 'w-24'} ${focusRing}`}
             />
           </div>
         ))}
@@ -139,15 +139,16 @@ export default function CodeTrace({ def }) {
               <CodeBlock code={def.code} language="text" highlightLine={step.line} label={def.codeLabel} />
             </div>
             <div className="min-w-0 space-y-4">
-              {step.array && (
+              {(step.arrays ?? (step.array ? [step.array] : [])).map((a, idx) => (
                 <IndexedArray
-                  title={step.array.title}
-                  values={step.array.values}
-                  marks={step.array.marks}
-                  indexBase={step.array.indexBase}
-                  legend={def.legend}
+                  key={a.title}
+                  title={a.title}
+                  values={a.values}
+                  marks={a.marks}
+                  indexBase={a.indexBase}
+                  legend={idx === 0 ? def.legend : []}
                 />
-              )}
+              ))}
 
               <table className="w-full border-collapse text-left text-sm">
                 <caption className="mb-1 text-left font-semibold">Nilai variabel</caption>

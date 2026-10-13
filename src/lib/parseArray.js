@@ -5,9 +5,13 @@ export const MAX_VALUE = 99
 /**
  * Membaca teks isian pengguna menjadi array bilangan bulat.
  * @param {string} text  contoh: "5, 2, 4" atau "5 2 4"
+ * @param {{ maxLength?: number, minValue?: number, maxValue?: number }} [limits]  batas lain dari bawaan (misalnya 12 aktivitas)
  * @returns {{ ok: true, values: number[] } | { ok: false, error: string }}
  */
-export function parseArrayInput(text) {
+export function parseArrayInput(text, limits = {}) {
+  const maxLength = limits.maxLength ?? MAX_LENGTH
+  const minValue = limits.minValue ?? MIN_VALUE
+  const maxValue = limits.maxValue ?? MAX_VALUE
   const raw = String(text).trim()
   if (raw === '') return { ok: false, error: 'Isi minimal satu angka.' }
 
@@ -19,13 +23,13 @@ export function parseArrayInput(text) {
       return { ok: false, error: `"${p}" bukan bilangan bulat. Pisahkan angka dengan koma.` }
     }
     const v = Number(p)
-    if (v < MIN_VALUE || v > MAX_VALUE) {
-      return { ok: false, error: `Angka ${p} di luar rentang ${MIN_VALUE} sampai ${MAX_VALUE}.` }
+    if (v < minValue || v > maxValue) {
+      return { ok: false, error: `Angka ${p} di luar rentang ${minValue} sampai ${maxValue}.` }
     }
     values.push(v)
   }
-  if (values.length > MAX_LENGTH) {
-    return { ok: false, error: `Maksimal ${MAX_LENGTH} angka (Anda mengisi ${values.length}).` }
+  if (values.length > maxLength) {
+    return { ok: false, error: `Maksimal ${maxLength} angka (Anda mengisi ${values.length}).` }
   }
   return { ok: true, values }
 }
