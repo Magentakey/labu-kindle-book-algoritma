@@ -106,7 +106,7 @@
     "no": "11.1",
     "title": "Algoritma Graph – Breadth First Search (BFS)",
     "desc": "Penelusuran graf per level",
-    "hasText": false,
+    "hasText": true,
     "visualizer": [
       "bfsGraph",
       "bfsTree"
