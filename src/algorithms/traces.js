@@ -6,6 +6,7 @@ import { cariBilKCode, cariBilKCost, cariBilKTrace } from './traces/cariBilK.js'
 import { mergeSortPseudoCode, mergeSortPseudoTrace } from './traces/mergeSortPseudo.js'
 import { checkMatrixChainP, matrixChainPseudoCode, matrixChainPseudoTrace } from './traces/matrixChainPseudo.js'
 import { GREEDY_LIMITS, checkGreedyInput, greedyActivityCode, greedyActivityTrace } from './traces/greedyActivity.js'
+import { bfsPseudoCode, bfsPseudoTrace, checkBfsInput } from './traces/bfsPseudo.js'
 import { checkHuffmanInput, huffmanPseudoCode, huffmanPseudoTrace } from './traces/huffmanPseudo.js'
 import { LCS_PSEUDO_MAX, lcsLengthPseudoCode, lcsLengthPseudoTrace, printLcsPseudoCode, printLcsPseudoTrace } from './traces/lcsPseudo.js'
 import {
@@ -98,6 +99,13 @@ const huffmanPresets = [
   { label: 'Frekuensi Fibonacci (pohon miring)', values: { C: 'a:1, b:1, c:2, d:3, e:5, f:8' } },
   { label: 'Frekuensi sama (aturan seri)', values: { C: 'a:3, b:3, c:3, d:3' } },
   { label: 'Dua simbol saja', values: { C: 'a:7, b:2' } },
+]
+
+const bfsPresets = [
+  { label: 'Contoh materi: graf r s t u / v w x y', values: { G: 's: w, r; r: s, v; t: u, w, x; u: t, x, y; v: r; w: s, t, x; x: t, u, y, w; y: x, u', s: 's' } },
+  { label: 'Graf tak berarah Gambar 1, mulai dari 1', values: { G: '1: 2, 5; 2: 1, 5, 3, 4; 3: 2, 4; 4: 2, 5, 3; 5: 4, 1, 2', s: '1' } },
+  { label: 'Graf berarah Gambar 2, mulai dari 3 (ada yang tak terjangkau)', values: { G: '1: 2, 4; 2: 5; 3: 6, 5; 4: 2; 5: 4; 6: 6', s: '3' } },
+  { label: 'Satu simpul tanpa tetangga', values: { G: 'a:', s: 'a' } },
 ]
 
 const lcsPresets = [
@@ -208,6 +216,21 @@ export const traces = {
     build: huffmanPseudoTrace,
     legend: ['normal', 'childLeft', 'childRight', 'newNode'],
     presets: huffmanPresets,
+  },
+  bfs: {
+    title: 'BFS(G, s)',
+    intro:
+      'Menelusuri graf dengan antrean: simpul diberi warna WHITE, GRAY, lalu BLACK, dan jarak d dihitung dari simpul awal s. Isian awal adalah contoh materi (graf r s t u / v w x y dengan s sebagai simpul awal), jadi tiap putaran while sama dengan panel (b) sampai (i) Gambar 3. Graf ditulis sebagai adjacency-list: simpul, titik dua, tetangganya, dipisah titik koma. Maksimal 8 simpul.',
+    code: bfsPseudoCode,
+    codeLabel: 'Pseudocode BFS',
+    inputs: [
+      { key: 'G', label: 'Adjacency-list G (simpul: tetangga; ...)', kind: 'free', value: 's: w, r; r: s, v; t: u, w, x; u: t, x, y; v: r; w: s, t, x; x: t, u, y, w; y: x, u' },
+      textInput('s', 's', 'Simpul awal s', 2),
+    ],
+    validate: checkBfsInput,
+    build: bfsPseudoTrace,
+    legend: [],
+    presets: bfsPresets,
   },
   'bilangan-max': {
     title: 'BILANGAN_MAX(bil1, bil2, bil3)',

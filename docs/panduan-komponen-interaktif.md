@@ -200,7 +200,7 @@ Pembaca mengisi masukan, lalu menjalankan pseudocode baris demi baris sambil mel
 ```
 
 Id yang tersedia: `bilangan-max`, `jumlah-n-bil`, `binary-search-iteratif`, `binary-search-rekursif`, `insertion-sort`,
-`insertion-sort-best`, `insertion-sort-worst`, `cari-bil-k`, `merge-sort`, `matrix-chain-order`, `lcs-length`, `print-lcs`, `greedy-activity-selector`, `huffman`.
+`insertion-sort-best`, `insertion-sort-worst`, `cari-bil-k`, `merge-sort`, `matrix-chain-order`, `lcs-length`, `print-lcs`, `greedy-activity-selector`, `huffman`, `bfs`.
 
 Nomor baris pada peraga **sama dengan nomor langkah di materi**, jadi tulis pseudocode di materi dengan nomor yang sama.
 
@@ -300,6 +300,22 @@ berbeda dan frekuensi 1 sampai 99, sama dengan visualizer pohon Huffman.
 - Header perulangan (baris 3) dicatat tiap putaran, termasuk pemeriksaan terakhir. Banyak langkah: 6n - 2.
 - Tes `traces.huffman.test.js` membandingkan urutan baris dan isi Q dengan eksekusi pseudocode pada 300 masukan acak, serta kode,
   sifat prefiks, dan biaya (sama dengan jumlah semua z.freq) pada 200 masukan acak.
+
+### Peraga graf dengan tabel atribut: `bfs`
+
+`::trace bfs` menjalankan BFS(G, s) pada graf yang ditulis sebagai adjacency-list.
+
+- Isian: `G` (isian bebas, `simpul: tetangga, tetangga; simpul: ...`, maksimal 8 simpul dan 30 isi daftar, nama simpul 1 sampai 2 huruf atau angka,
+  daftar boleh kosong) dan `s` (simpul awal). Pembaca isian ada di `parseAdjacencyInput` (`traces/bfsPseudo.js`). Urutan tetangga dipertahankan,
+  karena urutan itu menentukan urutan masuk antrean. Graf berarah juga diterima.
+- Tabel atribut (`step.tables`, memakai `DpTable`): satu baris per simpul dengan kolom `color`, `d`, dan `π`. Status sel memakai pola, simbol, dan teks:
+  `empty` (WHITE), `gray` (GRAY, ◐), `black` (BLACK, ●), `current` (u) dan `source` (v). Status `gray` dan `black` ditambahkan ke `dpStatuses.js`.
+- Daftar teks: isi Q (dengan jarak), urutan simpul keluar dari Q, tetangga u (yang sudah dan sedang diperiksa), dan di langkah terakhir lintasan dari s.
+- Baris 1 sampai 4 ditampilkan ringkas: satu langkah per baris untuk semua simpul selain s. Header while (baris 10) dicatat tiap putaran termasuk
+  pemeriksaan terakhir, header for (baris 12) tiap tetangga ditambah satu pemeriksaan terakhir, dan baris 13 tiap tetangga.
+  Banyak langkah: 6 + 8R + 2D (R simpul terjangkau, D jumlah panjang daftar tetangga simpul terjangkau). Contoh materi: 110 langkah.
+- Tes `traces.bfs.test.js` membandingkan urutan baris dan isi Q dengan eksekusi pseudocode pada 300 graf acak, jarak dengan Floyd-Warshall pada 200 graf,
+  perubahan atribut hanya di baris yang benar, dan hasil contoh materi dengan Gambar 3.
 
 ### Menambah peraga baru
 

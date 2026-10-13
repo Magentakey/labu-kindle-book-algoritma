@@ -13,4 +13,7 @@ export const DP_STATUS = {
     glyph: '',
     fill: 'repeating-linear-gradient(45deg, #fafaf9 0 4px, #d6d3d1 4px 5px)',
   },
+  // Peraga BFS: warna simpul GRAY (di antrean) dan BLACK (selesai). WHITE memakai status `empty`.
+  gray: { label: 'GRAY', glyph: '◐', fill: 'repeating-linear-gradient(90deg, #d6d3d1 0 5px, #78716c 5px 7px)' },
+  black: { label: 'BLACK', glyph: '●', fill: 'repeating-linear-gradient(45deg, #a8a29e 0 4px, #292524 4px 7px)' },
 }

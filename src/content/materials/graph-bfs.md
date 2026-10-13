@@ -286,11 +286,23 @@ Warna selain WHITE menandakan simpul itu sudah ditemukan. Memasukkannya lagi aka
 Perulangan berjalan selama $Q \neq \emptyset$. Saat $Q$ kosong, tidak ada lagi simpul GRAY yang menunggu untuk diproses.
 :::
 
+### Peraga: Penelusuran BFS
+
+Peraga ini menjalankan pseudocode BFS$(G, s)$ baris demi baris pada graf yang Anda isi. Isian awalnya adalah contoh di bagian E (graf $r, s, t, u / v, w, x, y$ dengan $s$ sebagai simpul awal), jadi setiap putaran *while* dapat dibandingkan dengan panel (b) sampai (i) Gambar 3.
+
+- Tabel **Atribut tiap simpul** menunjukkan warna, $d$, dan $\pi$ tiap simpul. Warnanya dibedakan lewat pola, simbol, dan teks, tidak hanya warna: WHITE (kosong), GRAY (◐), dan BLACK (●). Simpul $u$ yang baru keluar dari $Q$ bertanda ▶, dan tetangga $v$ yang sedang diperiksa bertanda khusus.
+- Daftar **Antrean Q** menunjukkan isi $Q$ dari depan ke belakang beserta jaraknya. Daftar **Urutan simpul keluar dari Q** mengumpulkan urutan DEQUEUE, dan daftar tetangga $u$ menunjukkan tetangga mana yang sudah diperiksa.
+- Baris 1 sampai 4 (perulangan inisialisasi) ditampilkan ringkas: tiap baris satu langkah yang berlaku untuk semua simpul selain $s$ sekaligus. Mulai baris 5, satu langkah sama dengan satu baris yang dibaca, termasuk baris 13 saat $v$ ternyata bukan WHITE.
+- Di langkah terakhir muncul lintasan dari $s$ ke tiap simpul. Simpul yang tidak terjangkau tetap WHITE dengan $d = \infty$.
+- Isiannya adjacency-list: simpul, titik dua, lalu tetangganya, dipisah titik koma, misalnya `s: w, r; r: s, v; w: s; v: r`. Maksimal 8 simpul dan nama simpul 1 sampai 2 huruf atau angka. Tombol contoh menyediakan Gambar 1 (tak berarah), Gambar 2 (berarah, ada simpul yang tak terjangkau), dan satu simpul tanpa tetangga. Karena yang dibaca adalah daftar, graf berarah juga bisa dicoba: tulis tetangga hanya di daftar simpul asalnya.
+
+::trace bfs
+
 ## E. Contoh Penelusuran
 
 Diberikan graf $G = (V, E)$ dengan 8 simpul $r, s, t, u, v, w, x, y$ dan 10 busur tak berarah: $r$-$s$, $r$-$v$, $s$-$w$, $t$-$u$, $t$-$w$, $t$-$x$, $u$-$x$, $u$-$y$, $w$-$x$, dan $x$-$y$. Graf ini tergambar pada panel (a) tiap gambar di bawah, dengan $r, s, t, u$ di baris atas dan $v, w, x, y$ di baris bawah.
 
-Tentukan lintasan dari simpul $s$ ke simpul-simpul lain dengan prosedur BFS$(G, s)$.
+Tentukan lintasan dari simpul $s$ ke simpul-simpul lain dengan prosedur BFS$(G, s)$. Setelah membaca penelusuran di bawah, ulangi sendiri dengan peraga di akhir bagian D.
 
 ### Adjacency-list masukan
 

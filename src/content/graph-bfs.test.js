@@ -115,11 +115,19 @@ test('materi 11.1 bersih dari error dan saran', () => {
 
 test('materi 11.1 memakai komponen yang sama dengan materi sebelumnya', () => {
   const types = segs.map((x) => x.type)
-  for (const t of ['steps', 'quiz', 'visualizer', 'challenge']) assert.ok(types.includes(t), `belum ada komponen ${t}`)
+  for (const t of ['steps', 'quiz', 'trace', 'visualizer', 'challenge']) assert.ok(types.includes(t), `belum ada komponen ${t}`)
   assert.equal(types.at(-1), 'challenge', 'soal challenge tetap paling akhir')
   assert.deepEqual(segs.filter((x) => x.type === 'steps').map((x) => x.items.length), [13, 9, 4], 'arti tiap langkah, Gambar 3, running time')
   assert.deepEqual(quizzes.map((q) => q.questions.length), [3, 3, 3, 4, 5, 3], 'kuis di bagian A sampai F')
   assert.match(segs[types.indexOf('visualizer') + 1].text, /^## H\. Rangkuman/, 'teks sesudah penanda diawali judul ##')
+})
+
+test('peraga BFS dipasang di akhir bagian D, sebelum bagian E', () => {
+  const at = md.indexOf('::trace bfs')
+  assert.ok(at > md.indexOf('## D. Algoritma BFS'))
+  assert.ok(at < md.indexOf('## E. Contoh Penelusuran'))
+  assert.ok(at > md.indexOf('### Peraga: Penelusuran BFS'))
+  assert.equal(md.match(/::trace /g).length, 1)
 })
 
 test('daftar isi sidebar materi 11.1', () => {
@@ -136,7 +144,7 @@ test('daftar isi sidebar materi 11.1', () => {
     'H. Rangkuman',
     'Soal Challenge',
   ])
-  assert.deepEqual(items.filter((i) => i.level === 3).map((i) => i.text), ['Pseudocode', 'Adjacency-list masukan', 'Penelusuran Gambar 3', 'Hasil Lintasan'])
+  assert.deepEqual(items.filter((i) => i.level === 3).map((i) => i.text), ['Pseudocode', 'Peraga: Penelusuran BFS', 'Adjacency-list masukan', 'Penelusuran Gambar 3', 'Hasil Lintasan'])
 })
 
 test('Gambar 1 dan 2: tabel adjacency-list dan matriks cocok dengan busur gambar', () => {
