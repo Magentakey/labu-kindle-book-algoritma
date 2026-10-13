@@ -130,7 +130,7 @@
     "no": "12",
     "title": "Minimum Spanning Tree (MST) – Algoritma Prim & Kruskal",
     "desc": "Pohon rentang dengan bobot minimum",
-    "hasText": false,
+    "hasText": true,
     "visualizer": [
       "prim",
       "kruskal"
