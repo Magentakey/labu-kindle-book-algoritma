@@ -200,7 +200,7 @@ Pembaca mengisi masukan, lalu menjalankan pseudocode baris demi baris sambil mel
 ```
 
 Id yang tersedia: `bilangan-max`, `jumlah-n-bil`, `binary-search-iteratif`, `binary-search-rekursif`, `insertion-sort`,
-`insertion-sort-best`, `insertion-sort-worst`, `cari-bil-k`, `merge-sort`, `matrix-chain-order`, `lcs-length`, `print-lcs`, `greedy-activity-selector`, `huffman`, `bfs`, `dfs`, `mst-kruskal`, `mst-prim`.
+`insertion-sort-best`, `insertion-sort-worst`, `cari-bil-k`, `merge-sort`, `matrix-chain-order`, `lcs-length`, `print-lcs`, `greedy-activity-selector`, `huffman`, `bfs`, `dfs`, `mst-kruskal`, `mst-prim`, `bellman-ford`.
 
 Nomor baris pada peraga **sama dengan nomor langkah di materi**, jadi tulis pseudocode di materi dengan nomor yang sama.
 
@@ -371,6 +371,22 @@ berbeda dan frekuensi 1 sampai 99, sama dengan visualizer pohon Huffman.
   Banyak langkah: 6 + 3n + 2D + 2U (D jumlah panjang semua daftar tetangga, U banyak pembaruan key, yaitu pasangan baris 10 dan 11). Contoh materi: 113 langkah.
 - Tes `traces.mst.test.js` membandingkan urutan baris, simpul yang di-extract, dan total dengan Prim biasa (akar dan urutan tetangga acak) serta dengan Kruskal pada 300 graf acak, nilai key
   tiap putaran contoh dengan panel (a) sampai (i) dokumen, dan aturan seri putaran 3 (c dan h sama-sama 8). Tes yang sama memastikan pseudocode kedua peraga persis sama dengan blok di `mst.md`, dan `mst.test.js` menjaga letak peraga serta angka langkah di teks materi.
+
+### Peraga tiga prosedur dalam satu kode, dengan tabel sisi: `bellman-ford`
+
+`::trace bellman-ford` menjalankan BELLMAN-FORD(G, w, s) pada graf berarah berbobot (bobot boleh negatif), dengan INITIALIZE-SINGLE-SOURCE dan RELAX ikut terbaca di kode yang sama.
+
+- Kode 15 baris dalam satu blok, pola yang sama dengan DFS dan DFS-VISIT. **Baris 1 sampai 8 = BELLMAN-FORD, baris 9 sampai 12 = INITIALIZE-SINGLE-SOURCE (nomor materi + 8), baris 13 sampai 15 = RELAX (nomor materi + 12).**
+  Konstanta `BF_INIT_OFFSET` dan `BF_RELAX_OFFSET` ada di `traces/bellmanFordPseudo.js`. Tes memastikan blok ini persis sama dengan tiga blok pseudocode di `bellman-ford.md`.
+- Isian: `V` (simpul, dipisah koma), `E` (sisi berarah `u>v:bobot`, bobot boleh negatif, tanda minus Unicode juga diterima), dan `s` (sumber, teks 1 sampai 2 karakter).
+  **Urutan penulisan E adalah urutan G.E di tiap loop.** Batas: 7 simpul, 14 sisi, bobot −99 sampai 99 (agar jumlah langkah tetap wajar). Tidak ada syarat terhubung (simpul tak terjangkau diperbolehkan). Pemeriksa: `checkBellmanFordInput`.
+- Dua tabel (`DpTable`): tabel simpul (`d` dan `π`, tanda `current` = u, `source` = v, `path` = baru diubah RELAX) dan tabel sisi (bobot dan hasil kondisi *true*/*false*, dikosongkan di awal tiap loop; pada langkah 5 sampai 7 dipakai untuk
+  pemeriksaan siklus negatif). Keterangan tiap tanda lewat `labels`, jadi status tidak hanya dibedakan lewat warna.
+- Daftar teks: sisi tebal (v.π, v) saat ini; di langkah akhir TRUE muncul lintasan terpendek tiap simpul (atau "tidak terjangkau"), dan di langkah akhir FALSE muncul sisi yang melanggar.
+- Peraga mengikuti pseudocode apa adanya: selalu |V| − 1 loop, tanpa berhenti lebih awal (berbeda dari kode JavaScript di visualizer, yang memakai `break`; ini dijelaskan di bagian E materi).
+  Banyak langkah untuk hasil TRUE: 8 + 2L + 3mL + 2U + 2m (L = |V| − 1, m = jumlah sisi, U = banyak pembaruan, yaitu pasangan baris 14 dan 15). Contoh materi: 170 langkah. Untuk hasil FALSE di sisi ke-k: 7 + 2L + 3mL + 2U + 2k.
+- Tes `traces.bellmanFord.test.js` membandingkan urutan baris, nilai d dan π akhir, dan jumlah langkah dengan Bellman-Ford biasa pada 500 graf acak (termasuk siklus negatif dan simpul tak terjangkau),
+  sisi true per loop dan nilai tiap loop contoh dengan dokumen, tabel tambahan contoh siklus negatif di materi, dan pesan kesalahan isian.
 
 ### Menambah peraga baru
 

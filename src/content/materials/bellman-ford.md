@@ -349,6 +349,18 @@ Dengan $\lvert V \rvert - 1 = 2$ loop dan urutan sisi $(s,a)$, $(a,b)$, $(b,a)$:
 
 Nilai terus turun di setiap loop, dan tidak akan berhenti turun berapa pun banyak loop. Pada langkah 5 sampai 7, sisi $(s,a)$ masih *false* ($0 + 1 = 1$ tidak kurang dari $-3$), tetapi sisi $(a,b)$ memberi $a.d + w(a,b) = -3 + (-3) = -6$ yang masih lebih kecil dari $b.d = -4$. Kondisi $v.d > u.d + w(u,v)$ bernilai *true*, sehingga langkah 7 dijalankan: **`return FALSE`**.
 
+### Peraga: Penelusuran Bellman-Ford
+
+Peraga ini menjalankan pseudocode BELLMAN-FORD$(G, w, s)$ baris demi baris pada graf berarah berbobot yang Anda isi. Isian awalnya adalah contoh di bagian C dengan urutan sisi di tabel, jadi sisi yang bernilai *true* pada tiap loop, nilai $v.d$ dan $v.\pi$ sesudah tiap loop, dan hasil akhirnya sama dengan gambar loop 1 sampai 4 di atas.
+
+- Kode di peraga menggabungkan tiga prosedur dalam satu blok: **baris 1 sampai 8 adalah BELLMAN-FORD, baris 9 sampai 12 adalah INITIALIZE-SINGLE-SOURCE, dan baris 13 sampai 15 adalah RELAX**. Nomor baris di peraga = nomor baris di bagian B ditambah 8 untuk INITIALIZE-SINGLE-SOURCE, dan ditambah 12 untuk RELAX. Saat baris 1 dibaca, penelusuran berpindah ke baris 9 sampai 12, dan saat baris 4 dibaca, penelusuran berpindah ke baris 13 sampai 15, lalu kembali.
+- Tabel **Atribut tiap simpul** menunjukkan $v.d$ dan $v.\pi$. Simpul $u$ yang sedang diperiksa bertanda ▶, simpul $v$ bertanda khusus, dan simpul yang nilainya baru diubah RELAX bertanda tebal, jadi statusnya tidak hanya dibedakan lewat warna. Daftar **Sisi tebal** adalah sisi $(v.\pi, v)$ saat ini, yaitu sisi yang digambar tebal pada gambar loop.
+- Tabel **Sisi menurut urutan G.E** menunjukkan hasil kondisi RELAX tiap sisi pada loop yang sedang berjalan, *true* atau *false*, sama dengan tabel di bagian C. Tabel itu dikosongkan lagi di awal tiap loop. Pada langkah 5 sampai 7 tabel yang sama dipakai untuk pemeriksaan siklus negatif. Di langkah akhir muncul lintasan terpendek, atau sisi yang membuktikan adanya siklus negatif.
+- Peraga mengikuti pseudocode **apa adanya**: selalu $\lvert V \rvert - 1$ loop tanpa berhenti lebih awal. Baris 9 sampai 11 ditampilkan ringkas, satu langkah untuk semua simpul. Mulai baris 12, satu langkah sama dengan satu baris yang dibaca, termasuk header *for* baris 3 tiap sisi (ditambah satu pemeriksaan akhir tiap loop). Dengan $n$ simpul, $m$ sisi, $L = n - 1$, dan $U$ = banyak pembaruan (baris 14 dan 15), banyaknya langkah untuk hasil TRUE adalah $8 + 2L + 3mL + 2U + 2m$, yaitu 170 langkah untuk contoh ($L = 4$, $m = 10$, $U = 7$).
+- Simpul ditulis di isian V, sisi berarah ditulis di isian E sebagai `u>v:bobot` (bobot boleh negatif), dan sumber di isian s. **Urutan penulisan sisi adalah urutan G.E** di tiap loop. Coba tombol "Urutan sisi lain": loop yang berbeda, tetapi hasil akhirnya sama. Coba juga tombol "Siklus negatif" untuk melihat langkah 5 sampai 7 berakhir di `return FALSE`. Graf boleh punya simpul yang tidak terjangkau dari $s$. Maksimal 7 simpul dan 14 sisi, bobot $-99$ sampai 99.
+
+::trace bellman-ford
+
 :::quiz Cek pemahaman: contoh Bellman-Ford
 ::question Pada loop 1 contoh, kondisi RELAX bernilai *true* untuk sisi mana saja?
 - [ ] $(t,x)$ dan $(t,y)$
@@ -449,6 +461,7 @@ Beberapa hal agar tidak bingung membandingkan dengan materi:
 - Kodenya berbentuk JavaScript, jadi nomor barisnya berbeda dari pseudocode di bagian B. Kodenya mengembalikan larik jarak (padanan `return TRUE` dengan nilai $v.d$) atau `null` (padanan `return FALSE`).
 - Kode pada visualisasi **berhenti lebih awal** (`break`) bila satu loop tidak mengubah nilai apa pun, sedangkan pseudocode materi selalu menjalankan $\lvert V \rvert - 1$ loop. Hasilnya sama, hanya jumlah loop yang ditampilkan bisa lebih sedikit.
 - Contoh bawaan "Siklus negatif (jarak tak terhingga turun)" adalah contoh tiga simpul di akhir bagian C: `0>1:1, 1>2:-3, 2>1:1`.
+- Visualisasi ini menunjukkan jalannya algoritma pada graf. Untuk menelusuri **pseudocode bagian B baris demi baris** (termasuk INITIALIZE-SINGLE-SOURCE dan RELAX) pada contoh materi, gunakan peraga penelusuran di akhir bagian C.
 
 ::visualizer
 

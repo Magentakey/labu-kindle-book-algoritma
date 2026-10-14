@@ -110,12 +110,12 @@ const mi = (x) => (x === INF ? '\\infty' : String(x))
 const pairText = (e) => `(${e[0]},${e[1]})`
 
 // ---------------------------------------------------------------- tes
-test('materi 13 dipecah: 13.1 Bellman-Ford punya teks, 13.2 Dijkstra menyimpan soal challenge', () => {
+test('materi 13 dipecah: 13.1 Bellman-Ford punya soal challenge sendiri, 13.2 Dijkstra menyimpan soal Dijkstra', () => {
   assert.equal(materials.some((m) => m.id === 'shortest-path'), false, 'id lama shortest-path sudah tidak dipakai')
   assert.equal(meta.no, '13.1')
   assert.equal(meta.hasText, true)
   assert.equal(meta.visualizer, 'bellmanFord')
-  assert.equal(meta.challenge, undefined, '13.1 belum punya soal challenge')
+  assert.equal(meta.challenge, 'bellman-ford', '13.1 punya soal challenge sendiri (bobot sisi boleh negatif)')
   const dj = materials.find((m) => m.id === 'dijkstra')
   assert.equal(dj.no, '13.2')
   assert.equal(dj.visualizer, 'dijkstra')
@@ -129,8 +129,9 @@ test('materi 13.1 bersih dari error dan saran', () => {
 
 test('materi 13.1 memakai komponen yang sama dengan materi sebelumnya', () => {
   const types = segs.map((x) => x.type)
-  for (const t of ['steps', 'quiz', 'visualizer']) assert.ok(types.includes(t), `belum ada komponen ${t}`)
-  assert.equal(types.includes('challenge'), false)
+  for (const t of ['steps', 'quiz', 'trace', 'visualizer', 'challenge']) assert.ok(types.includes(t), `belum ada komponen ${t}`)
+  assert.equal(segs.at(-1).type, 'challenge', 'soal challenge paling akhir')
+  assert.deepEqual(segs.filter((x) => x.type === 'trace').map((x) => x.id ?? x.name ?? x.trace), ['bellman-ford'])
   assert.deepEqual(stepsBlocks.map((x) => x.items.length), [6, 7, 5], 'arti langkah, penelusuran contoh, running time')
   assert.deepEqual(quizzes.map((q) => q.questions.length), [4, 5, 5, 3], 'kuis di bagian A sampai D')
   assert.match(segs[types.indexOf('visualizer') + 1].text, /^## F\. Rangkuman/)
@@ -147,6 +148,7 @@ test('daftar isi sidebar materi 13.1', () => {
     'E. Mencoba Visualisasi',
     'Visualisasi',
     'F. Rangkuman',
+    'Soal Challenge',
   ])
 })
 

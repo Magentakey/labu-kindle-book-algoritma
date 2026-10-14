@@ -541,3 +541,66 @@ test('randomGraph: selalu lolos pembaca masukan masing-masing visualizer', () =>
   }
   assert.ok(neg > 50, `bobot negatif harus sering muncul (${neg})`)
 })
+
+// ---------------------------------------------------------------- soal challenge Bellman-Ford (materi 13.1)
+// Soal: larik jarak, "INF" untuk simpul tak terjangkau, dan false bila ada siklus negatif yang terjangkau.
+// Kode visualizer mengembalikan Infinity dan null untuk dua keadaan itu.
+const asChallengeAnswer = (d) => (d === null ? false : d.map((x) => (x === Infinity ? 'INF' : x)))
+
+test('soal challenge bellman-ford: kode visualizer, solusi, dan langkah terakhir cocok dengan semua test case', () => {
+  const ch = challenge('bellman-ford')
+  const solution = compileSolution(ch.solution)
+  const shown = compile(bellmanFordCode, 'bellmanFord')
+  let cycles = 0
+  let unreachable = 0
+  for (const tc of ch.testCases) {
+    const copy = () => JSON.parse(JSON.stringify(tc.input))
+    assert.deepEqual(solution(...copy()), tc.expected, `solusi ${JSON.stringify(tc.input)}`)
+    assert.deepEqual(asChallengeAnswer(shown(...copy())), tc.expected, `kode visualizer ${JSON.stringify(tc.input)}`)
+    const [n, edges, start] = tc.input
+    const steps = bellmanFordSteps({ n, edges, start })
+    if (tc.expected === false) {
+      cycles++
+      assert.match(steps.at(-1).note, /siklus negatif yang terjangkau/, `langkah terakhir ${JSON.stringify(tc.input)}`)
+    } else {
+      if (tc.expected.includes('INF')) unreachable++
+      assert.deepEqual(asChallengeAnswer(rawDistOf(steps)), tc.expected, `tabel jarak ${JSON.stringify(tc.input)}`)
+    }
+  }
+  assert.ok(cycles >= 2, 'ada test case siklus negatif')
+  assert.ok(unreachable >= 2, 'ada test case simpul tak terjangkau')
+  assert.ok(ch.testCases.some((tc) => tc.expected !== false && tc.input[1].some((e) => e[2] < 0)), 'ada bobot negatif tanpa siklus negatif')
+  // siklus negatif yang tidak terjangkau dari sumber tidak boleh menghasilkan false
+  const unreachableCycle = ch.testCases.find((tc) => tc.input[0] === 4 && tc.input[1].length === 3 && tc.input[2] === 0 && tc.expected !== false)
+  assert.ok(unreachableCycle, 'kasus tepi: siklus negatif tidak terjangkau')
+})
+
+test('soal challenge bellman-ford: 400 graf acak, solusi cocok dengan Floyd-Warshall dan kode visualizer', () => {
+  const rng = seeded(97)
+  const solution = compileSolution(challenge('bellman-ford').solution)
+  const shown = compile(bellmanFordCode, 'bellmanFord')
+  let cycles = 0
+  for (let t = 0; t < 400; t++) {
+    let input = randomGraph(BELLMAN, rng)
+    if (t % 4 === 3) {
+      // Paksa siklus negatif yang terjangkau (cara yang sama dengan uji acak Bellman-Ford di atas).
+      const reach = reachable(input.n, input.edges, true, input.start)
+      const k = input.edges.findIndex((e) => reach[e[0]])
+      if (k !== -1) {
+        const edges = input.edges.map((e) => e.slice())
+        const [u, v] = edges[k]
+        edges[k][2] = 1
+        const back = edges.findIndex((e) => e[0] === v && e[1] === u)
+        if (back === -1) edges.push([v, u, -9])
+        else edges[back][2] = -9
+        input = { ...input, edges }
+      }
+    }
+    const expected = floyd(input.n, input.edges, input.start)
+    const want = asChallengeAnswer(expected)
+    if (expected === null) cycles++
+    assert.deepEqual(solution(input.n, input.edges, input.start), want, `solusi acak ${t}: ${JSON.stringify(input)}`)
+    assert.deepEqual(asChallengeAnswer(shown(input.n, input.edges, input.start)), want, `kode visualizer acak ${t}`)
+  }
+  assert.ok(cycles > 5, `uji harus mencakup siklus negatif (${cycles})`)
+})

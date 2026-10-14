@@ -143,7 +143,8 @@
     "title": "Single Source Shortest Path – Algoritma Bellman-Ford",
     "desc": "Lintasan terpendek, bobot negatif boleh",
     "hasText": true,
-    "visualizer": "bellmanFord"
+    "visualizer": "bellmanFord",
+    "challenge": "bellman-ford"
   },
   {
     "id": "dijkstra",

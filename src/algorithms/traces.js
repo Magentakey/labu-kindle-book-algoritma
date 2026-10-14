@@ -9,6 +9,7 @@ import { GREEDY_LIMITS, checkGreedyInput, greedyActivityCode, greedyActivityTrac
 import { bfsPseudoCode, bfsPseudoTrace, checkBfsInput } from './traces/bfsPseudo.js'
 import { checkDfsInput, dfsPseudoCode, dfsPseudoTrace } from './traces/dfsPseudo.js'
 import { checkHuffmanInput, huffmanPseudoCode, huffmanPseudoTrace } from './traces/huffmanPseudo.js'
+import { bellmanFordPseudoCode, bellmanFordPseudoTrace, checkBellmanFordInput } from './traces/bellmanFordPseudo.js'
 import { checkKruskalInput, kruskalPseudoCode, kruskalPseudoTrace } from './traces/kruskalPseudo.js'
 import { checkPrimInput, primPseudoCode, primPseudoTrace } from './traces/primPseudo.js'
 import { LCS_PSEUDO_MAX, lcsLengthPseudoCode, lcsLengthPseudoTrace, printLcsPseudoCode, printLcsPseudoTrace } from './traces/lcsPseudo.js'
@@ -138,6 +139,16 @@ const primPresets = [
   { label: 'Graf yang sama, akar e (urutan extract berbeda)', values: { G: primExample, r: 'e' } },
   { label: 'Semua bobot sama (MST tidak unik)', values: { G: 'a: b(1), c(1); b: a(1), c(1); c: a(1), b(1)', r: 'a' } },
   { label: 'Dua simpul saja', values: { G: 'a: b(5); b: a(5)', r: 'a' } },
+]
+
+const bellmanVertices = 's, t, x, y, z'
+const bellmanExampleE = 't>x:5, t>y:8, t>z:-4, x>t:-2, y>x:-3, y>z:9, z>x:7, z>s:2, s>t:6, s>y:7'
+
+const bellmanPresets = [
+  { label: 'Contoh materi: sumber s, urutan sisi seperti di materi', values: { V: bellmanVertices, E: bellmanExampleE, s: 's' } },
+  { label: 'Urutan sisi lain (hasil akhir sama, loop berbeda)', values: { V: bellmanVertices, E: 's>t:6, s>y:7, t>x:5, t>y:8, t>z:-4, x>t:-2, y>x:-3, y>z:9, z>x:7, z>s:2', s: 's' } },
+  { label: 'Siklus negatif: hasil FALSE', values: { V: 's, a, b', E: 's>a:1, a>b:-3, b>a:1', s: 's' } },
+  { label: 'Ada simpul yang tidak terjangkau dari s', values: { V: 's, a, b, c', E: 's>a:4, a>b:-1, c>a:2', s: 's' } },
 ]
 
 const lcsPresets = [
@@ -305,6 +316,22 @@ export const traces = {
     build: primPseudoTrace,
     legend: [],
     presets: primPresets,
+  },
+  'bellman-ford': {
+    title: 'BELLMAN-FORD(G, w, s)',
+    intro:
+      'Mencari lintasan terpendek dari sumber s pada graf berarah yang boleh punya sisi berbobot negatif, sambil memeriksa siklus negatif. Isian awal adalah contoh materi (5 simpul, 10 sisi, urutan sisi sama dengan tabel di bagian C), jadi nilai d dan π tiap loop sama dengan gambar loop 1 sampai 4 dan hasil akhirnya t = 2, x = 4, y = 7, z = −2. Kode di sini menggabungkan BELLMAN-FORD (baris 1 sampai 8), INITIALIZE-SINGLE-SOURCE (baris 9 sampai 12), dan RELAX (baris 13 sampai 15). Simpul ditulis di V, sisi berarah ditulis di E sebagai u>v:bobot (bobot boleh negatif), dan sumber di s. Maksimal 7 simpul dan 14 sisi, bobot −99 sampai 99.',
+    code: bellmanFordPseudoCode,
+    codeLabel: 'Pseudocode BELLMAN-FORD, INITIALIZE-SINGLE-SOURCE, dan RELAX',
+    inputs: [
+      { key: 'V', label: 'Simpul V (dipisah koma)', kind: 'free', value: bellmanVertices },
+      { key: 'E', label: 'Sisi berarah E (u>v:bobot, dipisah koma)', kind: 'free', value: bellmanExampleE },
+      textInput('s', 's', 'Sumber s', 2),
+    ],
+    validate: checkBellmanFordInput,
+    build: bellmanFordPseudoTrace,
+    legend: [],
+    presets: bellmanPresets,
   },
   'bilangan-max': {
     title: 'BILANGAN_MAX(bil1, bil2, bil3)',
