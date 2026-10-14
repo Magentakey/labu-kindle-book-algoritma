@@ -255,7 +255,9 @@ test('materials.json: materi graf memakai visualizer graf, dan visualizer pohon 
   assert.deepEqual(by['graph-bfs'], ['bfsGraph', 'bfsTree'])
   assert.deepEqual(by['graph-dfs'], ['dfsGraph', 'dfsTree'])
   assert.deepEqual(by['mst'], ['prim', 'kruskal'])
-  assert.deepEqual(by['shortest-path'], ['dijkstra', 'bellmanFord'])
+  // materi 13 dipecah: 13.1 Bellman-Ford dan 13.2 Dijkstra, masing-masing dengan satu visualizer
+  assert.equal(by['bellman-ford'], 'bellmanFord')
+  assert.equal(by['dijkstra'], 'dijkstra')
 })
 
 // ---------------------------------------------------------------- kode yang tampil = solusi challenge

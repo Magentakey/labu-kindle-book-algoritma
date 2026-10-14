@@ -138,15 +138,20 @@
     "challenge": "mst"
   },
   {
-    "id": "shortest-path",
-    "no": "13",
-    "title": "Single Source Shortest Path – Algoritma Dijkstra & Bellman-Ford",
-    "desc": "Jarak terpendek dari satu sumber",
+    "id": "bellman-ford",
+    "no": "13.1",
+    "title": "Single Source Shortest Path – Algoritma Bellman-Ford",
+    "desc": "Lintasan terpendek, bobot negatif boleh",
+    "hasText": true,
+    "visualizer": "bellmanFord"
+  },
+  {
+    "id": "dijkstra",
+    "no": "13.2",
+    "title": "Single Source Shortest Path – Algoritma Dijkstra",
+    "desc": "Lintasan terpendek tanpa bobot negatif",
     "hasText": false,
-    "visualizer": [
-      "dijkstra",
-      "bellmanFord"
-    ],
+    "visualizer": "dijkstra",
     "challenge": "shortest-path"
   }
 ]
