@@ -284,7 +284,7 @@ test('catatan tentang visualizer: hanya tak berarah, satu simpul awal, urutan ku
     const n = 2 + Math.floor(Math.random() * 7)
     const all = []
     for (let a = 0; a < n; a++) for (let b = a + 1; b < n; b++) all.push([a, b])
-    const edges = all.filter(() => Math.random() < 0.35)
+    const edges = all.filter(() => Math.random() < 0.35).slice(0, 16) // batas 16 sisi pada visualizer
     const start = Math.floor(Math.random() * n)
     const text = edges.map(([a, b]) => `${a}-${b}`).join(', ')
     const parsed = parseGraphFields({ n: String(n), edges: text, start: String(start) }, { directed: false, weighted: false, needStart: true })
