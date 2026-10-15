@@ -400,6 +400,16 @@ berbeda dan frekuensi 1 sampai 99, sama dengan visualizer pohon Huffman.
 - Mengikuti pseudocode apa adanya: tepat |V| putaran while, simpul tak terjangkau tetap di-extract (d = ∞), dan seri EXTRACT-MIN diputus menurut urutan V. Banyak langkah selalu 8 + 4n + 3m + 2U (contoh materi: 72).
 - Tes `traces.dijkstra.test.js` membandingkan urutan baris, urutan extract, d dan π akhir, serta jumlah langkah dengan Dijkstra biasa pada 500 graf acak (bobot kecil agar sering seri dan ada simpul tak terjangkau).
 
+## Menyembunyikan dan memunculkan kembali peraga `::trace`
+
+Peraga penelusuran kode (`::trace`) saat ini **disembunyikan** dari halaman materi. Visualisasi (`::visualizer`), kuis, jawaban lipat, dan soal challenge tetap tampil.
+
+- Saklarnya satu baris di `src/lib/traceVisibility.js`: `export const SHOW_TRACES = false`. **Untuk memunculkan kembali semua peraga, ubah menjadi `true`.**
+- Yang disembunyikan: komponen peraganya, subbagian pengantar "### Peraga: ..." atau paragraf pengantar tepat di atasnya, pengamatan peraga tepat di bawahnya, dan kalimat yang menyebut peraga di bagian lain (misalnya catatan visualizer). Daftar isi sidebar mengikuti.
+- Yang tidak diubah: file materi (`.md`), komponen `CodeTrace`, `traces.js`, dan semua tes isinya. Penyaringan hanya terjadi saat halaman dirender (`Material.jsx`), jadi tidak ada teks yang hilang dari sumber.
+- Pemeriksa interaktif lain (`::growth`, `::ratio`, `::bound`, `::limit`, `::master`) bukan peraga `::trace` dan tetap tampil.
+- `traceVisibility.test.js` memeriksa semua materi: tidak ada `::trace` tersisa, jumlah visualizer, kuis, dan soal challenge tidak berubah, dan tidak ada kata "peraga" yang tertinggal di materi yang punya peraga.
+
 ### Menambah peraga baru
 
 1. Buat pembangun langkah di `src/algorithms/traces/<nama>.js`: fungsi yang menerima masukan dan mengembalikan daftar

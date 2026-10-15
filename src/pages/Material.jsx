@@ -6,6 +6,7 @@ import { loadChallenge } from '../lib/loadChallenge.js'
 import { loadMaterialText } from '../lib/loadMaterialText.js'
 import { splitContent } from '../lib/splitContent.js'
 import { buildToc } from '../lib/tableOfContents.js'
+import { SHOW_TRACES, hideTraces } from '../lib/traceVisibility.js'
 import MaterialSidebar, { SidebarTopBar } from '../components/MaterialSidebar/MaterialSidebar.jsx'
 import { useActiveSection } from '../components/MaterialSidebar/useActiveSection.js'
 import { useSidebar } from '../components/MaterialSidebar/useSidebar.js'
@@ -144,7 +145,10 @@ function MaterialPage({ m }) {
   }, [m.id])
 
   const segments = useMemo(
-    () => splitContent(state.text, { hasVisualizer: Boolean(m.visualizer), hasChallenge: Boolean(m.challenge) }),
+    () => {
+      const all = splitContent(state.text, { hasVisualizer: Boolean(m.visualizer), hasChallenge: Boolean(m.challenge) })
+      return SHOW_TRACES ? all : hideTraces(all)
+    },
     [state.text, m.visualizer, m.challenge],
   )
 
