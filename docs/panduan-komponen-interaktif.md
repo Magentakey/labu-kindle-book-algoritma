@@ -200,7 +200,7 @@ Pembaca mengisi masukan, lalu menjalankan pseudocode baris demi baris sambil mel
 ```
 
 Id yang tersedia: `bilangan-max`, `jumlah-n-bil`, `binary-search-iteratif`, `binary-search-rekursif`, `insertion-sort`,
-`insertion-sort-best`, `insertion-sort-worst`, `cari-bil-k`, `merge-sort`, `matrix-chain-order`, `lcs-length`, `print-lcs`, `greedy-activity-selector`, `huffman`, `bfs`, `dfs`, `mst-kruskal`, `mst-prim`, `bellman-ford`.
+`insertion-sort-best`, `insertion-sort-worst`, `cari-bil-k`, `merge-sort`, `matrix-chain-order`, `lcs-length`, `print-lcs`, `greedy-activity-selector`, `huffman`, `bfs`, `dfs`, `mst-kruskal`, `mst-prim`, `bellman-ford`, `dijkstra`.
 
 Nomor baris pada peraga **sama dengan nomor langkah di materi**, jadi tulis pseudocode di materi dengan nomor yang sama.
 
@@ -387,6 +387,18 @@ berbeda dan frekuensi 1 sampai 99, sama dengan visualizer pohon Huffman.
   Banyak langkah untuk hasil TRUE: 8 + 2L + 3mL + 2U + 2m (L = |V| − 1, m = jumlah sisi, U = banyak pembaruan, yaitu pasangan baris 14 dan 15). Contoh materi: 170 langkah. Untuk hasil FALSE di sisi ke-k: 7 + 2L + 3mL + 2U + 2k.
 - Tes `traces.bellmanFord.test.js` membandingkan urutan baris, nilai d dan π akhir, dan jumlah langkah dengan Bellman-Ford biasa pada 500 graf acak (termasuk siklus negatif dan simpul tak terjangkau),
   sisi true per loop dan nilai tiap loop contoh dengan dokumen, tabel tambahan contoh siklus negatif di materi, dan pesan kesalahan isian.
+
+### Peraga tiga prosedur dalam satu kode dengan himpunan S dan Q: `dijkstra`
+
+`::trace dijkstra` menjalankan DIJKSTRA(G, w, s) pada graf berarah berbobot tidak negatif, dengan INITIALIZE-SINGLE-SOURCE dan RELAX di kode yang sama (pola yang sama dengan `bellman-ford`).
+
+- Kode 15 baris: **baris 1 sampai 8 = DIJKSTRA, baris 9 sampai 12 = INITIALIZE-SINGLE-SOURCE (nomor materi + 8), baris 13 sampai 15 = RELAX (nomor materi + 12)**.
+  Konstanta `DJ_INIT_OFFSET` dan `DJ_RELAX_OFFSET` ada di `traces/dijkstraPseudo.js`, dan tes memastikan blok ini persis sama dengan tiga blok pseudocode di `dijkstra.md`.
+- Isian `V`, `E` (`u>v:bobot`), dan `s`, sama dengan Bellman-Ford (pembaca isiannya dipakai bersama dari `bellmanFordPseudo.js`), tetapi **bobot negatif ditolak** dengan pesan yang menunjuk ke Bellman-Ford. Sisi yang berawal dari simpul yang sama menjadi `G.Adj[u]` menurut urutan penulisan.
+  Batas: 7 simpul, 14 sisi.
+- Satu tabel simpul (`d`, `π`; tanda `black` = sudah di S, `current` = u, `source` = v, `path` = baru diubah RELAX) dan daftar teks: himpunan S, himpunan Q (dengan d), tetangga u, sisi tebal, dan lintasan terpendek di langkah akhir.
+- Mengikuti pseudocode apa adanya: tepat |V| putaran while, simpul tak terjangkau tetap di-extract (d = ∞), dan seri EXTRACT-MIN diputus menurut urutan V. Banyak langkah selalu 8 + 4n + 3m + 2U (contoh materi: 72).
+- Tes `traces.dijkstra.test.js` membandingkan urutan baris, urutan extract, d dan π akhir, serta jumlah langkah dengan Dijkstra biasa pada 500 graf acak (bobot kecil agar sering seri dan ada simpul tak terjangkau).
 
 ### Menambah peraga baru
 

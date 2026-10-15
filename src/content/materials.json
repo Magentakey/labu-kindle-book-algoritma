@@ -151,7 +151,7 @@
     "no": "13.2",
     "title": "Single Source Shortest Path – Algoritma Dijkstra",
     "desc": "Lintasan terpendek tanpa bobot negatif",
-    "hasText": false,
+    "hasText": true,
     "visualizer": "dijkstra",
     "challenge": "shortest-path"
   }

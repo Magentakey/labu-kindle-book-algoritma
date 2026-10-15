@@ -10,6 +10,7 @@ import { bfsPseudoCode, bfsPseudoTrace, checkBfsInput } from './traces/bfsPseudo
 import { checkDfsInput, dfsPseudoCode, dfsPseudoTrace } from './traces/dfsPseudo.js'
 import { checkHuffmanInput, huffmanPseudoCode, huffmanPseudoTrace } from './traces/huffmanPseudo.js'
 import { bellmanFordPseudoCode, bellmanFordPseudoTrace, checkBellmanFordInput } from './traces/bellmanFordPseudo.js'
+import { checkDijkstraInput, dijkstraPseudoCode, dijkstraPseudoTrace } from './traces/dijkstraPseudo.js'
 import { checkKruskalInput, kruskalPseudoCode, kruskalPseudoTrace } from './traces/kruskalPseudo.js'
 import { checkPrimInput, primPseudoCode, primPseudoTrace } from './traces/primPseudo.js'
 import { LCS_PSEUDO_MAX, lcsLengthPseudoCode, lcsLengthPseudoTrace, printLcsPseudoCode, printLcsPseudoTrace } from './traces/lcsPseudo.js'
@@ -149,6 +150,16 @@ const bellmanPresets = [
   { label: 'Urutan sisi lain (hasil akhir sama, loop berbeda)', values: { V: bellmanVertices, E: 's>t:6, s>y:7, t>x:5, t>y:8, t>z:-4, x>t:-2, y>x:-3, y>z:9, z>x:7, z>s:2', s: 's' } },
   { label: 'Siklus negatif: hasil FALSE', values: { V: 's, a, b', E: 's>a:1, a>b:-3, b>a:1', s: 's' } },
   { label: 'Ada simpul yang tidak terjangkau dari s', values: { V: 's, a, b, c', E: 's>a:4, a>b:-1, c>a:2', s: 's' } },
+]
+
+const dijkstraExampleE = 's>t:10, s>y:5, t>x:1, t>y:2, x>z:4, y>x:9, y>z:2, y>t:3, z>s:7, z>x:6'
+
+const dijkstraPresets = [
+  { label: 'Contoh materi: sumber s, urutan Adj seperti di materi', values: { V: 's, t, x, y, z', E: dijkstraExampleE, s: 's' } },
+  { label: 'Urutan Adj[y] lain (t, x, z): hasil akhir sama', values: { V: 's, t, x, y, z', E: 's>t:10, s>y:5, t>x:1, t>y:2, x>z:4, y>t:3, y>x:9, y>z:2, z>s:7, z>x:6', s: 's' } },
+  { label: 'Jalan langsung lebih mahal', values: { V: 's, a, b', E: 's>b:10, s>a:3, a>b:3', s: 's' } },
+  { label: 'Ada simpul yang tidak terjangkau dari s', values: { V: 's, a, b, c', E: 's>a:2, a>b:3, c>a:1', s: 's' } },
+  { label: 'Nilai seri di Q (diputus menurut urutan Q)', values: { V: 's, a, b, c', E: 's>a:2, s>b:2, a>c:1, b>c:1', s: 's' } },
 ]
 
 const lcsPresets = [
@@ -316,6 +327,22 @@ export const traces = {
     build: primPseudoTrace,
     legend: [],
     presets: primPresets,
+  },
+  dijkstra: {
+    title: 'DIJKSTRA(G, w, s)',
+    intro:
+      'Mencari lintasan terpendek dari sumber s pada graf berarah yang bobot sisinya tidak negatif, dengan terus mengambil simpul terdekat berikutnya dari Q. Isian awal adalah contoh materi (5 simpul, 10 sisi, urutan tetangga sama dengan adjacency list di bagian B), jadi nilai d, himpunan S, dan himpunan Q tiap loop sama dengan gambar loop 1 sampai 5 dan hasil akhirnya t = 8, x = 9, y = 5, z = 7. Kode di sini menggabungkan DIJKSTRA (baris 1 sampai 8), INITIALIZE-SINGLE-SOURCE (baris 9 sampai 12), dan RELAX (baris 13 sampai 15). Simpul ditulis di V, sisi berarah di E sebagai u>v:bobot, dan sumber di s. Sisi yang berawal dari simpul sama menjadi G.Adj[u] menurut urutan penulisan. Maksimal 7 simpul dan 14 sisi, bobot 0 sampai 99.',
+    code: dijkstraPseudoCode,
+    codeLabel: 'Pseudocode DIJKSTRA, INITIALIZE-SINGLE-SOURCE, dan RELAX',
+    inputs: [
+      { key: 'V', label: 'Simpul V (dipisah koma)', kind: 'free', value: 's, t, x, y, z' },
+      { key: 'E', label: 'Sisi berarah E (u>v:bobot, dipisah koma)', kind: 'free', value: dijkstraExampleE },
+      textInput('s', 's', 'Sumber s', 2),
+    ],
+    validate: checkDijkstraInput,
+    build: dijkstraPseudoTrace,
+    legend: [],
+    presets: dijkstraPresets,
   },
   'bellman-ford': {
     title: 'BELLMAN-FORD(G, w, s)',
