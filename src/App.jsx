@@ -5,6 +5,8 @@ import Home from './pages/Home.jsx'
 // Halaman Materi (Markdown, Prism, visualizer) baru diunduh saat pertama kali dibuka,
 // sehingga Home tetap ringan.
 const Material = lazy(() => import('./pages/Material.jsx'))
+// Halaman peninjauan komponen desain baru (token, ikon, maskot, komponen dasar). Hanya untuk pengembangan dan QA.
+const UiKit = lazy(() => import('./pages/UiKit.jsx'))
 
 function PageLoading() {
   return (
@@ -28,6 +30,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/materi/:id" element={<Material />} />
+          <Route path="/ui" element={<UiKit />} />
         </Routes>
       </Suspense>
     </>

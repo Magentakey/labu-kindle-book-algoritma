@@ -7,6 +7,16 @@
     <meta name="theme-color" content="#f46505" />
     <meta name="description" content="Belajar algoritma secara interaktif" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      // Pasang tema sebelum halaman digambar (aturan sama dengan src/ui/theme.js, kunci 'labu-theme').
+      try {
+        var p = localStorage.getItem('labu-theme')
+        var dark = p === 'dark' || (p !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+        document.documentElement.dataset.theme = dark ? 'dark' : 'light'
+      } catch (e) {
+        document.documentElement.dataset.theme = 'light'
+      }
+    </script>
     <title>Labu I-Learning Algoritma</title>
   </head>
   <body>

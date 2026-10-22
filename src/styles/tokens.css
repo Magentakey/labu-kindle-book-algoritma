@@ -1,0 +1,206 @@
+/*
+ * Token desain LABU (dari Figma "LABU^BU", halaman Style Guide).
+ * Nilai Light = variabel "LABU · Warna" di Figma. Nilai Dark = tabel "TOKEN SEMANTIK · LIGHT & DARK" di style guide
+ * (paket Figma Starter hanya punya 1 mode variabel, jadi nilai Dark dicatat di teks).
+ * Mode gelap dipasang lewat atribut data-theme="dark" pada <html> (lihat src/ui/theme.js).
+ * Tes src/ui/tokens.test.js menjaga agar file ini tetap sama dengan data Figma.
+ */
+@import '@fontsource/poppins/latin-400.css';
+@import '@fontsource/poppins/latin-500.css';
+@import '@fontsource/poppins/latin-600.css';
+@import '@fontsource/poppins/latin-700.css';
+@import '@fontsource/jetbrains-mono/latin-400.css';
+@import '@fontsource/jetbrains-mono/latin-700.css';
+@import '@fontsource/silkscreen/latin-400.css';
+
+:root {
+  color-scheme: light;
+  --brand-orange: #ff7f50;
+  --brand-burnt: #f0643a;
+  --brand-rust: #b4461f;
+  --brand-yellow: #ffd166;
+  --brand-mint: #06d6a0;
+  --brand-blue: #118ab2;
+  --brand-blue-strong: #0b6e8f;
+  --brand-stem: #571200;
+  --brand-dark-stem: #240a03;
+
+  --bg-page: #ffffff;
+  --bg-surface: #fff6db;
+  --bg-mint-soft: #e0faf2;
+  --bg-panel: #f5f7f8;
+  --bg-card: #ffffff;
+  --bg-placeholder: #dce2e5;
+  --bg-code: #f8fafb;
+
+  --text-primary: #240a03;
+  --text-secondary: #5c6670;
+  --text-heading: #571200;
+  --text-accent: #b4461f;
+  --text-link: #0b6e8f;
+  --text-on-burnt: #240a03;
+  --text-on-orange: #240a03;
+  --text-on-blue: #240a03;
+  --text-on-error: #ffffff;
+
+  --border-default: #e3e8ea;
+  --border-strong: #b4461f;
+  --nav-active: #571200;
+  --neutral-muted: #8a949b;
+
+  --status-success: #04a57b;
+  --status-success-bg: #e0faf2;
+  --status-success-text: #04785a;
+  --status-error: #d62839;
+  --status-error-bg: #fde7ea;
+  --status-error-text: #b01f30;
+  --status-info: #118ab2;
+  --status-info-bg: #e3f3f9;
+  --status-info-text: #0b6e8f;
+
+  --viz-unvisited: #d5dce0;
+  --viz-active: #ff7f50;
+  --viz-done: #571200;
+
+  /* Cincin fokus: efek "Focus/Ring" di Figma (biru), dengan celah 1px di dalamnya. */
+  --ring: #118ab2;
+  --ring-gap: #ffffff;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --brand-orange: #ff8f66;
+  --brand-burnt: #ff7f50;
+  --brand-rust: #ffb38f;
+  --brand-yellow: #ffd166;
+  --brand-mint: #2fe0b3;
+  --brand-blue: #4fb7d9;
+  --brand-blue-strong: #7ccdea;
+  --brand-stem: #e8c07a;
+  --brand-dark-stem: #f5f4ef;
+
+  --bg-page: #1f1e1d;
+  --bg-surface: #3a3220;
+  --bg-mint-soft: #153a31;
+  --bg-panel: #2a2927;
+  --bg-card: #262524;
+  --bg-placeholder: #3a3835;
+  --bg-code: #191817;
+
+  --text-primary: #f5f4ef;
+  --text-secondary: #b9c2c8;
+  --text-heading: #ffffff;
+  --text-accent: #ffb38f;
+  --text-link: #7ccdea;
+  --text-on-burnt: #1f1e1d;
+  --text-on-orange: #1f1e1d;
+  --text-on-blue: #1f1e1d;
+  --text-on-error: #1f1e1d;
+
+  --border-default: #3a3835;
+  --border-strong: #ff8f66;
+  --nav-active: #ff8f66;
+  --neutral-muted: #8e8a83;
+
+  --status-success: #2fe0b3;
+  --status-success-bg: #153a31;
+  --status-success-text: #7ff0cf;
+  --status-error: #ff6b7a;
+  --status-error-bg: #3d1a1f;
+  --status-error-text: #ff9aa5;
+  --status-info: #4fb7d9;
+  --status-info-bg: #132e38;
+  --status-info-text: #9ed8ee;
+
+  --viz-unvisited: #4a4744;
+  --viz-active: #ff8f66;
+  --viz-done: #e8c07a;
+
+  --ring: #4fb7d9;
+  --ring-gap: #1f1e1d;
+}
+
+/* Pemetaan ke utilitas Tailwind: bg-page, text-ink, border-line, shadow-block, font-ui, dan seterusnya. */
+@theme inline {
+  --color-brand-orange: var(--brand-orange);
+  --color-brand-burnt: var(--brand-burnt);
+  --color-brand-rust: var(--brand-rust);
+  --color-brand-yellow: var(--brand-yellow);
+  --color-brand-mint: var(--brand-mint);
+  --color-brand-blue: var(--brand-blue);
+  --color-brand-blue-strong: var(--brand-blue-strong);
+  --color-brand-stem: var(--brand-stem);
+  --color-brand-dark-stem: var(--brand-dark-stem);
+
+  --color-page: var(--bg-page);
+  --color-surface: var(--bg-surface);
+  --color-mint-soft: var(--bg-mint-soft);
+  --color-panel: var(--bg-panel);
+  --color-card: var(--bg-card);
+  --color-placeholder: var(--bg-placeholder);
+  --color-code-bg: var(--bg-code);
+
+  --color-ink: var(--text-primary);
+  --color-ink-soft: var(--text-secondary);
+  --color-heading: var(--text-heading);
+  --color-accent: var(--text-accent);
+  --color-link: var(--text-link);
+  --color-on-burnt: var(--text-on-burnt);
+  --color-on-orange: var(--text-on-orange);
+  --color-on-blue: var(--text-on-blue);
+  --color-on-error: var(--text-on-error);
+
+  --color-line: var(--border-default);
+  --color-line-strong: var(--border-strong);
+  --color-nav-active: var(--nav-active);
+  --color-muted: var(--neutral-muted);
+
+  --color-ok: var(--status-success);
+  --color-ok-bg: var(--status-success-bg);
+  --color-ok-text: var(--status-success-text);
+  --color-bad: var(--status-error);
+  --color-bad-bg: var(--status-error-bg);
+  --color-bad-text: var(--status-error-text);
+  --color-info: var(--status-info);
+  --color-info-bg: var(--status-info-bg);
+  --color-info-text: var(--status-info-text);
+
+  --color-viz-unvisited: var(--viz-unvisited);
+  --color-viz-active: var(--viz-active);
+  --color-viz-done: var(--viz-done);
+
+  --font-ui: 'Poppins', ui-sans-serif, system-ui, sans-serif;
+  --font-code: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-pixel: 'Silkscreen', 'Courier New', monospace;
+
+  /* Efek dari Figma: Shadow/Blok, Shadow/Hover, Shadow/Popover, Glow/Menyala. */
+  --shadow-block: 0 3px 0 0 rgb(92 102 112 / 0.16);
+  --shadow-hover: 0 6px 16px 0 rgb(36 10 3 / 0.1), 0 3px 0 0 rgb(159 64 0 / 0.18);
+  --shadow-popover: 0 12px 32px 0 rgb(36 10 3 / 0.16);
+  --shadow-glow: 0 0 16px 0 rgb(255 127 80 / 0.45), 0 0 4px 1px rgb(255 127 80 / 0.25);
+}
+
+/* Cincin fokus keyboard: 1px celah + 3px cincin, selalu terlihat (Focus/Ring di Figma). */
+.focus-ring:focus-visible,
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 1px var(--ring-gap), 0 0 0 4px var(--ring);
+}
+
+/* Gaya teks dari Figma. Contoh: class="text-h1". */
+@utility text-h1 { font-family: var(--font-ui); font-size: 32px; line-height: 40px; font-weight: 700; }
+@utility text-h2 { font-family: var(--font-ui); font-size: 24px; line-height: 32px; font-weight: 600; }
+@utility text-h3 { font-family: var(--font-ui); font-size: 18px; line-height: 26px; font-weight: 600; }
+@utility text-body-l { font-family: var(--font-ui); font-size: 16px; line-height: 24px; font-weight: 400; }
+@utility text-body { font-family: var(--font-ui); font-size: 14px; line-height: 22px; font-weight: 400; }
+@utility text-body-strong { font-family: var(--font-ui); font-size: 14px; line-height: 22px; font-weight: 600; }
+@utility text-nav { font-family: var(--font-ui); font-size: 18px; line-height: 28px; font-weight: 500; }
+@utility text-caption { font-family: var(--font-ui); font-size: 12px; line-height: 16px; font-weight: 400; }
+@utility text-label { font-family: var(--font-ui); font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: 0.06em; }
+@utility text-button { font-family: var(--font-ui); font-size: 14px; line-height: 20px; font-weight: 600; }
+@utility text-code { font-family: var(--font-code); font-size: 13px; line-height: 22px; font-weight: 400; }
+@utility text-code-bold { font-family: var(--font-code); font-size: 13px; line-height: 22px; font-weight: 700; }
+@utility text-pixel-display { font-family: var(--font-pixel); font-size: 40px; line-height: 44px; font-weight: 400; }
+@utility text-pixel-l { font-family: var(--font-pixel); font-size: 28px; line-height: 32px; font-weight: 400; }
+@utility text-pixel-s { font-family: var(--font-pixel); font-size: 12px; line-height: 16px; font-weight: 400; letter-spacing: 0.04em; }
+@utility text-wordmark { font-family: var(--font-ui); font-size: 36px; line-height: 40px; font-weight: 500; }
