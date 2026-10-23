@@ -1,13 +1,13 @@
 import { cx } from './cx.js'
 
-/** Satu tab (Figma: Tab Item). Aktif: latar kartu, bayangan blok, dan teks tebal berwarna judul. */
+/** Satu tab bergaris bawah (Figma: Tab Item). Aktif: teks biru tebal dengan garis bawah. */
 export default function TabItem({ active, className, children, ...rest }) {
   return (
     <button
       type="button"
       role="tab"
       aria-selected={Boolean(active)}
-      className={cx('rounded-[3px] px-3 py-1.5 text-body transition-colors', active ? 'bg-card font-semibold text-heading shadow-block' : 'text-ink-soft hover:text-ink', className)}
+      className={cx('border-b-2 px-3 py-1.5 text-body transition-colors', active ? 'border-line font-semibold text-link' : 'border-transparent text-ink-soft hover:text-ink', className)}
       {...rest}
     >
       {children}

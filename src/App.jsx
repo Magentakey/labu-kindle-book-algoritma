@@ -1,6 +1,9 @@
 import { lazy, Suspense } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import Home from './pages/Home.jsx'
+import AppShell from './layout/AppShell.jsx'
+import Algoritma from './pages/Algoritma.jsx'
+import Segera from './pages/Segera.jsx'
 
 // Halaman Materi (Markdown, Prism, visualizer) baru diunduh saat pertama kali dibuka,
 // sehingga Home tetap ringan.
@@ -28,7 +31,16 @@ export default function App() {
       </button>
       <Suspense fallback={<PageLoading />}>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route element={<AppShell />}>
+            <Route path="/" element={<Algoritma />} />
+            <Route
+              path="/materi"
+              element={<Segera judul="Materi" catatan="24 modul baru sedang disiapkan. Sementara itu materi lama masih bisa dibuka." tautan={{ to: '/materi-lama', label: 'Buka materi lama' }} />}
+            />
+            <Route path="/quiz" element={<Segera judul="Quiz" catatan="Kuis per modul akan muncul di sini." />} />
+            <Route path="/credit" element={<Segera judul="Credit" catatan="Progres belajar, glosarium, tim, dan sumber akan muncul di sini." />} />
+          </Route>
+          <Route path="/materi-lama" element={<Home />} />
           <Route path="/materi/:id" element={<Material />} />
           <Route path="/ui" element={<UiKit />} />
         </Routes>
