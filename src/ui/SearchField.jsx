@@ -7,8 +7,8 @@ import { cx } from './cx.js'
  */
 export default function SearchField({ value, onChange, placeholder = 'Cari…', label = 'Cari', className, inputRef, ...rest }) {
   return (
-    <label className={cx('group flex h-10 items-center gap-2 rounded-sm border border-line bg-card px-3 focus-within:border-2 focus-within:border-brand-orange focus-within:shadow-[0_0_0_1px_var(--ring-gap),0_0_0_4px_var(--ring)]', className)}>
-      <Icon name="search" size={18} className={cx('shrink-0', value ? 'text-brand-burnt' : 'text-ink-soft group-focus-within:text-brand-burnt')} />
+    <label className={cx('group flex h-10 items-center gap-2 rounded-sm border border-line bg-card px-3 focus-within:border-2 focus-within:border-brand-blue focus-within:shadow-[0_0_0_1px_var(--ring-gap),0_0_0_4px_var(--ring)]', className)}>
+      <Icon name="search" size={18} className={cx('shrink-0', value ? 'text-brand-blue' : 'text-ink-soft group-focus-within:text-brand-blue')} />
       <input
         ref={inputRef}
         type="search"

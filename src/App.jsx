@@ -2,6 +2,8 @@ import { lazy, Suspense } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import Home from './pages/Home.jsx'
 import AppShell from './layout/AppShell.jsx'
+import PwaEvents from './pwa/PwaEvents.jsx'
+import { PageLoading, ToastProvider } from './ui/index.js'
 import Algoritma from './pages/Algoritma.jsx'
 import Segera from './pages/Segera.jsx'
 
@@ -11,17 +13,10 @@ const Material = lazy(() => import('./pages/Material.jsx'))
 // Halaman peninjauan komponen desain baru (token, ikon, maskot, komponen dasar). Hanya untuk pengembangan dan QA.
 const UiKit = lazy(() => import('./pages/UiKit.jsx'))
 
-function PageLoading() {
-  return (
-    <main id="konten" tabIndex={-1} className="min-h-screen bg-orange-50 p-6 text-stone-900 outline-none">
-      <p role="status">Memuat halaman…</p>
-    </main>
-  )
-}
-
 export default function App() {
   return (
-    <>
+    <ToastProvider>
+      <PwaEvents />
       <button
         type="button"
         onClick={() => document.getElementById('konten')?.focus()}
@@ -45,6 +40,6 @@ export default function App() {
           <Route path="/ui" element={<UiKit />} />
         </Routes>
       </Suspense>
-    </>
+    </ToastProvider>
   )
 }

@@ -17,26 +17,56 @@ const parseBlock = (selector) => {
 const light = parseBlock(':root')
 const dark = parseBlock(":root[data-theme='dark']")
 
-// Salinan token dari Figma (variabel "LABU · Warna" dan tabel Light & Dark di style guide): [nama, Light, Dark].
+// Salinan token dari Figma Style Guide v1.0: [nama, Light, Dark, terpetakan ke Tailwind]. border-strong dan brand-rust "tidak dipakai".
 const FIGMA = [
-  ['brand-orange', 'ff7f50', 'ff8f66'], ['brand-burnt', 'f0643a', 'ff7f50'], ['brand-rust', 'b4461f', 'ffb38f'],
-  ['brand-yellow', 'ffd166', 'ffd166'], ['brand-mint', '06d6a0', '2fe0b3'], ['brand-blue', '118ab2', '4fb7d9'],
-  ['brand-blue-strong', '0b6e8f', '7ccdea'], ['brand-stem', '571200', 'e8c07a'], ['brand-dark-stem', '240a03', 'f5f4ef'],
-  ['bg-page', 'ffffff', '1f1e1d'], ['bg-surface', 'fff6db', '3a3220'], ['bg-mint-soft', 'e0faf2', '153a31'],
-  ['bg-panel', 'f5f7f8', '2a2927'], ['bg-card', 'ffffff', '262524'], ['bg-placeholder', 'dce2e5', '3a3835'], ['bg-code', 'f8fafb', '191817'],
-  ['text-primary', '240a03', 'f5f4ef'], ['text-secondary', '5c6670', 'b9c2c8'], ['text-heading', '571200', 'ffffff'],
-  ['text-accent', 'b4461f', 'ffb38f'], ['text-link', '0b6e8f', '7ccdea'], ['text-on-burnt', '240a03', '1f1e1d'],
-  ['text-on-orange', '240a03', '1f1e1d'], ['text-on-blue', '240a03', '1f1e1d'], ['text-on-error', 'ffffff', '1f1e1d'],
-  ['border-default', 'e3e8ea', '3a3835'], ['border-strong', 'b4461f', 'ff8f66'], ['nav-active', '571200', 'ff8f66'],
-  ['neutral-muted', '8a949b', '8e8a83'],
-  ['status-success', '04a57b', '2fe0b3'], ['status-success-bg', 'e0faf2', '153a31'], ['status-success-text', '04785a', '7ff0cf'],
-  ['status-error', 'd62839', 'ff6b7a'], ['status-error-bg', 'fde7ea', '3d1a1f'], ['status-error-text', 'b01f30', 'ff9aa5'],
-  ['status-info', '118ab2', '4fb7d9'], ['status-info-bg', 'e3f3f9', '132e38'], ['status-info-text', '0b6e8f', '9ed8ee'],
-  ['viz-unvisited', 'd5dce0', '4a4744'], ['viz-active', 'ff7f50', 'ff8f66'], ['viz-done', '571200', 'e8c07a'],
+  ['brand-orange', 'ff7f50', 'ff8f66', true],
+  ['brand-burnt', 'f0643a', 'ff7f50', true],
+  ['brand-yellow', 'ffd166', 'ffd166', true],
+  ['brand-yellow-strong', 'd9a400', 'ffd166', true],
+  ['brand-mint', '06d6a0', '2fe0b3', true],
+  ['brand-blue', '118ab2', '4fb7d9', true],
+  ['brand-blue-strong', '0b6e8f', '7ccdea', true],
+  ['brand-stem', '571200', 'e8c07a', true],
+  ['brand-dark-stem', '240a03', 'f5f4ef', true],
+  ['brand-rust', 'b4461f', 'ffb38f', false],
+  ['bg-page', 'ffffff', '1f1e1d', true],
+  ['bg-surface', 'fff6db', '3a3220', true],
+  ['bg-orange-soft', 'fff0ea', '3a2620', true],
+  ['bg-panel', 'f5f7f8', '2a2927', true],
+  ['bg-card', 'ffffff', '262524', true],
+  ['bg-placeholder', 'dce2e5', '3a3835', true],
+  ['bg-code', 'f8fafb', '191817', true],
+  ['text-primary', '240a03', 'f5f4ef', true],
+  ['text-secondary', '5c6670', 'b9c2c8', true],
+  ['text-heading', '571200', 'ffffff', true],
+  ['text-accent', '571200', 'e8c07a', true],
+  ['text-link', 'b4461f', 'ffb38f', true],
+  ['text-control', '0b6e8f', '7ccdea', true],
+  ['text-on-control', 'ffffff', '0e1a1f', true],
+  ['text-on-orange', '240a03', '1f1e1d', true],
+  ['text-on-burnt', '240a03', '1f1e1d', true],
+  ['text-on-blue', '240a03', '1f1e1d', true],
+  ['text-on-error', 'ffffff', '1f1e1d', true],
+  ['border-default', 'e3e8ea', '3a3835', true],
+  ['border-strong', 'b4461f', 'ff8f66', false],
+  ['nav-active', '571200', 'ff8f66', true],
+  ['neutral-muted', '8a949b', '8e8a83', true],
+  ['status-success', '04a57b', '2fe0b3', true],
+  ['status-success-bg', 'e0faf2', '153a31', true],
+  ['status-success-text', '04785a', '7ff0cf', true],
+  ['status-error', 'd62839', 'ff6b7a', true],
+  ['status-error-bg', 'fde7ea', '3d1a1f', true],
+  ['status-error-text', 'b01f30', 'ff9aa5', true],
+  ['status-info', '118ab2', '4fb7d9', true],
+  ['status-info-bg', 'e3f3f9', '132e38', true],
+  ['status-info-text', '0b6e8f', '9ed8ee', true],
+  ['viz-unvisited', 'd5dce0', '4a4744', true],
+  ['viz-active', 'ff7f50', 'ff8f66', true],
+  ['viz-done', '06d6a0', '2fe0b3', true],
 ]
 
-test('token warna: nilai Light dan Dark sama dengan Figma (41 token)', () => {
-  assert.equal(FIGMA.length, 41)
+test('token warna: nilai Light dan Dark sama dengan Figma (44 token)', () => {
+  assert.equal(FIGMA.length, 44)
   for (const [name, l, d] of FIGMA) {
     assert.equal(light[name], `#${l}`, `${name} (light)`)
     assert.equal(dark[name], `#${d}`, `${name} (dark)`)
@@ -61,7 +91,8 @@ test('kontras teks pada pasangan token utama memenuhi WCAG AA (≥ 4,5:1), dan t
   const pairs = [
     ['text-on-orange', 'brand-orange', 7], ['text-primary', 'bg-page', 7], ['text-primary', 'bg-card', 7], ['text-heading', 'bg-page', 7],
     ['text-on-burnt', 'brand-burnt', 4.5], ['text-on-blue', 'brand-blue', 4.5],
-    ['text-secondary', 'bg-page', 4.5], ['text-secondary', 'bg-panel', 4.5], ['text-link', 'bg-card', 4.5], ['text-link', 'status-info-bg', 4.5],
+    ['text-on-control', 'brand-blue-strong', 4.5], ['text-secondary', 'bg-page', 4.5], ['text-secondary', 'bg-panel', 4.5],
+    ['text-link', 'bg-card', 4.5], ['text-link', 'bg-orange-soft', 4.5], ['text-control', 'bg-card', 4.5], ['text-control', 'status-info-bg', 4.5],
     ['text-accent', 'bg-page', 4.5], ['text-accent', 'bg-surface', 4.5],
     ['status-success-text', 'status-success-bg', 4.5], ['status-error-text', 'status-error-bg', 4.5], ['status-info-text', 'status-info-bg', 4.5],
   ]
@@ -73,9 +104,26 @@ test('kontras teks pada pasangan token utama memenuhi WCAG AA (≥ 4,5:1), dan t
   }
 })
 
+test('putih di atas Coral gagal kontras (2,5:1), itu sebabnya teks di atas Coral selalu gelap', () => {
+  const lum = (hex) => {
+    const c = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255).map((v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4))
+    return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]
+  }
+  const r = (1 + 0.05) / (lum(light['brand-orange']) + 0.05)
+  assert.ok(r < 3 && r > 2.4, `putih di Coral ${r.toFixed(2)}:1`)
+  assert.equal(light['text-on-orange'], '#240a03')
+})
+
+test('arti warna: text-link = Coral Tua (pindah), text-control = Biru Tua (kontrol), text-accent = Stem Brown (label)', () => {
+  assert.equal(light['text-link'], '#b4461f')
+  assert.equal(light['text-control'], '#0b6e8f')
+  assert.equal(light['text-accent'], '#571200')
+  assert.equal(light['viz-done'], light['brand-mint'], 'elemen selesai di kanvas = Mint')
+})
+
 test('tiap token terpetakan ke utilitas Tailwind lewat @theme inline', () => {
   const theme = css.slice(css.indexOf('@theme inline'))
-  for (const [name] of FIGMA) assert.ok(theme.includes(`var(--${name})`), `--${name} belum dipetakan di @theme`)
+  for (const [name, , , dipakai] of FIGMA) assert.equal(theme.includes(`var(--${name})`), dipakai, `--${name}: pemetaan @theme`)
   for (const font of ['--font-ui', '--font-code', '--font-pixel']) assert.ok(theme.includes(font))
   for (const sh of ['--shadow-block', '--shadow-hover', '--shadow-popover', '--shadow-glow']) assert.ok(theme.includes(sh))
 })

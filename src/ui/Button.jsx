@@ -1,26 +1,15 @@
 import Icon from './Icon.jsx'
 import { cx } from './cx.js'
-
-const base = 'inline-flex shrink-0 items-center justify-center gap-2 rounded-sm text-button transition-colors disabled:cursor-not-allowed'
-const sizes = { m: 'h-10 px-4', s: 'h-8 px-3' }
-const variants = {
-  primary:
-    'bg-brand-orange text-on-orange shadow-block hover:bg-brand-burnt hover:text-on-burnt disabled:bg-placeholder disabled:text-ink-soft disabled:shadow-none',
-  secondary:
-    'border-[1.5px] border-brand-blue bg-card text-link hover:bg-info-bg hover:shadow-block disabled:border-line disabled:bg-placeholder disabled:text-ink-soft disabled:shadow-none',
-  outlineOrange:
-    'border-[1.5px] border-brand-burnt bg-card text-accent hover:bg-surface hover:shadow-block disabled:border-line disabled:bg-placeholder disabled:text-ink-soft disabled:shadow-none',
-  ghost: 'text-link hover:bg-info-bg disabled:text-ink-soft disabled:hover:bg-transparent',
-}
+import { base, buttonVariants, off, sizes } from './buttonStyles.js'
 
 /**
- * Tombol (Figma: Tombol). Tiga varian × dua ukuran; fokus keyboard memakai cincin global (tokens.css).
- * @param {{ variant?: 'primary'|'secondary'|'outlineOrange'|'ghost', size?: 'm'|'s', icon?: string, iconRight?: string, as?: any } & Record<string, any>} props
+ * Tombol. Fokus keyboard memakai cincin global (tokens.css).
+ * @param {{ variant?: keyof typeof buttonVariants, size?: 'm'|'s', icon?: string, iconRight?: string, as?: any } & Record<string, any>} props
  */
-export default function Button({ variant = 'primary', size = 'm', icon, iconRight, as: Tag = 'button', className, children, ...rest }) {
+export default function Button({ variant = 'navigasi', size = 'm', icon, iconRight, as: Tag = 'button', className, children, ...rest }) {
   const props = Tag === 'button' ? { type: 'button', ...rest } : rest
   return (
-    <Tag className={cx(base, sizes[size], variants[variant], className)} {...props}>
+    <Tag className={cx(base, sizes[size], buttonVariants[variant], off, className)} {...props}>
       {icon && <Icon name={icon} size={18} />}
       {children}
       {iconRight && <Icon name={iconRight} size={18} />}

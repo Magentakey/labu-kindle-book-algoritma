@@ -7,7 +7,7 @@ export default function ProgressBlocks({ value, label = 'Progres', className }) 
   return (
     <div role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(value)} aria-label={label} className={cx('flex gap-[3px]', className)}>
       {Array.from({ length: PROGRESS_SEGMENTS }, (_, i) => (
-        <span key={i} className={cx('h-2 w-3.5 rounded-[1px]', i < filled ? 'border border-brand-burnt bg-brand-orange' : 'bg-placeholder')} />
+        <span key={i} className={cx('h-2 w-3.5 rounded-[1px]', i < filled ? 'border border-ok bg-brand-mint' : 'bg-placeholder')} />
       ))}
     </div>
   )

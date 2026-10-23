@@ -1,7 +1,8 @@
 /*
- * Token desain LABU (dari Figma "LABU^BU", halaman Style Guide).
- * Nilai Light = variabel "LABU · Warna" di Figma. Nilai Dark = tabel "TOKEN SEMANTIK · LIGHT & DARK" di style guide
- * (paket Figma Starter hanya punya 1 mode variabel, jadi nilai Dark dicatat di teks).
+ * Token desain LABU (Figma "LABU^BU", Style Guide v1.0, 44 token warna).
+ * Nilai Light = variabel Figma; nilai Dark = kolom kedua di tabel "SEMUA TOKEN WARNA" (paket Figma Starter hanya punya 1 mode variabel).
+ * Setiap warna punya ARTI (lihat style guide): Coral = PINDAH, Biru = KONTROL, Mint = SELESAI/KIRIM, Merah = SALAH/BAHAYA,
+ * Kuning = SOROTAN, Stem Brown = identitas/label. Token yang ditandai "tidak dipakai" ada di sini hanya agar sama dengan Figma.
  * Mode gelap dipasang lewat atribut data-theme="dark" pada <html> (lihat src/ui/theme.js).
  * Tes src/ui/tokens.test.js menjaga agar file ini tetap sama dengan data Figma.
  */
@@ -17,37 +18,36 @@
   color-scheme: light;
   --brand-orange: #ff7f50;
   --brand-burnt: #f0643a;
-  --brand-rust: #b4461f;
   --brand-yellow: #ffd166;
+  --brand-yellow-strong: #d9a400;
   --brand-mint: #06d6a0;
   --brand-blue: #118ab2;
   --brand-blue-strong: #0b6e8f;
   --brand-stem: #571200;
   --brand-dark-stem: #240a03;
-
+  --brand-rust: #b4461f;
   --bg-page: #ffffff;
   --bg-surface: #fff6db;
-  --bg-mint-soft: #e0faf2;
+  --bg-orange-soft: #fff0ea;
   --bg-panel: #f5f7f8;
   --bg-card: #ffffff;
   --bg-placeholder: #dce2e5;
   --bg-code: #f8fafb;
-
   --text-primary: #240a03;
   --text-secondary: #5c6670;
   --text-heading: #571200;
-  --text-accent: #b4461f;
-  --text-link: #0b6e8f;
-  --text-on-burnt: #240a03;
+  --text-accent: #571200;
+  --text-link: #b4461f;
+  --text-control: #0b6e8f;
+  --text-on-control: #ffffff;
   --text-on-orange: #240a03;
+  --text-on-burnt: #240a03;
   --text-on-blue: #240a03;
   --text-on-error: #ffffff;
-
   --border-default: #e3e8ea;
   --border-strong: #b4461f;
   --nav-active: #571200;
   --neutral-muted: #8a949b;
-
   --status-success: #04a57b;
   --status-success-bg: #e0faf2;
   --status-success-text: #04785a;
@@ -57,12 +57,11 @@
   --status-info: #118ab2;
   --status-info-bg: #e3f3f9;
   --status-info-text: #0b6e8f;
-
   --viz-unvisited: #d5dce0;
   --viz-active: #ff7f50;
-  --viz-done: #571200;
+  --viz-done: #06d6a0;
 
-  /* Cincin fokus: efek "Focus/Ring" di Figma (biru), dengan celah 1px di dalamnya. */
+  /* Cincin fokus keyboard: Biru 3px + celah putih 1px (style guide, bagian Aturan warna interaksi). */
   --ring: #118ab2;
   --ring-gap: #ffffff;
 }
@@ -71,37 +70,36 @@
   color-scheme: dark;
   --brand-orange: #ff8f66;
   --brand-burnt: #ff7f50;
-  --brand-rust: #ffb38f;
   --brand-yellow: #ffd166;
+  --brand-yellow-strong: #ffd166;
   --brand-mint: #2fe0b3;
   --brand-blue: #4fb7d9;
   --brand-blue-strong: #7ccdea;
   --brand-stem: #e8c07a;
   --brand-dark-stem: #f5f4ef;
-
+  --brand-rust: #ffb38f;
   --bg-page: #1f1e1d;
   --bg-surface: #3a3220;
-  --bg-mint-soft: #153a31;
+  --bg-orange-soft: #3a2620;
   --bg-panel: #2a2927;
   --bg-card: #262524;
   --bg-placeholder: #3a3835;
   --bg-code: #191817;
-
   --text-primary: #f5f4ef;
   --text-secondary: #b9c2c8;
   --text-heading: #ffffff;
-  --text-accent: #ffb38f;
-  --text-link: #7ccdea;
-  --text-on-burnt: #1f1e1d;
+  --text-accent: #e8c07a;
+  --text-link: #ffb38f;
+  --text-control: #7ccdea;
+  --text-on-control: #0e1a1f;
   --text-on-orange: #1f1e1d;
+  --text-on-burnt: #1f1e1d;
   --text-on-blue: #1f1e1d;
   --text-on-error: #1f1e1d;
-
   --border-default: #3a3835;
   --border-strong: #ff8f66;
   --nav-active: #ff8f66;
   --neutral-muted: #8e8a83;
-
   --status-success: #2fe0b3;
   --status-success-bg: #153a31;
   --status-success-text: #7ff0cf;
@@ -111,50 +109,46 @@
   --status-info: #4fb7d9;
   --status-info-bg: #132e38;
   --status-info-text: #9ed8ee;
-
   --viz-unvisited: #4a4744;
   --viz-active: #ff8f66;
-  --viz-done: #e8c07a;
+  --viz-done: #2fe0b3;
 
   --ring: #4fb7d9;
   --ring-gap: #1f1e1d;
 }
 
-/* Pemetaan ke utilitas Tailwind: bg-page, text-ink, border-line, shadow-block, font-ui, dan seterusnya. */
+/* Pemetaan ke utilitas Tailwind: bg-page, text-ink, text-link, border-line, shadow-block, font-ui, dan seterusnya. */
 @theme inline {
   --color-brand-orange: var(--brand-orange);
   --color-brand-burnt: var(--brand-burnt);
-  --color-brand-rust: var(--brand-rust);
   --color-brand-yellow: var(--brand-yellow);
+  --color-brand-yellow-strong: var(--brand-yellow-strong);
   --color-brand-mint: var(--brand-mint);
   --color-brand-blue: var(--brand-blue);
   --color-brand-blue-strong: var(--brand-blue-strong);
   --color-brand-stem: var(--brand-stem);
   --color-brand-dark-stem: var(--brand-dark-stem);
-
   --color-page: var(--bg-page);
   --color-surface: var(--bg-surface);
-  --color-mint-soft: var(--bg-mint-soft);
+  --color-orange-soft: var(--bg-orange-soft);
   --color-panel: var(--bg-panel);
   --color-card: var(--bg-card);
   --color-placeholder: var(--bg-placeholder);
   --color-code-bg: var(--bg-code);
-
   --color-ink: var(--text-primary);
   --color-ink-soft: var(--text-secondary);
   --color-heading: var(--text-heading);
   --color-accent: var(--text-accent);
   --color-link: var(--text-link);
-  --color-on-burnt: var(--text-on-burnt);
+  --color-control: var(--text-control);
+  --color-on-control: var(--text-on-control);
   --color-on-orange: var(--text-on-orange);
+  --color-on-burnt: var(--text-on-burnt);
   --color-on-blue: var(--text-on-blue);
   --color-on-error: var(--text-on-error);
-
   --color-line: var(--border-default);
-  --color-line-strong: var(--border-strong);
   --color-nav-active: var(--nav-active);
   --color-muted: var(--neutral-muted);
-
   --color-ok: var(--status-success);
   --color-ok-bg: var(--status-success-bg);
   --color-ok-text: var(--status-success-text);
@@ -164,7 +158,6 @@
   --color-info: var(--status-info);
   --color-info-bg: var(--status-info-bg);
   --color-info-text: var(--status-info-text);
-
   --color-viz-unvisited: var(--viz-unvisited);
   --color-viz-active: var(--viz-active);
   --color-viz-done: var(--viz-done);
@@ -178,13 +171,30 @@
   --shadow-hover: 0 6px 16px 0 rgb(36 10 3 / 0.1), 0 3px 0 0 rgb(159 64 0 / 0.18);
   --shadow-popover: 0 12px 32px 0 rgb(36 10 3 / 0.16);
   --shadow-glow: 0 0 16px 0 rgb(255 127 80 / 0.45), 0 0 4px 1px rgb(255 127 80 / 0.25);
+
+  --animate-toast-in: toast-in 200ms ease-out;
 }
 
-/* Cincin fokus keyboard: 1px celah + 3px cincin, selalu terlihat (Focus/Ring di Figma). */
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Cincin fokus keyboard: 1px celah + 3px cincin, selalu terlihat. */
 .focus-ring:focus-visible,
 :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
   outline: none;
   box-shadow: 0 0 0 1px var(--ring-gap), 0 0 0 4px var(--ring);
+}
+
+/* Reduced motion (style guide: setiap animasi punya versi tanpa gerak): tanpa slide, aliran, dan shimmer; perubahan langsung. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* Gaya teks dari Figma. Contoh: class="text-h1". */

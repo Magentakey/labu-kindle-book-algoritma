@@ -1,13 +1,14 @@
 import { useState } from 'react'
-import { Button, Chip, chipTypes, Icon, IconButton, Logo, Mascot, ProgressBlocks, SearchField, StatusBlock, TabItem, ThemeToggle, Toggle } from '../ui/index.js'
+import { AnswerOption, Button, Chip, chipTypes, ErrorState, FeedbackNote, Icon, IconButton, Logo, Mascot, PageLoading, ProgressBlocks, SearchField, Segmented, StatusBlock, TabItem, ThemeToggle, Toggle, useToast } from '../ui/index.js'
+import OfflineBanner from '../ui/OfflineBanner.jsx'
 import { iconNames } from '../ui/iconData.js'
 import { mascotNames } from '../ui/brandArt.js'
 
 const colorGroups = {
-  Brand: ['brand-orange', 'brand-burnt', 'brand-rust', 'brand-yellow', 'brand-mint', 'brand-blue', 'brand-blue-strong', 'brand-stem', 'brand-dark-stem'],
-  Latar: ['bg-page', 'bg-surface', 'bg-mint-soft', 'bg-panel', 'bg-card', 'bg-placeholder', 'bg-code'],
-  Teks: ['text-primary', 'text-secondary', 'text-heading', 'text-accent', 'text-link', 'text-on-orange', 'text-on-burnt', 'text-on-blue', 'text-on-error'],
-  'Garis dan status': ['border-default', 'border-strong', 'nav-active', 'neutral-muted', 'status-success', 'status-success-bg', 'status-error', 'status-error-bg', 'status-info', 'status-info-bg'],
+  Brand: ['brand-orange', 'brand-burnt', 'brand-yellow', 'brand-yellow-strong', 'brand-mint', 'brand-blue', 'brand-blue-strong', 'brand-stem', 'brand-dark-stem'],
+  Latar: ['bg-page', 'bg-surface', 'bg-orange-soft', 'bg-panel', 'bg-card', 'bg-placeholder', 'bg-code'],
+  Teks: ['text-primary', 'text-secondary', 'text-heading', 'text-accent', 'text-link', 'text-control', 'text-on-control', 'text-on-orange', 'text-on-burnt', 'text-on-blue', 'text-on-error'],
+  'Garis dan status': ['border-default', 'nav-active', 'neutral-muted', 'status-success', 'status-success-bg', 'status-error', 'status-error-bg', 'status-info', 'status-info-bg'],
   Visualisasi: ['viz-unvisited', 'viz-active', 'viz-done'],
 }
 
@@ -23,6 +24,9 @@ export default function UiKit() {
   const [q, setQ] = useState('')
   const [on, setOn] = useState(true)
   const [tab, setTab] = useState('Pseudocode')
+  const [seg, setSeg] = useState('semua')
+  const [jawab, setJawab] = useState('B')
+  const { show } = useToast()
   return (
     <div className="min-h-screen bg-page font-ui text-ink">
       <header className="flex items-center justify-between border-b border-line px-6 py-3">
@@ -100,11 +104,11 @@ export default function UiKit() {
           </div>
         </Section>
 
-        <Section title="Tombol">
+        <Section title="Tombol menurut peran">
           <div className="space-y-3">
-            {['primary', 'secondary', 'ghost'].map((v) => (
+            {[['navigasi', 'Navigasi'], ['navigasiGaris', 'Navigasi Garis'], ['tautan', 'Tautan'], ['kontrol', 'Kontrol'], ['konfirmasi', 'Konfirmasi'], ['netral', 'Netral'], ['bahaya', 'Bahaya']].map(([v, nama]) => (
               <div key={v} className="flex flex-wrap items-center gap-3">
-                <span className="text-caption w-20 text-ink-soft">{v}</span>
+                <span className="text-caption w-28 text-ink-soft">{nama}</span>
                 <Button variant={v} icon="download">Tombol M</Button>
                 <Button variant={v} size="s">Tombol S</Button>
                 <Button variant={v} iconRight="arrowR">Lanjutkan</Button>
@@ -112,10 +116,11 @@ export default function UiKit() {
               </div>
             ))}
             <div className="flex items-center gap-3">
-              <span className="text-caption w-20 text-ink-soft">ikon</span>
-              <IconButton variant="primary" icon="play" label="Putar" />
-              <IconButton variant="outline" icon="reset" label="Ulangi" />
-              <IconButton variant="ghost" icon="menu" label="Menu" />
+              <span className="text-caption w-28 text-ink-soft">Tombol ikon</span>
+              <IconButton variant="kontrolUtama" icon="play" label="Putar" />
+              <IconButton variant="kontrol" icon="reset" label="Ulangi" />
+              <IconButton variant="navigasi" icon="arrowR" label="Lanjut" />
+              <IconButton variant="netral" icon="menu" label="Menu" />
             </div>
           </div>
         </Section>
@@ -130,9 +135,10 @@ export default function UiKit() {
           <div className="flex flex-wrap items-center gap-6">
             <SearchField value={q} onChange={setQ} placeholder="Cari algoritma, mis. “dijk”…" className="w-72" />
             <Toggle checked={on} onChange={setOn} label="Babak" />
-            <div className="flex gap-1 rounded-sm bg-panel p-1" role="tablist">
+            <div className="flex gap-1" role="tablist">
               {['Pseudocode', 'JavaScript'].map((t) => <TabItem key={t} active={tab === t} onClick={() => setTab(t)}>{t}</TabItem>)}
             </div>
+            <Segmented label="Contoh filter" value={seg} onChange={setSeg} options={[{ id: 'semua', label: 'Semua' }, { id: 'sorting', label: 'Sorting' }, { id: 'graf', label: 'Graf' }]} />
           </div>
         </Section>
 
@@ -148,6 +154,33 @@ export default function UiKit() {
               {['belum', 'sedang', 'selesai'].map((s) => (
                 <span key={s} className="flex items-center gap-2 text-caption"><StatusBlock status={s} />{s}</span>
               ))}
+            </div>
+          </div>
+        </Section>
+
+        <Section title="State, PWA, dan umpan balik">
+          <div className="space-y-6">
+            <div className="flex flex-wrap gap-2">
+              <Button variant="kontrol" size="s" onClick={() => show({ kind: 'update', message: 'Versi baru tersedia', actionLabel: 'Muat ulang', duration: 0 })}>Toast versi baru</Button>
+              <Button variant="kontrol" size="s" onClick={() => show({ kind: 'success', message: 'Modul 04 tersimpan untuk offline' })}>Toast berhasil</Button>
+              <Button variant="kontrol" size="s" onClick={() => show({ kind: 'error', message: 'Gagal memuat visualisasi', actionLabel: 'Coba lagi' })}>Toast error</Button>
+              <Button variant="kontrol" size="s" onClick={() => show({ kind: 'offline', message: 'Kamu sedang offline' })}>Toast offline</Button>
+            </div>
+            <div className="overflow-hidden rounded-sm border border-line"><OfflineBanner /></div>
+            <div className="rounded-sm border border-line"><PageLoading label="Memuat materi…" /></div>
+            <div className="rounded-sm border border-line">
+              <ErrorState judul="Gagal memuat visualisasi" pesan="Data graf tidak valid: bobot (C, E) kosong. Periksa input custom lalu coba lagi." aksi={[{ label: 'Coba lagi', icon: 'refresh', onClick: () => {} }, { label: 'Ubah input', onClick: () => {} }]} />
+            </div>
+            <div className="max-w-xl space-y-2">
+              {[['A', 'Graf harus berarah'], ['B', 'Semua bobot busur tidak negatif'], ['C', 'Graf harus tak berarah']].map(([h, t]) => (
+                <AnswerOption key={h} letter={h} state={jawab === h ? 'selected' : 'default'} onClick={() => setJawab(h)}>{t}</AnswerOption>
+              ))}
+              <AnswerOption letter="B" state="correct" disabled>Semua bobot busur tidak negatif</AnswerOption>
+              <AnswerOption letter="A" state="wrong" disabled>Graf harus berarah</AnswerOption>
+            </div>
+            <div className="max-w-xl space-y-4">
+              <FeedbackNote benar huruf="B" jawaban="Semua bobot busur tidak negatif" catatan="Tepat! Bobot nonnegatif adalah satu-satunya syarat." />
+              <FeedbackNote benar={false} huruf="A" jawaban="Graf harus berarah" catatan="Belum tepat — lihat pembahasan setelah submit." />
             </div>
           </div>
         </Section>

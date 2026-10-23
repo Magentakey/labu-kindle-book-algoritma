@@ -5,5 +5,5 @@ import { useTheme } from './useTheme.js'
 export default function ThemeToggle({ className }) {
   const { theme, toggle } = useTheme()
   const dark = theme === 'dark'
-  return <IconButton icon={dark ? 'sun' : 'moon'} label={dark ? 'Ganti ke mode terang' : 'Ganti ke mode gelap'} onClick={toggle} className={className} />
+  return <IconButton icon={dark ? 'sun' : 'moon'} label={dark ? 'Ganti ke mode terang' : 'Ganti ke mode gelap'} variant="netral" onClick={toggle} className={className} />
 }

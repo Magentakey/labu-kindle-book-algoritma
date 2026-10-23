@@ -3,19 +3,21 @@ import { Link } from 'react-router-dom'
 import { algoritma, kategori } from '../data/algoritma.js'
 import { filterAlgoritma, groupByKategori, suggest } from '../lib/algoritmaSearch.js'
 import { groupClasses } from '../lib/galeriClasses.js'
+import { readCollapsed, writeCollapsed } from '../lib/galeriState.js'
 import { Button, Chip, Icon, Mascot, SearchField, Segmented, Thumb } from '../ui/index.js'
 import { cx } from '../ui/cx.js'
 
 const filterOptions = [{ id: 'semua', label: 'Semua' }, ...kategori.map((k) => ({ id: k.id, label: k.label }))]
 const modulLabel = (n) => `Modul ${String(n).padStart(2, '0')}`
 
+// Kartu yang bisa diklik = PINDAH: garis Coral dan naik 2px saat hover/fokus; teks "Buka" Coral Tua + panah.
 function Kartu({ a }) {
   const grupKategori = kategori.find((k) => k.id === a.kategori)
   return (
     <Link
       to={a.href}
       aria-label={`${a.judul}, ${modulLabel(a.modul)}`}
-      className="group block w-[300px] shrink-0 snap-start overflow-hidden rounded-sm border border-line bg-card shadow-block transition-shadow hover:border-brand-burnt hover:shadow-hover md:w-auto"
+      className="group block w-[300px] shrink-0 snap-start overflow-hidden rounded-sm border border-line bg-card shadow-block transition-[transform,box-shadow,border-color] duration-200 ease-out hover:-translate-y-0.5 hover:border-brand-orange hover:shadow-hover focus-visible:-translate-y-0.5 focus-visible:border-brand-orange md:w-auto"
     >
       <Thumb kind={a.thumb} />
       <div className="flex flex-col gap-2 p-3.5">
@@ -28,7 +30,7 @@ function Kartu({ a }) {
         </div>
         <div className="mt-1 flex items-center justify-between">
           <span className="text-caption text-ink-soft">{modulLabel(a.modul)}</span>
-          <span className="text-button inline-flex items-center gap-1.5 text-accent">
+          <span className="text-button inline-flex items-center gap-1.5 text-link">
             <span className="group-hover:hidden group-focus-visible:hidden">Buka</span>
             <span className="hidden group-hover:inline group-focus-visible:inline">Buka visualizer</span>
             <Icon name="arrowR" size={16} />
@@ -39,33 +41,37 @@ function Kartu({ a }) {
   )
 }
 
+// Grup bisa dilipat: tinggi dan putaran chevron 250 ms (instan bila gerak dikurangi). Di HP isinya satu baris yang digeser.
 function Grup({ g, tutup, onToggle }) {
   const cls = groupClasses(g.items.length)
   return (
     <section aria-labelledby={`grup-${g.id}`} className={cx('min-w-0', cls.span)}>
       <h2 id={`grup-${g.id}`} className="mb-4">
-        <button type="button" aria-expanded={!tutup} onClick={onToggle} className="flex w-full items-center gap-3 rounded-sm text-left">
-          <Icon name={tutup ? 'right' : 'down'} size={18} className="shrink-0 text-ink" />
+        <button type="button" aria-expanded={!tutup} aria-controls={`isi-${g.id}`} onClick={onToggle} className="flex w-full items-center gap-3 rounded-sm text-left">
+          <Icon name="right" size={18} className={cx('shrink-0 text-ink transition-transform duration-[250ms] ease-in-out', !tutup && 'rotate-90')} />
           <span className="text-h3 uppercase text-heading">{g.title}</span>
           <span className="text-h3 text-ink-soft">({g.items.length})</span>
           <span className="h-px flex-1 bg-line" aria-hidden="true" />
         </button>
       </h2>
-      {!tutup && (
-        <div className={cx('-mx-4 flex snap-x items-start gap-4 overflow-x-auto px-4 pb-3 md:mx-0 md:grid md:gap-6 md:overflow-visible md:px-0 md:pb-0', cls.inner)}>
-          {g.items.map((a) => (
-            <Kartu key={a.id} a={a} />
-          ))}
+      <div id={`isi-${g.id}`} inert={tutup} className={cx('grid transition-[grid-template-rows] duration-[250ms] ease-in-out', tutup ? 'grid-rows-[0fr]' : 'grid-rows-[1fr]')}>
+        <div className={cx('min-h-0 md:-m-4 md:overflow-hidden md:p-4', tutup && 'max-md:hidden')}>
+          <div className={cx('-mx-4 flex snap-x items-start gap-4 overflow-x-auto px-4 pb-3 md:mx-0 md:grid md:gap-6 md:overflow-visible md:px-0 md:pb-0', cls.inner)}>
+            {g.items.map((a) => (
+              <Kartu key={a.id} a={a} />
+            ))}
+          </div>
         </div>
-      )}
+      </div>
     </section>
   )
 }
 
+// Empty state memakai gaya hero yang sama dengan semua hero (Kuning muda + garis Kuning tua 1,5px).
 function Kosong({ query, kategoriId, onQuery, onKategori }) {
   const saran = suggest(query)
   return (
-    <div className="mx-auto flex max-w-md flex-col items-center py-12 text-center">
+    <div className="mx-auto mt-8 flex max-w-xl flex-col items-center rounded-sm border-[1.5px] border-brand-yellow-strong bg-surface px-6 py-10 text-center">
       <Mascot expression="netral" size={120} />
       <p className="text-h3 mt-4 text-heading">Tidak ada algoritma “{query}”</p>
       {saran.length > 0 ? (
@@ -73,7 +79,7 @@ function Kosong({ query, kategoriId, onQuery, onKategori }) {
           <p className="text-caption mt-3 text-ink-soft">Mungkin maksudmu:</p>
           <div className="mt-2 flex flex-wrap justify-center gap-2">
             {saran.map((a) => (
-              <Button key={a.id} variant="secondary" size="s" onClick={() => { onQuery(a.judul); onKategori('semua') }}>
+              <Button key={a.id} variant="kontrol" size="s" onClick={() => { onQuery(a.judul); onKategori('semua') }}>
                 {a.judul}
               </Button>
             ))}
@@ -82,7 +88,7 @@ function Kosong({ query, kategoriId, onQuery, onKategori }) {
       ) : (
         <p className="text-body mt-2 text-ink-soft">Coba kata kunci lain{kategoriId !== 'semua' ? ' atau cari di semua kategori' : ''}.</p>
       )}
-      <Button variant="ghost" size="s" className="mt-3" onClick={() => { onQuery(''); onKategori('semua') }}>
+      <Button variant="netral" size="s" className="mt-3" onClick={() => { onQuery(''); onKategori('semua') }}>
         Hapus pencarian dan filter
       </Button>
     </div>
@@ -93,7 +99,7 @@ function Kosong({ query, kategoriId, onQuery, onKategori }) {
 export default function Algoritma() {
   const [query, setQuery] = useState('')
   const [kategoriId, setKategoriId] = useState('semua')
-  const [tutup, setTutup] = useState(() => new Set())
+  const [tutup, setTutup] = useState(() => readCollapsed(window.localStorage))
   const cari = useRef(null)
 
   // Tekan "/" untuk langsung mengetik di pencarian (sesuai tulisan di banner).
@@ -117,11 +123,12 @@ export default function Algoritma() {
       const n = new Set(s)
       if (n.has(id)) n.delete(id)
       else n.add(id)
+      writeCollapsed(window.localStorage, n)
       return n
     })
 
   return (
-    <div className="mx-auto max-w-[1440px] px-4 pt-5 md:px-6 md:pt-6 xl:px-16">
+    <div className="mx-auto w-full max-w-[1344px] px-4 pt-5 md:px-8 md:pt-6">
       <div className="hidden items-end justify-between gap-4 md:flex">
         <div>
           <p className="text-caption text-ink-soft">
@@ -129,7 +136,7 @@ export default function Algoritma() {
           </p>
           <h1 className="text-h1 text-heading">Algoritma</h1>
         </div>
-        <Button variant="outlineOrange" icon="compare" disabled title="Segera hadir">
+        <Button variant="navigasiGaris" icon="compare" disabled title="Segera hadir">
           Bandingkan dua algoritma
         </Button>
       </div>
@@ -139,7 +146,7 @@ export default function Algoritma() {
         <Segmented options={filterOptions} value={kategoriId} onChange={setKategoriId} label="Filter kategori" />
       </div>
 
-      <div className="mt-5 hidden items-center gap-5 rounded-sm border border-dashed border-brand-yellow bg-surface px-6 py-4 md:flex">
+      <div className="mt-5 hidden items-center gap-5 rounded-sm border-[1.5px] border-dashed border-brand-yellow-strong bg-surface px-6 py-4 md:flex">
         <Mascot expression="netral" size={84} />
         <div>
           <p className="text-h3 text-heading">Pilih algoritma untuk mulai</p>

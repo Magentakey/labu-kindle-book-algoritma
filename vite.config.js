@@ -14,7 +14,8 @@ export default defineConfig({
     react(),
     tailwindcss(),
     VitePWA({
-      registerType: 'autoUpdate',
+      // 'prompt': versi baru menunggu sampai pengguna menekan "Muat ulang" di toast (lihat src/pwa/PwaEvents.jsx).
+      registerType: 'prompt',
       includeAssets: ['favicon.png', 'apple-touch-icon.png'],
       manifest: {
         name: 'Labu I-Learning Algoritma',

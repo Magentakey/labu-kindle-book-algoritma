@@ -5,7 +5,7 @@ const types = {
   default: { box: 'bg-panel', dot: 'bg-muted' },
   prasyarat: { box: 'bg-info-bg', dot: 'bg-info' },
   bab: { box: 'border border-line font-semibold', dot: 'bg-ink-soft' },
-  sedang: { box: 'bg-surface', dot: 'bg-brand-burnt' },
+  sedang: { box: 'bg-surface', dot: 'bg-brand-yellow-strong' },
   sukses: { box: 'bg-ok-bg', dot: 'bg-ok' },
   gagal: { box: 'bg-bad-bg', dot: 'bg-bad' },
   info: { box: 'bg-info-bg', dot: 'bg-info' },

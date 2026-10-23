@@ -16,7 +16,7 @@ export default function Segmented({ options, value, onChange, label, className }
             type="button"
             aria-pressed={active}
             onClick={() => onChange(o.id)}
-            className={cx('shrink-0 whitespace-nowrap rounded-[3px] px-3.5 py-1.5 text-body transition-colors', active ? 'bg-card font-semibold text-link shadow-block' : 'text-ink-soft hover:text-ink')}
+            className={cx('shrink-0 whitespace-nowrap rounded-[3px] px-3.5 py-1.5 text-body transition-colors', active ? 'bg-card font-semibold text-control shadow-block' : 'text-ink-soft hover:text-ink')}
           >
             {o.label}
           </button>
