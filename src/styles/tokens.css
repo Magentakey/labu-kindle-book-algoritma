@@ -175,6 +175,13 @@
   --animate-toast-in: toast-in 200ms ease-out;
 }
 
+@keyframes dash-flow {
+  to { stroke-dashoffset: -28; }
+}
+
+/* Garis putus yang mengalir pada busur yang sedang dilewati (diam bila gerak dikurangi). */
+.edge-flow { animation: dash-flow 600ms linear infinite; }
+
 @keyframes toast-in {
   from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }

@@ -1,7 +1,8 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
-import { algoritma, kategori } from './algoritma.js'
+import { algoritma, algoritmaHref, kategori } from './algoritma.js'
+import { vizIds } from '../viz/vizConfig.js'
 
 const materials = JSON.parse(readFileSync(new URL('../content/materials.json', import.meta.url), 'utf8'))
 
@@ -40,4 +41,12 @@ test('galeri: tautan sementara menunjuk ke materi lama yang punya visualizer', (
 
 test('galeri: tiga kartu tanpa gambar memakai maskot labu (analisis fungsi dan notasi)', () => {
   assert.deepEqual(algoritma.filter((a) => a.thumb === 'pumpkin').map((a) => a.id), ['pertumbuhan-fungsi', 'batas-asimtotik', 'little-o-omega'])
+})
+
+test('galeri: kartu yang punya visualizer baru menuju /algoritma/:id, lainnya ke materi lama', () => {
+  const baru = algoritma.filter((a) => a.viz).map((a) => a.id)
+  assert.deepEqual(baru.sort(), [...vizIds].sort(), 'daftar viz di data sama dengan konfigurasi visualizer')
+  for (const a of algoritma) assert.equal(algoritmaHref(a), a.viz ? `/algoritma/${a.id}` : a.href)
+  assert.equal(algoritmaHref(algoritma.find((a) => a.id === 'dijkstra')), '/algoritma/dijkstra')
+  assert.equal(algoritmaHref(algoritma.find((a) => a.id === 'insertion-sort')), '/materi/insertion-sort')
 })

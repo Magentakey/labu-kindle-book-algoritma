@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { algoritma, kategori } from '../data/algoritma.js'
+import { algoritma, algoritmaHref, kategori } from '../data/algoritma.js'
 import { filterAlgoritma, groupByKategori, suggest } from '../lib/algoritmaSearch.js'
 import { groupClasses } from '../lib/galeriClasses.js'
 import { readCollapsed, writeCollapsed } from '../lib/galeriState.js'
@@ -15,7 +15,7 @@ function Kartu({ a }) {
   const grupKategori = kategori.find((k) => k.id === a.kategori)
   return (
     <Link
-      to={a.href}
+      to={algoritmaHref(a)}
       aria-label={`${a.judul}, ${modulLabel(a.modul)}`}
       className="group block w-[300px] shrink-0 snap-start overflow-hidden rounded-sm border border-line bg-card shadow-block transition-[transform,box-shadow,border-color] duration-200 ease-out hover:-translate-y-0.5 hover:border-brand-orange hover:shadow-hover focus-visible:-translate-y-0.5 focus-visible:border-brand-orange md:w-auto"
     >

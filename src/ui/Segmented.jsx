@@ -3,7 +3,7 @@ import { cx } from './cx.js'
 /**
  * Filter segmented (Figma: Tab di dalam wadah abu-abu). Aktif: latar kartu, teks biru tebal, bayangan blok.
  * Sempit: wadah bisa digeser mendatar. Tiap tombol memakai aria-pressed karena ini filter, bukan tab panel.
- * @param {{ options: Array<{ id: string, label: string }>, value: string, onChange: (id: string) => void, label: string, className?: string }} props
+ * @param {{ options: Array<{ id: string, label: string, disabled?: boolean, title?: string }>, value: string, onChange: (id: string) => void, label: string, className?: string }} props
  */
 export default function Segmented({ options, value, onChange, label, className }) {
   return (
@@ -15,8 +15,10 @@ export default function Segmented({ options, value, onChange, label, className }
             key={o.id}
             type="button"
             aria-pressed={active}
+            disabled={o.disabled}
+            title={o.title}
             onClick={() => onChange(o.id)}
-            className={cx('shrink-0 whitespace-nowrap rounded-[3px] px-3.5 py-1.5 text-body transition-colors', active ? 'bg-card font-semibold text-control shadow-block' : 'text-ink-soft hover:text-ink')}
+            className={cx('shrink-0 whitespace-nowrap rounded-[3px] px-3.5 py-1.5 text-body transition-colors', active ? 'bg-card font-semibold text-control shadow-block' : 'text-ink-soft hover:text-ink disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:text-ink-soft')}
           >
             {o.label}
           </button>
