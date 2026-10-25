@@ -31,6 +31,13 @@ const NODE_SWATCH = {
   active: 'bg-brand-orange',
   relax: 'border-[3px] border-brand-blue bg-card',
   done: 'bg-brand-mint',
+  idle: 'border border-viz-unvisited bg-viz-unvisited',
+  compare: 'border border-brand-yellow-strong bg-brand-yellow',
+  left: 'border border-brand-blue bg-info-bg',
+  range: 'border-[3px] border-brand-blue bg-card',
+  discarded: 'border border-dashed border-muted bg-panel',
+  shift: 'border border-brand-orange bg-orange-soft',
+  gap: 'border border-dashed border-muted bg-card',
 }
 const EDGE_SWATCH = {
   flow: { cls: 'stroke-brand-orange', w: 3, dash: '5 3' },

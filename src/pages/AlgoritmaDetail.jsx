@@ -5,14 +5,16 @@ import { traces, runTrace } from '../algorithms/traces.js'
 import { Button, Chip, ErrorState, Icon, Mascot, Select, Toggle } from '../ui/index.js'
 import { cx } from '../ui/cx.js'
 import CodePanel from '../viz/CodePanel.jsx'
-import GraphStage, { Legend } from '../viz/GraphStage.jsx'
+import { Legend } from '../viz/GraphStage.jsx'
+import StageView from '../viz/StageView.jsx'
+import { stageMeta } from '../viz/stageMeta.js'
 import PlayerBar, { PlayerBarCompact } from '../viz/PlayerBar.jsx'
 import VariabelPanel from '../viz/VariabelPanel.jsx'
 import { lineCaption } from '../viz/codeModel.js'
 import { buildGraph } from '../viz/graphModel.js'
 import { deriveViews } from '../viz/graphViews.js'
 import { usePlayer } from '../viz/usePlayer.js'
-import { vizConfig } from '../viz/vizConfig.js'
+import { comparePairOf, vizConfig } from '../viz/vizConfig.js'
 
 const modulLabel = (n) => `Modul ${String(n).padStart(2, '0')}`
 
@@ -72,7 +74,8 @@ function Viz({ a, cfg }) {
 
   const result = useMemo(() => runTrace(def, values), [def, values])
   const steps = useMemo(() => (result.ok ? result.steps : []), [result])
-  const graph = useMemo(() => buildGraph(cfg.kind, values), [cfg.kind, values])
+  const isGraph = cfg.stage === 'graph'
+  const graph = useMemo(() => (isGraph ? buildGraph(cfg.kind, values) : null), [isGraph, cfg.kind, values])
   const views = useMemo(() => (graph && steps.length ? deriveViews(cfg.kind, steps, graph) : []), [cfg.kind, graph, steps])
   const player = usePlayer(steps.length)
 
@@ -93,9 +96,9 @@ function Viz({ a, cfg }) {
   }, [player])
 
   const apply = (next, nextPositions, isCustom) => {
-    const err = def.validate(next)
-    if (err) {
-      setError(err)
+    const check = runTrace(def, next)
+    if (!check.ok) {
+      setError(check.error)
       return false
     }
     setValues(next)
@@ -117,13 +120,14 @@ function Viz({ a, cfg }) {
     apply(cfg.presets[i].values, cfg.presets[i].positions, false)
   }
 
+  const pair = comparePairOf(a.id)
   const kat = kategori.find((k) => k.id === a.kategori)
   const siblings = algoritma.filter((x) => x.kategori === a.kategori)
   const at = siblings.findIndex((x) => x.id === a.id)
   const prev = siblings[at - 1]
   const next = siblings[at + 1]
 
-  if (!graph || !result.ok || steps.length === 0) {
+  if ((isGraph && !graph) || !result.ok || steps.length === 0) {
     return <ErrorState judul="Masukan tidak bisa dijalankan" pesan={result.error ?? 'Graf tidak valid.'} aksi={[{ label: 'Kembali ke Preset 1', icon: 'refresh', onClick: () => apply(cfg.presets[0].values, cfg.presets[0].positions, false) }]} />
   }
 
@@ -136,13 +140,13 @@ function Viz({ a, cfg }) {
       <Select label="Input" value={custom ? 'kustom' : String(presetIndex)} onChange={choosePreset} options={presetOptions} />
       {cfg.source && <Select label="Sumber" value={values[cfg.source]} onChange={(v) => apply({ ...values, [cfg.source]: v }, positions, custom)} options={graph.names.map((n) => ({ value: n, label: n }))} />}
       <div className="ml-auto flex flex-wrap items-center gap-4">
-        {graph.weighted && (
+        {graph?.weighted && (
           <div className="text-body flex items-center gap-2 text-ink-soft">
             <Toggle checked={showWeights} onChange={setShowWeights} label="Bobot" />
             Bobot
           </div>
         )}
-        {graph.directed && (
+        {graph?.directed && (
           <div className="text-body flex items-center gap-2 text-ink-soft">
             <Toggle checked={showArrows} onChange={setShowArrows} label="Berarah" />
             Berarah
@@ -216,9 +220,15 @@ function Viz({ a, cfg }) {
           caption={caption}
           extras={extras}
           actions={
-            <Button variant="navigasiGaris" icon="compare" disabled title="Segera hadir">
-              Bandingkan
-            </Button>
+            pair ? (
+              <Button as={Link} to={`/algoritma/bandingkan/${pair.a}/${pair.b}`} variant="navigasiGaris" icon="compare">
+                Bandingkan
+              </Button>
+            ) : (
+              <Button variant="navigasiGaris" icon="compare" disabled title="Belum ada pasangan perbandingan untuk algoritma ini">
+                Bandingkan
+              </Button>
+            )
           }
         />
         {openInput && <InputPanel def={def} draft={draft} setDraft={setDraft} error={error} onApply={() => { if (apply(draft, null, true)) setOpenInput(false) }} onCancel={() => { setOpenInput(false); setError(null) }} />}
@@ -232,18 +242,18 @@ function Viz({ a, cfg }) {
       <div className="mt-4 grid gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
         <Panel className={cx('order-2 lg:order-1', tab !== 'kode' && 'max-md:hidden')}>
           <CodePanel code={def.code} procedures={cfg.procedures} line={step.line} />
-          <VariabelPanel step={step} />
+          <VariabelPanel step={step} hideTables={cfg.stage === 'table'} />
         </Panel>
         <Panel className={cx('order-1 lg:order-2', tab !== 'visual' && 'max-md:hidden')}>
           <div className="flex items-center gap-3 border-b border-line px-4 py-3">
             <h2 className="text-h3 flex items-center gap-2 text-heading">
-              <Icon name="graph" size={20} />
+              <Icon name={stageMeta[cfg.stage].icon} size={20} />
               Visualisasi
             </h2>
-            <Chip type="default">Graf · {graph.directed ? 'berarah' : 'tak berarah'}</Chip>
+            <Chip type="default">{stageMeta[cfg.stage].chip(graph)}</Chip>
           </div>
           <div className="px-4 pt-4">
-            <GraphStage view={view} graph={graph} positions={positions} showWeights={showWeights} showArrows={showArrows} label={`Graf ${graph.names.length} simpul dan ${graph.edges.length} sisi, ${graph.directed ? 'berarah' : 'tak berarah'}, langkah ${player.index + 1} dari ${player.total}`} />
+            <StageView stage={cfg.stage} step={step} view={view} graph={graph} positions={positions} values={values} showWeights={showWeights} showArrows={showArrows} label={graph ? `Graf ${graph.names.length} simpul dan ${graph.edges.length} sisi, ${graph.directed ? 'berarah' : 'tak berarah'}, langkah ${player.index + 1} dari ${player.total}` : undefined} />
             {showLegend && (
               <div className="mt-3 rounded-sm border border-line bg-card p-3">
                 <Legend legend={cfg.legend} />

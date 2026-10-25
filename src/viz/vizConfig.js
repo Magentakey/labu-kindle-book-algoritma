@@ -38,6 +38,7 @@ const EDGE = {
  */
 export const vizConfig = {
   dijkstra: {
+    stage: 'graph',
     trace: 'dijkstra',
     kind: 'dijkstra',
     source: 's',
@@ -55,6 +56,7 @@ export const vizConfig = {
     ],
   },
   'bellman-ford': {
+    stage: 'graph',
     trace: 'bellman-ford',
     kind: 'bellman-ford',
     source: 's',
@@ -72,6 +74,7 @@ export const vizConfig = {
     ],
   },
   bfs: {
+    stage: 'graph',
     trace: 'bfs',
     kind: 'bfs',
     source: 's',
@@ -80,6 +83,7 @@ export const vizConfig = {
     presets: [{ label: 'Preset 1', values: { G: DESIGN_ADJ, s: 'A' }, positions: DESIGN_POSITIONS }, fromTrace('bfs', 'Contoh materi (r, s, t, u, v, w, x, y)')],
   },
   dfs: {
+    stage: 'graph',
     trace: 'dfs',
     kind: 'dfs',
     source: null,
@@ -91,6 +95,7 @@ export const vizConfig = {
     presets: [{ label: 'Preset 1', values: { G: DESIGN_ADJ }, positions: DESIGN_POSITIONS }, fromTrace('dfs', 'Contoh materi (u, v, w, x, y, z)')],
   },
   prim: {
+    stage: 'graph',
     trace: 'mst-prim',
     kind: 'prim',
     source: 'r',
@@ -99,6 +104,7 @@ export const vizConfig = {
     presets: [{ label: 'Preset 1', values: { G: DESIGN_ADJ_W, r: 'A' }, positions: DESIGN_POSITIONS }, fromTrace('mst-prim', 'Contoh materi (a sampai i)')],
   },
   kruskal: {
+    stage: 'graph',
     trace: 'mst-kruskal',
     kind: 'kruskal',
     source: null,
@@ -110,5 +116,79 @@ export const vizConfig = {
     ],
   },
 }
+
+
+// ------------------------------------------------------------------ jenis non-graf (tahap 3b)
+const legendOf = (...pairs) => ({ nodes: pairs, edges: [] })
+const defProcedures = (key) => [{ title: traces[key].title, from: 1, to: traces[key].code.split('\n').length }]
+const defPresets = (key) => traces[key].presets.map((p) => ({ label: p.label, values: p.values, positions: null }))
+
+/** Masukan bersama untuk Bandingkan dua algoritma pengurutan (maksimal 8 angka, batas peraga). */
+export const comparePresets = [
+  { label: 'Acak (n = 8)', values: { A: '12, 5, 17, 9, 15, 7, 14, 3' } },
+  { label: 'Hampir terurut', values: { A: '2, 4, 3, 7, 8, 10, 9, 12' } },
+  { label: 'Terbalik', values: { A: '20, 17, 14, 11, 9, 6, 3, 1' } },
+  { label: 'Sudah terurut', values: { A: '1, 3, 5, 7, 9, 11, 13, 15' } },
+]
+
+Object.assign(vizConfig, {
+  'insertion-sort': {
+    stage: 'bars',
+    trace: 'insertion-sort',
+    procedures: defProcedures('insertion-sort'),
+    legend: legendOf(['idle', 'Belum terurut'], ['compare', 'Sedang dibandingkan'], ['shift', 'Digeser ke kanan'], ['active', 'Kunci yang disisipkan'], ['done', 'Sudah di tempatnya']),
+    presets: [{ label: comparePresets[0].label, values: comparePresets[0].values, positions: null }, ...defPresets('insertion-sort')],
+  },
+  'merge-sort': {
+    stage: 'bars',
+    trace: 'merge-sort',
+    procedures: defProcedures('merge-sort'),
+    legend: legendOf(['idle', 'Di luar rentang'], ['range', 'Rentang yang diproses'], ['left', 'Bagian kiri'], ['compare', 'Bagian kanan'], ['done', 'Sudah terurut atau digabung']),
+    presets: [{ label: comparePresets[0].label, values: comparePresets[0].values, positions: null }, ...defPresets('merge-sort')],
+  },
+  'binary-search': {
+    stage: 'bars',
+    trace: 'binary-search-iteratif',
+    procedures: defProcedures('binary-search-iteratif'),
+    legend: legendOf(['range', 'Rentang pencarian'], ['compare', 'Elemen tengah (dibandingkan)'], ['discarded', 'Sudah dibuang'], ['done', 'Ditemukan']),
+    presets: [
+      { label: 'x ada di array', values: { A: '5, 8, 9, 10, 14, 20', x: '10' }, positions: null },
+      { label: 'x tidak ada', values: { A: '5, 8, 9, 10, 14, 20', x: '12' }, positions: null },
+      { label: 'x paling kiri', values: { A: '5, 8, 9, 10, 14, 20', x: '5' }, positions: null },
+    ],
+  },
+  'matrix-chain': {
+    stage: 'table',
+    trace: 'matrix-chain-order',
+    procedures: defProcedures('matrix-chain-order'),
+    legend: legendOf(['active', 'Sel yang sedang dihitung'], ['left', 'Sel yang dijumlahkan (sumber)'], ['done', 'Jalur terbaik'], ['idle', 'Belum terisi']),
+    presets: defPresets('matrix-chain-order'),
+  },
+  lcs: {
+    stage: 'table',
+    trace: 'lcs-length',
+    procedures: defProcedures('lcs-length'),
+    legend: legendOf(['active', 'Sel yang sedang dihitung'], ['left', 'Sel sumber'], ['idle', 'Belum terisi']),
+    presets: defPresets('lcs-length'),
+  },
+  'activity-selection': {
+    stage: 'timeline',
+    trace: 'greedy-activity-selector',
+    procedures: defProcedures('greedy-activity-selector'),
+    legend: legendOf(['idle', 'Belum diperiksa'], ['active', 'Sedang diperiksa'], ['compare', 'Dibandingkan'], ['done', 'Dipilih'], ['discarded', 'Ditolak (bertabrakan)']),
+    presets: defPresets('greedy-activity-selector'),
+  },
+  'kode-huffman': {
+    stage: 'huffman',
+    trace: 'huffman',
+    procedures: defProcedures('huffman'),
+    legend: legendOf(['queued', 'Akar di antrean Q'], ['active', 'Sedang digabung'], ['done', 'Bagian pohon']),
+    presets: defPresets('huffman'),
+  },
+})
+
+/** Pasangan algoritma yang bisa dibandingkan, dengan nama tampil dan jenis tampilan. */
+export const comparePairs = [{ a: 'insertion-sort', b: 'merge-sort', faster: 'merge-sort' }]
+export const comparePairOf = (id) => comparePairs.find((p) => p.a === id || p.b === id) ?? null
 
 export const vizIds = Object.keys(vizConfig)

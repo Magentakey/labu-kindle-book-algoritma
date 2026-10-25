@@ -4,7 +4,9 @@ import { readFileSync } from 'node:fs'
 import { runTrace, traces } from '../algorithms/traces.js'
 import { buildGraph, edgeIndex, layoutPositions, letterName } from './graphModel.js'
 import { EDGE_STATUS, NODE_STATUS, deriveViews } from './graphViews.js'
-import { DESIGN_POSITIONS, vizConfig, vizIds } from './vizConfig.js'
+import { DESIGN_POSITIONS, vizConfig, vizIds as allVizIds } from './vizConfig.js'
+
+const vizIds = allVizIds.filter((id) => vizConfig[id].stage === 'graph')
 import { buildCodeSections } from './codeModel.js'
 
 const run = (id, presetIndex = 0) => {

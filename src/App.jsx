@@ -6,6 +6,7 @@ import PwaEvents from './pwa/PwaEvents.jsx'
 import { PageLoading, ToastProvider } from './ui/index.js'
 import Algoritma from './pages/Algoritma.jsx'
 import AlgoritmaDetail from './pages/AlgoritmaDetail.jsx'
+import Bandingkan from './pages/Bandingkan.jsx'
 import Segera from './pages/Segera.jsx'
 
 // Halaman Materi (Markdown, Prism, visualizer) baru diunduh saat pertama kali dibuka,
@@ -29,6 +30,7 @@ export default function App() {
         <Routes>
           <Route element={<AppShell />}>
             <Route path="/" element={<Algoritma />} />
+            <Route path="/algoritma/bandingkan/:a/:b" element={<Bandingkan />} />
             <Route path="/algoritma/:id" element={<AlgoritmaDetail />} />
             <Route
               path="/materi"

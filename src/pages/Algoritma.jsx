@@ -4,6 +4,7 @@ import { algoritma, algoritmaHref, kategori } from '../data/algoritma.js'
 import { filterAlgoritma, groupByKategori, suggest } from '../lib/algoritmaSearch.js'
 import { groupClasses } from '../lib/galeriClasses.js'
 import { readCollapsed, writeCollapsed } from '../lib/galeriState.js'
+import { comparePairs } from '../viz/vizConfig.js'
 import { Button, Chip, Icon, Mascot, SearchField, Segmented, Thumb } from '../ui/index.js'
 import { cx } from '../ui/cx.js'
 
@@ -136,7 +137,7 @@ export default function Algoritma() {
           </p>
           <h1 className="text-h1 text-heading">Algoritma</h1>
         </div>
-        <Button variant="navigasiGaris" icon="compare" disabled title="Segera hadir">
+        <Button as={Link} to={`/algoritma/bandingkan/${comparePairs[0].a}/${comparePairs[0].b}`} variant="navigasiGaris" icon="compare">
           Bandingkan dua algoritma
         </Button>
       </div>

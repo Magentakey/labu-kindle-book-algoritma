@@ -60,9 +60,9 @@ function Rows({ table }) {
  * Panel Variabel (Figma: VARIABEL): nilai variabel di baris yang berjalan, tabel nilai simpul, dan himpunan seperti Q dan S.
  * Isinya langsung dari data langkah peraga.
  */
-export default function VariabelPanel({ step }) {
+export default function VariabelPanel({ step, hideTables = false }) {
   const vars = step.vars.filter((v) => v.value !== DASH)
-  const tables = step.tables ?? []
+  const tables = hideTables ? [] : (step.tables ?? [])
   return (
     <div className="space-y-3 border-t border-line px-4 py-4">
       <p className="text-label text-ink-soft uppercase">Variabel</p>
@@ -80,6 +80,18 @@ export default function VariabelPanel({ step }) {
       {tables.slice(1).map((t) => (
         <Rows key={t.table.caption} table={t.table} />
       ))}
+      {step.stack && step.stack.length > 0 && (
+        <div className="text-code">
+          <span className="font-bold text-heading">Tumpukan pemanggilan</span>
+          <ol className="mt-1 space-y-0.5 text-[12px] text-ink">
+            {step.stack.map((c, i) => (
+              <li key={i} className={cx('pl-3', i === step.stack.length - 1 && 'border-l-4 border-brand-orange bg-surface font-semibold')}>
+                {c}
+              </li>
+            ))}
+          </ol>
+        </div>
+      )}
       {(step.lists ?? []).map((l) => (
         <div key={l.title} className="text-code">
           <span className="font-bold text-heading">{l.title}</span>

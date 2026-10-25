@@ -43,10 +43,13 @@ test('galeri: tiga kartu tanpa gambar memakai maskot labu (analisis fungsi dan n
   assert.deepEqual(algoritma.filter((a) => a.thumb === 'pumpkin').map((a) => a.id), ['pertumbuhan-fungsi', 'batas-asimtotik', 'little-o-omega'])
 })
 
-test('galeri: kartu yang punya visualizer baru menuju /algoritma/:id, lainnya ke materi lama', () => {
+test('galeri: 13 kartu punya visualizer baru (/algoritma/:id), 4 kartu Analisis masih ke materi lama', () => {
   const baru = algoritma.filter((a) => a.viz).map((a) => a.id)
   assert.deepEqual(baru.sort(), [...vizIds].sort(), 'daftar viz di data sama dengan konfigurasi visualizer')
+  assert.equal(baru.length, 13)
+  assert.deepEqual(algoritma.filter((a) => !a.viz).map((a) => a.kategori), ['analisis', 'analisis', 'analisis', 'analisis'])
   for (const a of algoritma) assert.equal(algoritmaHref(a), a.viz ? `/algoritma/${a.id}` : a.href)
   assert.equal(algoritmaHref(algoritma.find((a) => a.id === 'dijkstra')), '/algoritma/dijkstra')
-  assert.equal(algoritmaHref(algoritma.find((a) => a.id === 'insertion-sort')), '/materi/insertion-sort')
+  assert.equal(algoritmaHref(algoritma.find((a) => a.id === 'insertion-sort')), '/algoritma/insertion-sort')
+  assert.equal(algoritmaHref(algoritma.find((a) => a.id === 'pertumbuhan-fungsi')), '/materi/pertumbuhan-fungsi', 'kartu Analisis masih ke materi lama')
 })
