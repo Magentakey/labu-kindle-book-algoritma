@@ -77,7 +77,7 @@ function BottomNav({ active }) {
 }
 
 /** Kerangka halaman baru: navbar atau bar atas + bottom nav, dan isi halaman lewat <Outlet />. */
-export default function AppShell() {
+export default function AppShell({ children }) {
   const { pathname } = useLocation()
   const active = activeNavId(pathname)
   const online = useOnlineStatus()
@@ -91,7 +91,7 @@ export default function AppShell() {
       {!online && <OfflineBanner />}
       <main id="konten" tabIndex={-1} className="pb-28 outline-none md:pb-12">
         <ErrorBoundary resetKey={pathname}>
-          <Outlet />
+          {children ?? <Outlet />}
         </ErrorBoundary>
       </main>
       <InstallBanner />

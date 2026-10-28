@@ -1,0 +1,125 @@
+{
+  "id": "insertion-sort-geser",
+  "title": "Lengkapi baris pergeseran pada insertionSort(A)",
+  "description": "Fungsi solve(A) di bawah sudah memuat kerangka Insertion Sort. Lengkapi bagian di dalam while: geser A[i] satu posisi ke kanan (ke A[i + 1]) lalu mundurkan i. Fungsi harus mengurutkan array dari kecil ke besar dan mengembalikannya.",
+  "starterCode": "function solve(A) {\n  for (let j = 1; j < A.length; j++) {\n    const key = A[j]\n    let i = j - 1\n    while (i >= 0 && A[i] > key) {\n      // TODO: geser A[i] ke kanan lalu mundurkan i\n    }\n    A[i + 1] = key\n  }\n  return A\n}\n",
+  "solution": "function solve(A) {\n  for (let j = 1; j < A.length; j++) {\n    const key = A[j]\n    let i = j - 1\n    while (i >= 0 && A[i] > key) {\n      A[i + 1] = A[i]\n      i = i - 1\n    }\n    A[i + 1] = key\n  }\n  return A\n}\n",
+  "testCases": [
+    {
+      "input": [
+        [
+          12,
+          10,
+          15,
+          7
+        ]
+      ],
+      "expected": [
+        7,
+        10,
+        12,
+        15
+      ]
+    },
+    {
+      "input": [
+        []
+      ],
+      "expected": []
+    },
+    {
+      "input": [
+        [
+          5,
+          5,
+          1
+        ]
+      ],
+      "expected": [
+        1,
+        5,
+        5
+      ]
+    },
+    {
+      "input": [
+        [
+          2,
+          4,
+          12,
+          15,
+          30
+        ]
+      ],
+      "expected": [
+        2,
+        4,
+        12,
+        15,
+        30
+      ]
+    },
+    {
+      "input": [
+        [
+          30,
+          15,
+          12,
+          4,
+          2
+        ]
+      ],
+      "expected": [
+        2,
+        4,
+        12,
+        15,
+        30
+      ]
+    },
+    {
+      "input": [
+        [
+          8,
+          3,
+          5,
+          1
+        ]
+      ],
+      "expected": [
+        1,
+        3,
+        5,
+        8
+      ]
+    },
+    {
+      "input": [
+        [
+          1
+        ]
+      ],
+      "expected": [
+        1
+      ]
+    },
+    {
+      "input": [
+        [
+          3,
+          -1,
+          2,
+          -1,
+          0
+        ]
+      ],
+      "expected": [
+        -1,
+        -1,
+        0,
+        2,
+        3
+      ]
+    }
+  ]
+}

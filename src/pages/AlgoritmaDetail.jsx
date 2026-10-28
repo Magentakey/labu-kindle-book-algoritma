@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { algoritma, kategori } from '../data/algoritma.js'
+import { modulById } from '../data/modul.js'
 import { traces, runTrace } from '../algorithms/traces.js'
 import { Button, Chip, ErrorState, Icon, Mascot, Select, Toggle } from '../ui/index.js'
 import { cx } from '../ui/cx.js'
@@ -121,6 +122,7 @@ function Viz({ a, cfg }) {
   }
 
   const pair = comparePairOf(a.id)
+  const materi = modulById(String(a.modul).padStart(2, '0'))
   const kat = kategori.find((k) => k.id === a.kategori)
   const siblings = algoritma.filter((x) => x.kategori === a.kategori)
   const at = siblings.findIndex((x) => x.id === a.id)
@@ -198,7 +200,7 @@ function Viz({ a, cfg }) {
                 <Icon name="arrowR" size={18} />
               </Link>
             )}
-            <Button as={Link} to="/materi" variant="navigasiGaris" icon="book">
+            <Button as={Link} to={materi ? `/materi/${materi.id}` : '/materi'} variant="navigasiGaris" icon="book">
               Baca materi · {modulLabel(a.modul)}
             </Button>
           </div>

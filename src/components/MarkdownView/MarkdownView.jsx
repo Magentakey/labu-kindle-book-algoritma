@@ -115,6 +115,82 @@ const components = {
   td: Td,
 }
 
+
+// ------------------------------------------------------------------ gaya baru untuk modul materi (token desain, terang dan gelap)
+const modulFocus = 'focus-visible:rounded-sm'
+const MH2 = ({ children, id }) => (
+  <h2 id={id} tabIndex={id ? -1 : undefined} className="text-h2 mt-8 scroll-mt-32 text-heading outline-none first:mt-0">
+    {children}
+  </h2>
+)
+const MH3 = ({ children, id }) => (
+  <h3 id={id} tabIndex={id ? -1 : undefined} className="text-h3 mt-8 scroll-mt-32 text-heading outline-none">
+    {children}
+  </h3>
+)
+const modulComponents = {
+  ...components,
+  h1: MH2,
+  h2: MH2,
+  h3: MH3,
+  h4: ({ children }) => <h4 className="text-body-strong mt-5 text-heading">{children}</h4>,
+  h5: ({ children }) => <h4 className="text-body-strong mt-5 text-heading">{children}</h4>,
+  h6: ({ children }) => <h4 className="text-body-strong mt-5 text-heading">{children}</h4>,
+  p: ({ children }) => <p className="text-body-l my-4 text-ink">{children}</p>,
+  ul: ({ children }) => <ul className="text-body-l my-4 list-disc space-y-1.5 pl-6 text-ink marker:text-muted">{children}</ul>,
+  ol: ({ children }) => <ol className="text-body-l my-4 list-decimal space-y-1.5 pl-6 text-ink marker:text-muted">{children}</ol>,
+  blockquote: ({ children }) => <blockquote className="my-5 rounded-sm border-l-4 border-brand-blue bg-info-bg px-4 py-1 text-ink">{children}</blockquote>,
+  hr: () => <hr className="my-8 border-line" />,
+  a: ({ href, children }) => {
+    const external = /^https?:\/\//i.test(href ?? '')
+    return (
+      <a href={href} className={`text-link underline underline-offset-4 hover:bg-orange-soft ${modulFocus}`} {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>
+        {children}
+        {external && <span className="sr-only"> (membuka tab baru)</span>}
+      </a>
+    )
+  },
+  strong: ({ children }) => <strong className="font-semibold text-heading">{children}</strong>,
+  code: ({ children }) => <code className="rounded-sm border border-line bg-code-bg px-1.5 py-0.5 font-code text-[0.88em] break-words text-ink">{children}</code>,
+  pre: ({ children }) => {
+    const child = Children.toArray(children)[0]
+    const props = child?.props ?? {}
+    const code = String(props.children ?? '').replace(/\n$/, '')
+    const lang = (/language-(\S+)/.exec(props.className ?? '') ?? [])[1] ?? 'text'
+    return (
+      <figure className="my-5 overflow-hidden rounded-sm border border-line bg-code-bg">
+        <figcaption className="text-caption border-b border-line bg-panel px-4 py-2 text-ink-soft">{lang === 'text' ? 'Keluaran' : lang === 'python' ? 'Python' : lang}</figcaption>
+        <pre className="overflow-x-auto px-4 py-3 font-code text-[13px] leading-[22px] text-ink">
+          <code>{code}</code>
+        </pre>
+      </figure>
+    )
+  },
+  img: ({ src, alt }) => <img src={resolveSrc(src)} alt={alt ?? ''} loading="lazy" className="my-5 h-auto max-w-full rounded-sm border border-line bg-card" />,
+  table: ({ children }) => (
+    <div
+      // Tabel lebar harus bisa digeser dengan keyboard (WCAG 2.1.1).
+      // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+      tabIndex={0}
+      role="group"
+      aria-label="Tabel, bisa digeser ke samping"
+      className="my-5 overflow-x-auto rounded-sm border border-line bg-card"
+    >
+      <table className="text-body w-full border-collapse text-left">{children}</table>
+    </div>
+  ),
+  th: ({ children, style }) => (
+    <th scope="col" style={style} className="text-label whitespace-nowrap border-b border-line bg-panel px-4 py-3 font-semibold text-ink-soft">
+      {children}
+    </th>
+  ),
+  td: ({ children, style }) => (
+    <td style={style} className="border-t border-line px-4 py-3 align-top text-ink">
+      {children}
+    </td>
+  ),
+}
+
 // MathJax besar (sekitar 1 MB sebelum kompresi), jadi dimuat hanya saat teks benar-benar berisi rumus ($...$).
 // Hasilnya disimpan di modul ini sehingga rumus kedua dan seterusnya tidak memuat ulang.
 let mathPromise
@@ -129,13 +205,14 @@ function loadMath() {
 // Mode inline (teks kuis): paragraf dibuang pembungkusnya supaya muat di dalam tombol atau label.
 const inlineComponents = { ...components, p: ({ children }) => <Fragment>{children}</Fragment> }
 
-function Rendered({ text, idPrefix, inline, math }) {
+function Rendered({ text, idPrefix, inline, math, variant }) {
+  const set = variant === 'modul' ? modulComponents : components
   const remarkPlugins = math ? [remarkGfm, math.remarkMath] : [remarkGfm]
   const rehypePlugins = [...(idPrefix ? [[rehypeHeadingIds, { prefix: idPrefix }]] : []), ...(math ? [math.rehypeMath] : [])]
   const Wrapper = inline ? 'span' : 'div'
   return (
     <Wrapper className="min-w-0 break-words text-base">
-      <ReactMarkdown remarkPlugins={remarkPlugins} rehypePlugins={rehypePlugins} components={inline ? inlineComponents : components}>
+      <ReactMarkdown remarkPlugins={remarkPlugins} rehypePlugins={rehypePlugins} components={inline ? { ...set, p: inlineComponents.p } : set}>
         {text}
       </ReactMarkdown>
     </Wrapper>
@@ -153,12 +230,13 @@ function WithMath(props) {
  * @param {{ text: string, idPrefix?: string, inline?: boolean }} props
  *   `idPrefix`: bila diisi, judul h1-h3 diberi id (untuk daftar isi). Dikosongkan untuk Markdown di dalam blok.
  *   `inline`: tanpa pembungkus paragraf, untuk kalimat pendek di dalam tombol atau label (teks kuis).
+ *   `variant`: "modul" = gaya baru (token desain) untuk halaman modul materi; kosong = gaya lama.
  */
-export default function MarkdownView({ text, idPrefix, inline = false }) {
-  if (!hasMath(text)) return <Rendered text={text} idPrefix={idPrefix} inline={inline} math={null} />
+export default function MarkdownView({ text, idPrefix, inline = false, variant }) {
+  if (!hasMath(text)) return <Rendered text={text} idPrefix={idPrefix} inline={inline} math={null} variant={variant} />
   return (
     <Suspense fallback={<p role="status" className="my-3 text-stone-700">Memuat rumus…</p>}>
-      <WithMath text={text} idPrefix={idPrefix} inline={inline} />
+      <WithMath text={text} idPrefix={idPrefix} inline={inline} variant={variant} />
     </Suspense>
   )
 }
