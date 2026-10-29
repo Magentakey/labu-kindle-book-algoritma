@@ -108,6 +108,7 @@ function Blok({ b, m, konten }) {
 function Isi({ m }) {
   const konten = modulKonten[m.id]
   const [state, setState] = useState({ status: 'muat' })
+  const [muatKe, setMuatKe] = useState(0)
   const progress = useProgress()
   const offline = useOfflineReady()
   const { prev, next } = neighbors(m.id)
@@ -121,7 +122,7 @@ function Isi({ m }) {
     return () => {
       batal = true
     }
-  }, [konten])
+  }, [konten, muatKe])
   useEffect(() => {
     document.title = `${m.judul} · Modul ${m.id} · LABU`
   }, [m])
@@ -134,7 +135,7 @@ function Isi({ m }) {
   const hasilKuis = entryOf(progress, m.id).kuis.hasil
   const ref = useMemo(() => (state.status === 'siap' ? state.bagian.find((s) => s.id === 'referensi') : null), [state])
   if (state.status === 'muat') return <PageLoading label="Memuat modul…" />
-  if (state.status === 'gagal') return <ErrorState judul="Modul tidak bisa dimuat" pesan="Isi modul gagal dimuat. Periksa koneksi, lalu coba lagi." aksi={[{ label: 'Coba lagi', icon: 'refresh', onClick: () => setState({ status: 'muat' }) }]} />
+  if (state.status === 'gagal') return <ErrorState judul="Modul tidak bisa dimuat" pesan="Isi modul gagal dimuat. Periksa koneksi, lalu coba lagi." aksi={[{ label: 'Coba lagi', icon: 'refresh', onClick: () => { setState({ status: 'muat' }); setMuatKe((n) => n + 1) } }]} />
 
   const isiBagian = state.bagian.filter((s) => s.id !== 'referensi')
   return (

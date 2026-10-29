@@ -137,3 +137,18 @@ export function sudahDijawab(q, jawaban) {
   if (q.opsi) return jawaban !== undefined && jawaban !== ''
   return Array.isArray(jawaban) && jawaban.some((v) => String(v ?? '').trim() !== '')
 }
+
+/**
+ * Rincian benar per jenis soal untuk kartu statistik hasil, mis. [{ tipe: 'pilihan', label: 'Pilihan Ganda', benar: 2, total: 2 }].
+ * Urutan mengikuti kemunculan pertama jenis di daftar soal. Soal yang belum dinilai dihitung belum benar.
+ */
+export function rincianTipe(soal, hasil) {
+  const out = []
+  for (const q of soal) {
+    let row = out.find((r) => r.tipe === q.tipe)
+    if (!row) out.push((row = { tipe: q.tipe, label: TIPE_LABEL[q.tipe] ?? q.tipe, benar: 0, total: 0 }))
+    row.total++
+    if (hasil.perSoal.find((r) => r.no === q.no)?.benar === true) row.benar++
+  }
+  return out
+}

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import MarkdownView from '../components/MarkdownView/MarkdownView.jsx'
 import { PASS_PERCENT } from '../data/modul.js'
@@ -134,7 +134,12 @@ function BarisHasil({ q, r }) {
   )
 }
 
-export function Hasil({ kuis, hasil, next, onUlang, onUlangSalah }) {
+/**
+ * Ringkasan hasil dan daftar pembahasan.
+ * `lanjut` ({ to, label }) mengganti tautan akhir; bila kosong dipakai "Lanjut ke Modul" atau "Kembali ke daftar Materi".
+ * `statistik` (node) disisipkan di antara ringkasan dan daftar soal.
+ */
+export function Hasil({ kuis, hasil, next, lanjut, statistik, onUlang, onUlangSalah }) {
   const salah = soalSalah(kuis.soal, hasil)
   const entry = useProgress()[kuis.modul]
   const best = entry?.kuis.best
@@ -149,9 +154,10 @@ export function Hasil({ kuis, hasil, next, onUlang, onUlangSalah }) {
               {hasil.detik !== undefined ? ` · ${durasi(hasil.detik)}` : ''}
             </p>
             <p className="mt-1 flex flex-wrap items-center gap-3">
-              <span className="text-pixel-l text-heading" aria-label={`Skor ${hasil.skor} dari ${hasil.total}, ${hasil.persen} persen`}>
+              <span className="text-pixel-l text-heading" aria-hidden="true">
                 {hasil.skor} / {hasil.total} · {hasil.persen}%
               </span>
+              <span className="sr-only">{`Skor ${hasil.skor} dari ${hasil.total}, ${hasil.persen} persen`}</span>
               <Chip type={hasil.lulus ? 'sukses' : 'gagal'}>{hasil.lulus ? `Lulus · batas ${PASS_PERCENT}%` : `Belum lulus · batas ${PASS_PERCENT}%`}</Chip>
             </p>
             <p className="text-body mt-1 text-ink-soft">
@@ -167,7 +173,11 @@ export function Hasil({ kuis, hasil, next, onUlang, onUlangSalah }) {
                   Ulangi yang salah saja ({salah.length})
                 </Button>
               )}
-              {next ? (
+              {lanjut ? (
+                <Button as={Link} to={lanjut.to} variant="tautan" iconRight="arrowR">
+                  {lanjut.label}
+                </Button>
+              ) : next ? (
                 <Button as={Link} to={`/materi/${next.id}`} variant="tautan" iconRight="arrowR">
                   Lanjut ke Modul {next.id}
                 </Button>
@@ -180,6 +190,7 @@ export function Hasil({ kuis, hasil, next, onUlang, onUlangSalah }) {
           </div>
         </div>
       </div>
+      {statistik}
       <ul className="mt-5 overflow-hidden rounded-sm border border-line bg-card">
         {kuis.soal.map((q) => {
           const r = hasil.perSoal.find((x) => x.no === q.no)
@@ -303,7 +314,7 @@ function Jalan({ modul, kuis, aktif, awal, onSelesai, onKeluar }) {
 
 // ------------------------------------------------------------------ pembungkus
 /** Kuis Pemahaman satu modul: mulai, mengerjakan (jawaban tersimpan otomatis), hasil dengan pembahasan, dan ulangi yang salah saja. */
-export default function KuisModul({ modul, kuis, next }) {
+export default function KuisModul({ modul, kuis, next, lanjut, statistik }) {
   const all = useProgress()
   const entry = entryOf(all, modul.id)
   const terakhir = entry.kuis.hasil
@@ -313,6 +324,16 @@ export default function KuisModul({ modul, kuis, next }) {
   const [aktif, setAktif] = useState(kuis.soal)
   const [awal, setAwal] = useState(null)
   const [kunciKey, setKunciKey] = useState(0)
+  // Fokus pindah ke bagian baru saat tahap berganti (mulai, selesai, keluar) supaya pembaca layar dan pengguna keyboard tidak tertinggal di tombol yang sudah hilang.
+  const wadah = useRef(null)
+  const pertama = useRef(true)
+  useEffect(() => {
+    if (pertama.current) {
+      pertama.current = false
+      return
+    }
+    wadah.current?.focus({ preventScroll: false })
+  }, [mode, kunciKey])
 
   const mulai = (subset, dariDraf = null) => {
     if (!dariDraf) clearDraft(store(), modul.id)
@@ -330,19 +351,24 @@ export default function KuisModul({ modul, kuis, next }) {
     setMode('hasil')
   }
 
+  const bungkus = (isi) => (
+    <div ref={wadah} tabIndex={-1} className="outline-none">
+      {isi}
+    </div>
+  )
   if (mode === 'jalan') {
-    return <Jalan key={kunciKey} modul={modul} kuis={kuis} aktif={aktif} awal={awal} onSelesai={selesai} onKeluar={() => setMode(terakhir ? 'hasil' : 'intro')} />
+    return bungkus(<Jalan key={kunciKey} modul={modul} kuis={kuis} aktif={aktif} awal={awal} onSelesai={selesai} onKeluar={() => setMode(terakhir ? 'hasil' : 'intro')} />)
   }
   if (mode === 'hasil' && terakhir) {
-    return <Hasil kuis={{ ...kuis, modul: modul.id }} hasil={terakhir} next={next} onUlang={() => mulai(kuis.soal)} onUlangSalah={() => mulai(soalSalah(kuis.soal, terakhir))} />
+    return bungkus(<Hasil kuis={{ ...kuis, modul: modul.id }} hasil={terakhir} next={next} lanjut={lanjut} statistik={statistik?.(terakhir)} onUlang={() => mulai(kuis.soal)} onUlangSalah={() => mulai(soalSalah(kuis.soal, terakhir))} />)
   }
-  return (
+  return bungkus(
     <div className="rounded-sm border-[1.5px] border-brand-yellow-strong bg-surface p-5">
       <div className="flex flex-wrap items-center gap-5">
         <Mascot expression="netral" size={110} />
         <div className="min-w-0 flex-1 basis-72">
           <p className="text-label text-accent uppercase">Kuis pemahaman · Modul {modul.id}</p>
-          <h3 className="text-h3 mt-1 text-heading">Kerjakan {kuis.soal.length} soal Insertion Sort</h3>
+          <h3 className="text-h3 mt-1 text-heading">Kerjakan {kuis.soal.length} soal {kuis.judul}</h3>
           <p className="text-body mt-1 text-ink-soft">Soal terdiri atas penelusuran, pilihan ganda, perhitungan, benar/salah, dan analisis. Batas lulus {PASS_PERCENT}%. Soal penelusuran dan analisis dinilai sendiri setelah kunci ditampilkan.</p>
           <div className="mt-3 flex flex-wrap items-center gap-3">
             {draf ? (
@@ -367,6 +393,6 @@ export default function KuisModul({ modul, kuis, next }) {
           </div>
         </div>
       </div>
-    </div>
+    </div>,
   )
 }

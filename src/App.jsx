@@ -9,15 +9,23 @@ import AlgoritmaDetail from './pages/AlgoritmaDetail.jsx'
 import Bandingkan from './pages/Bandingkan.jsx'
 import Materi from './pages/Materi.jsx'
 import ModulDetail from './pages/ModulDetail.jsx'
-import Segera from './pages/Segera.jsx'
+import Quiz from './pages/Quiz.jsx'
+import QuizDetail from './pages/QuizDetail.jsx'
 
 // Halaman Materi (Markdown, Prism, visualizer) baru diunduh saat pertama kali dibuka,
 // sehingga Home tetap ringan.
 const Material = lazy(() => import('./pages/Material.jsx'))
 // Halaman peninjauan komponen desain baru (token, ikon, maskot, komponen dasar). Hanya untuk pengembangan dan QA.
+const Credit = lazy(() => import('./pages/Credit.jsx'))
 const UiKit = lazy(() => import('./pages/UiKit.jsx'))
 
 /** /materi/04 = modul baru (di dalam kerangka baru); /materi/insertion-sort dan sejenisnya = materi lama. */
+/** /quiz/04 = halaman satu kuis. */
+function QuizRute() {
+  const { id } = useParams()
+  return <QuizDetail id={id} />
+}
+
 function MateriRute() {
   const { id } = useParams()
   return /^\d{2}$/.test(id) ? (
@@ -47,8 +55,9 @@ export default function App() {
             <Route path="/algoritma/bandingkan/:a/:b" element={<Bandingkan />} />
             <Route path="/algoritma/:id" element={<AlgoritmaDetail />} />
             <Route path="/materi" element={<Materi />} />
-            <Route path="/quiz" element={<Segera judul="Quiz" catatan="Kuis per modul akan muncul di sini." />} />
-            <Route path="/credit" element={<Segera judul="Credit" catatan="Progres belajar, glosarium, tim, dan sumber akan muncul di sini." />} />
+            <Route path="/quiz" element={<Quiz />} />
+            <Route path="/quiz/:id" element={<QuizRute />} />
+            <Route path="/credit" element={<Credit />} />
           </Route>
           <Route path="/materi-lama" element={<Home />} />
           <Route path="/materi/:id" element={<MateriRute />} />
