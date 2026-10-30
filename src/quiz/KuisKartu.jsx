@@ -15,7 +15,6 @@ export default function KuisKartu({ k, tingkat, entry }) {
   return (
     <Link
       to={`/quiz/${k.id}`}
-      aria-label={`${k.judul}, ${tingkat.label}, Modul ${k.modul}, ${k.soal} soal`}
       className="group block w-[280px] shrink-0 snap-start overflow-hidden rounded-sm border border-line bg-card shadow-block transition-[transform,box-shadow,border-color] duration-200 ease-out hover:-translate-y-0.5 hover:border-brand-orange hover:shadow-hover focus-visible:-translate-y-0.5 focus-visible:border-brand-orange md:w-auto"
     >
       <Thumb kind={k.thumb} />

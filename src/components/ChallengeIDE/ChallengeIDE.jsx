@@ -13,21 +13,20 @@ import { findSyntaxLine } from '../../lib/findSyntaxLine.js'
 import { progress as defaultProgress } from '../../lib/storage.js'
 import { runInWorker } from '../../lib/runnerClient.js'
 
+// Gaya tombol mengikuti peran di Style Guide (src/ui/buttonStyles.js): Jalankan = isi Biru Tua, tombol lain = garis Biru.
+// aria-disabled dipakai (bukan disabled) supaya tombol tetap bisa difokus; cincin fokus datang dari tokens.css.
 const buttonClass =
-  'inline-flex min-h-12 min-w-28 items-center justify-center rounded-xl px-4 font-semibold ' +
-  'bg-stone-900 text-orange-50 hover:bg-stone-700 ' +
-  'aria-disabled:cursor-not-allowed aria-disabled:bg-stone-300 aria-disabled:text-stone-700 aria-disabled:hover:bg-stone-300 ' +
-  'focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-stone-900'
+  'inline-flex min-h-12 min-w-28 items-center justify-center rounded-sm px-4 text-button ' +
+  'bg-brand-blue-strong text-on-control shadow-block hover:shadow-hover ' +
+  'aria-disabled:cursor-not-allowed aria-disabled:bg-panel aria-disabled:text-ink-soft aria-disabled:shadow-none aria-disabled:hover:bg-panel'
 
 const secondaryButtonClass =
-  'inline-flex min-h-12 min-w-28 items-center justify-center rounded-xl border-2 border-stone-900 bg-white px-4 font-semibold ' +
-  'hover:bg-orange-100 ' +
-  'aria-disabled:cursor-not-allowed aria-disabled:border-stone-400 aria-disabled:bg-stone-100 aria-disabled:text-stone-700 aria-disabled:hover:bg-stone-100 ' +
-  'focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-stone-900'
+  'inline-flex min-h-12 min-w-28 items-center justify-center rounded-sm border-[1.5px] border-brand-blue bg-card px-4 text-button text-control ' +
+  'hover:bg-info-bg hover:shadow-block ' +
+  'aria-disabled:cursor-not-allowed aria-disabled:border-line aria-disabled:bg-panel aria-disabled:text-ink-soft aria-disabled:shadow-none aria-disabled:hover:bg-panel'
 
 const smallButtonClass =
-  'inline-flex min-h-11 items-center justify-center rounded-xl border-2 border-stone-900 bg-white px-3 text-sm font-semibold ' +
-  'hover:bg-orange-100 focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-stone-900'
+  'inline-flex min-h-11 items-center justify-center rounded-sm border-[1.5px] border-brand-blue bg-card px-3 text-button text-control hover:bg-info-bg hover:shadow-block'
 
 // Tanpa bawaan CodeMirror yang bising untuk pembaca layar (autocompletion) atau tidak dipakai (lipat kode).
 const basicSetup = {
@@ -42,10 +41,11 @@ const basicSetup = {
  *
  * @param {Object} props
  * @param {{ id: string, title: string, description: string, starterCode: string, solution?: string, testCases: Array<{ input: unknown[], expected: unknown }> }} props.challenge
+ * @param {boolean} [props.sembunyikanJudul]  true bila halaman pembungkus sudah menampilkan judul soal
  * @param {typeof runInWorker} [props.run]  pelaksana kode (bawaan: Web Worker; diganti saat tes)
  * @param {ReturnType<typeof import('../../lib/storage.js').createProgress>} [props.progress]  penyimpanan progres (diganti saat tes)
  */
-export default function ChallengeIDE({ challenge, run = runInWorker, progress = defaultProgress }) {
+export default function ChallengeIDE({ challenge, run = runInWorker, progress = defaultProgress, sembunyikanJudul = false }) {
   const uid = useId()
   const labelId = `${uid}-label`
   const helpId = `${uid}-help`
@@ -147,9 +147,9 @@ export default function ChallengeIDE({ challenge, run = runInWorker, progress = 
 
   return (
     <div className="mt-2">
-      <h3 className="text-lg font-semibold">{challenge.title}</h3>
+      {!sembunyikanJudul && <h3 className="text-lg font-semibold">{challenge.title}</h3>}
       {solved && (
-        <p className="mt-1 inline-block rounded-full bg-stone-900 px-3 py-0.5 text-sm font-semibold text-orange-50">
+        <p className="mt-1 inline-block rounded-full bg-ok-bg px-3 py-0.5 text-sm font-semibold text-ok-text">
           <span aria-hidden="true">✓ </span>Soal ini sudah selesai
         </p>
       )}
@@ -157,7 +157,7 @@ export default function ChallengeIDE({ challenge, run = runInWorker, progress = 
 
       {restored && <p className="mt-3 text-sm">Kode terakhir Anda dipulihkan.</p>}
       {!persistent && (
-        <p className="mt-3 max-w-3xl rounded-md border-2 border-stone-900 bg-orange-100 px-3 py-2 text-sm">
+        <p className="mt-3 max-w-3xl rounded-sm border-[1.5px] border-brand-yellow-strong bg-surface px-3 py-2 text-sm">
           Browser ini tidak mengizinkan penyimpanan. Kode dan progres Anda hanya tersimpan selama halaman ini terbuka.
         </p>
       )}
@@ -174,7 +174,7 @@ export default function ChallengeIDE({ challenge, run = runInWorker, progress = 
           Tambah indentasi<span aria-hidden="true"> →</span>
         </button>
       </div>
-      <div className="mt-2 overflow-hidden rounded-xl border-2 border-stone-900 bg-white">
+      <div className="mt-2 overflow-hidden rounded-sm border-[1.5px] border-line bg-code">
         <CodeMirror
           onCreateEditor={(view) => {
             viewRef.current = view
@@ -223,7 +223,7 @@ export default function ChallengeIDE({ challenge, run = runInWorker, progress = 
           type="checkbox"
           checked={tabIndent}
           onChange={(e) => setTabIndent(e.target.checked)}
-          className="mt-1 size-5 shrink-0 accent-stone-900 focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-stone-900"
+          className="mt-1 size-5 shrink-0 accent-[var(--brand-blue-strong)]"
         />
         <span>
           Tab untuk indentasi

@@ -1,5 +1,6 @@
 export { default as Button } from './Button.jsx'
 export { default as AnswerOption } from './AnswerOption.jsx'
+export { default as ConfirmDialog } from './ConfirmDialog.jsx'
 export { default as Chip } from './Chip.jsx'
 export { default as ErrorBoundary } from './ErrorBoundary.jsx'
 export { default as ErrorState } from './ErrorState.jsx'

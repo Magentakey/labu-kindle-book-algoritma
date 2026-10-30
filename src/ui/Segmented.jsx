@@ -18,7 +18,7 @@ export default function Segmented({ options, value, onChange, label, className }
             disabled={o.disabled}
             title={o.title}
             onClick={() => onChange(o.id)}
-            className={cx('shrink-0 whitespace-nowrap rounded-[3px] px-3.5 py-1.5 text-body transition-colors', active ? 'bg-card font-semibold text-control shadow-block' : 'text-ink-soft hover:text-ink disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:text-ink-soft')}
+            className={cx('shrink-0 whitespace-nowrap rounded-[3px] px-3.5 py-1.5 text-body transition-colors', active ? 'bg-card font-semibold text-control shadow-block' : 'text-ink hover:bg-card/60 disabled:cursor-not-allowed disabled:opacity-50')}
           >
             {o.label}
           </button>

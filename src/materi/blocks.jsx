@@ -227,7 +227,7 @@ export function Tantangan({ muat }) {
         {!gagal && !challenge && <Skeleton className="h-48 w-full" />}
         {challenge && (
           <Suspense fallback={<Skeleton className="h-48 w-full" />}>
-            <ChallengeIDE key={challenge.id} challenge={challenge} />
+            <ChallengeIDE key={challenge.id} challenge={challenge} sembunyikanJudul />
           </Suspense>
         )}
       </div>

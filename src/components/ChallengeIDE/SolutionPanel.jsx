@@ -5,8 +5,7 @@ import { EditorView } from '@codemirror/view'
 import { editorTheme } from './editorTheme.js'
 
 const secondaryButtonClass =
-  'inline-flex min-h-12 min-w-28 items-center justify-center rounded-xl border-2 border-stone-900 bg-white px-4 font-semibold ' +
-  'hover:bg-orange-100 focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-stone-900'
+  'inline-flex min-h-12 min-w-28 items-center justify-center rounded-sm border-[1.5px] border-brand-blue bg-card px-4 text-button text-control hover:bg-info-bg hover:shadow-block'
 
 // Hanya baca: tidak ada gutter aktif, autocompletion, atau penutup kurung otomatis.
 const basicSetup = {
@@ -43,7 +42,7 @@ export default function SolutionPanel({ id, code, onCopy }) {
         Ini salah satu cara yang benar; jawaban lain yang lulus semua test case juga boleh. Anda bisa mempelajarinya
         atau menyalinnya ke editor lalu mengubahnya.
       </p>
-      <div className="mt-2 overflow-hidden rounded-xl border-2 border-stone-900 bg-white">
+      <div className="mt-2 overflow-hidden rounded-sm border-[1.5px] border-line bg-code">
         <CodeMirror
           value={code}
           extensions={extensions}

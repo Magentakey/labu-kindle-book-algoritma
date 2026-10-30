@@ -7,6 +7,7 @@ import { traces, runTrace } from './traces.js'
 import { MST_MAX_EDGES, MST_MAX_VERTICES } from './traces/mstCommon.js'
 import { kruskalPseudoCode } from './traces/kruskalPseudo.js'
 import { primPseudoCode } from './traces/primPseudo.js'
+import { rand } from '../lib/testRandom.js'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '../..')
 const material = readFileSync(join(root, 'src/content/materials/mst.md'), 'utf8')
@@ -98,19 +99,19 @@ function primRef(names, adj, r0) {
 
 /** Graf terhubung acak: pohon acak ditambah sisi acak. Bobot kecil supaya sering seri. */
 function randomGraph(maxW = 6) {
-  const n = 2 + Math.floor(Math.random() * (MST_MAX_VERTICES - 1))
+  const n = 2 + Math.floor(rand() * (MST_MAX_VERTICES - 1))
   const names = 'abcdefghi'.split('').slice(0, n)
   const edges = []
   const has = (a, b) => edges.some(([p, q]) => (p === a && q === b) || (p === b && q === a))
-  for (let i = 1; i < n; i++) edges.push([names[Math.floor(Math.random() * i)], names[i], Math.floor(Math.random() * (maxW + 1))])
+  for (let i = 1; i < n; i++) edges.push([names[Math.floor(rand() * i)], names[i], Math.floor(rand() * (maxW + 1))])
   for (let a = 0; a < n; a++) {
     for (let b = a + 1; b < n; b++) {
-      if (edges.length < MST_MAX_EDGES && Math.random() < 0.3 && !has(names[a], names[b])) edges.push([names[a], names[b], Math.floor(Math.random() * (maxW + 1))])
+      if (edges.length < MST_MAX_EDGES && rand() < 0.3 && !has(names[a], names[b])) edges.push([names[a], names[b], Math.floor(rand() * (maxW + 1))])
     }
   }
   // acak urutan penulisan dan arah sisi
-  edges.sort(() => Math.random() - 0.5)
-  return { names, edges: edges.map(([u, v, w]) => (Math.random() < 0.5 ? [u, v, w] : [v, u, w])) }
+  edges.sort(() => rand() - 0.5)
+  return { names, edges: edges.map(([u, v, w]) => (rand() < 0.5 ? [u, v, w] : [v, u, w])) }
 }
 const toE = (edges) => edges.map(([u, v, w]) => `${u}-${v}:${w}`).join(', ')
 const toAdj = (names, edges) => {
@@ -119,7 +120,7 @@ const toAdj = (names, edges) => {
     adj[u].push({ v, w })
     adj[v].push({ v: u, w })
   }
-  for (const x of names) adj[x].sort(() => Math.random() - 0.5)
+  for (const x of names) adj[x].sort(() => rand() - 0.5)
   return adj
 }
 const adjText = (names, adj) => names.map((x) => `${x}: ${adj[x].map((a) => `${a.v}(${a.w})`).join(', ')}`).join('; ')
@@ -295,7 +296,7 @@ test('Prim: 300 graf acak dengan akar dan urutan tetangga acak: urutan baris, ju
   for (let t = 0; t < 300; t++) {
     const { names, edges } = randomGraph(9)
     const adj = toAdj(names, edges)
-    const r0 = names[Math.floor(Math.random() * names.length)]
+    const r0 = names[Math.floor(rand() * names.length)]
     const steps = runP(adjText(names, adj), r0)
     const ref = primRef(names, adj, r0)
     const info = `${adjText(names, adj)} r=${r0}`

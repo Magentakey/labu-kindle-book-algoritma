@@ -3,6 +3,7 @@ import assert from 'node:assert/strict'
 import { insertionSortCode, insertionSortExecLines, insertionSortTrace } from './insertionSortExact.js'
 import { insertionSortExactView } from './exactViews.js'
 import { STATUS } from '../components/BarChart/statuses.js'
+import { rand } from '../lib/testRandom.js'
 
 const cases = [[], [1], [2, 1], [5, 2, 4], [1, 1, 0], [3, 3, 3], [1, 2, 3, 4], [5, 4, 3, 2, 1], [9, -1, 0, 4, 4, 2], [5, 2, 4, 1, 3]]
 const sortedCopy = (a) => [...a].sort((x, y) => x - y)
@@ -28,13 +29,13 @@ test('hasil akhir terurut dan array masukan tidak diubah', () => {
 test('hasil sama dengan menjalankan kode yang ditampilkan (200 array acak)', () => {
   const fn = new Function(`${insertionSortCode}\nreturn insertionSort`)()
   for (let t = 0; t < 200; t++) {
-    const a = Array.from({ length: Math.floor(Math.random() * 12) }, () => Math.floor(Math.random() * 20) - 5)
+    const a = Array.from({ length: Math.floor(rand() * 12) }, () => Math.floor(rand() * 20) - 5)
     assert.deepEqual(insertionSortTrace(a).at(-1).array, fn([...a]), JSON.stringify(a))
   }
 })
 
 test('hitungan tiap baris cocok dengan rumus (n, inversi) untuk 300 array acak dan kasus tepi', () => {
-  const random = Array.from({ length: 300 }, () => Array.from({ length: Math.floor(Math.random() * 13) }, () => Math.floor(Math.random() * 15) - 5))
+  const random = Array.from({ length: 300 }, () => Array.from({ length: Math.floor(rand() * 13) }, () => Math.floor(rand() * 15) - 5))
   for (const a of [...cases, ...random]) {
     const n = a.length
     const inv = inversions(a)
@@ -66,7 +67,7 @@ test('kasus terbaik dan terburuk: total langkah linear vs kuadrat', () => {
 test('jumlah perbandingan sama dengan menjalankan kode asli yang menghitung perbandingan', () => {
   const real = new Function(`${insertionSortCode}\nreturn insertionSort`)()
   for (let t = 0; t < 100; t++) {
-    const a = Array.from({ length: Math.floor(Math.random() * 12) }, () => Math.floor(Math.random() * 10))
+    const a = Array.from({ length: Math.floor(rand() * 12) }, () => Math.floor(rand() * 10))
     let compares = 0
     // setiap `>` pada elemen membungkus memanggil valueOf dua kali
     const wrapped = a.map((v) => ({ valueOf: () => (compares += 0.5, v) }))

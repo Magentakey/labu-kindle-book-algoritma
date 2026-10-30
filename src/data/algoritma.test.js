@@ -1,7 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
-import { algoritma, algoritmaHref, kategori } from './algoritma.js'
+import { algoritma, algoritmaHref, kategori, membukaHalamanLama } from './algoritma.js'
 import { vizIds } from '../viz/vizConfig.js'
 
 const materials = JSON.parse(readFileSync(new URL('../content/materials.json', import.meta.url), 'utf8'))
@@ -52,4 +52,13 @@ test('galeri: 13 kartu punya visualizer baru (/algoritma/:id), 4 kartu Analisis 
   assert.equal(algoritmaHref(algoritma.find((a) => a.id === 'dijkstra')), '/algoritma/dijkstra')
   assert.equal(algoritmaHref(algoritma.find((a) => a.id === 'insertion-sort')), '/algoritma/insertion-sort')
   assert.equal(algoritmaHref(algoritma.find((a) => a.id === 'pertumbuhan-fungsi')), '/materi/pertumbuhan-fungsi', 'kartu Analisis masih ke materi lama')
+})
+
+test('membukaHalamanLama: tepat kartu tanpa visualizer, yaitu semua kartu Analisis; kartu visualizer tidak', () => {
+  const lama = algoritma.filter(membukaHalamanLama)
+  assert.ok(lama.length > 0)
+  assert.deepEqual(lama.map((a) => a.kategori), lama.map(() => 'analisis'))
+  assert.ok(algoritma.filter((a) => a.kategori === 'analisis').every(membukaHalamanLama))
+  assert.ok(algoritma.filter((a) => a.viz).every((a) => !membukaHalamanLama(a)))
+  assert.ok(lama.every((a) => algoritmaHref(a).startsWith('/materi/')))
 })

@@ -8,6 +8,7 @@ import { splitContent } from '../lib/splitContent.js'
 import { buildToc } from '../lib/tableOfContents.js'
 import { kruskalSteps, primSteps } from '../algorithms/graphMst.js'
 import { runTrace, traces } from '../algorithms/traces.js'
+import { rand } from '../lib/testRandom.js'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '../..')
 const md = readFileSync(join(root, 'src/content/materials/mst.md'), 'utf8')
@@ -385,12 +386,12 @@ test('peraga ::trace: Kruskal di akhir bagian C, Prim di akhir bagian E, dan ang
 
 test('aturan umum MST berlaku pada 200 graf acak: Kruskal = Prim = n-1 sisi', () => {
   for (let t = 0; t < 200; t++) {
-    const n = 2 + Math.floor(Math.random() * 7)
+    const n = 2 + Math.floor(rand() * 7)
     const names = V.slice(0, n)
     const edges = []
     // pohon acak supaya terhubung, lalu tambah sisi acak
-    for (let i = 1; i < n; i++) edges.push([names[Math.floor(Math.random() * i)], names[i], 1 + Math.floor(Math.random() * 9)])
-    for (let a = 0; a < n; a++) for (let b = a + 1; b < n; b++) if (Math.random() < 0.3 && !edges.some(([p, q]) => (p === names[a] && q === names[b]) || (p === names[b] && q === names[a]))) edges.push([names[a], names[b], 1 + Math.floor(Math.random() * 9)])
+    for (let i = 1; i < n; i++) edges.push([names[Math.floor(rand() * i)], names[i], 1 + Math.floor(rand() * 9)])
+    for (let a = 0; a < n; a++) for (let b = a + 1; b < n; b++) if (rand() < 0.3 && !edges.some(([p, q]) => (p === names[a] && q === names[b]) || (p === names[b] && q === names[a]))) edges.push([names[a], names[b], 1 + Math.floor(rand() * 9)])
     const sorted = [...edges].sort((p, q) => p[2] - q[2])
     const set = Object.fromEntries(names.map((x) => [x, new Set([x])]))
     let kTotal = 0

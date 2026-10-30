@@ -2,6 +2,7 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { traces, runTrace } from './traces.js'
 import { STATUS } from '../components/BarChart/statuses.js'
+import { rand } from '../lib/testRandom.js'
 
 const run = (id, values) => {
   const texts = Object.fromEntries(Object.entries(values).map(([k, v]) => [k, Array.isArray(v) ? v.join(', ') : String(v)]))
@@ -10,7 +11,7 @@ const run = (id, values) => {
   return r.steps
 }
 const varOf = (step, name) => step.vars.find((v) => v.name === name).value
-const randArr = (max = 8) => Array.from({ length: 1 + Math.floor(Math.random() * max) }, () => Math.floor(Math.random() * 41) - 20)
+const randArr = (max = 8) => Array.from({ length: 1 + Math.floor(rand() * max) }, () => Math.floor(rand() * 41) - 20)
 
 // Pembanding independen: insertion sort berindeks 1 dengan penghitung tiap baris, ditulis langsung dari pseudocode materi.
 function referenceInsertionSort(input) {
@@ -190,7 +191,7 @@ test('CARI_BIL_K: kasus terburuk (k tidak ada) → n+1, n, 0, 1 seperti tabel di
 test('CARI_BIL_K: hasil dan hitungan cocok dengan pembanding independen (500 masukan acak)', () => {
   for (let t = 0; t < 500; t++) {
     const A = randArr().map((v) => Math.abs(v) % 10)
-    const k = Math.floor(Math.random() * 12)
+    const k = Math.floor(rand() * 12)
     const steps = run('cari-bil-k', { A, k })
     const ref = referenceCari(A, k)
     const last = steps.at(-1)

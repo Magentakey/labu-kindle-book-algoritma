@@ -3,6 +3,7 @@ import assert from 'node:assert/strict'
 import { mergeSortCode, mergeSortExecLines, mergeSortTrace } from './mergeSortExact.js'
 import { mergeSortExactView } from './exactViews.js'
 import { STATUS } from '../components/BarChart/statuses.js'
+import { rand } from '../lib/testRandom.js'
 
 const cases = [[], [1], [2, 1], [5, 2, 4], [1, 1, 0], [3, 3, 3], [1, 2, 3, 4], [8, 7, 6, 5, 4, 3, 2, 1], [9, -1, 0, 4, 4, 2], [6, 3, 8, 1, 5, 2]]
 const sortedCopy = (a) => [...a].sort((x, y) => x - y)
@@ -75,13 +76,13 @@ test('hasil akhir terurut, array masukan tidak diubah, dan langkah terakhir bert
 test('hasil sama dengan menjalankan kode yang ditampilkan (200 array acak)', () => {
   const fn = new Function(`${mergeSortCode}\nreturn (a) => { mergeSort(a); return a }`)()
   for (let t = 0; t < 200; t++) {
-    const a = Array.from({ length: Math.floor(Math.random() * 12) }, () => Math.floor(Math.random() * 20) - 5)
+    const a = Array.from({ length: Math.floor(rand() * 12) }, () => Math.floor(rand() * 20) - 5)
     assert.deepEqual(mergeSortTrace(a).at(-1).array, fn([...a]), JSON.stringify(a))
   }
 })
 
 test('hitungan tiap baris sama dengan penghitung terpisah (300 array acak dan kasus tepi)', () => {
-  const random = Array.from({ length: 300 }, () => Array.from({ length: Math.floor(Math.random() * 13) }, () => Math.floor(Math.random() * 15) - 5))
+  const random = Array.from({ length: 300 }, () => Array.from({ length: Math.floor(rand() * 13) }, () => Math.floor(rand() * 15) - 5))
   for (const a of [...cases, ...random]) {
     assert.deepEqual(countByLine(mergeSortTrace(a)), expectedCounts(a), JSON.stringify(a))
   }
@@ -89,7 +90,7 @@ test('hitungan tiap baris sama dengan penghitung terpisah (300 array acak dan ka
 
 test('rumus: 2n-1 panggilan, n-1 penggabungan, dan identitas antar baris', () => {
   for (let n = 0; n <= 12; n++) {
-    const a = Array.from({ length: n }, () => Math.floor(Math.random() * 10))
+    const a = Array.from({ length: n }, () => Math.floor(rand() * 10))
     const c = countByLine(mergeSortTrace(a))
     const merges = Math.max(n - 1, 0)
     assert.equal(c[1], Math.max(2 * n - 1, 1), `panggilan mergeSort, n=${n}`)
@@ -108,7 +109,7 @@ test('rumus: 2n-1 panggilan, n-1 penggabungan, dan identitas antar baris', () =>
 test('jumlah perbandingan (baris 13) sama dengan menjalankan kode asli yang menghitung perbandingan', () => {
   const real = new Function(`${mergeSortCode}\nreturn (a) => mergeSort(a)`)()
   for (let t = 0; t < 100; t++) {
-    const a = Array.from({ length: Math.floor(Math.random() * 12) }, () => Math.floor(Math.random() * 10))
+    const a = Array.from({ length: Math.floor(rand() * 12) }, () => Math.floor(rand() * 10))
     let compares = 0
     // `<=` pada dua objek memanggil valueOf dua kali
     const wrapped = a.map((v) => ({ valueOf: () => (compares += 0.5, v) }))

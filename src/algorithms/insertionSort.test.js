@@ -1,6 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { insertionSortCode, insertionSortSteps } from './insertionSort.js'
+import { rand } from '../lib/testRandom.js'
 
 const cases = [[], [1], [2, 1], [5, 2, 4], [1, 1, 0], [3, 3, 3], [1, 2, 3, 4], [5, 4, 3, 2, 1], [9, -1, 0, 4, 4, 2]]
 const sortedCopy = (a) => [...a].sort((x, y) => x - y)
@@ -14,7 +15,7 @@ test('hasil akhir terurut untuk berbagai kasus', () => {
 
 test('hasil akhir terurut untuk 200 array acak', () => {
   for (let t = 0; t < 200; t++) {
-    const a = Array.from({ length: Math.floor(Math.random() * 12) }, () => Math.floor(Math.random() * 20) - 5)
+    const a = Array.from({ length: Math.floor(rand() * 12) }, () => Math.floor(rand() * 20) - 5)
     assert.deepEqual(last(insertionSortSteps(a)).array, sortedCopy(a), JSON.stringify(a))
   }
 })

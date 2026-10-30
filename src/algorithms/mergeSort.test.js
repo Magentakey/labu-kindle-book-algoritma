@@ -1,11 +1,12 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { mergeSortCode, mergeSortSteps } from './mergeSort.js'
+import { rand } from '../lib/testRandom.js'
 
 const cases = [[], [1], [2, 1], [1, 2], [5, 2, 4], [1, 1, 0], [3, 3, 3], [5, 4, 3, 2, 1], [9, -1, 0, 4, 4, 2], [6, 3, 8, 1, 5, 2], [8, 7, 6, 5, 4, 3, 2, 1]]
 const sortedCopy = (a) => [...a].sort((x, y) => x - y)
 const last = (steps) => steps[steps.length - 1]
-const randomArray = () => Array.from({ length: Math.floor(Math.random() * 9) }, () => Math.floor(Math.random() * 20) - 5)
+const randomArray = () => Array.from({ length: Math.floor(rand() * 9) }, () => Math.floor(rand() * 20) - 5)
 
 test('hasil akhir terurut untuk berbagai kasus', () => {
   for (const c of cases) assert.deepEqual(last(mergeSortSteps(c)).array, sortedCopy(c), JSON.stringify(c))

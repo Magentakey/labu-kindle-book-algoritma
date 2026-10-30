@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
 import { traces, runTrace } from './traces.js'
 import { BFS_MAX_ENTRIES, BFS_MAX_VERTICES, bfsPseudoCode, parseAdjacencyInput } from './traces/bfsPseudo.js'
+import { rand } from '../lib/testRandom.js'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '../..')
 const material = readFileSync(join(root, 'src/content/materials/graph-bfs.md'), 'utf8')
@@ -82,15 +83,15 @@ function reference(adj, names, s) {
 
 const NAMES = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
 function randomGraph() {
-  const n = 1 + Math.floor(Math.random() * 8)
+  const n = 1 + Math.floor(rand() * 8)
   const names = NAMES.slice(0, n)
   const adj = {}
   for (const x of names) {
-    const pool = [...names].sort(() => Math.random() - 0.5)
-    adj[x] = pool.slice(0, Math.floor(Math.random() * Math.min(4, n + 1)))
+    const pool = [...names].sort(() => rand() - 0.5)
+    adj[x] = pool.slice(0, Math.floor(rand() * Math.min(4, n + 1)))
   }
   const G = names.map((x) => `${x}: ${adj[x].join(', ')}`).join('; ')
-  return { names, adj, G, s: names[Math.floor(Math.random() * n)] }
+  return { names, adj, G, s: names[Math.floor(rand() * n)] }
 }
 const cellsOf = (step) => step.tables[0].table.cells.map((row) => row.map((c) => c.text))
 const qOf = (step) => step.lists[0].items.map((t) => t.split(' ')[0])

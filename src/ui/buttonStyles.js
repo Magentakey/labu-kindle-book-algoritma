@@ -21,7 +21,7 @@ export const buttonVariants = {
 // Tombol ikon menurut peran: kontrol (garis Biru), kontrolUtama (isi Biru Tua, mis. play/pause), navigasi (isi Coral), netral.
 export const iconButtonVariants = {
   kontrol: 'size-10 rounded-sm border border-brand-blue bg-card text-control hover:bg-info-bg',
-  kontrolUtama: 'size-12 rounded-md bg-brand-blue-strong text-on-control shadow-block hover:bg-brand-blue',
+  kontrolUtama: 'size-12 rounded-md bg-brand-blue-strong text-on-control shadow-block hover:shadow-hover',
   navigasi: 'size-10 rounded-sm bg-brand-orange text-on-orange shadow-block hover:bg-brand-burnt hover:text-on-burnt',
   netral: 'size-10 rounded-sm text-ink-soft hover:bg-panel',
 }

@@ -1,6 +1,6 @@
 import { formatCall, formatValue } from '../../lib/formatValue.js'
 
-const valueClass = 'mt-0.5 whitespace-pre-wrap break-words rounded-md bg-stone-100 px-2 py-1 font-mono text-sm'
+const valueClass = 'mt-0.5 whitespace-pre-wrap break-words rounded-md bg-panel px-2 py-1 font-mono text-sm'
 
 function Row({ label, children }) {
   return (
@@ -29,7 +29,7 @@ export default function TestPanel({ results, runNo, stale = false }) {
         Hasil test case: {lulus} dari {results.length} lulus
       </h4>
       {stale && (
-        <p className="mt-1 rounded-md border-2 border-stone-900 bg-orange-100 px-3 py-2 text-sm">
+        <p className="mt-1 rounded-sm border-[1.5px] border-brand-yellow-strong bg-surface px-3 py-2 text-sm">
           Kode sudah diubah sejak hasil ini. Jalankan lagi untuk hasil terbaru.
         </p>
       )}
@@ -37,10 +37,10 @@ export default function TestPanel({ results, runNo, stale = false }) {
         {results.map((r) => (
           <li
             key={`${runNo}-${r.index}`}
-            className={'rounded-xl border-2 border-stone-900 ' + (r.pass ? 'bg-white' : 'bg-orange-50')}
+            className={'rounded-sm border-[1.5px] ' + (r.pass ? 'border-line bg-card' : 'border-bad bg-bad-bg')}
           >
             <details open={!r.pass}>
-              <summary className="flex min-h-11 cursor-pointer items-center gap-2 px-3 py-2 font-semibold focus-visible:outline-4 focus-visible:-outline-offset-4 focus-visible:outline-stone-900">
+              <summary className="flex min-h-11 cursor-pointer items-center gap-2 px-3 py-2 font-semibold">
                 <span aria-hidden="true" className="w-5 text-center">
                   {r.pass ? '✓' : '✗'}
                 </span>
@@ -48,7 +48,7 @@ export default function TestPanel({ results, runNo, stale = false }) {
                   Test case {r.index + 1}: {r.pass ? 'Lulus' : 'Gagal'}
                 </span>
               </summary>
-              <dl className="border-t-2 border-stone-300 px-3 pb-3">
+              <dl className="border-t-2 border-line px-3 pb-3">
                 <Row label="Panggilan">
                   <p className={valueClass}>{formatCall(r.input)}</p>
                 </Row>

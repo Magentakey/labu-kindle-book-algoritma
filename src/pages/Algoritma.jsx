@@ -1,23 +1,29 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
-import { algoritma, algoritmaHref, kategori } from '../data/algoritma.js'
+import { Link, useNavigate } from 'react-router-dom'
+import { algoritma, algoritmaHref, kategori, membukaHalamanLama } from '../data/algoritma.js'
 import { filterAlgoritma, groupByKategori, suggest } from '../lib/algoritmaSearch.js'
 import { groupClasses } from '../lib/galeriClasses.js'
 import { readCollapsed, writeCollapsed } from '../lib/galeriState.js'
 import { comparePairs } from '../viz/vizConfig.js'
-import { Button, Chip, Icon, Mascot, SearchField, Segmented, Thumb } from '../ui/index.js'
+import { Button, Chip, ConfirmDialog, Icon, Mascot, SearchField, Segmented, Thumb } from '../ui/index.js'
 import { cx } from '../ui/cx.js'
 
 const filterOptions = [{ id: 'semua', label: 'Semua' }, ...kategori.map((k) => ({ id: k.id, label: k.label }))]
 const modulLabel = (n) => `Modul ${String(n).padStart(2, '0')}`
 
 // Kartu yang bisa diklik = PINDAH: garis Coral dan naik 2px saat hover/fokus; teks "Buka" Coral Tua + panah.
-function Kartu({ a }) {
+function Kartu({ a, onLama }) {
   const grupKategori = kategori.find((k) => k.id === a.kategori)
   return (
     <Link
       to={algoritmaHref(a)}
-      aria-label={`${a.judul}, ${modulLabel(a.modul)}`}
+      onClick={(e) => {
+        // Klik biasa pada kartu yang membuka halaman lama: tanya dulu. Ctrl/Cmd/Shift-klik dan klik tengah tetap membuka tab baru seperti biasa.
+        if (membukaHalamanLama(a) && e.button === 0 && !e.ctrlKey && !e.metaKey && !e.shiftKey && !e.altKey) {
+          e.preventDefault()
+          onLama(a)
+        }
+      }}
       className="group block w-[300px] shrink-0 snap-start overflow-hidden rounded-sm border border-line bg-card shadow-block transition-[transform,box-shadow,border-color] duration-200 ease-out hover:-translate-y-0.5 hover:border-brand-orange hover:shadow-hover focus-visible:-translate-y-0.5 focus-visible:border-brand-orange md:w-auto"
     >
       <Thumb kind={a.thumb} />
@@ -43,7 +49,7 @@ function Kartu({ a }) {
 }
 
 // Grup bisa dilipat: tinggi dan putaran chevron 250 ms (instan bila gerak dikurangi). Di HP isinya satu baris yang digeser.
-function Grup({ g, tutup, onToggle }) {
+function Grup({ g, tutup, onToggle, onLama }) {
   const cls = groupClasses(g.items.length)
   return (
     <section aria-labelledby={`grup-${g.id}`} className={cx('min-w-0', cls.span)}>
@@ -59,7 +65,7 @@ function Grup({ g, tutup, onToggle }) {
         <div className={cx('min-h-0 md:-m-4 md:overflow-hidden md:p-4', tutup && 'max-md:hidden')}>
           <div className={cx('-mx-4 flex snap-x items-start gap-4 overflow-x-auto px-4 pb-3 md:mx-0 md:grid md:gap-6 md:overflow-visible md:px-0 md:pb-0', cls.inner)}>
             {g.items.map((a) => (
-              <Kartu key={a.id} a={a} />
+              <Kartu key={a.id} a={a} onLama={onLama} />
             ))}
           </div>
         </div>
@@ -102,6 +108,8 @@ export default function Algoritma() {
   const [kategoriId, setKategoriId] = useState('semua')
   const [tutup, setTutup] = useState(() => readCollapsed(window.localStorage))
   const cari = useRef(null)
+  const [lama, setLama] = useState(null) // kartu yang akan membuka halaman materi versi lama (menunggu konfirmasi)
+  const navigate = useNavigate()
 
   // Tekan "/" untuk langsung mengetik di pencarian (sesuai tulisan di banner).
   useEffect(() => {
@@ -164,10 +172,29 @@ export default function Algoritma() {
       ) : (
         <div className="mt-8 grid grid-cols-1 items-start gap-x-6 gap-y-10 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {grup.map((g) => (
-            <Grup key={g.id} g={g} tutup={tutup.has(g.id)} onToggle={() => toggle(g.id)} />
+            <Grup key={g.id} g={g} tutup={tutup.has(g.id)} onToggle={() => toggle(g.id)} onLama={setLama} />
           ))}
         </div>
       )}
+
+      <ConfirmDialog
+        open={lama !== null}
+        judul="Buka materi versi lama?"
+        labelLanjut="Lanjut ke materi lama"
+        labelBatal="Tetap di sini"
+        onBatal={() => setLama(null)}
+        onLanjut={() => {
+          const tujuan = algoritmaHref(lama)
+          setLama(null)
+          navigate(tujuan)
+        }}
+      >
+        <p>
+          “{lama?.judul}” belum punya visualizer di tampilan baru. Kamu akan dibawa ke halaman materi versi lama yang tampilannya berbeda dari
+          aplikasi ini.
+        </p>
+        <p className="mt-2">Untuk kembali, pakai tombol kembali di browser.</p>
+      </ConfirmDialog>
     </div>
   )
 }

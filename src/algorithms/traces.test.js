@@ -2,6 +2,7 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { traces, TRACE_IDS, runTrace } from './traces.js'
 import { STATUS } from '../components/BarChart/statuses.js'
+import { rand } from '../lib/testRandom.js'
 
 const texts = (o) => Object.fromEntries(Object.entries(o).map(([k, v]) => [k, Array.isArray(v) ? v.join(', ') : String(v)]))
 const run = (id, values) => {
@@ -48,7 +49,7 @@ test('JUMLAH_n_BIL: contoh di materi (20, 35, 15) menghasilkan 20, 55, 70', () =
 
 test('JUMLAH_n_BIL: hasil = jumlah sebenarnya dan jumlah langkah = 2n + 3 (200 array acak)', () => {
   for (let t = 0; t < 200; t++) {
-    const A = Array.from({ length: 1 + Math.floor(Math.random() * 8) }, () => Math.floor(Math.random() * 41) - 20)
+    const A = Array.from({ length: 1 + Math.floor(rand() * 8) }, () => Math.floor(rand() * 41) - 20)
     const steps = run('jumlah-n-bil', { A })
     assert.equal(Number(varOf(steps.at(-1), 'jumlah')), A.reduce((a, b) => a + b, 0), JSON.stringify(A))
     assert.equal(steps.length, 2 * A.length + 3)
@@ -57,8 +58,8 @@ test('JUMLAH_n_BIL: hasil = jumlah sebenarnya dan jumlah langkah = 2n + 3 (200 a
 
 // ---- BINARY-SEARCH ----
 const sortedRandom = () => {
-  const len = 1 + Math.floor(Math.random() * 8)
-  return Array.from({ length: len }, () => Math.floor(Math.random() * 30) - 10).sort((a, b) => a - b)
+  const len = 1 + Math.floor(rand() * 8)
+  return Array.from({ length: len }, () => Math.floor(rand() * 30) - 10).sort((a, b) => a - b)
 }
 const resultOf = (steps) => {
   const last = steps.at(-1)
@@ -78,7 +79,7 @@ for (const id of ['binary-search-iteratif', 'binary-search-rekursif']) {
   test(`${id}: hasil benar untuk 300 array terurut acak (ditemukan: A[idx] == x; NIL: x tidak ada)`, () => {
     for (let t = 0; t < 300; t++) {
       const A = sortedRandom()
-      const x = Math.floor(Math.random() * 30) - 10
+      const x = Math.floor(rand() * 30) - 10
       const out = resultOf(run(id, { A, x }))
       if (out === 'NIL') assert.ok(!A.includes(x), `${JSON.stringify(A)} x=${x}`)
       else assert.equal(A[out - 1], x, `${JSON.stringify(A)} x=${x} idx=${out}`)
@@ -89,7 +90,7 @@ for (const id of ['binary-search-iteratif', 'binary-search-rekursif']) {
 test('iteratif dan rekursif memeriksa indeks tengah yang sama dan memberi hasil sama', () => {
   for (let t = 0; t < 200; t++) {
     const A = sortedRandom()
-    const x = Math.floor(Math.random() * 30) - 10
+    const x = Math.floor(rand() * 30) - 10
     const it = run('binary-search-iteratif', { A, x })
     const rec = run('binary-search-rekursif', { A, x })
     const midsIt = it.filter((s) => s.line === 2).map((s) => varOf(s, 'mid'))
@@ -383,7 +384,7 @@ function mergeSortReference(input) {
   return { calls, merges, result: A.slice(1) }
 }
 const arrOf = (step) => step.array.values
-const randomInts = (max = 8) => Array.from({ length: 1 + Math.floor(Math.random() * max) }, () => Math.floor(Math.random() * 41) - 20)
+const randomInts = (max = 8) => Array.from({ length: 1 + Math.floor(rand() * max) }, () => Math.floor(rand() * 41) - 20)
 
 test('MERGE_SORT: contoh soal materi {3, 10, 8, 20, 5}: urutan pemanggilan, q, dan isi A tiap MERGE', () => {
   const steps = run('merge-sort', { A: [3, 10, 8, 20, 5] })

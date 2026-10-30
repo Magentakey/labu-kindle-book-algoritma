@@ -37,3 +37,6 @@ export const algoritma = [
 
 /** Tujuan kartu: halaman visualizer baru bila sudah ada (`viz`), jika belum ke materi lama yang memuat visualizer-nya. */
 export const algoritmaHref = (a) => (a.viz ? `/algoritma/${a.id}` : a.href)
+
+/** Kartu yang belum punya visualizer baru membuka halaman materi versi lama (tampilannya berbeda), jadi pengguna diberi konfirmasi dulu. */
+export const membukaHalamanLama = (a) => !a.viz

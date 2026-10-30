@@ -9,6 +9,7 @@ import { buildToc } from '../lib/tableOfContents.js'
 import { parseGraphFields } from '../algorithms/graphCommon.js'
 import { dfsGraphSteps } from '../algorithms/graphTraversal.js'
 import { traces, runTrace } from '../algorithms/traces.js'
+import { rand } from '../lib/testRandom.js'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '../..')
 const md = readFileSync(join(root, 'src/content/materials/graph-dfs.md'), 'utf8')
@@ -239,10 +240,10 @@ test('gambar: 16 panel penelusuran, graf akhir, dan forest ada dengan teks alter
 })
 
 function randomDigraph() {
-  const n = 1 + Math.floor(Math.random() * 8)
+  const n = 1 + Math.floor(rand() * 8)
   const names = 'abcdefgh'.slice(0, n).split('')
   const adj = {}
-  for (const x of names) adj[x] = [...names].sort(() => Math.random() - 0.5).slice(0, Math.floor(Math.random() * 4))
+  for (const x of names) adj[x] = [...names].sort(() => rand() - 0.5).slice(0, Math.floor(rand() * 4))
   return { names, adj }
 }
 
@@ -281,11 +282,11 @@ test('catatan tentang visualizer: hanya tak berarah, satu simpul awal, urutan ku
   assert.equal(parseGraphFields({ n: '3', edges: '0>1, 1>2', start: '0' }, { directed: false, weighted: false, needStart: true }).ok, false, 'graf berarah ditolak')
   const solve = new Function(`${challenge.solution}\nreturn solve`)()
   for (let t = 0; t < 100; t++) {
-    const n = 2 + Math.floor(Math.random() * 7)
+    const n = 2 + Math.floor(rand() * 7)
     const all = []
     for (let a = 0; a < n; a++) for (let b = a + 1; b < n; b++) all.push([a, b])
-    const edges = all.filter(() => Math.random() < 0.35).slice(0, 16) // batas 16 sisi pada visualizer
-    const start = Math.floor(Math.random() * n)
+    const edges = all.filter(() => rand() < 0.35).slice(0, 16) // batas 16 sisi pada visualizer
+    const start = Math.floor(rand() * n)
     const text = edges.map(([a, b]) => `${a}-${b}`).join(', ')
     const parsed = parseGraphFields({ n: String(n), edges: text, start: String(start) }, { directed: false, weighted: false, needStart: true })
     assert.equal(parsed.ok, true, parsed.error)
