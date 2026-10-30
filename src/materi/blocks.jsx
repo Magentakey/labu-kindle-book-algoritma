@@ -111,6 +111,44 @@ export function KodeBlok() {
   )
 }
 
+/**
+ * Blok pseudocode umum untuk modul selain Insertion Sort. `baris` = larik teks; indentasi ditulis dengan spasi di awal baris.
+ * `nomor` false untuk potongan tanpa penomoran. Ada tombol Salin; area kode bisa difokus keyboard untuk digulir.
+ * @param {{ judul: string, header?: string, baris: string[], nomor?: boolean, label?: string }} props
+ */
+export function PseudoBlok({ judul, header, baris, nomor = true, label }) {
+  const { show } = useToast()
+  const salin = async () => {
+    const text = [header, ...baris.map((l, i) => (nomor ? `${i + 1} ${l}` : l))].filter((x) => x !== undefined).join('\n')
+    try {
+      await navigator.clipboard.writeText(text)
+      show({ kind: 'success', message: 'Kode disalin' })
+    } catch {
+      show({ kind: 'error', message: 'Kode tidak bisa disalin di perangkat ini' })
+    }
+  }
+  return (
+    <figure className="my-5 overflow-hidden rounded-sm border border-line bg-card">
+      <figcaption className="flex flex-wrap items-center justify-between gap-3 border-b border-line px-4 py-3">
+        <span className="text-body-strong text-heading">{judul}</span>
+        <Button variant="kontrol" size="s" onClick={salin}>
+          Salin
+        </Button>
+      </figcaption>
+      {/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */}
+      <div role="region" aria-label={label ?? judul} tabIndex={0} className="overflow-x-auto bg-code-bg py-3">
+        {header && <p className="text-code px-4 whitespace-pre text-ink">{header}</p>}
+        {baris.map((l, i) => (
+          <p key={i} className="text-code flex px-4 text-ink">
+            {nomor && <span className="w-6 shrink-0 text-right text-ink-soft">{i + 1}</span>}
+            <span className={nomor ? 'whitespace-pre pl-3' : 'whitespace-pre'}>{l}</span>
+          </p>
+        ))}
+      </div>
+    </figure>
+  )
+}
+
 // ------------------------------------------------------------------ penelusuran interaktif
 /**
  * Penelusuran Insertion Sort per putaran pada 12, 10, 15, 7 (Figma: Langkah x / N). Kotak oranye = key yang sudah diletakkan,

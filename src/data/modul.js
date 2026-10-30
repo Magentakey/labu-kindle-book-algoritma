@@ -1,5 +1,5 @@
-// Daftar modul materi baru (24 modul direncanakan). Saat ini baru Modul 04 (Insertion Sort) yang sudah ditulis.
-// Sumber metadata: PDF "04 - Insertion Sort" dan desain Figma Materi.
+// Daftar modul materi baru (24 modul direncanakan). Saat ini baru Modul 01 (Konsep Dasar Algoritma) dan Modul 04 (Insertion Sort) yang sudah ditulis.
+// Sumber metadata: PDF modul, "00 - Indeks dan Peta Belajar", dan desain Figma Materi.
 
 export const TOTAL_MODUL = 24
 export const PASS_PERCENT = 70
@@ -16,7 +16,36 @@ export const sections = [
   { id: 'referensi', tab: 'Referensi' },
 ]
 
+/** Daftar tab untuk satu modul: bagian yang sama untuk semua modul, tetapi tulisan tab boleh disesuaikan lewat `m.tabs` (id bagian → teks tab). */
+export const tabsOf = (m) => sections.map((s) => (m.tabs?.[s.id] ? { ...s, tab: m.tabs[s.id] } : s))
+
 export const modul = [
+  {
+    no: 1,
+    id: '01',
+    bab: 'BAB I',
+    topik: 'DASAR ALGORITMA',
+    judul: 'Konsep Dasar Algoritma',
+    judulPanjang: 'Konsep Dasar Algoritma: Definisi, Karakteristik, Representasi, dan Struktur',
+    ringkas: 'Fondasi untuk seluruh modul: apa itu algoritma, syarat algoritma yang baik, cara menuliskannya, dan tiga struktur pembangunnya.',
+    prasyarat: [],
+    prasyaratTeks: 'Tidak ada prasyarat khusus. Modul ini adalah titik awal.',
+    materiAsal: 'PENGERTIAN ALGORITMA PEMROGRAMAN (bagian A–C)',
+    posisi: { urutan: ['01', '02', '03'], aktif: 0, catatan: 'Modul pertama. Menjadi dasar Modul 02 (Iteratif & Rekursif) dan Modul 03 (Running Time).' },
+    halaman: 14,
+    soal: 8,
+    menit: 45, // perkiraan: sekitar 3 menit per halaman, seperti Modul 04
+    pdf: 'modul-01-konsep-dasar-algoritma.pdf',
+    algoritmaId: null, // modul konsep: belum ada visualizer
+    // Struktur PDF Modul 01 (bagian 2–5 berupa pembahasan inti) dipetakan ke enam bagian yang sama dengan modul lain.
+    tabs: { algoritma: '2 Konsep', penelusuran: '3 Penulisan', analisis: '4 Penelusuran', makna: '5 Hubungan' },
+    tujuan: [
+      'Menjelaskan pengertian algoritma, program, dan pemrograman serta hubungan ketiganya.',
+      'Mengidentifikasi enam karakteristik algoritma dan mengenali algoritma yang melanggarnya.',
+      'Menuliskan algoritma dalam bentuk naratif, flowchart, dan pseudocode.',
+      'Membedakan struktur runtunan, percabangan, dan perulangan, lalu menelusuri (*trace*) algoritma sederhana langkah demi langkah.',
+    ],
+  },
   {
     no: 4,
     id: '04',
@@ -46,8 +75,8 @@ export const modul = [
 
 export const modulById = (id) => modul.find((m) => m.id === id) ?? null
 export const modulLabel = (m) => `Modul ${m.id}`
-/** Modul sebelumnya/berikutnya yang sudah tersedia (kosong bila belum ada). */
+/** Modul sebelumnya/berikutnya menurut nomor (null bila modul itu belum tersedia). Modul tidak dilompati: setelah 01 yang berikutnya adalah 02, bukan 04. */
 export const neighbors = (id) => {
-  const i = modul.findIndex((m) => m.id === id)
-  return { prev: modul[i - 1] ?? null, next: modul[i + 1] ?? null }
+  const no = modulById(id)?.no
+  return { prev: modul.find((m) => m.no === no - 1) ?? null, next: modul.find((m) => m.no === no + 1) ?? null }
 }

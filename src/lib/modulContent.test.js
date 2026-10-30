@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { parseModul } from './modulContent.js'
 import { insertionLoops, totalLoops } from './insertionLoops.js'
-import { PASS_PERCENT, modul, sections } from '../data/modul.js'
+import { PASS_PERCENT, modulById, sections } from '../data/modul.js'
 import { hitungHasil, nilaiSoal, parseAngka, soalSalah, durasi, jam, TIPE_LABEL } from './kuis.js'
 import { kuis04 } from '../content/modul/04.kuis.js'
 
@@ -106,7 +106,7 @@ test('insertionLoops: 4 keadaan, baris penelusuran seperti di PDF, dan total sam
 })
 
 test('metadata modul 04 sama dengan PDF: 11 halaman, 8 soal, prasyarat Modul 03, 5 tujuan', () => {
-  const m = modul[0]
+  const m = modulById('04')
   assert.deepEqual([m.no, m.id, m.bab, m.halaman, m.soal, m.prasyarat], [4, '04', 'BAB II', 11, 8, [3]])
   assert.equal(m.tujuan.length, 5)
   assert.equal(m.soal, kuis04.soal.length)

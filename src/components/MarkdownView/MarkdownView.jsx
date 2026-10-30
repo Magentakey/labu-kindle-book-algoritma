@@ -159,7 +159,7 @@ const modulComponents = {
     const lang = (/language-(\S+)/.exec(props.className ?? '') ?? [])[1] ?? 'text'
     return (
       <figure className="my-5 overflow-hidden rounded-sm border border-line bg-code-bg">
-        <figcaption className="text-caption border-b border-line bg-panel px-4 py-2 text-ink-soft">{lang === 'text' ? 'Keluaran' : lang === 'python' ? 'Python' : lang}</figcaption>
+        <figcaption className="text-caption border-b border-line bg-panel px-4 py-2 text-ink-soft">{lang === 'text' ? 'Keluaran' : lang === 'python' ? 'Python' : lang === 'pseudo' ? 'Pseudocode' : lang}</figcaption>
         <pre className="overflow-x-auto px-4 py-3 font-code text-[13px] leading-[22px] text-ink">
           <code>{code}</code>
         </pre>

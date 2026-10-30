@@ -1,11 +1,11 @@
 // Isi halaman Credit. Sebagian masih sementara dan ditandai "TODO tim" supaya mudah dicari dan diganti.
-// Sumber desain: Figma "Credit · konten penuh". Judul 24 modul diambil dari peta belajar di desain.
+// Sumber desain: Figma "Credit · konten penuh". Judul 24 modul dan angka koleksi dicocokkan dengan "Modul 00 · Indeks dan Peta Belajar".
 
 /** Judul singkat 24 modul (peta belajar), dikelompokkan per bab. `konsep` = modul konsep umum (pintu masuk bab). */
 export const petaBab = [
   { bab: 'Bab I', modul: [[1, 'Konsep Dasar Algoritma', true], [2, 'Iteratif dan Rekursif']] },
-  { bab: 'Bab II', modul: [[3, 'Konsep Running Time', true], [4, 'Insertion Sort'], [5, 'Pertumbuhan Fungsi'], [6, 'Notasi Asimtotik'], [7, 'Notasi Little-o dan Little-ω']] }, // TODO tim: judul 07 dipotong di desain, cocokkan dengan PDF
-  { bab: 'Bab III', modul: [[8, 'Divide and Conquer', true], [9, 'Recurrence dan Metode Master']] }, // TODO tim: judul 09 dipotong di desain, cocokkan dengan PDF
+  { bab: 'Bab II', modul: [[3, 'Konsep Running Time', true], [4, 'Insertion Sort'], [5, 'Pertumbuhan Fungsi'], [6, 'Notasi Asimtotik'], [7, 'Notasi Little-o dan Little-Omega']] }, // judul sesuai katalog di Modul 00
+  { bab: 'Bab III', modul: [[8, 'Divide and Conquer', true], [9, 'Recurrence dan Metode Master']] }, // judul sesuai katalog di Modul 00
   { bab: 'Bab IV', modul: [[10, 'Konsep Dynamic Programming', true], [11, 'Perkalian Rantai Matriks'], [12, 'Longest Common Subsequence']] },
   { bab: 'Bab V', modul: [[13, 'Konsep Algoritma Greedy', true], [14, 'Activity-Selection'], [15, 'Kode Huffman']] },
   { bab: 'Bab VI-a', modul: [[16, 'Graf dan Representasinya', true], [17, 'Breadth-First Search'], [18, 'Depth-First Search']] },
@@ -31,7 +31,7 @@ export const tim = [
 ]
 
 export const sumber = [
-  'Modul PAA: 24 modul PDF yang dikembangkan dari bahan kuliah Perancangan dan Analisis Algoritma.', // TODO tim: cantumkan jumlah halaman, soal, dan bahan kuliah bila sudah final
+  'Modul PAA: 24 modul PDF (248 halaman, 178 soal) yang dikembangkan dari 16 bahan kuliah Perancangan dan Analisis Algoritma.',
   'Cormen dkk. (2009) Introduction to Algorithms, 3rd ed. · Knuth (1997) TAOCP Vol. 1 · Sedgewick & Wayne (2011) Algorithms, 4th ed. · Dijkstra (1959).',
   'Aset: logo pixel-art dan maskot labu LABU (tim pengembang).',
   'Font: Poppins, JetBrains Mono, Silkscreen (Google Fonts, SIL Open Font License).',
@@ -47,6 +47,9 @@ export const tentang = {
     { versi: '0.3.0', teks: 'Visualizer algoritma graf, batang, tabel, garis waktu, dan Huffman.' },
   ],
 }
+
+/** Berkas PDF Modul 00 (indeks, peta belajar, katalog, dan ringkasan koreksi terhadap bahan sumber). */
+export const pdfModul00 = 'modul-00-indeks-dan-peta-belajar.pdf'
 
 /** Tab bagian di halaman Credit (urutan sama dengan urutan bagian di halaman). */
 export const creditTabs = [

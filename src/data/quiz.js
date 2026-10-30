@@ -17,9 +17,20 @@ export const tipeSoal = [
   { id: 'perhitungan', label: 'Perhitungan' },
   { id: 'benarsalah', label: 'Benar/Salah' },
   { id: 'analisis', label: 'Analisis' },
+  { id: 'rancang', label: 'Merancang' },
 ]
 
 export const daftarKuis = [
+  {
+    id: '01',
+    modul: '01',
+    judul: 'Konsep Dasar Algoritma',
+    tingkat: 'easy',
+    soal: 8,
+    menit: 8,
+    tipe: ['pilihan', 'analisis', 'benarsalah', 'penelusuran', 'rancang'],
+    thumb: 'pumpkin',
+  },
   {
     id: '04',
     modul: '04',

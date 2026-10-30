@@ -4,7 +4,7 @@ import { daftarKuis, kuisById, tingkat, tipeSoal } from '../data/quiz.js'
 import { kelompokkan, labelTerbaik, ringkasan, saring, statusKuis } from './quizList.js'
 
 const k = (attempts, passed, best) => ({ kuis: { attempts, passed, best } })
-const dua = [...daftarKuis, { id: '08', modul: '08', judul: 'Telusuri Merge Sort', tingkat: 'easy', soal: 7, menit: 5, tipe: ['pilihan'], thumb: 'tree' }]
+const dua = [kuisById('04'), { id: '08', modul: '08', judul: 'Telusuri Merge Sort', tingkat: 'easy', soal: 7, menit: 5, tipe: ['pilihan'], thumb: 'tree' }]
 
 test('data: tiap kuis punya tingkat dan jenis soal yang dikenal, dan id unik', () => {
   const tingkatIds = tingkat.map((t) => t.id)

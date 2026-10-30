@@ -34,6 +34,14 @@ const rute = [
   { nama: 'algoritma-dijkstra', path: '/algoritma/dijkstra' },
   { nama: 'algoritma-bandingkan', path: '/algoritma/bandingkan/insertion-sort/merge-sort' },
   { nama: 'materi-daftar', path: '/materi' },
+  { nama: 'materi-01', path: '/materi/01' },
+  {
+    nama: 'materi-01-flowchart',
+    path: '/materi/01',
+    siapkan: async (p) => {
+      await p.locator('svg[aria-labelledby="fc-judul fc-desc"]').scrollIntoViewIfNeeded()
+    },
+  },
   { nama: 'materi-04', path: '/materi/04' },
   {
     nama: 'materi-04-tantangan',
@@ -49,6 +57,7 @@ const rute = [
   },
   { nama: 'quiz-daftar', path: '/quiz' },
   { nama: 'quiz-intro', path: '/quiz/04' },
+  { nama: 'quiz-01-intro', path: '/quiz/01' },
   {
     nama: 'quiz-berjalan',
     path: '/quiz/04',

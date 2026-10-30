@@ -1,11 +1,12 @@
-import { Link } from 'react-router-dom'
-import { sections } from '../data/modul.js'
+import { Link, useNavigate } from 'react-router-dom'
+import { tabsOf } from '../data/modul.js'
 import { Icon, IconButton } from '../ui/index.js'
 import { cx } from '../ui/cx.js'
 import { gulirKe } from './scroll.js'
 
 /** Bar menempel di bawah header (Figma): ← Semua Materi, MODUL 04 / 24 dengan panah, tab bagian, dan garis kemajuan baca. */
 export default function ModulBar({ modul, total, aktif, baca, prev, next }) {
+  const navigate = useNavigate()
   return (
     <div className="sticky top-14 z-20 border-b border-line bg-page md:top-0">
       <div className="mx-auto flex w-full max-w-[1344px] items-center gap-3 px-4 md:px-8">
@@ -16,11 +17,11 @@ export default function ModulBar({ modul, total, aktif, baca, prev, next }) {
         </Link>
         <div className="hidden shrink-0 items-center gap-1 border-x border-line px-3 md:flex">
           <span className="text-pixel-s whitespace-nowrap text-heading">MODUL {modul.id} / {total}</span>
-          {prev ? <IconButton icon="left" label={`Modul ${prev.id}`} className="size-8" onClick={() => {}} /> : <IconButton icon="left" label="Tidak ada modul sebelumnya" className="size-8" disabled />}
-          {next ? <IconButton icon="right" label={`Modul ${next.id}`} className="size-8" onClick={() => {}} /> : <IconButton icon="right" label="Belum ada modul berikutnya" className="size-8" disabled />}
+          {prev ? <IconButton icon="left" label={`Modul ${prev.id}`} className="size-8" onClick={() => navigate(`/materi/${prev.id}`)} /> : <IconButton icon="left" label="Tidak ada modul sebelumnya" className="size-8" disabled />}
+          {next ? <IconButton icon="right" label={`Modul ${next.id}`} className="size-8" onClick={() => navigate(`/materi/${next.id}`)} /> : <IconButton icon="right" label="Belum ada modul berikutnya" className="size-8" disabled />}
         </div>
         <nav aria-label="Bagian modul" className="flex min-w-0 flex-1 gap-1 overflow-x-auto py-2 [scrollbar-width:none]">
-          {sections.map((s) => (
+          {tabsOf(modul).map((s) => (
             <button
               key={s.id}
               type="button"

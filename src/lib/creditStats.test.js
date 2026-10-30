@@ -55,14 +55,21 @@ test('ringkasProgres: kuis yang dicoba tetapi belum lulus dihitung di rata-rata,
   assert.equal(r.kuisLulus, 0)
 })
 
-test('blokBerikutnya: modul pertama yang belum selesai, modul yang terakhir dibuka, dan null bila semua selesai', () => {
-  assert.deepEqual(blokBerikutnya({}), { id: '04', judul: 'Insertion Sort', persen: 0 })
+test('blokBerikutnya: modul tersedia pertama yang belum selesai, modul yang terakhir dibuka, dan null bila semua selesai', () => {
+  assert.deepEqual(blokBerikutnya({}), { id: '01', judul: 'Konsep Dasar Algoritma', persen: 0 })
   const sedang = markRead({}, '04', 'algoritma', T)
   assert.deepEqual(blokBerikutnya(sedang), { id: '04', judul: 'Insertion Sort', persen: 13 })
   let all = {}
-  for (const s of READ_SECTIONS) all = markRead(all, '04', s, T)
-  all = recordKuis(all, '04', lulus, T)
+  for (const id of ['01', '04']) {
+    for (const s of READ_SECTIONS) all = markRead(all, id, s, T)
+    all = recordKuis(all, id, lulus, T)
+  }
   assert.equal(blokBerikutnya(all), null)
+  // 01 selesai, 04 belum disentuh: modul selesai dilewati, sarannya 04
+  let satu = {}
+  for (const s of READ_SECTIONS) satu = markRead(satu, '01', s, T)
+  satu = recordKuis(satu, '01', lulus, T)
+  assert.deepEqual(blokBerikutnya(satu), { id: '04', judul: 'Insertion Sort', persen: 0 })
 })
 
 test('sorotan: tiga keadaan dan streak hanya disebut bila 2 hari atau lebih', () => {

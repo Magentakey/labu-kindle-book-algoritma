@@ -1,11 +1,12 @@
 // Memecah teks modul menjadi bagian (section) dan blok. Format teks:
 //   @@ id | EYEBROW | Judul           awal bagian (eyebrow boleh kosong)
-//   {{kode}} {{loops}} {{kasus}} {{tantangan}}   penanda komponen khusus (satu baris sendiri)
+//   {{kode}} {{loops}} {{kasus}} {{tantangan}}   penanda komponen khusus Modul 04 (satu baris sendiri)
+//   {{pseudo:id}} {{gambar:id}}                    penanda berparameter; isinya didaftarkan di berkas blok modul (NN.blok.js)
 //   {{callout:jenis|Judul}} ... {{/callout}}      kotak catatan (jenis: benar, coba)
 
-const SLOTS = new Set(['kode', 'loops', 'kasus', 'tantangan'])
+const SLOTS = new Set(['kode', 'loops', 'kasus', 'tantangan', 'pseudo', 'gambar'])
 
-/** @returns {Array<{ id: string, eyebrow: string, judul: string, blok: Array<{ type: 'md', text: string } | { type: 'slot', name: string } | { type: 'callout', jenis: string, judul: string, text: string }> }>} */
+/** @returns {Array<{ id: string, eyebrow: string, judul: string, blok: Array<{ type: 'md', text: string } | { type: 'slot', name: string, arg?: string } | { type: 'callout', jenis: string, judul: string, text: string }> }>} */
 export function parseModul(text) {
   const sections = []
   let cur = null
@@ -38,10 +39,10 @@ export function parseModul(text) {
       callout = null
       continue
     }
-    const slot = /^\{\{(\w+)\}\}\s*$/.exec(line)
+    const slot = /^\{\{(\w+)(?::([\w-]+))?\}\}\s*$/.exec(line)
     if (slot && SLOTS.has(slot[1]) && !callout) {
       flush()
-      cur.blok.push({ type: 'slot', name: slot[1] })
+      cur.blok.push(slot[2] ? { type: 'slot', name: slot[1], arg: slot[2] } : { type: 'slot', name: slot[1] })
       continue
     }
     buf.push(line)

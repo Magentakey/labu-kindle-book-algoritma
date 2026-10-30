@@ -4,7 +4,7 @@ import { modulKonten } from '../content/modul/index.js'
 import MarkdownView from '../components/MarkdownView/MarkdownView.jsx'
 import { TOTAL_MODUL, modulById, neighbors } from '../data/modul.js'
 import { parseModul } from '../lib/modulContent.js'
-import { Callout, KasusCards, KodeBlok, LoopStepper, Tantangan } from '../materi/blocks.jsx'
+import { Callout, KasusCards, KodeBlok, LoopStepper, PseudoBlok, Tantangan } from '../materi/blocks.jsx'
 import KuisModul from '../materi/KuisModul.jsx'
 import ModulBar from '../materi/ModulBar.jsx'
 import { useScrollSpy } from '../materi/scroll.js'
@@ -41,10 +41,12 @@ function Hero({ m, offline }) {
       <h1 className="text-h1 mt-2 text-heading">{m.judulPanjang}</h1>
       <p className="text-body-l mt-3 text-ink-soft">{m.ringkas}</p>
       <div className="mt-4 flex flex-wrap items-center gap-3">
-        <Button as={Link} to={`/algoritma/${m.algoritmaId}`} variant="navigasi" icon="play">
-          Lihat di Visualizer
-        </Button>
-        <Button as="a" href={pdfUrl(m)} target="_blank" rel="noopener noreferrer" variant="navigasiGaris" icon="ext">
+        {m.algoritmaId && (
+          <Button as={Link} to={`/algoritma/${m.algoritmaId}`} variant="navigasi" icon="play">
+            Lihat di Visualizer
+          </Button>
+        )}
+        <Button as="a" href={pdfUrl(m)} target="_blank" rel="noopener noreferrer" variant={m.algoritmaId ? 'navigasiGaris' : 'navigasi'} icon="ext">
           Lihat PDF asli
           <span className="sr-only"> (membuka tab baru)</span>
         </Button>
@@ -95,13 +97,18 @@ function Hero({ m, offline }) {
   )
 }
 
-function Blok({ b, m, konten }) {
+function Blok({ b, m, konten, kustom }) {
   if (b.type === 'md') return <Md text={b.text} />
   if (b.type === 'callout') return <Callout jenis={b.jenis} judul={b.judul} text={b.text} />
   if (b.name === 'kode') return <KodeBlok />
   if (b.name === 'loops') return <LoopStepper visualizerHref={`/algoritma/${m.algoritmaId}`} />
   if (b.name === 'kasus') return <KasusCards />
   if (b.name === 'tantangan') return <Tantangan muat={konten.tantangan} />
+  if (b.name === 'pseudo') return kustom?.pseudo?.[b.arg] ? <PseudoBlok {...kustom.pseudo[b.arg]} /> : null
+  if (b.name === 'gambar') {
+    const G = kustom?.gambar?.[b.arg]
+    return G ? <G /> : null
+  }
   return null
 }
 
@@ -115,8 +122,8 @@ function Isi({ m }) {
 
   useEffect(() => {
     let batal = false
-    Promise.all([konten.teks(), konten.kuis()]).then(
-      ([teks, kuis]) => !batal && setState({ status: 'siap', bagian: parseModul(teks), kuis }),
+    Promise.all([konten.teks(), konten.kuis(), konten.blok?.() ?? null]).then(
+      ([teks, kuis, kustom]) => !batal && setState({ status: 'siap', bagian: parseModul(teks), kuis, kustom }),
       () => !batal && setState({ status: 'gagal' }),
     )
     return () => {
@@ -150,7 +157,7 @@ function Isi({ m }) {
               {s.judul}
             </h2>
             {s.blok.map((b, i) => (
-              <Blok key={i} b={b} m={m} konten={konten} />
+              <Blok key={i} b={b} m={m} konten={konten} kustom={state.kustom} />
             ))}
           </section>
         ))}
@@ -167,7 +174,7 @@ function Isi({ m }) {
               {ref.judul}
             </h2>
             {ref.blok.map((b, i) => (
-              <Blok key={i} b={b} m={m} konten={konten} />
+              <Blok key={i} b={b} m={m} konten={konten} kustom={state.kustom} />
             ))}
           </section>
         )}

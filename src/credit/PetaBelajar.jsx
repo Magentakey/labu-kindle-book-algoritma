@@ -1,10 +1,10 @@
 import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import { petaBab } from '../data/credit.js'
+import { pdfModul00, petaBab } from '../data/credit.js'
 import { modulById } from '../data/modul.js'
 import { statusSemuaModul } from '../lib/creditStats.js'
 import { useProgress } from '../materi/useProgress.js'
-import { Icon } from '../ui/index.js'
+import { Button, Icon } from '../ui/index.js'
 import { cx } from '../ui/cx.js'
 import { JudulBagian } from './Progres.jsx'
 
@@ -49,6 +49,11 @@ export default function PetaBelajar() {
       <JudulBagian id="peta" eyebrow="Peta belajar">
         Peta Belajar · 24 Modul · 8 Bab
       </JudulBagian>
+      <p className="text-body mt-2 text-ink-soft">Ikuti urutan nomor modul: setiap konsep prasyarat dibahas lebih dulu. Katalog lengkap, prasyarat, dan ringkasan koreksi terhadap bahan sumber ada di Modul 00.</p>
+      <Button as="a" href={`${import.meta.env.BASE_URL}${pdfModul00}`} target="_blank" rel="noopener noreferrer" variant="kontrol" size="s" icon="ext" className="mt-3">
+        Buka Modul 00 · Indeks dan Peta Belajar (PDF)
+        <span className="sr-only"> (membuka tab baru)</span>
+      </Button>
       <div className="mt-4 rounded-sm border border-line bg-card p-4 md:p-5">
         <ol className="space-y-3">
           {petaBab.map((b) => (

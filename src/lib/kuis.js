@@ -7,7 +7,7 @@ import { PASS_PERCENT } from '../data/modul.js'
  * - isian: satu atau beberapa kolom (angka atau pilihan), dinilai otomatis; angka boleh memakai koma desimal.
  * - mandiri (penelusuran, analisis): jawaban ditulis lalu dibandingkan dengan `kunciTeks`; pengguna menilai sendiri.
  */
-export const TIPE_LABEL = { penelusuran: 'Penelusuran', pilihan: 'Pilihan Ganda', perhitungan: 'Perhitungan', benarsalah: 'Benar/Salah', analisis: 'Analisis' }
+export const TIPE_LABEL = { penelusuran: 'Penelusuran', pilihan: 'Pilihan Ganda', perhitungan: 'Perhitungan', benarsalah: 'Benar/Salah', analisis: 'Analisis', rancang: 'Merancang' }
 
 /** "1.000" → 1000, "1,5" → 1.5, "20" → 20; null bila bukan angka. */
 export function parseAngka(text) {

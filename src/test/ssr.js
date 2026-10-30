@@ -19,9 +19,11 @@ export async function startSsr() {
   })
   /** Memuat komponen default (atau ekspor bernama) dari path relatif terhadap root proyek. */
   const load = async (path, name = 'default') => (await server.ssrLoadModule(path))[name]
+  /** Memuat seluruh modul (semua ekspor). */
+  const modul = (path) => server.ssrLoadModule(path)
   /** Merender elemen di dalam MemoryRouter pada `url`. @returns {string} HTML */
   const render = (element, url = '/') => renderToStaticMarkup(createElement(MemoryRouter, { initialEntries: [url] }, element))
-  return { load, render, createElement, close: () => server.close() }
+  return { load, modul, render, createElement, close: () => server.close() }
 }
 
 /** Menghitung kemunculan pola (RegExp global atau string) di HTML. */

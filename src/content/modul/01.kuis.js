@@ -1,0 +1,90 @@
+// Kuis Pemahaman Modul 01 (8 soal) dan kunci serta pembahasannya, dari PDF "01 - Konsep Dasar Algoritma" halaman 12 dan 13–14.
+// Teks memakai Markdown dengan rumus TeX ($...$). Soal bertanda `mandiri` dijawab dengan tulisan lalu dibandingkan dengan kunci.
+export const kuis01 = {
+  judul: 'Konsep Dasar Algoritma',
+  modul: '01',
+  soal: [
+    {
+      no: 1,
+      tipe: 'pilihan',
+      teks: 'Manakah pernyataan yang paling tepat tentang hubungan algoritma dan program?',
+      opsi: [
+        { id: 'A', teks: 'Algoritma adalah program yang sudah dikompilasi.' },
+        { id: 'B', teks: 'Satu algoritma hanya dapat diterjemahkan ke satu bahasa pemrograman.' },
+        { id: 'C', teks: 'Program adalah wujud konkret algoritma dalam suatu bahasa pemrograman.' },
+        { id: 'D', teks: 'Algoritma dan program adalah istilah yang sepenuhnya sama.' },
+      ],
+      kunci: 'C',
+      pembahasan: '**Jawaban: C.** Program adalah terjemahan algoritma ke bahasa pemrograman tertentu. Pilihan B salah karena satu algoritma dapat diterjemahkan ke banyak bahasa. Pilihan A dan D mencampuradukkan rancangan (algoritma) dengan wujudnya (program).',
+    },
+    {
+      no: 2,
+      tipe: 'analisis',
+      mandiri: true,
+      teks: 'Perhatikan langkah berikut: "1) Isi `x` dengan 10. 2) Selama `x` tidak sama dengan 0, kurangi `x` dengan 3." Karakteristik algoritma manakah yang dilanggar? Jelaskan dengan menelusuri nilai `x`.',
+      kunciTeks: 'Melanggar *finiteness*. Nilai `x` berturut-turut 10, 7, 4, 1, −2, −5, ... `x` melompati 0 dan tidak pernah sama dengan 0, sehingga perulangan tidak pernah berhenti.',
+      pembahasan: 'Melanggar ***finiteness***. Nilai `x` berturut-turut 10, 7, 4, 1, −2, −5, ... Nilai `x` melompati 0 dan tidak pernah sama dengan 0, sehingga kondisi "`x` tidak sama dengan 0" selalu benar dan perulangan tidak pernah berhenti. Perbaikannya, misalnya, mengganti kondisi menjadi "selama `x > 0`".',
+    },
+    {
+      no: 3,
+      tipe: 'benarsalah',
+      mandiri: true,
+      teks: '"Sebuah algoritma wajib memiliki minimal satu masukan." Benar atau salah? Berikan alasan dan contoh.',
+      kunciTeks: 'Salah. Algoritma memiliki nol atau lebih masukan. Contoh algoritma tanpa masukan: mencetak bilangan 1 sampai 10, atau mencetak sepuluh bilangan prima pertama.',
+      pembahasan: '**Salah.** Algoritma memiliki **nol** atau lebih masukan. Contoh algoritma tanpa masukan: mencetak bilangan 1 sampai 10, atau mencetak sepuluh bilangan prima pertama. Yang wajib minimal satu adalah keluaran.',
+    },
+    {
+      no: 4,
+      tipe: 'pilihan',
+      teks: 'Dalam konvensi pseudocode modul ini, apa perbedaan `a = b` dan `a == b`?',
+      opsi: [
+        { id: 'A', teks: 'Keduanya sama-sama memeriksa apakah `a` sama dengan `b`.' },
+        { id: 'B', teks: '`a = b` mengisi `a` dengan nilai `b`; `a == b` memeriksa kesamaan dan menghasilkan TRUE/FALSE.' },
+        { id: 'C', teks: '`a = b` memeriksa kesamaan; `a == b` mengisi nilai.' },
+        { id: 'D', teks: '`a == b` hanya dipakai di dalam perulangan `for`.' },
+      ],
+      kunci: 'B',
+      pembahasan: '**Jawaban: B.** Satu tanda sama dengan adalah pemberian nilai (*assignment*). Dua tanda sama dengan adalah perbandingan yang menghasilkan nilai logika TRUE atau FALSE, dan dipakai di dalam kondisi `if` atau `while`.',
+    },
+    {
+      no: 5,
+      tipe: 'penelusuran',
+      mandiri: true,
+      teks: 'Telusuri `BILANGAN_MAX(5, 12, 8)`. Tuliskan nilai `max` setelah setiap baris dan keluaran akhirnya. Berapa kali perintah pemberian nilai ke `max` dijalankan?',
+      kunciTeks: 'Baris 1: `max = 5`. Baris 2: $5 < 12$ TRUE, baris 3 memberi `max = 12`. Baris 4: $12 < 8$ FALSE, baris 5 dilewati. Baris 6 mengembalikan 12. Pemberian nilai ke `max` terjadi 2 kali (baris 1 dan baris 3).',
+      pembahasan: 'Baris 1: `max = 5`. Baris 2: $5 < 12$ TRUE, sehingga baris 3 memberi `max = 12`. Baris 4: $12 < 8$ FALSE, baris 5 dilewati. Baris 6 mengembalikan **12**. Pemberian nilai ke `max` terjadi **2 kali** (baris 1 dan baris 3).',
+    },
+    {
+      no: 6,
+      tipe: 'penelusuran',
+      teks: 'Jalankan `JUMLAH_n_BIL` untuk $A = [4, -2, 9, 1]$. Berapa keluarannya, berapa kali baris `for` diperiksa, dan berapa kali baris `jumlah = jumlah + A[i]` dijalankan?',
+      isian: [
+        { label: 'Keluaran', jenis: 'angka', kunci: 12 },
+        { label: 'Pemeriksaan baris for', jenis: 'angka', kunci: 5 },
+        { label: 'Eksekusi jumlah = jumlah + A[i]', jenis: 'angka', kunci: 4 },
+      ],
+      pembahasan: '(a) Nilai `jumlah` berturut-turut 0, 4, 2, 11, 12, sehingga keluarannya **12**. (b) Baris `for` diperiksa **5 kali** ($i = 1, 2, 3, 4$ bernilai benar, ditambah $i = 5$ yang menghentikan perulangan). Isi perulangan dijalankan **4 kali**. Secara umum, untuk $n$ data, baris `for` diperiksa $n + 1$ kali dan isinya dijalankan $n$ kali.',
+    },
+    {
+      no: 7,
+      tipe: 'rancang',
+      mandiri: true,
+      teks: 'Tuliskan pseudocode `BILANGAN_MIN(bil1, bil2, bil3)` yang mengembalikan bilangan terkecil dari tiga bilangan. Sebutkan struktur dasar apa saja yang kamu gunakan.',
+      kunciTeks: 'min = bil1; if (min > bil2) then min = bil2; if (min > bil3) then min = bil3; return min. Struktur: runtunan dan percabangan (dua pernyataan if). Tidak ada perulangan.',
+      pembahasan: 'Salah satu jawaban yang benar:\n\n```pseudo\nBILANGAN_MIN(bil1, bil2, bil3)\n1 min = bil1\n2 if (min > bil2)\n3     then min = bil2\n4 if (min > bil3)\n5     then min = bil3\n6 return min\n```\n\nStruktur yang digunakan: **runtunan** (langkah berurutan) dan **percabangan** (dua pernyataan `if`). Tidak ada perulangan karena jumlah bilangan tetap tiga.',
+    },
+    {
+      no: 8,
+      tipe: 'pilihan',
+      teks: 'Sebuah algoritma mengurutkan $n$ data dengan mencoba seluruh $n!$ kemungkinan susunan lalu memilih susunan yang urut. Pernyataan yang paling tepat adalah ...',
+      opsi: [
+        { id: 'A', teks: 'Algoritma ini tidak memenuhi *finiteness*.' },
+        { id: 'B', teks: 'Algoritma ini benar dan berhenti, tetapi sangat tidak efisien untuk $n$ besar.' },
+        { id: 'C', teks: 'Algoritma ini tidak memenuhi *output*.' },
+        { id: 'D', teks: 'Algoritma ini efisien karena pasti menemukan jawaban.' },
+      ],
+      kunci: 'B',
+      pembahasan: '**Jawaban: B.** Banyaknya susunan memang besar tetapi tetap terbatas, sehingga algoritma pasti berhenti (*finiteness* terpenuhi) dan menghasilkan keluaran yang benar. Masalahnya ada pada efisiensi. Untuk $n = 20$ saja, $20! \\approx 2{,}4 \\times 10^{18}$ susunan. Ini contoh bahwa algoritma yang benar dan efektif belum tentu efisien.',
+    },
+  ],
+}

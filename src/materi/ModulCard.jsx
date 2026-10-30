@@ -29,7 +29,7 @@ export default function ModulCard({ m, status, persen, offline }) {
         </div>
       </div>
       <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
-        <Chip type="prasyarat">Prasyarat: {m.prasyarat.map((p) => `Modul ${String(p).padStart(2, '0')}`).join(', ')}</Chip>
+        <Chip type="prasyarat">{m.prasyarat.length > 0 ? `Prasyarat: ${m.prasyarat.map((p) => `Modul ${String(p).padStart(2, '0')}`).join(', ')}` : 'Tanpa prasyarat'}</Chip>
         <span className="text-caption inline-flex items-center gap-1.5 text-ink-soft">
           <Icon name="file" size={14} />
           {m.halaman} hlm
