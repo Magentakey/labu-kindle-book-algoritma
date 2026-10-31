@@ -325,14 +325,15 @@ export default function KuisModul({ modul, kuis, next, lanjut, statistik }) {
   const [awal, setAwal] = useState(null)
   const [kunciKey, setKunciKey] = useState(0)
   // Fokus pindah ke bagian baru saat tahap berganti (mulai, selesai, keluar) supaya pembaca layar dan pengguna keyboard tidak tertinggal di tombol yang sudah hilang.
+  // Hanya bila tahap benar-benar berubah dari nilai sebelumnya: efek ini juga berjalan saat halaman pertama dibuka (dan dua kali di StrictMode),
+  // dan di sana fokus tidak boleh dipindah karena halaman akan tergulir ke kuis.
   const wadah = useRef(null)
-  const pertama = useRef(true)
+  const sebelumnya = useRef({ mode, kunciKey })
   useEffect(() => {
-    if (pertama.current) {
-      pertama.current = false
-      return
-    }
-    wadah.current?.focus({ preventScroll: false })
+    const prev = sebelumnya.current
+    if (prev.mode === mode && prev.kunciKey === kunciKey) return
+    sebelumnya.current = { mode, kunciKey }
+    wadah.current?.focus()
   }, [mode, kunciKey])
 
   const mulai = (subset, dariDraf = null) => {

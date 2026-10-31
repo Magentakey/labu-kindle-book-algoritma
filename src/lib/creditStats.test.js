@@ -60,16 +60,16 @@ test('blokBerikutnya: modul tersedia pertama yang belum selesai, modul yang tera
   const sedang = markRead({}, '04', 'algoritma', T)
   assert.deepEqual(blokBerikutnya(sedang), { id: '04', judul: 'Insertion Sort', persen: 13 })
   let all = {}
-  for (const id of ['01', '04']) {
+  for (const { id } of modul) {
     for (const s of READ_SECTIONS) all = markRead(all, id, s, T)
     all = recordKuis(all, id, lulus, T)
   }
-  assert.equal(blokBerikutnya(all), null)
-  // 01 selesai, 04 belum disentuh: modul selesai dilewati, sarannya 04
+  assert.equal(blokBerikutnya(all), null, 'semua modul yang tersedia selesai')
+  // modul pertama selesai, yang lain belum disentuh: modul selesai dilewati, sarannya modul tersedia berikutnya
   let satu = {}
-  for (const s of READ_SECTIONS) satu = markRead(satu, '01', s, T)
-  satu = recordKuis(satu, '01', lulus, T)
-  assert.deepEqual(blokBerikutnya(satu), { id: '04', judul: 'Insertion Sort', persen: 0 })
+  for (const s of READ_SECTIONS) satu = markRead(satu, modul[0].id, s, T)
+  satu = recordKuis(satu, modul[0].id, lulus, T)
+  assert.deepEqual(blokBerikutnya(satu), { id: modul[1].id, judul: modul[1].judul, persen: 0 })
 })
 
 test('sorotan: tiga keadaan dan streak hanya disebut bila 2 hari atau lebih', () => {

@@ -5,6 +5,8 @@
 //   npm run audit:a11y                                  (terminal 2)
 // Bila Chromium belum ada:  npx playwright-core install chromium
 // Opsi lewat variabel lingkungan: AUDIT_URL (alamat dasar), AUDIT_ONLY (potongan nama rute), CHROMIUM_PATH.
+// Jalankan juga sekali terhadap server dev (AUDIT_URL=http://127.0.0.1:5173/labu-kindle-book-algoritma/): di sana React StrictMode
+// menjalankan efek dua kali, dan pemeriksaan "terbuka di atas" menangkap efek yang diam-diam menggulir atau memindah fokus saat halaman dibuka.
 //
 // Keluar dengan kode 1 bila ada pelanggaran. axe tidak menangkap semuanya (mis. urutan fokus, kualitas teks alternatif),
 // jadi hasil bersih bukan pengganti uji manual dengan pembaca layar.
@@ -42,6 +44,7 @@ const rute = [
       await p.locator('svg[aria-labelledby="fc-judul fc-desc"]').scrollIntoViewIfNeeded()
     },
   },
+  { nama: 'materi-02', path: '/materi/02' },
   { nama: 'materi-04', path: '/materi/04' },
   {
     nama: 'materi-04-tantangan',
@@ -58,6 +61,7 @@ const rute = [
   { nama: 'quiz-daftar', path: '/quiz' },
   { nama: 'quiz-intro', path: '/quiz/04' },
   { nama: 'quiz-01-intro', path: '/quiz/01' },
+  { nama: 'quiz-02-intro', path: '/quiz/02' },
   {
     nama: 'quiz-berjalan',
     path: '/quiz/04',
@@ -92,6 +96,16 @@ for (const tema of ['light', 'dark']) {
       await page.goto(`${BASE}#${r.path}`)
       await page.waitForLoadState('networkidle')
       await page.waitForTimeout(600)
+      // Halaman yang baru dibuka harus berada di atas. Fokus boleh tetap di <body> atau dipindah ke judul <h1> (praktik umum saat pindah halaman);
+      // fokus yang pindah ke elemen lain (mis. wadah kuis di tengah halaman) biasanya ikut menggulir halaman dan dianggap masalah.
+      const awal = await page.evaluate(() => ({ y: Math.round(scrollY), fokus: document.activeElement?.tagName }))
+      const masalahAwal = awal.y > 5 ? [`halaman terbuka tergulir ${awal.y}px, seharusnya di atas`] : !['BODY', 'H1'].includes(awal.fokus) ? [`fokus pindah sendiri ke <${awal.fokus}> saat halaman dibuka`] : []
+      if (masalahAwal.length && !r.siapkan) {
+        total++
+        console.log(`GAGAL ${tema.padEnd(5)} ${r.nama}\n   - [posisi awal] ${masalahAwal[0]}`)
+        await ctx.close()
+        continue
+      }
       await r.siapkan?.(page)
       await page.waitForTimeout(300)
       await page.evaluate(axeSource)

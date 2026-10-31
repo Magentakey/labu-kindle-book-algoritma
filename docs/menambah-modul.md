@@ -1,6 +1,6 @@
 # Menambah modul materi baru
 
-Contoh yang sudah ada: Modul 04 (Insertion Sort, dengan peraga khusus) dan Modul 01 (Konsep Dasar Algoritma, modul konsep tanpa visualizer).
+Contoh yang sudah ada: Modul 04 (Insertion Sort, dengan peraga khusus), Modul 01 (Konsep Dasar Algoritma, modul konsep tanpa visualizer), dan Modul 02 (Iteratif dan Rekursif, memakai gambar dari data hitung dan visualizer Binary Search yang sudah ada).
 
 ## Berkas yang perlu dibuat atau diubah
 
@@ -37,3 +37,7 @@ Judul modul di `src/data/credit.js` (peta belajar) sudah lengkap untuk 24 modul;
 ## Tes
 
 Salin pola `src/content/modul01.test.js`: cocokkan setiap angka di tabel dan kunci kuis dengan simulasi mandiri, jalankan program contoh sungguhan (Python) dan bandingkan keluarannya, dan periksa metadata terhadap katalog di Modul 00 (halaman dan jumlah soal). Setelah itu jalankan `npm test`, `npm run build`, dan `npm run audit:a11y`.
+
+Jalankan audit juga sekali terhadap server dev (`npm run dev`, lalu `AUDIT_URL=http://127.0.0.1:5173/labu-kindle-book-algoritma/ npm run audit:a11y`). Di mode dev React StrictMode menjalankan efek dua kali, dan audit memeriksa bahwa halaman modul terbuka di atas (tidak tergulir ke kuis atau bagian lain oleh efek).
+
+Tes yang menjalankan Python (`cariPython()` di `src/test/python.js`) di-skip otomatis bila Python 3 tidak ditemukan. Di Windows nama perintahnya bisa `python` atau `py`, bukan `python3`.

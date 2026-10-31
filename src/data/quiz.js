@@ -32,6 +32,16 @@ export const daftarKuis = [
     thumb: 'pumpkin',
   },
   {
+    id: '02',
+    modul: '02',
+    judul: 'Iteratif vs Rekursif',
+    tingkat: 'easy',
+    soal: 7,
+    menit: 5,
+    tipe: ['pilihan', 'penelusuran', 'benarsalah', 'perhitungan', 'analisis'],
+    thumb: 'pumpkin',
+  },
+  {
     id: '04',
     modul: '04',
     judul: 'Telusuri Insertion Sort',

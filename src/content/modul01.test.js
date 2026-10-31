@@ -9,6 +9,7 @@ import { daftarKuis, kuisById } from '../data/quiz.js'
 import { petaBab } from '../data/credit.js'
 import { kuis01 } from './modul/01.kuis.js'
 import { pseudo } from './modul/01.pseudo.js'
+import { cariPython } from '../test/python.js'
 
 const md = readFileSync(new URL('./modul/01.md', import.meta.url), 'utf8')
 const bagian = parseModul(md)
@@ -77,8 +78,9 @@ test('metadata sama dengan katalog Modul 00: 14 halaman, 8 soal, tanpa prasyarat
   assert.equal(kuisById('01').tingkat, 'easy')
 })
 
-test('neighbors: hanya modul bernomor berurutan yang tersedia (tidak melompat dari 01 ke 04)', () => {
-  assert.deepEqual(neighbors('01'), { prev: null, next: null })
+test('neighbors: hanya modul bernomor berurutan yang tersedia (tidak melompat dari 02 ke 04)', () => {
+  assert.deepEqual(neighbors('01'), { prev: null, next: modulById('02') })
+  assert.deepEqual(neighbors('02'), { prev: modulById('01'), next: null })
   assert.deepEqual(neighbors('04'), { prev: null, next: null })
 })
 
@@ -124,8 +126,9 @@ test('Tabel 7 (JUMLAH_n_BIL untuk [20, 35, 15]) cocok dengan simulasi; for diper
 test('program Python di modul dijalankan sungguhan dan keluarannya sama dengan teks yang tercetak', (t) => {
   const kode = /```python\n([\s\S]*?)```/.exec(md)[1]
   const cetak = /```text\n([\s\S]*?)```/.exec(md)[1]
-  const r = spawnSync('python3', ['-c', kode], { encoding: 'utf8' })
-  if (r.error) return t.skip('python3 tidak tersedia di mesin ini')
+  const py = cariPython()
+  if (!py) return t.skip('Python 3 tidak ditemukan di mesin ini')
+  const r = spawnSync(py, ['-c', kode], { encoding: 'utf8' })
   assert.equal(r.status, 0, r.stderr)
   assert.equal(r.stdout.trim(), cetak.trim())
   assert.equal(cetak.trim(), '10\n9 8 4\n70')

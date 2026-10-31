@@ -47,6 +47,33 @@ export const modul = [
     ],
   },
   {
+    no: 2,
+    id: '02',
+    bab: 'BAB I',
+    topik: 'DASAR ALGORITMA',
+    judul: 'Iteratif dan Rekursif',
+    judulPanjang: 'Algoritma Iteratif dan Rekursif: Studi Kasus Binary Search',
+    ringkas: 'Dua cara mengulang pekerjaan: dengan perulangan atau dengan fungsi yang memanggil dirinya sendiri.',
+    prasyarat: [1],
+    prasyaratTeks: 'Modul 01: pseudocode, struktur percabangan dan perulangan, penelusuran algoritma.',
+    materiAsal: 'PENGERTIAN ALGORITMA PEMROGRAMAN (bagian Algoritma Iteratif dan Rekursif)',
+    posisi: { urutan: ['01', '02', '08 · 09', '12 · 18'], aktif: 1, catatan: 'Modul kedua. Konsep rekursi dipakai lagi pada Divide and Conquer (Modul 08), Recurrence (Modul 09), DFS (Modul 18), dan PRINT-LCS (Modul 12).' },
+    halaman: 12,
+    soal: 7,
+    menit: 40, // perkiraan: sekitar 3 menit per halaman, seperti Modul 04
+    pdf: 'modul-02-iteratif-dan-rekursif.pdf',
+    algoritmaId: 'binary-search',
+    // Struktur PDF: 1 Pendahuluan, 2 Iteratif dan Rekursif, 3 Binary Search, 4 Penelusuran, 5 Seberapa Cepat, 6 Kesimpulan.
+    tabs: { algoritma: '2 Iteratif & Rekursif', penelusuran: '3 Binary Search', analisis: '4 Penelusuran', makna: '5 Kecepatan' },
+    tujuan: [
+      'Membedakan pendekatan iteratif dan rekursif beserta kelebihan dan kekurangannya.',
+      'Mengidentifikasi kasus dasar (*base case*) dan kasus rekursif pada sebuah fungsi rekursif.',
+      'Menjelaskan cara kerja Binary Search serta syarat yang harus dipenuhi masukannya.',
+      'Menelusuri Binary Search versi iteratif maupun rekursif, termasuk tumpukan pemanggilan fungsi.',
+      'Menjelaskan mengapa Binary Search membutuhkan paling banyak $\\lfloor \\lg n \\rfloor + 1$ perbandingan.',
+    ],
+  },
+  {
     no: 4,
     id: '04',
     bab: 'BAB II',
