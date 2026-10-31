@@ -69,7 +69,7 @@ test('metadata sama dengan katalog Modul 00: 12 halaman, 7 soal, prasyarat Modul
   assert.equal(petaBab[0].modul[1].judul, m.judul)
   assert.ok(algoritma.some((a) => a.id === m.algoritmaId && a.viz && a.modul === 2), 'kartu Binary Search di galeri menaut ke Modul 02')
   assert.deepEqual(tabsOf(m).map((x) => x.tab), ['1 Pendahuluan', '2 Iteratif & Rekursif', '3 Binary Search', '4 Penelusuran', '5 Kecepatan', '6 Kesimpulan', 'Kuis', 'Referensi'])
-  assert.deepEqual(neighbors('02'), { prev: modulById('01'), next: null })
+  assert.deepEqual(neighbors('02'), { prev: modulById('01'), next: modulById('03') })
   assert.equal(kuisById('02').soal, 7)
   assert.equal(kuisById('02').tingkat, 'easy')
   assert.equal(kuisById('02').judul, kuis02.judul)

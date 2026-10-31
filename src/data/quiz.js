@@ -42,6 +42,16 @@ export const daftarKuis = [
     thumb: 'pumpkin',
   },
   {
+    id: '03',
+    modul: '03',
+    judul: 'Konsep Running Time',
+    tingkat: 'easy',
+    soal: 7,
+    menit: 6,
+    tipe: ['pilihan', 'perhitungan', 'benarsalah', 'analisis'],
+    thumb: 'pumpkin',
+  },
+  {
     id: '04',
     modul: '04',
     judul: 'Telusuri Insertion Sort',

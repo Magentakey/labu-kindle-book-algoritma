@@ -41,3 +41,9 @@ Salin pola `src/content/modul01.test.js`: cocokkan setiap angka di tabel dan kun
 Jalankan audit juga sekali terhadap server dev (`npm run dev`, lalu `AUDIT_URL=http://127.0.0.1:5173/labu-kindle-book-algoritma/ npm run audit:a11y`). Di mode dev React StrictMode menjalankan efek dua kali, dan audit memeriksa bahwa halaman modul terbuka di atas (tidak tergulir ke kuis atau bagian lain oleh efek).
 
 Tes yang menjalankan Python (`cariPython()` di `src/test/python.js`) di-skip otomatis bila Python 3 tidak ditemukan. Di Windows nama perintahnya bisa `python` atau `py`, bukan `python3`.
+
+## Catatan penulisan yang pernah menimbulkan masalah
+
+- **Rumus blok** ditulis `$$` di baris sendiri, rumusnya di baris berikutnya, lalu `$$` penutup. Rumus `$$...$$` dalam satu baris menjadi rumus sebaris yang tidak bisa digulir dan melebarkan halaman di HP. Rumus panjang di dalam butir daftar: pecah butirnya, tulis rumus sebagai blok yang menjorok dua spasi. Tes `modulContent.test.js` dan audit (pemeriksaan reflow 390px) menjaga hal ini.
+- **Penanda `{{callout:...}}`** hanya mengenal jenis `benar` dan `coba`. Kotak "Definisi" dan "Catatan" memakai `benar`.
+- **Soal kuis** dengan beberapa bagian yang bisa dinilai otomatis (mis. Soal 6 Modul 03) dipecah jadi `isian` (angka atau `pilih`) supaya tidak harus dinilai sendiri.

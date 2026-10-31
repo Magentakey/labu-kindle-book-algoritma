@@ -45,6 +45,7 @@ const rute = [
     },
   },
   { nama: 'materi-02', path: '/materi/02' },
+  { nama: 'materi-03', path: '/materi/03' },
   { nama: 'materi-04', path: '/materi/04' },
   {
     nama: 'materi-04-tantangan',
@@ -62,6 +63,7 @@ const rute = [
   { nama: 'quiz-intro', path: '/quiz/04' },
   { nama: 'quiz-01-intro', path: '/quiz/01' },
   { nama: 'quiz-02-intro', path: '/quiz/02' },
+  { nama: 'quiz-03-intro', path: '/quiz/03' },
   {
     nama: 'quiz-berjalan',
     path: '/quiz/04',
@@ -108,6 +110,17 @@ for (const tema of ['light', 'dark']) {
       }
       await r.siapkan?.(page)
       await page.waitForTimeout(300)
+      // Di layar HP (390px) halaman tidak boleh melebar ke samping (WCAG 1.4.10 Reflow): rumus, tabel, dan kode harus menggulir di dalam wadahnya.
+      if (!r.siapkan) {
+        await page.setViewportSize({ width: 390, height: 844 })
+        await page.waitForTimeout(300)
+        const lebar = await page.evaluate(() => ({ isi: document.documentElement.scrollWidth, layar: innerWidth }))
+        await page.setViewportSize({ width: 1280, height: 900 })
+        if (lebar.isi > lebar.layar + 1) {
+          total++
+          console.log(`GAGAL ${tema.padEnd(5)} ${r.nama}\n   - [reflow] di layar 390px halaman melebar jadi ${lebar.isi}px`)
+        }
+      }
       await page.evaluate(axeSource)
       const hasil = await page.evaluate(() => axe.run(document, { runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'] } }))
       const v = hasil.violations

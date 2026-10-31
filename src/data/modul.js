@@ -74,6 +74,32 @@ export const modul = [
     ],
   },
   {
+    no: 3,
+    id: '03',
+    bab: 'BAB II',
+    topik: 'ANALISIS RUNNING TIME',
+    judul: 'Konsep Running Time',
+    judulPanjang: 'Konsep Running Time dan Model Analisis Algoritma',
+    ringkas: 'Mengukur kecepatan algoritma tanpa stopwatch: menghitung biaya dan banyaknya eksekusi setiap langkah.',
+    prasyarat: [1],
+    prasyaratTeks: 'Modul 01: pseudocode dan struktur perulangan. Modul 02 (disarankan): penelusuran algoritma.',
+    materiAsal: 'Materi 2. ALGORITMA INSERTION SORT dan RUNNING TIME (bagian Analisis Running Time dan contoh CARI_BIL_K); PENGERTIAN ALGORITMA PEMROGRAMAN (bagian Kompleksitas Algoritma)',
+    posisi: { urutan: ['03', '04', '05 · 07'], aktif: 0, catatan: 'Konsep umum running time. Diterapkan secara khusus pada Insertion Sort (Modul 04) dan menjadi dasar Modul 05–07.' },
+    halaman: 11,
+    soal: 7,
+    menit: 35, // perkiraan: sekitar 3 menit per halaman, seperti Modul 04
+    pdf: 'modul-03-konsep-running-time.pdf',
+    algoritmaId: null, // modul konsep: belum ada visualizer
+    // Struktur PDF: 1 Pendahuluan, 2 Ukuran Masukan dan Running Time, 3 Kasus Terbaik/Terburuk/Rata-rata, 4 Tiga Contoh, 5 Orde Pertumbuhan, 6 Kesimpulan.
+    tabs: { algoritma: '2 Running Time', penelusuran: '3 Kasus', analisis: '4 Contoh', makna: '5 Orde' },
+    tujuan: [
+      'Menjelaskan arti running time $T(n)$ dan hubungannya dengan ukuran masukan $n$.',
+      'Menghitung running time dengan metode *cost* × jumlah operasi, termasuk aturan $n + 1$ untuk kepala perulangan.',
+      'Membedakan kasus terbaik, terburuk, dan rata-rata serta alasan analisis biasanya berfokus pada kasus terburuk.',
+      'Menyederhanakan fungsi running time menjadi bentuk $an + b$ atau $an^2 + bn + c$ dan mengenali orde pertumbuhannya.',
+    ],
+  },
+  {
     no: 4,
     id: '04',
     bab: 'BAB II',

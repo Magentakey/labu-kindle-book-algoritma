@@ -79,10 +79,10 @@ test('metadata sama dengan katalog Modul 00: 14 halaman, 8 soal, tanpa prasyarat
   assert.equal(kuisById('01').tingkat, 'easy')
 })
 
-test('neighbors: hanya modul bernomor berurutan yang tersedia (tidak melompat dari 02 ke 04)', () => {
+test('neighbors: hanya modul bernomor berurutan yang tersedia (01 → 02 → 03 → 04)', () => {
   assert.deepEqual(neighbors('01'), { prev: null, next: modulById('02') })
-  assert.deepEqual(neighbors('02'), { prev: modulById('01'), next: null })
-  assert.deepEqual(neighbors('04'), { prev: null, next: null })
+  assert.deepEqual(neighbors('02'), { prev: modulById('01'), next: modulById('03') })
+  assert.deepEqual(neighbors('04'), { prev: modulById('03'), next: null })
 })
 
 // ---------------------------------------------------------------- penelusuran

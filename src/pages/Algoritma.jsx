@@ -62,7 +62,7 @@ function Grup({ g, tutup, onToggle, onLama }) {
         </button>
       </h2>
       <div id={`isi-${g.id}`} inert={tutup} className={cx('grid transition-[grid-template-rows] duration-[250ms] ease-in-out', tutup ? 'grid-rows-[0fr]' : 'grid-rows-[1fr]')}>
-        <div className={cx('min-h-0 md:-m-4 md:overflow-hidden md:p-4', tutup && 'max-md:hidden')}>
+        <div className={cx('min-h-0 min-w-0 md:-m-4 md:overflow-hidden md:p-4', tutup && 'max-md:hidden')}>
           <div className={cx('-mx-4 flex snap-x items-start gap-4 overflow-x-auto px-4 pb-3 md:mx-0 md:grid md:gap-6 md:overflow-visible md:px-0 md:pb-0', cls.inner)}>
             {g.items.map((a) => (
               <Kartu key={a.id} a={a} onLama={onLama} />

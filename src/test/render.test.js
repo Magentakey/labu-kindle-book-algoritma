@@ -197,3 +197,26 @@ test('Modul 02: gambar tumpukan dan rentang dirender dengan status yang dibacaka
   assert.match(soal6, /Pseudocode/, 'blok pseudocode di dalam soal dirender dengan keterangan')
   assert.match(soal6, /FAKTORIAL\(n - 1\)/)
 })
+
+test('Modul 03: pseudocode terdaftar dan teks dirender (4 tabel, rumus, blok kode); soal 3, 5, dan 6 dirender', async () => {
+  const blok = await ssr.modul('/src/content/modul/03.blok.js')
+  assert.deepEqual(Object.keys(blok.pseudo).sort(), ['caribilk', 'jumlah', 'pasangan'])
+  const PseudoBlok = await ssr.load('/src/materi/blocks.jsx', 'PseudoBlok')
+  const html1 = ssr.render(ssr.createElement(PseudoBlok, blok.pseudo.pasangan))
+  assert.equal(hitung(html1, /w-6 shrink-0 text-right/g), 6)
+  assert.match(html1, /HITUNG_PASANGAN_SAMA\(A\)/)
+  const { readFileSync } = await import('node:fs')
+  const { parseModul } = await import('../lib/modulContent.js')
+  const Md = await ssr.load('/src/components/MarkdownView/MarkdownView.jsx')
+  const bagian = parseModul(readFileSync(new URL('../content/modul/03.md', import.meta.url), 'utf8'))
+  const html = bagian.flatMap((s) => s.blok.filter((b) => b.type === 'md' || b.type === 'callout')).map((b) => ssr.render(ssr.createElement(Md, { variant: 'modul', text: b.text }))).join('\n')
+  assert.equal(hitung(html, /<table/g), 4)
+  assert.equal(hitung(html, /<figure[^>]*>\s*<figcaption[^>]*>(?:Python|Keluaran)/g), 2)
+  assert.ok(hitung(html, /class="katex|<mjx-container|<math/g) > 20, 'banyak rumus dirender')
+  assert.doesNotMatch(html, /\{\{|@@/)
+  const kuis = (await ssr.modul('/src/content/modul/03.kuis.js')).kuis03
+  for (const no of [3, 5]) {
+    const soal = ssr.render(ssr.createElement(Md, { variant: 'modul', text: kuis.soal[no - 1].teks }))
+    assert.match(soal, /Pseudocode/, `soal ${no}`)
+  }
+})
