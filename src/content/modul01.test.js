@@ -11,7 +11,8 @@ import { kuis01 } from './modul/01.kuis.js'
 import { pseudo } from './modul/01.pseudo.js'
 import { cariPython } from '../test/python.js'
 
-const md = readFileSync(new URL('./modul/01.md', import.meta.url), 'utf8')
+// Akhir baris dinormalkan: git di Windows bisa mengubah berkas teks menjadi CRLF, dan Python di Windows mencetak CRLF.
+const md = readFileSync(new URL('./modul/01.md', import.meta.url), 'utf8').replace(/\r\n/g, '\n')
 const bagian = parseModul(md)
 const m = modulById('01')
 
@@ -130,7 +131,7 @@ test('program Python di modul dijalankan sungguhan dan keluarannya sama dengan t
   if (!py) return t.skip('Python 3 tidak ditemukan di mesin ini')
   const r = spawnSync(py, ['-c', kode], { encoding: 'utf8' })
   assert.equal(r.status, 0, r.stderr)
-  assert.equal(r.stdout.trim(), cetak.trim())
+  assert.equal(r.stdout.replace(/\r\n/g, '\n').trim(), cetak.trim())
   assert.equal(cetak.trim(), '10\n9 8 4\n70')
 })
 

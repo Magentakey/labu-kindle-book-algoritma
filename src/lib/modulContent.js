@@ -17,7 +17,7 @@ export function parseModul(text) {
     if (t && cur) cur.blok.push({ type: 'md', text: t })
     buf = []
   }
-  for (const line of text.split('\n')) {
+  for (const line of text.split(/\r?\n/)) {
     const head = /^@@\s*([\w-]+)\s*\|\s*(.*?)\s*\|\s*(.+?)\s*$/.exec(line)
     if (head && !callout) {
       flush()

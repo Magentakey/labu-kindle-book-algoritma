@@ -13,7 +13,8 @@ import { kuis02 } from './modul/02.kuis.js'
 import { jejakBinarySearch, tumpukan } from './modul/02.hitung.js'
 import { pseudo } from './modul/02.pseudo.js'
 
-const md = readFileSync(new URL('./modul/02.md', import.meta.url), 'utf8')
+// Akhir baris dinormalkan: git di Windows bisa mengubah berkas teks menjadi CRLF.
+const md = readFileSync(new URL('./modul/02.md', import.meta.url), 'utf8').replace(/\r\n/g, '\n')
 const bagian = parseModul(md)
 const m = modulById('02')
 

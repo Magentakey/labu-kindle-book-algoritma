@@ -249,3 +249,11 @@ test('draf jawaban: simpan, baca ulang, buang nomor asing, dan tahan data rusak'
   assert.equal(sudahDijawab(q3, ['', '', '', '']), false)
   assert.equal(sudahDijawab(q3, ['', '', '1', '']), true)
 })
+
+test('parseModul: akhir baris CRLF (git di Windows) menghasilkan struktur yang sama dengan LF untuk semua modul', () => {
+  for (const id of ['01', '02', '04']) {
+    const lf = readFileSync(new URL(`../content/modul/${id}.md`, import.meta.url), 'utf8').replace(/\r\n/g, '\n')
+    const crlf = lf.replace(/\n/g, '\r\n')
+    assert.deepEqual(parseModul(crlf), parseModul(lf), `modul ${id}`)
+  }
+})
