@@ -1,62 +1,13 @@
-import { useEffect, useId, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Button, Icon, Segmented, Select, Slider } from '../ui/index.js'
 import { cx } from '../ui/cx.js'
 import GrafikPertumbuhan, { Swatch } from './GrafikPertumbuhan.jsx'
 import PenjelajahShell from './PenjelajahShell.jsx'
+import { Angka, Panel } from './PenjelajahUi.jsx'
 import { angkaID, formatNilai, formatRasio, fungsi, fungsiById, rasio, rumusRasio, studiKasus, titikPotong } from './growthModel.js'
 
 // Pengaturan awal = Gambar 1 Modul 05 (n = 1..20, lg n, n, n lg n, n², 2ⁿ, sumbu tegak linier).
 const AWAL = { keys: ['lg', 'n', 'nlg', 'n2', '2n'], nMax: 20, skala: 'linear', n: 10 }
-
-function Panel({ judul, id, children, className }) {
-  return (
-    <section aria-labelledby={id} className={cx('overflow-hidden rounded-sm border border-line bg-card', className)}>
-      <h2 id={id} className="text-h3 border-b border-line px-4 py-3 text-heading">
-        {judul}
-      </h2>
-      <div className="p-4">{children}</div>
-    </section>
-  )
-}
-
-/**
- * Isian bilangan dengan validasi. Nilai hanya diteruskan ke induk bila sah; bila tidak, tampil pesan dan nilai terakhir yang sah tetap dipakai.
- * @param {{ label: string, value: number, onChange: (v: number) => void, min: number, max: number, desimal?: boolean }} props
- */
-function Angka({ label, value, onChange, min, max, desimal = false }) {
-  const uid = useId()
-  const [draft, setDraft] = useState(String(value).replace('.', ','))
-  const [salah, setSalah] = useState(false)
-  const ubah = (teks) => {
-    setDraft(teks)
-    const v = Number(teks.trim().replace(',', '.'))
-    const sah = teks.trim() !== '' && Number.isFinite(v) && v >= min && v <= max && (desimal || Number.isInteger(v))
-    setSalah(!sah)
-    if (sah) onChange(v)
-  }
-  return (
-    <div className="flex flex-col gap-1">
-      <label htmlFor={uid} className="text-caption text-ink-soft">
-        {label}
-      </label>
-      <input
-        id={uid}
-        inputMode={desimal ? 'decimal' : 'numeric'}
-        value={draft}
-        onChange={(e) => ubah(e.target.value)}
-        aria-invalid={salah}
-        aria-describedby={salah ? `${uid}-err` : undefined}
-        className={cx('text-code h-10 w-32 rounded-sm border bg-card px-3 text-ink', salah ? 'border-bad' : 'border-line')}
-      />
-      {salah && (
-        <p id={`${uid}-err`} role="alert" className="text-caption flex items-start gap-1 text-bad-text">
-          <Icon name="alert" size={14} className="mt-0.5 shrink-0" />
-          {desimal ? `Isi bilangan antara ${min} dan ${max}.` : `Isi bilangan bulat antara ${min} dan ${max}.`}
-        </p>
-      )}
-    </div>
-  )
-}
 
 function PilihFungsi({ keys, setKeys }) {
   return (

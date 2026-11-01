@@ -31,3 +31,24 @@ mjx-container[jax='SVG'] > svg { overflow: visible; min-height: 1px; min-width: 
 .math-display:focus-visible { outline: 4px solid #1c1917; outline-offset: -4px; }
 .math-display mjx-container[display='true'] { display: block; width: max-content; min-width: 100%; margin: 0; padding: 0.25rem 0; text-align: center; }
 .math-error { color: #b91c1c; background: #fee2e2; border-radius: 0.25rem; padding: 0.1rem 0.4rem; }
+
+/* Daftar pilihan <select> asli. Di mode gelap, <select> yang latarnya transparan membuat daftar muncul dengan latar terang
+   sementara teksnya tetap terang (hampir tak terbaca). Latar dan teks daftar diberi warna token secara eksplisit. */
+select {
+  color-scheme: light;
+}
+:root[data-theme='dark'] select {
+  color-scheme: dark;
+}
+select option,
+select optgroup {
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+}
+select option:checked {
+  background-color: var(--bg-selection);
+  color: var(--text-primary);
+}
+select option:disabled {
+  color: var(--text-secondary);
+}

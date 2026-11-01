@@ -45,6 +45,16 @@ const rute = [
       await p.waitForSelector('[role="alert"]')
     },
   },
+  { nama: 'penjelajah-batas', path: '/algoritma/batas-asimtotik' },
+  {
+    nama: 'penjelajah-batas-gagal',
+    path: '/algoritma/batas-asimtotik',
+    siapkan: async (p) => {
+      await p.getByLabel('Contoh').selectOption('bukan-big')
+      await p.getByLabel('c (batas atas)').fill('abc') // memunculkan pesan galat input
+      await p.waitForSelector('[role="alert"]')
+    },
+  },
   { nama: 'algoritma-bandingkan', path: '/algoritma/bandingkan/insertion-sort/merge-sort' },
   { nama: 'materi-daftar', path: '/materi' },
   { nama: 'materi-01', path: '/materi/01' },
@@ -58,6 +68,7 @@ const rute = [
   { nama: 'materi-02', path: '/materi/02' },
   { nama: 'materi-03', path: '/materi/03' },
   { nama: 'materi-05', path: '/materi/05' },
+  { nama: 'materi-06', path: '/materi/06' },
   { nama: 'materi-04', path: '/materi/04' },
   {
     nama: 'materi-04-tantangan',
@@ -77,6 +88,7 @@ const rute = [
   { nama: 'quiz-02-intro', path: '/quiz/02' },
   { nama: 'quiz-03-intro', path: '/quiz/03' },
   { nama: 'quiz-05-intro', path: '/quiz/05' },
+  { nama: 'quiz-06-intro', path: '/quiz/06' },
   {
     nama: 'quiz-berjalan',
     path: '/quiz/04',

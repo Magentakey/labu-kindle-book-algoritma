@@ -86,7 +86,20 @@ function Growth() {
   )
 }
 
-const art = { bars: Bars, tree: Tree, graph: Graph, table: Table, growth: Growth }
+/** Batas Θ / O / Ω: kurva f(n) terjepit di antara batas bawah (garis titik-strip) dan batas atas (garis strip), mulai dari garis n₀. */
+function Bound() {
+  return (
+    <g fill="none" strokeWidth="3" strokeLinecap="round">
+      <path d="M52 22 V120 H252" className="stroke-muted" strokeWidth="2" />
+      <path d="M104 24 V120" className="stroke-muted" strokeWidth="2" strokeDasharray="4 4" />
+      <path d="M52 118 C 100 100, 190 78, 248 34" className="stroke-brand-orange" strokeDasharray="8 5" />
+      <path d="M52 120 C 110 116, 190 108, 248 90" className="stroke-ok" strokeDasharray="10 4 2 4" />
+      <path d="M52 112 C 68 92, 84 96, 100 108 C 120 124, 150 92, 248 62" className="stroke-brand-blue" strokeWidth="3.5" />
+    </g>
+  )
+}
+
+const art = { bars: Bars, tree: Tree, graph: Graph, table: Table, growth: Growth, bound: Bound }
 
 /** Gambar kartu. `kind="pumpkin"` (atau jenis yang belum ada) memakai maskot labu sebagai pengganti. */
 export default function Thumb({ kind }) {

@@ -26,13 +26,14 @@ Judul modul di `src/data/credit.js` (peta belajar) sudah lengkap untuk 24 modul;
 ```
 
 - Enam id bagian yang dikenali tab dan penghitung kemajuan: `pendahuluan`, `algoritma`, `penelusuran`, `analisis`, `makna`, `kesimpulan`. Bagian dengan id lain (mis. `karakteristik`) tetap tampil, hanya tidak punya tab sendiri. Bagian `referensi` wajib ada.
+- Modul dengan lebih dari enam bagian (mis. Modul 06 punya sembilan) memakai id lain, mis. `hubungan`, `penerapan`, `berguna`, untuk bagian yang tidak punya tab. Bagian itu tetap tampil di teks dan daftar isi.
 - Tulisan tab bisa disesuaikan per modul lewat `tabs` di `src/data/modul.js` (lihat Modul 01).
 - Rumus memakai TeX (`$...$`). Blok kode memakai pagar ```` ```python ````, ```` ```text ```` (keluaran), atau ```` ```pseudo ````.
 - Penanda `{{kode}}`, `{{loops}}`, `{{kasus}}`, `{{tantangan}}` khusus Modul 04.
 
 ## Jenis soal kuis
 
-`pilihan` dan `benarsalah` (opsi + `kunci`), `perhitungan`/`penelusuran`/`analisis` dengan `isian` (angka atau pilih, dinilai otomatis), serta soal `mandiri: true` (jawaban ditulis lalu dibandingkan dengan `kunciTeks`; pengguna menilai sendiri). Jenis tambahan `rancang` untuk soal merancang algoritma.
+`pilihan` dan `benarsalah` (opsi + `kunci`), `perhitungan`/`penelusuran`/`analisis` dengan `isian` (angka atau pilih, dinilai otomatis), serta soal `mandiri: true` (jawaban ditulis lalu dibandingkan dengan `kunciTeks`; pengguna menilai sendiri). Jenis tambahan `rancang` untuk soal merancang algoritma, dan `pembuktian` untuk soal membuktikan (biasanya `mandiri`, karena konstanta yang sah tidak tunggal; bagian yang punya jawaban pasti, mis. "n₀ terkecil", dijadikan `isian`).
 
 ## Tes
 

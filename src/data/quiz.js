@@ -1,4 +1,4 @@
-// Daftar kuis di halaman Quiz. Satu kuis per modul. Saat ini baru kuis Modul 04 (Insertion Sort) yang tersedia.
+// Daftar kuis di halaman Quiz. Satu kuis per modul. Kuis ditambahkan bersama modulnya.
 // Tingkat: Easy (konsep dasar), Medium (penelusuran dan perhitungan), Hard, Complex. Sumber desain: Figma "Quiz · Daftar (grup Steam)".
 
 export const tingkat = [
@@ -17,6 +17,7 @@ export const tipeSoal = [
   { id: 'perhitungan', label: 'Perhitungan' },
   { id: 'benarsalah', label: 'Benar/Salah' },
   { id: 'analisis', label: 'Analisis' },
+  { id: 'pembuktian', label: 'Pembuktian' },
   { id: 'rancang', label: 'Merancang' },
 ]
 
@@ -70,6 +71,16 @@ export const daftarKuis = [
     menit: 7,
     tipe: ['perhitungan', 'pilihan', 'benarsalah', 'analisis'],
     thumb: 'growth',
+  },
+  {
+    id: '06',
+    modul: '06',
+    judul: 'Notasi Asimtotik Θ, O, Ω',
+    tingkat: 'medium',
+    soal: 8,
+    menit: 10,
+    tipe: ['pembuktian', 'benarsalah', 'pilihan', 'analisis'],
+    thumb: 'bound',
   },
 ]
 

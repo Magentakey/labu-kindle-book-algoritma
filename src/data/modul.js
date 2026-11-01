@@ -150,6 +150,33 @@ export const modul = [
       'Membandingkan pengaruh pemilihan algoritma dengan pengaruh kecepatan prosesor melalui perhitungan.',
     ],
   },
+  {
+    no: 6,
+    id: '06',
+    bab: 'BAB II',
+    topik: 'ANALISIS RUNNING TIME',
+    judul: 'Notasi Asimtotik',
+    judulPanjang: 'Notasi Asimtotik: Theta (Θ), Big-Oh (O), dan Omega (Ω)',
+    ringkas: 'Bahasa formal untuk menyatakan laju pertumbuhan running time: batas ketat, batas atas, dan batas bawah.',
+    prasyarat: [4, 5],
+    prasyaratTeks: 'Modul 05: bentuk-bentuk fungsi running time dan rasio pertumbuhan. Modul 04: hasil running time Insertion Sort ($an + b$ dan $an^2 + bn + c$).',
+    materiAsal: 'Materi 4. NOTASI ASIMTOTIK',
+    posisi: { urutan: ['04 · 05', '06', '07'], aktif: 1, catatan: 'Formalisasi konsep pertumbuhan dari Modul 05. Dilanjutkan dengan notasi little-o dan little-ω di Modul 07, dan dipakai di semua modul analisis berikutnya.' },
+    halaman: 11,
+    soal: 8,
+    menit: 35, // perkiraan: sekitar 3 menit per halaman, seperti Modul 04
+    pdf: 'modul-06-notasi-asimtotik.pdf',
+    algoritmaId: 'batas-asimtotik',
+    // Struktur PDF: 1 Pendahuluan, 2 Gagasan Dasar, 3 Theta, 4 Big-Oh, 5 Omega, 6 Hubungan, 7 Penerapan, 8 Mengapa Berguna, 9 Kesimpulan.
+    // Bagian 6, 7, dan 8 tidak punya tab sendiri (tab hanya enam), tetapi tetap tampil dan ada di daftar isi.
+    tabs: { algoritma: '2 Fungsi Acuan', penelusuran: '3 Theta (Θ)', analisis: '4 Big-Oh (O)', makna: '5 Omega (Ω)', kesimpulan: '9 Kesimpulan' },
+    tujuan: [
+      'Menuliskan definisi formal notasi $\\Theta$, $O$, dan $\\Omega$ serta menafsirkannya secara grafis.',
+      'Membuktikan pernyataan seperti $2n^2 - 3n + 1 = \\Theta(n^2)$ dengan mencari konstanta $c_1$, $c_2$, $c$, dan $n_0$.',
+      'Menunjukkan bahwa suatu pernyataan asimtotik salah, misalnya $n^2 \\ne O(n)$.',
+      'Menerapkan notasi asimtotik untuk menyatakan running time kasus terbaik dan terburuk suatu algoritma.',
+    ],
+  },
 ]
 
 export const modulById = (id) => modul.find((m) => m.id === id) ?? null

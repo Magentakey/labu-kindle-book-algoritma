@@ -27,7 +27,7 @@ test('galeri: id unik, modul unik dalam 1 sampai 24, naik di dalam tiap kategori
   for (const a of algoritma) {
     for (const k of ['judul', 'deskripsi', 'kompleksitas', 'paradigma', 'thumb', 'href']) assert.ok(String(a[k]).length > 0, `${a.id}.${k}`)
     assert.ok(ids.has(a.kategori), `${a.id}: kategori`)
-    assert.ok(['bars', 'tree', 'graph', 'table', 'growth', 'pumpkin'].includes(a.thumb), `${a.id}: thumb`)
+    assert.ok(['bars', 'tree', 'graph', 'table', 'growth', 'bound', 'pumpkin'].includes(a.thumb), `${a.id}: thumb`)
   }
 })
 
@@ -40,29 +40,31 @@ test('galeri: tautan sementara menunjuk ke materi lama yang punya visualizer', (
   }
 })
 
-test('galeri: dua kartu tanpa gambar memakai maskot labu (notasi asimtotik); Pertumbuhan Fungsi punya gambar grafik', () => {
-  assert.deepEqual(algoritma.filter((a) => a.thumb === 'pumpkin').map((a) => a.id), ['batas-asimtotik', 'little-o-omega'])
+test('galeri: satu kartu tanpa gambar memakai maskot labu (Little-o / ω); Pertumbuhan Fungsi dan Batas Θ / O / Ω punya gambar grafik', () => {
+  assert.deepEqual(algoritma.filter((a) => a.thumb === 'pumpkin').map((a) => a.id), ['little-o-omega'])
   assert.equal(algoritma.find((a) => a.id === 'pertumbuhan-fungsi').thumb, 'growth')
+  assert.equal(algoritma.find((a) => a.id === 'batas-asimtotik').thumb, 'bound')
 })
 
-test('galeri: 14 kartu punya visualizer baru (13 pemutar langkah + 1 penjelajah), 3 kartu Analisis masih ke materi lama', () => {
+test('galeri: 15 kartu punya visualizer baru (13 pemutar langkah + 2 penjelajah), 2 kartu Analisis masih ke materi lama', () => {
   const baru = algoritma.filter((a) => a.viz).map((a) => a.id)
   assert.deepEqual(baru.sort(), [...vizIds, ...penjelajahIds].sort(), 'daftar viz di data = konfigurasi visualizer + penjelajah')
-  assert.equal(baru.length, 14)
+  assert.equal(baru.length, 15)
   assert.ok(penjelajahIds.every((id) => !vizIds.includes(id)), 'satu id tidak dilayani dua mekanisme')
-  assert.deepEqual(algoritma.filter((a) => !a.viz).map((a) => a.kategori), ['analisis', 'analisis', 'analisis'])
+  assert.deepEqual(algoritma.filter((a) => !a.viz).map((a) => a.kategori), ['analisis', 'analisis'])
   for (const a of algoritma) assert.equal(algoritmaHref(a), a.viz ? `/algoritma/${a.id}` : a.href)
   assert.equal(algoritmaHref(algoritma.find((a) => a.id === 'dijkstra')), '/algoritma/dijkstra')
   assert.equal(algoritmaHref(algoritma.find((a) => a.id === 'insertion-sort')), '/algoritma/insertion-sort')
   assert.equal(algoritmaHref(algoritma.find((a) => a.id === 'pertumbuhan-fungsi')), '/algoritma/pertumbuhan-fungsi', 'Pertumbuhan Fungsi sudah punya penjelajah')
-  assert.equal(algoritmaHref(algoritma.find((a) => a.id === 'batas-asimtotik')), '/materi/notasi-asimtotik', 'kartu Analisis lain masih ke materi lama')
+  assert.equal(algoritmaHref(algoritma.find((a) => a.id === 'batas-asimtotik')), '/algoritma/batas-asimtotik', 'Batas Θ / O / Ω sudah punya penjelajah')
+  assert.equal(algoritmaHref(algoritma.find((a) => a.id === 'little-o-omega')), '/materi/little-o-omega', 'kartu Analisis lain masih ke materi lama')
 })
 
 test('membukaHalamanLama: tepat kartu tanpa visualizer (kartu Analisis yang belum punya penjelajah); kartu visualizer tidak', () => {
   const lama = algoritma.filter(membukaHalamanLama)
   assert.ok(lama.length > 0)
   assert.deepEqual(lama.map((a) => a.kategori), lama.map(() => 'analisis'))
-  assert.deepEqual(lama.map((a) => a.id), ['batas-asimtotik', 'little-o-omega', 'pohon-recurrence'])
+  assert.deepEqual(lama.map((a) => a.id), ['little-o-omega', 'pohon-recurrence'])
   assert.ok(algoritma.filter((a) => a.kategori === 'analisis' && !penjelajahIds.includes(a.id)).every(membukaHalamanLama))
   assert.ok(algoritma.filter((a) => a.viz).every((a) => !membukaHalamanLama(a)))
   assert.ok(lama.every((a) => algoritmaHref(a).startsWith('/materi/')))

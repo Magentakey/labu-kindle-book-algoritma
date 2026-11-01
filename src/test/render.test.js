@@ -70,7 +70,8 @@ test('Credit: modul yang tersedia bisa dibuka dari peta dan blok, modul lain buk
   const Credit = await ssr.load('/src/pages/Credit.jsx')
   const html = ssr.render(ssr.createElement(Credit), '/credit')
   assert.ok(hitung(html, /href="\/materi\/04"/g) >= 3, 'Modul 04 bisa dibuka dari blok, peta, dan bagian lain')
-  assert.equal(hitung(html, /href="\/materi\/06"/g), 0, 'modul yang belum ditulis bukan tautan')
+  assert.ok(hitung(html, /href="\/materi\/06"/g) >= 1, 'Modul 06 sudah ditulis, jadi bisa dibuka dari peta')
+  assert.equal(hitung(html, /href="\/materi\/07"/g), 0, 'modul yang belum ditulis bukan tautan')
 })
 
 test('QuizDetail: id tidak dikenal menampilkan pesan, id 04 menampilkan jejak halaman dan keadaan memuat', async () => {
