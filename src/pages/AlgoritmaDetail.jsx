@@ -1,11 +1,12 @@
-import { useEffect, useMemo, useState } from 'react'
+import { Suspense, useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { algoritma, kategori } from '../data/algoritma.js'
 import { modulById } from '../data/modul.js'
 import { traces, runTrace } from '../algorithms/traces.js'
-import { Button, Chip, ErrorState, Icon, Mascot, Select, Toggle } from '../ui/index.js'
+import { Button, Chip, ErrorState, Icon, Mascot, PageLoading, Select, Toggle } from '../ui/index.js'
 import { cx } from '../ui/cx.js'
 import CodePanel from '../viz/CodePanel.jsx'
+import { penjelajah } from '../viz/penjelajah.js'
 import { Legend } from '../viz/GraphStage.jsx'
 import StageView from '../viz/StageView.jsx'
 import { stageMeta } from '../viz/stageMeta.js'
@@ -278,11 +279,20 @@ export default function AlgoritmaDetail() {
   const { id } = useParams()
   const a = algoritma.find((x) => x.id === id)
   const cfg = vizConfig[id]
+  const Penjelajah = penjelajah[id]
   if (!a) {
     return (
       <div className="mx-auto max-w-[1344px] px-4 py-8 md:px-8">
         <ErrorState judul="Algoritma tidak ditemukan" pesan="Alamat ini tidak cocok dengan algoritma mana pun di galeri." aksi={[{ label: 'Ke galeri algoritma', onClick: () => { window.location.hash = '#/' } }]} />
       </div>
+    )
+  }
+  // Halaman interaktif non-langkah (mis. grafik pertumbuhan fungsi) dilayani penjelajah, bukan pemutar langkah.
+  if (a && Penjelajah) {
+    return (
+      <Suspense fallback={<PageLoading label="Memuat penjelajah…" />}>
+        <Penjelajah key={id} a={a} />
+      </Suspense>
     )
   }
   if (!cfg) {

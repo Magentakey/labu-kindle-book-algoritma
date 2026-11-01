@@ -124,6 +124,32 @@ export const modul = [
       'Menentukan jenis masukan yang menghasilkan kasus terbaik dan terburuk.',
     ],
   },
+  {
+    no: 5,
+    id: '05',
+    bab: 'BAB II',
+    topik: 'ANALISIS RUNNING TIME',
+    judul: 'Pertumbuhan Fungsi',
+    judulPanjang: 'Pertumbuhan Fungsi Running Time',
+    ringkas: 'Seberapa cepat waktu eksekusi membengkak ketika data bertambah, dan mengapa memilih algoritma lebih penting daripada membeli prosesor lebih cepat.',
+    prasyarat: [3, 4],
+    prasyaratTeks: 'Modul 03: running time $T(n)$ dan orde pertumbuhan. Modul 04: contoh running time linier dan kuadrat.',
+    materiAsal: 'Materi 3. PERTUMBUHAN FUNGSI RUNNING TIME; PENGERTIAN ALGORITMA PEMROGRAMAN (bagian Kompleksitas Algoritma)',
+    posisi: { urutan: ['03 · 04', '05', '06 · 07'], aktif: 1, catatan: 'Menjembatani perhitungan running time (Modul 03–04) dengan notasi asimtotik formal (Modul 06–07).' },
+    halaman: 9,
+    soal: 7,
+    menit: 30, // perkiraan: sekitar 3 menit per halaman, seperti Modul 04
+    pdf: 'modul-05-pertumbuhan-fungsi.pdf',
+    algoritmaId: 'pertumbuhan-fungsi',
+    // Struktur PDF: 1 Pendahuluan, 2 Bentuk-Bentuk Umum, 3 Rasio Pertumbuhan, 4 Studi Kasus, 5 Dari Rasio ke Notasi Asimtotik, 6 Kesimpulan.
+    tabs: { algoritma: '2 Bentuk Fungsi', penelusuran: '3 Rasio', analisis: '4 Studi Kasus', makna: '5 Asimtotik' },
+    tujuan: [
+      'Menyebutkan delapan bentuk umum fungsi running time dan mengurutkannya dari yang paling lambat tumbuh.',
+      'Menghitung rasio pertumbuhan $f(n_2)/f(n_1)$ untuk berbagai bentuk fungsi, termasuk yang memuat logaritma.',
+      'Menggunakan sifat logaritma ($\\lg x^a = a \\lg x$, perubahan basis) dalam perhitungan rasio.',
+      'Membandingkan pengaruh pemilihan algoritma dengan pengaruh kecepatan prosesor melalui perhitungan.',
+    ],
+  },
 ]
 
 export const modulById = (id) => modul.find((m) => m.id === id) ?? null

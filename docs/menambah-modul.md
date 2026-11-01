@@ -47,3 +47,13 @@ Tes yang menjalankan Python (`cariPython()` di `src/test/python.js`) di-skip oto
 - **Rumus blok** ditulis `$$` di baris sendiri, rumusnya di baris berikutnya, lalu `$$` penutup. Rumus `$$...$$` dalam satu baris menjadi rumus sebaris yang tidak bisa digulir dan melebarkan halaman di HP. Rumus panjang di dalam butir daftar: pecah butirnya, tulis rumus sebagai blok yang menjorok dua spasi. Tes `modulContent.test.js` dan audit (pemeriksaan reflow 390px) menjaga hal ini.
 - **Penanda `{{callout:...}}`** hanya mengenal jenis `benar` dan `coba`. Kotak "Definisi" dan "Catatan" memakai `benar`.
 - **Soal kuis** dengan beberapa bagian yang bisa dinilai otomatis (mis. Soal 6 Modul 03) dipecah jadi `isian` (angka atau `pilih`) supaya tidak harus dinilai sendiri.
+
+## Visualizer "penjelajah" (halaman interaktif non-langkah)
+
+Konsep yang tidak punya langkah eksekusi (mis. grafik pertumbuhan fungsi di Modul 05) tidak cocok dengan pemutar langkah. Untuk itu ada "penjelajah": halaman bebas di `/algoritma/:id`.
+
+1. Tulis model hitung murni tanpa React (contoh: `src/viz/growthModel.js`) beserta tesnya. Cocokkan angkanya dengan tabel di PDF modul.
+2. Tulis halaman (contoh: `src/viz/PenjelajahPertumbuhan.jsx`) memakai `PenjelajahShell` untuk kepala halaman. Setiap grafik wajib punya padanan tabel, nama/deskripsi (`role="img"`), dan pembeda selain warna.
+3. Daftarkan id di `src/viz/penjelajahIds.js` dan komponen lazy di `src/viz/penjelajah.js`. Di `src/data/algoritma.js` set `viz: true` pada kartunya (dan `thumb` bila perlu gambar baru di `src/ui/Thumb.jsx`).
+4. Modul yang menautkannya cukup mengisi `algoritmaId` di `src/data/modul.js`. Komponen grafik yang sama bisa dipakai ulang sebagai gambar di teks modul (lihat `05.gambar.jsx`).
+5. Tambahkan rutenya, dan keadaan interaktif yang penting, ke `scripts/a11y-audit.mjs`.

@@ -28,12 +28,23 @@ const rute = [
     nama: 'algoritma-dialog-materi-lama',
     path: '/',
     siapkan: async (p) => {
-      await p.locator('a', { hasText: 'Pertumbuhan Fungsi' }).first().click()
+      await p.locator('a', { hasText: 'Pohon Recurrence' }).first().click()
       await p.waitForSelector('dialog[open]')
     },
   },
   { nama: 'algoritma-insertion-sort', path: '/algoritma/insertion-sort' },
   { nama: 'algoritma-dijkstra', path: '/algoritma/dijkstra' },
+  { nama: 'penjelajah-pertumbuhan', path: '/algoritma/pertumbuhan-fungsi' },
+  {
+    nama: 'penjelajah-log-dan-galat',
+    path: '/algoritma/pertumbuhan-fungsi',
+    siapkan: async (p) => {
+      await klik(p, /Logaritmik/)
+      for (const lbl of ['1', 'n³', 'n!']) await p.locator('[aria-label="Fungsi yang ditampilkan"] button', { hasText: lbl }).first().click()
+      await p.getByLabel('n₂ (ukuran baru)').fill('abc') // memunculkan pesan galat input
+      await p.waitForSelector('[role="alert"]')
+    },
+  },
   { nama: 'algoritma-bandingkan', path: '/algoritma/bandingkan/insertion-sort/merge-sort' },
   { nama: 'materi-daftar', path: '/materi' },
   { nama: 'materi-01', path: '/materi/01' },
@@ -46,6 +57,7 @@ const rute = [
   },
   { nama: 'materi-02', path: '/materi/02' },
   { nama: 'materi-03', path: '/materi/03' },
+  { nama: 'materi-05', path: '/materi/05' },
   { nama: 'materi-04', path: '/materi/04' },
   {
     nama: 'materi-04-tantangan',
@@ -64,6 +76,7 @@ const rute = [
   { nama: 'quiz-01-intro', path: '/quiz/01' },
   { nama: 'quiz-02-intro', path: '/quiz/02' },
   { nama: 'quiz-03-intro', path: '/quiz/03' },
+  { nama: 'quiz-05-intro', path: '/quiz/05' },
   {
     nama: 'quiz-berjalan',
     path: '/quiz/04',

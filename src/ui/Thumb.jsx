@@ -74,7 +74,19 @@ function Table() {
   )
 }
 
-const art = { bars: Bars, tree: Tree, graph: Graph, table: Table }
+/** Grafik pertumbuhan fungsi: sumbu dan tiga kurva (lg n, n lg n, n²) dengan pola garis berbeda. */
+function Growth() {
+  return (
+    <g fill="none" strokeWidth="3" strokeLinecap="round">
+      <path d="M52 22 V120 H252" className="stroke-muted" strokeWidth="2" />
+      <path d="M52 120 C 110 96, 170 88, 248 84" className="stroke-brand-blue" />
+      <path d="M52 120 C 120 112, 190 70, 248 38" className="stroke-ok" strokeDasharray="8 5" />
+      <path d="M52 120 C 150 118, 205 80, 232 26" className="stroke-brand-orange" />
+    </g>
+  )
+}
+
+const art = { bars: Bars, tree: Tree, graph: Graph, table: Table, growth: Growth }
 
 /** Gambar kartu. `kind="pumpkin"` (atau jenis yang belum ada) memakai maskot labu sebagai pengganti. */
 export default function Thumb({ kind }) {

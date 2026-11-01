@@ -251,7 +251,7 @@ test('draf jawaban: simpan, baca ulang, buang nomor asing, dan tahan data rusak'
 })
 
 test('parseModul: akhir baris CRLF (git di Windows) menghasilkan struktur yang sama dengan LF untuk semua modul', () => {
-  for (const id of ['01', '02', '03', '04']) {
+  for (const id of ['01', '02', '03', '04', '05']) {
     const lf = readFileSync(new URL(`../content/modul/${id}.md`, import.meta.url), 'utf8').replace(/\r\n/g, '\n')
     const crlf = lf.replace(/\n/g, '\r\n')
     assert.deepEqual(parseModul(crlf), parseModul(lf), `modul ${id}`)
@@ -259,7 +259,7 @@ test('parseModul: akhir baris CRLF (git di Windows) menghasilkan struktur yang s
 })
 
 test('teks modul: rumus blok ditulis dengan $$ di baris sendiri (rumus satu baris jadi rumus sebaris yang tidak bisa digulir dan melebarkan halaman di HP)', () => {
-  for (const id of ['01', '02', '03', '04']) {
+  for (const id of ['01', '02', '03', '04', '05']) {
     const teks = readFileSync(new URL(`../content/modul/${id}.md`, import.meta.url), 'utf8').replace(/\r\n/g, '\n')
     const salah = teks.split('\n').filter((l) => /^\$\$.+\$\$\s*$/.test(l))
     assert.deepEqual(salah, [], `modul ${id}: tulis $$ dan rumusnya di baris terpisah`)
