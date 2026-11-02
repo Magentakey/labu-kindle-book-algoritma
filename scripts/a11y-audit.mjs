@@ -80,6 +80,7 @@ const rute = [
   { nama: 'materi-05', path: '/materi/05' },
   { nama: 'materi-06', path: '/materi/06' },
   { nama: 'materi-07', path: '/materi/07' },
+  { nama: 'materi-08', path: '/materi/08' },
   { nama: 'materi-04', path: '/materi/04' },
   {
     nama: 'materi-04-tantangan',
@@ -101,6 +102,7 @@ const rute = [
   { nama: 'quiz-05-intro', path: '/quiz/05' },
   { nama: 'quiz-06-intro', path: '/quiz/06' },
   { nama: 'quiz-07-intro', path: '/quiz/07' },
+  { nama: 'quiz-08-intro', path: '/quiz/08' },
   {
     nama: 'quiz-berjalan',
     path: '/quiz/04',

@@ -204,6 +204,33 @@ export const modul = [
       'Menggunakan uji limit (termasuk aturan L\'Hôpital) untuk mengurutkan fungsi-fungsi pertumbuhan.',
     ],
   },
+  {
+    no: 8,
+    id: '08',
+    bab: 'BAB III',
+    topik: 'DIVIDE AND CONQUER DAN RECURRENCE',
+    judul: 'Divide and Conquer',
+    judulPanjang: 'Paradigma Divide and Conquer dan Merge Sort',
+    ringkas: 'Memecah masalah menjadi submasalah, menyelesaikannya secara rekursif, lalu menggabungkan hasilnya.',
+    prasyarat: [2, 4, 6],
+    prasyaratTeks: 'Modul 02: rekursi dan call stack. Modul 04: Insertion Sort (sebagai pembanding). Modul 06: notasi Θ.',
+    materiAsal: 'Materi 6. Algoritma Divide and Conquer',
+    posisi: { urutan: ['06 · 07', '08', '09'], aktif: 1, catatan: 'Paradigma perancangan pertama. Recurrence yang dihasilkan diselesaikan secara formal di Modul 09 (Metode Master).' },
+    halaman: 12,
+    soal: 8,
+    menit: 40, // perkiraan: sekitar 3 menit per halaman, seperti Modul 04
+    pdf: 'modul-08-divide-and-conquer-merge-sort.pdf',
+    algoritmaId: 'merge-sort',
+    // Struktur PDF: 1 Pendahuluan, 2 Paradigma, 3 Algoritma, 4 Penelusuran, 5 Analisis Running Time, 6 Perbandingan, 7 Kesimpulan.
+    // Bagian 2 (Paradigma) tidak punya tab sendiri (tab hanya enam), tetapi tetap tampil dan ada di daftar isi.
+    tabs: { algoritma: '3 Algoritma', penelusuran: '4 Penelusuran', analisis: '5 Recurrence', makna: '6 vs Insertion Sort', kesimpulan: '7 Kesimpulan' },
+    tujuan: [
+      'Menjelaskan tiga tahap paradigma Divide and Conquer: divide, conquer, combine.',
+      'Menjelaskan cara kerja MERGE_SORT dan prosedur MERGE baris demi baris.',
+      'Menelusuri Merge Sort secara lengkap, termasuk urutan pemanggilan rekursif dan proses penggabungan.',
+      'Menurunkan bentuk recurrence $T(n) = 2T(n/2) + \\Theta(n)$ dan menjelaskan secara intuitif mengapa hasilnya $\\Theta(n \\lg n)$.',
+    ],
+  },
 ]
 
 export const modulById = (id) => modul.find((m) => m.id === id) ?? null
