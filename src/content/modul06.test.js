@@ -71,7 +71,7 @@ test('metadata sama dengan PDF dan katalog; penjelajah terhubung dua arah', () =
   assert.equal(m.tujuan.length, 4)
   assert.equal(petaBab[1].modul[3].judul, m.judul)
   assert.deepEqual(tabsOf(m).map((x) => x.tab), ['1 Pendahuluan', '2 Fungsi Acuan', '3 Theta (Θ)', '4 Big-Oh (O)', '5 Omega (Ω)', '9 Kesimpulan', 'Kuis', 'Referensi'])
-  assert.deepEqual(neighbors('06'), { prev: modulById('05'), next: null })
+  assert.deepEqual(neighbors('06'), { prev: modulById('05'), next: modulById('07') })
   assert.equal(neighbors('05').next, m)
   assert.equal(m.pdf, 'modul-06-notasi-asimtotik.pdf')
   assert.ok(readFileSync(new URL('../../public/' + m.pdf, import.meta.url)).subarray(0, 4).toString() === '%PDF')

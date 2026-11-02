@@ -99,7 +99,20 @@ function Bound() {
   )
 }
 
-const art = { bars: Bars, tree: Tree, graph: Graph, table: Table, growth: Growth, bound: Bound }
+/** Little-o / ω: rasio f/g menurun menuju 0 (little-o), mendatar (Θ), atau menaik (little-ω); garis putus-putus = rasio 1. */
+function Limit() {
+  return (
+    <g fill="none" strokeWidth="3" strokeLinecap="round">
+      <path d="M52 22 V120 H252" className="stroke-muted" strokeWidth="2" />
+      <path d="M52 71 H252" className="stroke-muted" strokeWidth="2" strokeDasharray="4 4" />
+      <path d="M52 40 C 100 64, 170 100, 248 112" className="stroke-brand-blue" />
+      <path d="M52 74 H248" className="stroke-ok" strokeDasharray="10 4 2 4" />
+      <path d="M52 108 C 110 100, 180 62, 248 28" className="stroke-brand-orange" strokeDasharray="8 5" />
+    </g>
+  )
+}
+
+const art = { bars: Bars, tree: Tree, graph: Graph, table: Table, growth: Growth, bound: Bound, limit: Limit }
 
 /** Gambar kartu. `kind="pumpkin"` (atau jenis yang belum ada) memakai maskot labu sebagai pengganti. */
 export default function Thumb({ kind }) {

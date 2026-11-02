@@ -4,4 +4,5 @@ import { lazy } from 'react'
 export const penjelajah = {
   'pertumbuhan-fungsi': lazy(() => import('./PenjelajahPertumbuhan.jsx')),
   'batas-asimtotik': lazy(() => import('./PenjelajahBatas.jsx')),
+  'little-o-omega': lazy(() => import('./PenjelajahLimit.jsx')),
 }
