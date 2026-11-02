@@ -49,7 +49,7 @@ test('metadata sama dengan PDF dan katalog; visualizer Merge Sort terhubung dua 
   assert.equal(m.tujuan.length, 4)
   assert.equal(petaBab[2].modul[0].judul, m.judul)
   assert.deepEqual(tabsOf(m).map((x) => x.tab), ['1 Pendahuluan', '3 Algoritma', '4 Penelusuran', '5 Recurrence', '6 vs Insertion Sort', '7 Kesimpulan', 'Kuis', 'Referensi'])
-  assert.deepEqual(neighbors('08'), { prev: modulById('07'), next: null })
+  assert.deepEqual(neighbors('08'), { prev: modulById('07'), next: modulById('09') })
   assert.equal(neighbors('07').next, m)
   assert.ok(readFileSync(new URL('../../public/' + m.pdf, import.meta.url)).subarray(0, 4).toString() === '%PDF')
   assert.ok(penjelajahIds.includes(m.algoritmaId) || algoritma.some((a) => a.id === m.algoritmaId), 'algoritmaId menunjuk visualizer yang ada')

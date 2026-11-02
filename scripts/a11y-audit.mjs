@@ -65,6 +65,16 @@ const rute = [
       await p.waitForSelector('[role="alert"]')
     },
   },
+  { nama: 'penjelajah-pohon', path: '/algoritma/pohon-recurrence' },
+  {
+    nama: 'penjelajah-pohon-celah',
+    path: '/algoritma/pohon-recurrence',
+    siapkan: async (p) => {
+      await p.getByLabel('Contoh').first().selectOption('celah') // celah antara kasus 2 dan 3
+      await p.getByLabel('a (banyak submasalah)').fill('abc') // memunculkan pesan galat input
+      await p.waitForSelector('[role="alert"]')
+    },
+  },
   { nama: 'algoritma-bandingkan', path: '/algoritma/bandingkan/insertion-sort/merge-sort' },
   { nama: 'materi-daftar', path: '/materi' },
   { nama: 'materi-01', path: '/materi/01' },
@@ -81,6 +91,7 @@ const rute = [
   { nama: 'materi-06', path: '/materi/06' },
   { nama: 'materi-07', path: '/materi/07' },
   { nama: 'materi-08', path: '/materi/08' },
+  { nama: 'materi-09', path: '/materi/09' },
   { nama: 'materi-04', path: '/materi/04' },
   {
     nama: 'materi-04-tantangan',
@@ -103,6 +114,7 @@ const rute = [
   { nama: 'quiz-06-intro', path: '/quiz/06' },
   { nama: 'quiz-07-intro', path: '/quiz/07' },
   { nama: 'quiz-08-intro', path: '/quiz/08' },
+  { nama: 'quiz-09-intro', path: '/quiz/09' },
   {
     nama: 'quiz-berjalan',
     path: '/quiz/04',

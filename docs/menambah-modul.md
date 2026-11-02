@@ -58,3 +58,9 @@ Konsep yang tidak punya langkah eksekusi (mis. grafik pertumbuhan fungsi di Modu
 3. Daftarkan id di `src/viz/penjelajahIds.js` dan komponen lazy di `src/viz/penjelajah.js`. Di `src/data/algoritma.js` set `viz: true` pada kartunya (dan `thumb` bila perlu gambar baru di `src/ui/Thumb.jsx`).
 4. Modul yang menautkannya cukup mengisi `algoritmaId` di `src/data/modul.js`. Komponen grafik yang sama bisa dipakai ulang sebagai gambar di teks modul (lihat `05.gambar.jsx`).
 5. Tambahkan rutenya, dan keadaan interaktif yang penting, ke `scripts/a11y-audit.mjs`.
+
+## Teks polos dan teks TeX
+
+- Dirender sebagai **teks biasa** (tanpa TeX, jadi tidak boleh memuat `$` atau `\`): `judul`, `judulPanjang`, `ringkas`, dan `prasyaratTeks` di `src/data/modul.js`, serta **judul callout** (`{{callout:benar|Judul}}`). Pakai simbol Unicode (Θ, ², √, ≤).
+- Dirender sebagai **Markdown dengan TeX**: isi teks modul (`NN.md`), judul sub-bagian `###`, `tujuan`, dan teks soal/pembahasan kuis.
+- Tes `modulNN.test.js` menjaga ini supaya tidak muncul `$\Theta$` mentah di layar.

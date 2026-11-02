@@ -112,7 +112,19 @@ function Limit() {
   )
 }
 
-const art = { bars: Bars, tree: Tree, graph: Graph, table: Table, growth: Growth, bound: Bound, limit: Limit }
+/** Pohon Recurrence: biaya tiap tingkat sebagai batang (a^i simpul demi tingkat); batang terpanjang = tingkat yang mendominasi. */
+function Levels() {
+  return (
+    <g strokeWidth="0" rx="3">
+      <rect x="52" y="22" width="60" height="16" rx="3" className="fill-brand-blue" />
+      <rect x="52" y="46" width="96" height="16" rx="3" className="fill-brand-blue" />
+      <rect x="52" y="70" width="140" height="16" rx="3" className="fill-brand-blue" />
+      <rect x="52" y="94" width="198" height="16" rx="3" className="fill-brand-orange" />
+    </g>
+  )
+}
+
+const art = { bars: Bars, tree: Tree, graph: Graph, table: Table, growth: Growth, bound: Bound, limit: Limit, levels: Levels }
 
 /** Gambar kartu. `kind="pumpkin"` (atau jenis yang belum ada) memakai maskot labu sebagai pengganti. */
 export default function Thumb({ kind }) {

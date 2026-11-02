@@ -231,6 +231,32 @@ export const modul = [
       'Menurunkan bentuk recurrence $T(n) = 2T(n/2) + \\Theta(n)$ dan menjelaskan secara intuitif mengapa hasilnya $\\Theta(n \\lg n)$.',
     ],
   },
+  {
+    no: 9,
+    id: '09',
+    bab: 'BAB III',
+    topik: 'DIVIDE AND CONQUER DAN RECURRENCE',
+    judul: 'Recurrence dan Metode Master',
+    judulPanjang: 'Recurrence dan Metode Master',
+    ringkas: 'Menentukan notasi asimtotik running time algoritma rekursif berbentuk T(n) = aT(n/b) + f(n) secara cepat dan sistematis.',
+    prasyarat: [6, 7, 8],
+    prasyaratTeks: 'Modul 06–07: notasi Θ, O, Ω, dan perbandingan secara polinomial. Modul 08: recurrence Merge Sort dan pohon rekursi.',
+    materiAsal: 'Materi 7. Recurrence Metode Master',
+    posisi: { urutan: ['07 · 08', '09', '10'], aktif: 1, catatan: 'Alat analisis untuk algoritma Divide and Conquer (Modul 08). Menutup Bab III sebelum masuk ke Dynamic Programming.' },
+    halaman: 10,
+    soal: 8,
+    menit: 35, // perkiraan: sekitar 3 menit per halaman, seperti Modul 04
+    pdf: 'modul-09-recurrence-metode-master.pdf',
+    algoritmaId: 'pohon-recurrence',
+    // Struktur PDF: 1 Pendahuluan, 2 Recurrence, 3 Metode Master, 4 Contoh, 5 Batasan, 6 Kesimpulan: tepat enam bagian untuk enam tab.
+    tabs: { algoritma: '2 Recurrence', penelusuran: '3 Metode Master', analisis: '4 Contoh', makna: '5 Batasan', kesimpulan: '6 Kesimpulan' },
+    tujuan: [
+      'Menjelaskan arti recurrence dan makna parameter $a$, $b$, dan $f(n)$ pada $T(n) = aT(n/b) + f(n)$.',
+      'Menyebutkan tiga metode penyelesaian recurrence dan gagasan dasar masing-masing.',
+      'Menerapkan tiga kasus Metode Master, termasuk memeriksa syarat $\\varepsilon$ dan syarat keteraturan pada kasus 3.',
+      'Mengenali recurrence yang tidak dapat diselesaikan dengan Metode Master.',
+    ],
+  },
 ]
 
 export const modulById = (id) => modul.find((m) => m.id === id) ?? null
