@@ -6,4 +6,5 @@ export const penjelajah = {
   'batas-asimtotik': lazy(() => import('./PenjelajahBatas.jsx')),
   'little-o-omega': lazy(() => import('./PenjelajahLimit.jsx')),
   'pohon-recurrence': lazy(() => import('./PenjelajahPohon.jsx')),
+  'konsep-dp': lazy(() => import('./PenjelajahDP.jsx')),
 }

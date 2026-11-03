@@ -75,6 +75,16 @@ const rute = [
       await p.waitForSelector('[role="alert"]')
     },
   },
+  { nama: 'penjelajah-dp', path: '/algoritma/konsep-dp' },
+  {
+    nama: 'penjelajah-dp-pohon',
+    path: '/algoritma/konsep-dp',
+    siapkan: async (p) => {
+      await p.getByLabel('n (0 sampai 200)').fill('5') // memunculkan pohon pemanggilan
+      await p.getByLabel('n matriks (1 sampai 40)').fill('abc') // memunculkan pesan galat input
+      await p.waitForSelector('[role="alert"]')
+    },
+  },
   { nama: 'algoritma-bandingkan', path: '/algoritma/bandingkan/insertion-sort/merge-sort' },
   { nama: 'materi-daftar', path: '/materi' },
   { nama: 'materi-01', path: '/materi/01' },
@@ -92,6 +102,7 @@ const rute = [
   { nama: 'materi-07', path: '/materi/07' },
   { nama: 'materi-08', path: '/materi/08' },
   { nama: 'materi-09', path: '/materi/09' },
+  { nama: 'materi-10', path: '/materi/10' },
   { nama: 'materi-04', path: '/materi/04' },
   {
     nama: 'materi-04-tantangan',
@@ -115,6 +126,7 @@ const rute = [
   { nama: 'quiz-07-intro', path: '/quiz/07' },
   { nama: 'quiz-08-intro', path: '/quiz/08' },
   { nama: 'quiz-09-intro', path: '/quiz/09' },
+  { nama: 'quiz-10-intro', path: '/quiz/10' },
   {
     nama: 'quiz-berjalan',
     path: '/quiz/04',

@@ -7,11 +7,11 @@ import { vizIds } from '../viz/vizConfig.js'
 
 const materials = JSON.parse(readFileSync(new URL('../content/materials.json', import.meta.url), 'utf8'))
 
-test('galeri: 17 algoritma di 8 kategori, jumlah per kategori sama dengan desain', () => {
-  assert.equal(algoritma.length, 17)
+test('galeri: 18 algoritma di 8 kategori (17 dari desain + Konsep DP untuk Modul 10)', () => {
+  assert.equal(algoritma.length, 18)
   assert.equal(kategori.length, 8)
   const count = Object.fromEntries(kategori.map((k) => [k.id, algoritma.filter((a) => a.kategori === k.id).length]))
-  assert.deepEqual(count, { pencarian: 1, sorting: 2, analisis: 4, dp: 2, greedy: 2, graf: 2, mst: 2, 'shortest-path': 2 })
+  assert.deepEqual(count, { pencarian: 1, sorting: 2, analisis: 4, dp: 3, greedy: 2, graf: 2, mst: 2, 'shortest-path': 2 })
 })
 
 test('galeri: id unik, modul unik dalam 1 sampai 24, naik di dalam tiap kategori, dan semua kolom terisi', () => {
@@ -31,9 +31,9 @@ test('galeri: id unik, modul unik dalam 1 sampai 24, naik di dalam tiap kategori
   }
 })
 
-test('galeri: tautan sementara menunjuk ke materi lama yang punya visualizer', () => {
+test('galeri: kartu tanpa visualizer baru (bila ada) menunjuk ke materi lama yang punya visualizer', () => {
   const byId = Object.fromEntries(materials.map((m) => [m.id, m]))
-  for (const a of algoritma) {
+  for (const a of algoritma.filter((x) => !x.viz)) {
     const m = byId[a.href.replace('/materi/', '')]
     assert.ok(m, `${a.id}: materi ${a.href} tidak ada`)
     assert.ok(m.visualizer, `${a.id}: materi lama tanpa visualizer`)
@@ -47,10 +47,10 @@ test('galeri: tidak ada lagi kartu yang memakai maskot labu; tiga kartu Analisis
   assert.equal(algoritma.find((a) => a.id === 'batas-asimtotik').thumb, 'bound')
 })
 
-test('galeri: semua 17 kartu punya visualizer baru (13 pemutar langkah + 4 penjelajah), tidak ada lagi yang membuka materi lama', () => {
+test('galeri: semua 18 kartu punya visualizer baru (13 pemutar langkah + 5 penjelajah), tidak ada lagi yang membuka materi lama', () => {
   const baru = algoritma.filter((a) => a.viz).map((a) => a.id)
   assert.deepEqual(baru.sort(), [...vizIds, ...penjelajahIds].sort(), 'daftar viz di data = konfigurasi visualizer + penjelajah')
-  assert.equal(baru.length, 17)
+  assert.equal(baru.length, 18)
   assert.ok(penjelajahIds.every((id) => !vizIds.includes(id)), 'satu id tidak dilayani dua mekanisme')
   assert.deepEqual(algoritma.filter((a) => !a.viz), [])
   for (const a of algoritma) assert.equal(algoritmaHref(a), a.viz ? `/algoritma/${a.id}` : a.href)

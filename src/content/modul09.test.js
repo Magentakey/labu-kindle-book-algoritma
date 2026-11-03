@@ -50,7 +50,7 @@ test('metadata sama dengan PDF dan katalog; penjelajah Pohon Recurrence terhubun
   assert.equal(m.tujuan.length, 4)
   assert.equal(petaBab[2].modul[1].judul, m.judul)
   assert.deepEqual(tabsOf(m).map((x) => x.tab), ['1 Pendahuluan', '2 Recurrence', '3 Metode Master', '4 Contoh', '5 Batasan', '6 Kesimpulan', 'Kuis', 'Referensi'])
-  assert.deepEqual(neighbors('09'), { prev: modulById('08'), next: null })
+  assert.deepEqual(neighbors('09'), { prev: modulById('08'), next: modulById('10') })
   assert.equal(neighbors('08').next, m)
   assert.ok(readFileSync(new URL('../../public/' + m.pdf, import.meta.url)).subarray(0, 4).toString() === '%PDF')
   assert.equal(m.algoritmaId, 'pohon-recurrence')

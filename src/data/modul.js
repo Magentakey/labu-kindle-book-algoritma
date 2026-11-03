@@ -257,6 +257,34 @@ export const modul = [
       'Mengenali recurrence yang tidak dapat diselesaikan dengan Metode Master.',
     ],
   },
+  {
+    no: 10,
+    id: '10',
+    bab: 'BAB IV',
+    topik: 'DYNAMIC PROGRAMMING',
+    judul: 'Konsep Dynamic Programming',
+    judulPanjang: 'Konsep Dynamic Programming',
+    ringkas: 'Menyelesaikan masalah optimasi dengan menyimpan solusi submasalah agar tidak dihitung berulang kali.',
+    prasyarat: [2, 8, 5, 6],
+    prasyaratTeks: 'Modul 02: rekursi. Modul 08: paradigma Divide and Conquer. Modul 05–06: notasi asimtotik dan pertumbuhan eksponensial.',
+    materiAsal: 'Materi 8 DYNAMIC PROGRAMMING Perkalian Rantai Matriks (bagian pengantar Dynamic Programming)',
+    posisi: { urutan: ['08 · 09', '10', '11 · 12'], aktif: 1, catatan: 'Konsep umum Bab IV. Diterapkan secara khusus pada Perkalian Rantai Matriks (Modul 11) dan LCS (Modul 12).' },
+    halaman: 9,
+    soal: 7,
+    menit: 30, // perkiraan: sekitar 3 menit per halaman, seperti Modul 04
+    pdf: 'modul-10-konsep-dynamic-programming.pdf',
+    algoritmaId: 'konsep-dp',
+    // Struktur PDF: 1 Pendahuluan, 2 Masalah Optimasi, 3 Dua Ciri, 4 Empat Langkah, 5 Top-down dan Bottom-up, 6 Running Time, 7 Kesimpulan.
+    // Bagian 2 tidak punya tab sendiri (tab hanya enam), tetapi tetap tampil dan ada di daftar isi.
+    tabs: { algoritma: '3 Dua Ciri', penelusuran: '4 Empat Langkah', analisis: '5 Top-down & Bottom-up', makna: '6 Running Time', kesimpulan: '7 Kesimpulan' },
+    tujuan: [
+      'Menjelaskan jenis masalah yang cocok diselesaikan dengan Dynamic Programming (masalah optimasi).',
+      'Menjelaskan dua ciri utama: *optimal substructure* dan *overlapping subproblems*.',
+      'Menerapkan empat langkah Dynamic Programming pada contoh sederhana.',
+      'Membedakan pendekatan *top-down* (memoization) dan *bottom-up* (tabel).',
+      'Membedakan Dynamic Programming dari Divide and Conquer dan menghitung running time-nya.',
+    ],
+  },
 ]
 
 export const modulById = (id) => modul.find((m) => m.id === id) ?? null
