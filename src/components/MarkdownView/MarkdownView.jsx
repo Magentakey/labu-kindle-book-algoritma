@@ -235,7 +235,7 @@ function WithMath(props) {
 export default function MarkdownView({ text, idPrefix, inline = false, variant }) {
   if (!hasMath(text)) return <Rendered text={text} idPrefix={idPrefix} inline={inline} math={null} variant={variant} />
   return (
-    <Suspense fallback={<p role="status" className="my-3 text-stone-700">Memuat rumus…</p>}>
+    <Suspense fallback={<p role="status" className="my-3 text-ink-soft">Memuat rumus…</p>}>
       <WithMath text={text} idPrefix={idPrefix} inline={inline} variant={variant} />
     </Suspense>
   )

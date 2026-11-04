@@ -4,7 +4,7 @@
 //   npm run build && npx vite preview --port 4173      (terminal 1)
 //   npm run audit:a11y                                  (terminal 2)
 // Bila Chromium belum ada:  npx playwright-core install chromium
-// Opsi lewat variabel lingkungan: AUDIT_URL (alamat dasar), AUDIT_ONLY (potongan nama rute), CHROMIUM_PATH.
+// Opsi lewat variabel lingkungan: AUDIT_URL (alamat dasar), AUDIT_ONLY (potongan nama rute), AUDIT_TEMA (light atau dark), CHROMIUM_PATH.
 // Jalankan juga sekali terhadap server dev (AUDIT_URL=http://127.0.0.1:5173/labu-kindle-book-algoritma/): di sana React StrictMode
 // menjalankan efek dua kali, dan pemeriksaan "terbuka di atas" menangkap efek yang diam-diam menggulir atau memindah fokus saat halaman dibuka.
 //
@@ -18,20 +18,13 @@ const require = createRequire(import.meta.url)
 const axeSource = readFileSync(require.resolve('axe-core/axe.min.js'), 'utf8')
 const BASE = (process.env.AUDIT_URL ?? 'http://127.0.0.1:4173/labu-kindle-book-algoritma/').replace(/#.*$/, '')
 const ONLY = process.env.AUDIT_ONLY
+const TEMA = process.env.AUDIT_TEMA // 'light' atau 'dark' untuk memeriksa satu mode saja
 
 const klik = (page, name) => page.getByRole('button', { name }).first().click()
 
 /** Rute yang diperiksa. `siapkan` membawa halaman ke keadaan yang ingin diperiksa. */
 const rute = [
   { nama: 'algoritma-galeri', path: '/' },
-  {
-    nama: 'algoritma-dialog-materi-lama',
-    path: '/',
-    siapkan: async (p) => {
-      await p.locator('a', { hasText: 'Pohon Recurrence' }).first().click()
-      await p.waitForSelector('dialog[open]')
-    },
-  },
   { nama: 'algoritma-insertion-sort', path: '/algoritma/insertion-sort' },
   { nama: 'algoritma-dijkstra', path: '/algoritma/dijkstra' },
   { nama: 'penjelajah-pertumbuhan', path: '/algoritma/pertumbuhan-fungsi' },
@@ -103,6 +96,7 @@ const rute = [
   { nama: 'materi-08', path: '/materi/08' },
   { nama: 'materi-09', path: '/materi/09' },
   { nama: 'materi-10', path: '/materi/10' },
+  { nama: 'materi-11', path: '/materi/11' },
   { nama: 'materi-04', path: '/materi/04' },
   {
     nama: 'materi-04-tantangan',
@@ -127,6 +121,7 @@ const rute = [
   { nama: 'quiz-08-intro', path: '/quiz/08' },
   { nama: 'quiz-09-intro', path: '/quiz/09' },
   { nama: 'quiz-10-intro', path: '/quiz/10' },
+  { nama: 'quiz-11-intro', path: '/quiz/11' },
   {
     nama: 'quiz-berjalan',
     path: '/quiz/04',
@@ -151,7 +146,7 @@ const rute = [
 
 const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH || undefined })
 let total = 0
-for (const tema of ['light', 'dark']) {
+for (const tema of ['light', 'dark'].filter((x) => !TEMA || x === TEMA)) {
   for (const r of rute) {
     if (ONLY && !r.nama.includes(ONLY)) continue
     const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, serviceWorkers: 'block', colorScheme: tema })
@@ -160,6 +155,8 @@ for (const tema of ['light', 'dark']) {
     try {
       await page.goto(`${BASE}#${r.path}`)
       await page.waitForLoadState('networkidle')
+      // Rumus dimuat malas ("Memuat rumus…"): tunggu sampai semuanya tampil, supaya reflow dan kontras diperiksa pada isi akhir, bukan penampung sementara.
+      await page.waitForFunction(() => !document.body.textContent.includes('Memuat rumus'), null, { timeout: 60000 }).catch(() => {})
       await page.waitForTimeout(600)
       // Halaman yang baru dibuka harus berada di atas. Fokus boleh tetap di <body> atau dipindah ke judul <h1> (praktik umum saat pindah halaman);
       // fokus yang pindah ke elemen lain (mis. wadah kuis di tengah halaman) biasanya ikut menggulir halaman dan dianggap masalah.

@@ -49,7 +49,7 @@ test('metadata sama dengan PDF dan katalog; penjelajah Konsep DP terhubung dua a
   assert.equal(m.tujuan.length, 5)
   assert.equal(petaBab[3].modul[0].judul, m.judul)
   assert.deepEqual(tabsOf(m).map((x) => x.tab), ['1 Pendahuluan', '3 Dua Ciri', '4 Empat Langkah', '5 Top-down & Bottom-up', '6 Running Time', '7 Kesimpulan', 'Kuis', 'Referensi'])
-  assert.deepEqual(neighbors('10'), { prev: modulById('09'), next: null })
+  assert.deepEqual(neighbors('10'), { prev: modulById('09'), next: modulById('11') })
   assert.equal(neighbors('09').next, m)
   assert.ok(readFileSync(new URL('../../public/' + m.pdf, import.meta.url)).subarray(0, 4).toString() === '%PDF')
   assert.equal(m.algoritmaId, 'konsep-dp')

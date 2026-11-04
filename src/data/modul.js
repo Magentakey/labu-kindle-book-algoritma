@@ -285,6 +285,34 @@ export const modul = [
       'Membedakan Dynamic Programming dari Divide and Conquer dan menghitung running time-nya.',
     ],
   },
+  {
+    no: 11,
+    id: '11',
+    bab: 'BAB IV',
+    topik: 'DYNAMIC PROGRAMMING',
+    judul: 'Perkalian Rantai Matriks',
+    judulPanjang: 'Perkalian Rantai Matriks (Matrix-Chain Multiplication)',
+    ringkas: 'Menentukan urutan perkalian matriks yang meminimalkan banyaknya operasi perkalian skalar dengan Dynamic Programming.',
+    prasyarat: [10],
+    prasyaratTeks: 'Modul 10: konsep dan empat langkah Dynamic Programming. Dasar aljabar matriks (perkalian matriks).',
+    materiAsal: 'Materi 8 DYNAMIC PROGRAMMING Perkalian Rantai Matriks',
+    posisi: { urutan: ['10', '11', '12'], aktif: 1, catatan: 'Penerapan pertama Dynamic Programming (Modul 10). Dilanjutkan dengan LCS di Modul 12.' },
+    halaman: 11,
+    soal: 8,
+    menit: 35, // perkiraan: sekitar 3 menit per halaman, seperti Modul 04
+    pdf: 'modul-11-perkalian-rantai-matriks.pdf',
+    algoritmaId: 'matrix-chain',
+    // Struktur PDF: 1 Pendahuluan, 2 Perkalian Dua Matriks, 3 Masalah, 4 Penyelesaian dengan DP, 5 Contoh Lengkap, 6 Analisis dan Keterkaitan, 7 Kesimpulan.
+    // Bagian 2 tidak punya tab sendiri (tab hanya enam), tetapi tetap tampil dan ada di daftar isi.
+    tabs: { algoritma: '3 Masalah', penelusuran: '4 Penyelesaian DP', analisis: '5 Contoh Lengkap', makna: '6 Analisis', kesimpulan: '7 Kesimpulan' },
+    tujuan: [
+      'Menerapkan syarat perkalian dua matriks dan menghitung banyaknya operasi perkalian $m \\times n \\times r$.',
+      'Menjelaskan mengapa urutan penempatan kurung memengaruhi biaya perkalian rantai matriks.',
+      'Menurunkan rumus rekursif $m[i,j]$ dan menjelaskan isi tabel $m$ dan tabel $s$.',
+      'Menjalankan MATRIX-CHAIN-ORDER dan menyusun urutan perkalian optimal dari tabel $s$.',
+      'Menjelaskan running time $\\Theta(n^3)$ dan memori $\\Theta(n^2)$ algoritma ini.',
+    ],
+  },
 ]
 
 export const modulById = (id) => modul.find((m) => m.id === id) ?? null
