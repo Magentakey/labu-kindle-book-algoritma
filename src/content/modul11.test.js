@@ -63,7 +63,7 @@ test('metadata sama dengan PDF dan katalog; visualizer Matrix-Chain terhubung du
   assert.equal(m.tujuan.length, 5)
   assert.equal(petaBab[3].modul[1].judul, m.judul)
   assert.deepEqual(tabsOf(m).map((x) => x.tab), ['1 Pendahuluan', '3 Masalah', '4 Penyelesaian DP', '5 Contoh Lengkap', '6 Analisis', '7 Kesimpulan', 'Kuis', 'Referensi'])
-  assert.deepEqual(neighbors('11'), { prev: modulById('10'), next: null })
+  assert.deepEqual(neighbors('11'), { prev: modulById('10'), next: modulById('12') })
   assert.equal(neighbors('10').next, m)
   assert.ok(readFileSync(new URL('../../public/' + m.pdf, import.meta.url)).subarray(0, 4).toString() === '%PDF')
   assert.equal(m.algoritmaId, 'matrix-chain')

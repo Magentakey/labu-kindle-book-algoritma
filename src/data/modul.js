@@ -313,6 +313,34 @@ export const modul = [
       'Menjelaskan running time $\\Theta(n^3)$ dan memori $\\Theta(n^2)$ algoritma ini.',
     ],
   },
+  {
+    no: 12,
+    id: '12',
+    bab: 'BAB IV',
+    topik: 'DYNAMIC PROGRAMMING',
+    judul: 'Longest Common Subsequence',
+    judulPanjang: 'Longest Common Subsequence (LCS)',
+    ringkas: 'Mencari subbarisan persekutuan terpanjang dari dua barisan dengan tabel Dynamic Programming dan menelusurinya kembali dengan PRINT-LCS.',
+    prasyarat: [10, 2],
+    prasyaratTeks: 'Modul 10: konsep dan empat langkah Dynamic Programming. Modul 02: rekursi (untuk PRINT-LCS).',
+    materiAsal: 'Materi 9 DYNAMIC PROGRAMMING Longest Common Subsequence',
+    posisi: { urutan: ['10', '11', '12'], aktif: 2, catatan: 'Penerapan kedua Dynamic Programming setelah Modul 11. Menutup Bab IV.' },
+    halaman: 11,
+    soal: 8,
+    menit: 35, // perkiraan: sekitar 3 menit per halaman, seperti Modul 11
+    pdf: 'modul-12-longest-common-subsequence.pdf',
+    algoritmaId: 'lcs',
+    // Struktur PDF: 1 Seberapa Mirip Dua Barisan, 2 Subbarisan dan Subbarisan Persekutuan, 3 Penyelesaian dengan DP, 4 Contoh, 5 Analisis, 6 Kesimpulan.
+    // Enam bagian itu pas dengan enam tab, jadi tidak ada bagian tanpa tab.
+    tabs: { algoritma: '2 Subbarisan', penelusuran: '3 Penyelesaian DP', analisis: '4 Contoh', makna: '5 Analisis', kesimpulan: '6 Kesimpulan' },
+    tujuan: [
+      'Membedakan subbarisan (*subsequence*) dengan substring dan menentukan subbarisan persekutuan dua barisan.',
+      'Menurunkan rumus rekursif $c[i,j]$ untuk panjang LCS.',
+      'Mengisi tabel $c$ dan $b$ dengan LCS-LENGTH dan menjelaskan arti setiap tanda panah.',
+      'Menelusuri PRINT-LCS untuk memperoleh LCS dari tabel $b$.',
+      'Menjelaskan running time $\\Theta(mn)$ dan mengapa LCS bisa lebih dari satu.',
+    ],
+  },
 ]
 
 export const modulById = (id) => modul.find((m) => m.id === id) ?? null
