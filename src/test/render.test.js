@@ -78,7 +78,8 @@ test('Credit: modul yang tersedia bisa dibuka dari peta dan blok, modul lain buk
   assert.ok(hitung(html, /href="\/materi\/11"/g) >= 1, 'Modul 11 sudah ditulis, jadi bisa dibuka dari peta')
   assert.ok(hitung(html, /href="\/materi\/12"/g) >= 1, 'Modul 12 sudah ditulis, jadi bisa dibuka dari peta')
   assert.ok(hitung(html, /href="\/materi\/13"/g) >= 1, 'Modul 13 sudah ditulis, jadi bisa dibuka dari peta')
-  assert.equal(hitung(html, /href="\/materi\/14"/g), 0, 'modul yang belum ditulis bukan tautan')
+  assert.ok(hitung(html, /href="\/materi\/14"/g) >= 1, 'Modul 14 sudah ditulis, jadi bisa dibuka dari peta')
+  assert.equal(hitung(html, /href="\/materi\/15"/g), 0, 'modul yang belum ditulis bukan tautan')
 })
 
 test('QuizDetail: id tidak dikenal menampilkan pesan, id 04 menampilkan jejak halaman dan keadaan memuat', async () => {

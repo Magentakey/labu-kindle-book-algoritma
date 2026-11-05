@@ -152,6 +152,16 @@ export const daftarKuis = [
     tipe: ['pilihan', 'perhitungan', 'benarsalah', 'analisis'],
     thumb: 'bars',
   },
+  {
+    id: '14',
+    modul: '14',
+    judul: 'Activity-Selection Problem',
+    tingkat: 'medium',
+    soal: 7,
+    menit: 12,
+    tipe: ['pilihan', 'penelusuran', 'analisis', 'benarsalah', 'perhitungan', 'pembuktian'],
+    thumb: 'bars',
+  },
 ]
 
 export const kuisById = (id) => daftarKuis.find((k) => k.id === id) ?? null

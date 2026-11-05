@@ -49,7 +49,7 @@ test('metadata sama dengan PDF dan katalog; penjelajah Konsep Greedy terhubung d
   assert.equal(m.tujuan.length, 5)
   assert.equal(petaBab[4].modul[0].judul, m.judul)
   assert.deepEqual(tabsOf(m).map((x) => x.tab), ['1 Pendahuluan', '2 Prinsip', '3 Kapan Optimal', '4 Contoh', '5 Peta Greedy', '6 Kesimpulan', 'Kuis', 'Referensi'])
-  assert.deepEqual(neighbors('13'), { prev: modulById('12'), next: null })
+  assert.deepEqual(neighbors('13'), { prev: modulById('12'), next: modulById('14') })
   assert.equal(neighbors('12').next, m)
   assert.ok(readFileSync(new URL('../../public/' + m.pdf, import.meta.url)).subarray(0, 4).toString() === '%PDF')
   assert.equal(m.algoritmaId, 'konsep-greedy')

@@ -369,6 +369,33 @@ export const modul = [
       'Mengenali pilihan greedy pada algoritma-algoritma di modul selanjutnya.',
     ],
   },
+  {
+    no: 14,
+    id: '14',
+    bab: 'BAB V',
+    topik: 'ALGORITMA GREEDY',
+    judul: 'Activity-Selection',
+    judulPanjang: 'Activity-Selection Problem dengan Algoritma Greedy',
+    ringkas: 'Menjadwalkan sebanyak mungkin aktivitas pada satu sumber daya dengan memilih aktivitas yang paling cepat selesai.',
+    prasyarat: [13, 4, 8],
+    prasyaratTeks: 'Modul 13: konsep Greedy dan greedy-choice property. Modul 04/08: pengurutan dalam waktu O(n lg n).',
+    materiAsal: 'Materi 10.1 ALGORITMA GREEDY An Activity Selection Problem',
+    posisi: { urutan: ['13', '14', '15'], aktif: 1, catatan: 'Penerapan pertama Greedy (Modul 13). Diikuti Huffman (Modul 15).' },
+    halaman: 10,
+    soal: 7,
+    menit: 30, // perkiraan: sekitar 3 menit per halaman
+    pdf: 'modul-14-activity-selection-problem.pdf',
+    algoritmaId: 'activity-selection',
+    // Struktur PDF: 1 Satu Ruangan Banyak Kegiatan, 2 Rumusan Masalah, 3 Pilihan Greedy: Selesai Paling Awal, 4 Prosedur GREEDY-ACTIVITY-SELECTOR,
+    // 5 Penelusuran dan Latihan, 6 Analisis dan Keterkaitan, 7 Kesimpulan. Bagian 2 tidak punya tab sendiri (tab hanya enam), tetapi tetap tampil dan ada di daftar isi.
+    tabs: { algoritma: '3 Pilihan Greedy', penelusuran: '4 Prosedur', analisis: '5 Penelusuran', makna: '6 Analisis', kesimpulan: '7 Kesimpulan' },
+    tujuan: [
+      'Merumuskan activity-selection problem, termasuk arti selang setengah terbuka dan aktivitas yang kompatibel.',
+      'Menjelaskan mengapa kriteria "waktu selesai paling awal" selalu menghasilkan solusi optimal (argumen pertukaran).',
+      'Menjalankan GREEDY-ACTIVITY-SELECTOR langkah demi langkah dan menentukan running time-nya.',
+      'Menunjukkan dengan contoh mengapa kriteria waktu mulai paling awal atau durasi paling pendek tidak selalu optimal.',
+    ],
+  },
 ]
 
 export const modulById = (id) => modul.find((m) => m.id === id) ?? null
