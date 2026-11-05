@@ -396,6 +396,34 @@ export const modul = [
       'Menunjukkan dengan contoh mengapa kriteria waktu mulai paling awal atau durasi paling pendek tidak selalu optimal.',
     ],
   },
+  {
+    no: 15,
+    id: '15',
+    bab: 'BAB V',
+    topik: 'ALGORITMA GREEDY',
+    judul: 'Kode Huffman',
+    judulPanjang: 'Kode Huffman: Kompresi Data dengan Algoritma Greedy',
+    ringkas: 'Memberi kode pendek untuk karakter yang sering muncul dan kode panjang untuk yang jarang, tanpa kehilangan kemampuan decode.',
+    prasyarat: [13],
+    prasyaratTeks: 'Modul 13: konsep Greedy. Pengetahuan dasar bilangan biner dan pohon biner.',
+    materiAsal: 'Materi 10.2 ALGORITMA GREEDY-ALGORITMA HUFFMAN',
+    posisi: { urutan: ['13', '14', '15'], aktif: 2, catatan: 'Penerapan kedua Greedy (setelah Modul 14). Menutup Bab V.' },
+    halaman: 10,
+    soal: 8,
+    menit: 30, // perkiraan: sekitar 3 menit per halaman
+    pdf: 'modul-15-kode-huffman.pdf',
+    algoritmaId: 'kode-huffman',
+    // Struktur PDF: 1 Mengapa Setiap Karakter Harus 8 Bit, 2 Kode Panjang Tetap dan Panjang Berubah, 3 Kode Prefiks, 4 Algoritma HUFFMAN,
+    // 5 Membangun Pohon Huffman untuk Contoh, 6 Kebenaran dan Running Time, 7 Kesimpulan. Bagian 2 tidak punya tab sendiri (tab hanya enam), tetapi tetap tampil dan ada di daftar isi.
+    tabs: { algoritma: '3 Kode Prefiks', penelusuran: '4 Algoritma', analisis: '5 Contoh', makna: '6 Kebenaran', kesimpulan: '7 Kesimpulan' },
+    tujuan: [
+      'Menghitung ukuran data dengan kode panjang tetap (*fixed-length*) dan panjang berubah (*variable-length*).',
+      'Menjelaskan kode prefiks dan alasan kode prefiks selalu dapat di-decode tanpa ambigu.',
+      'Menjalankan algoritma HUFFMAN langkah demi langkah dan membentuk pohon serta kode Huffman.',
+      'Melakukan encoding dan decoding dengan kode Huffman.',
+      'Menjelaskan pilihan greedy pada Huffman dan running time $O(n \\lg n)$.',
+    ],
+  },
 ]
 
 export const modulById = (id) => modul.find((m) => m.id === id) ?? null

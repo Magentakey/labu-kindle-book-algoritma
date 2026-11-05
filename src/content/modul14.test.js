@@ -58,7 +58,7 @@ test('metadata sama dengan PDF dan katalog; visualizer Activity-Selection terhub
   assert.equal(m.tujuan.length, 4)
   assert.equal(petaBab[4].modul[1].judul, m.judul)
   assert.deepEqual(tabsOf(m).map((x) => x.tab), ['1 Pendahuluan', '3 Pilihan Greedy', '4 Prosedur', '5 Penelusuran', '6 Analisis', '7 Kesimpulan', 'Kuis', 'Referensi'])
-  assert.deepEqual(neighbors('14'), { prev: modulById('13'), next: null })
+  assert.deepEqual(neighbors('14'), { prev: modulById('13'), next: modulById('15') })
   assert.equal(neighbors('13').next, m)
   assert.ok(readFileSync(new URL('../../public/' + m.pdf, import.meta.url)).subarray(0, 4).toString() === '%PDF')
   assert.equal(m.algoritmaId, 'activity-selection')
