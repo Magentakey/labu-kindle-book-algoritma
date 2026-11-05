@@ -341,6 +341,34 @@ export const modul = [
       'Menjelaskan running time $\\Theta(mn)$ dan mengapa LCS bisa lebih dari satu.',
     ],
   },
+  {
+    no: 13,
+    id: '13',
+    bab: 'BAB V',
+    topik: 'ALGORITMA GREEDY',
+    judul: 'Konsep Algoritma Greedy',
+    judulPanjang: 'Konsep Algoritma Greedy',
+    ringkas: 'Memilih yang terlihat terbaik saat ini: kapan strategi sederhana ini menghasilkan solusi optimal, dan kapan gagal.',
+    prasyarat: [10],
+    prasyaratTeks: 'Modul 10: konsep Dynamic Programming dan masalah optimasi.',
+    materiAsal: 'Materi 10.1 ALGORITMA GREEDY An Activity Selection Problem (bagian pengantar Algoritma Greedy)',
+    posisi: { urutan: ['13', '14', '15'], aktif: 0, catatan: 'Konsep umum Bab V. Diterapkan pada Activity Selection (Modul 14) dan Huffman (Modul 15), serta pada MST (Modul 19–21) dan Dijkstra (Modul 24).' },
+    halaman: 8,
+    soal: 7,
+    menit: 25, // perkiraan: sekitar 3 menit per halaman
+    pdf: 'modul-13-konsep-algoritma-greedy.pdf',
+    algoritmaId: 'konsep-greedy',
+    // Struktur PDF: 1 Ketika Mencoba Semua Pilihan Terasa Berlebihan, 2 Prinsip Algoritma Greedy, 3 Kapan Greedy Menghasilkan Solusi Optimal?,
+    // 4 Contoh, 5 Peta Algoritma Greedy, 6 Kesimpulan. Enam bagian itu pas dengan enam tab.
+    tabs: { algoritma: '2 Prinsip', penelusuran: '3 Kapan Optimal', analisis: '4 Contoh', makna: '5 Peta Greedy', kesimpulan: '6 Kesimpulan' },
+    tujuan: [
+      'Menjelaskan prinsip kerja algoritma Greedy: pilihan optimal lokal dengan harapan menghasilkan optimal global.',
+      'Menyebutkan dua sifat yang menjamin Greedy optimal: *greedy-choice property* dan *optimal substructure*.',
+      'Membedakan Greedy dari Dynamic Programming dari cara mengambil keputusan.',
+      'Menunjukkan dengan contoh penyangkal bahwa Greedy tidak selalu optimal.',
+      'Mengenali pilihan greedy pada algoritma-algoritma di modul selanjutnya.',
+    ],
+  },
 ]
 
 export const modulById = (id) => modul.find((m) => m.id === id) ?? null

@@ -7,4 +7,5 @@ export const penjelajah = {
   'little-o-omega': lazy(() => import('./PenjelajahLimit.jsx')),
   'pohon-recurrence': lazy(() => import('./PenjelajahPohon.jsx')),
   'konsep-dp': lazy(() => import('./PenjelajahDP.jsx')),
+  'konsep-greedy': lazy(() => import('./PenjelajahGreedy.jsx')),
 }

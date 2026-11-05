@@ -78,6 +78,16 @@ const rute = [
       await p.waitForSelector('[role="alert"]')
     },
   },
+  { nama: 'penjelajah-greedy', path: '/algoritma/konsep-greedy' },
+  {
+    nama: 'penjelajah-greedy-galat',
+    path: '/algoritma/konsep-greedy',
+    siapkan: async (p) => {
+      await p.getByLabel('Pecahan koin (pisahkan dengan koma)').fill('2, 5') // memunculkan pesan galat input (tanpa pecahan 1)
+      await p.getByLabel('Kapasitas tas W (kg, 1 sampai 60)').fill('50') // knapsack 0-1 gagal
+      await p.waitForSelector('[role="alert"]')
+    },
+  },
   { nama: 'algoritma-bandingkan', path: '/algoritma/bandingkan/insertion-sort/merge-sort' },
   { nama: 'materi-daftar', path: '/materi' },
   { nama: 'materi-01', path: '/materi/01' },
@@ -98,6 +108,7 @@ const rute = [
   { nama: 'materi-10', path: '/materi/10' },
   { nama: 'materi-11', path: '/materi/11' },
   { nama: 'materi-12', path: '/materi/12' },
+  { nama: 'materi-13', path: '/materi/13' },
   { nama: 'materi-04', path: '/materi/04' },
   {
     nama: 'materi-04-tantangan',
@@ -124,6 +135,7 @@ const rute = [
   { nama: 'quiz-10-intro', path: '/quiz/10' },
   { nama: 'quiz-11-intro', path: '/quiz/11' },
   { nama: 'quiz-12-intro', path: '/quiz/12' },
+  { nama: 'quiz-13-intro', path: '/quiz/13' },
   {
     nama: 'quiz-berjalan',
     path: '/quiz/04',
