@@ -10,7 +10,10 @@ function Simpul({ n, label, kode }) {
     <li>
       <span className="inline-flex flex-wrap items-center gap-x-2">
         {label !== undefined && (
-          <span className="text-code inline-flex h-6 w-6 items-center justify-center rounded-sm bg-ink text-white" aria-label={`busur berlabel ${label}`}>{label}</span>
+          <span className="text-code inline-flex h-6 w-6 items-center justify-center rounded-sm bg-ink font-semibold text-page">
+            <span aria-hidden="true">{label}</span>
+            <span className="sr-only">busur berlabel {label}</span>
+          </span>
         )}
         <span className={cx('text-code inline-flex flex-wrap items-center gap-x-2 rounded-sm border-[1.5px] px-2 py-0.5', daun ? 'border-dashed border-ink-soft bg-surface text-ink' : 'border-brand-blue-strong bg-card text-ink')}>
           <span className="font-semibold">{daun ? `${n.ch}:${id(n.freq)}` : id(n.freq)}</span>
