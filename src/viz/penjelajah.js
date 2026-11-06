@@ -8,4 +8,5 @@ export const penjelajah = {
   'pohon-recurrence': lazy(() => import('./PenjelajahPohon.jsx')),
   'konsep-dp': lazy(() => import('./PenjelajahDP.jsx')),
   'konsep-greedy': lazy(() => import('./PenjelajahGreedy.jsx')),
+  'representasi-graf': lazy(() => import('./PenjelajahGraf.jsx')),
 }

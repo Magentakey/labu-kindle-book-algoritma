@@ -52,7 +52,7 @@ test('metadata sama dengan PDF dan katalog; visualizer Kode Huffman terhubung du
   assert.equal(m.tujuan.length, 5)
   assert.equal(petaBab[4].modul[2].judul, m.judul)
   assert.deepEqual(tabsOf(m).map((x) => x.tab), ['1 Pendahuluan', '3 Kode Prefiks', '4 Algoritma', '5 Contoh', '6 Kebenaran', '7 Kesimpulan', 'Kuis', 'Referensi'])
-  assert.deepEqual(neighbors('15'), { prev: modulById('14'), next: null })
+  assert.deepEqual(neighbors('15'), { prev: modulById('14'), next: modulById('16') })
   assert.equal(neighbors('14').next, m)
   assert.ok(readFileSync(new URL('../../public/' + m.pdf, import.meta.url)).subarray(0, 4).toString() === '%PDF')
   assert.equal(m.algoritmaId, 'kode-huffman')

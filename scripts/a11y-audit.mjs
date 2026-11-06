@@ -79,6 +79,16 @@ const rute = [
     },
   },
   { nama: 'penjelajah-greedy', path: '/algoritma/konsep-greedy' },
+  { nama: 'penjelajah-graf', path: '/algoritma/representasi-graf' },
+  {
+    nama: 'penjelajah-graf-berarah',
+    path: '/algoritma/representasi-graf',
+    siapkan: async (p) => {
+      await p.getByLabel('Contoh').selectOption({ label: 'Graf (b): berarah, 6 simpul' }) // graf berarah dengan self-loop dan derajat masuk
+      await p.getByLabel('Busur (pisahkan dengan koma, mis. 1-2, 2-3)').fill('1-9') // memunculkan pesan galat input
+      await p.waitForSelector('[role="alert"]')
+    },
+  },
   {
     nama: 'penjelajah-greedy-galat',
     path: '/algoritma/konsep-greedy',
@@ -111,6 +121,7 @@ const rute = [
   { nama: 'materi-13', path: '/materi/13' },
   { nama: 'materi-14', path: '/materi/14' },
   { nama: 'materi-15', path: '/materi/15' },
+  { nama: 'materi-16', path: '/materi/16' },
   { nama: 'materi-04', path: '/materi/04' },
   {
     nama: 'materi-04-tantangan',
@@ -140,6 +151,7 @@ const rute = [
   { nama: 'quiz-13-intro', path: '/quiz/13' },
   { nama: 'quiz-14-intro', path: '/quiz/14' },
   { nama: 'quiz-15-intro', path: '/quiz/15' },
+  { nama: 'quiz-16-intro', path: '/quiz/16' },
   {
     nama: 'quiz-berjalan',
     path: '/quiz/04',

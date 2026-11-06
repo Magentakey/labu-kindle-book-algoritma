@@ -5,8 +5,10 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync, readdirSync, statSync } from 'node:fs'
 import { join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 
-const akar = new URL('..', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')
+// fileURLToPath (bukan URL.pathname) agar jalur dengan spasi atau tanda kurung, mis. "semester 5/Interaksi (IF A)", tidak ter-encode (%20)
+const akar = fileURLToPath(new URL('..', import.meta.url))
 const berkas = (dir) => readdirSync(dir).flatMap((n) => {
   const p = join(dir, n)
   return statSync(p).isDirectory() ? berkas(p) : /\.(jsx|js)$/.test(n) && !/\.test\.js$/.test(n) ? [p] : []

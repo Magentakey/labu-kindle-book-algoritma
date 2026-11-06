@@ -7,11 +7,11 @@ import { vizIds } from '../viz/vizConfig.js'
 
 const materials = JSON.parse(readFileSync(new URL('../content/materials.json', import.meta.url), 'utf8'))
 
-test('galeri: 19 algoritma di 8 kategori (17 dari desain + Konsep DP untuk Modul 10 + Konsep Greedy untuk Modul 13)', () => {
-  assert.equal(algoritma.length, 19)
+test('galeri: 20 algoritma di 8 kategori (17 dari desain + Konsep DP untuk Modul 10 + Konsep Greedy untuk Modul 13 + Representasi Graf untuk Modul 16)', () => {
+  assert.equal(algoritma.length, 20)
   assert.equal(kategori.length, 8)
   const count = Object.fromEntries(kategori.map((k) => [k.id, algoritma.filter((a) => a.kategori === k.id).length]))
-  assert.deepEqual(count, { pencarian: 1, sorting: 2, analisis: 4, dp: 3, greedy: 3, graf: 2, mst: 2, 'shortest-path': 2 })
+  assert.deepEqual(count, { pencarian: 1, sorting: 2, analisis: 4, dp: 3, greedy: 3, graf: 3, mst: 2, 'shortest-path': 2 })
 })
 
 test('galeri: id unik, modul unik dalam 1 sampai 24, naik di dalam tiap kategori, dan semua kolom terisi', () => {
@@ -47,10 +47,10 @@ test('galeri: tidak ada lagi kartu yang memakai maskot labu; tiga kartu Analisis
   assert.equal(algoritma.find((a) => a.id === 'batas-asimtotik').thumb, 'bound')
 })
 
-test('galeri: semua 19 kartu punya visualizer baru (13 pemutar langkah + 6 penjelajah), tidak ada lagi yang membuka materi lama', () => {
+test('galeri: semua 20 kartu punya visualizer baru (13 pemutar langkah + 7 penjelajah), tidak ada lagi yang membuka materi lama', () => {
   const baru = algoritma.filter((a) => a.viz).map((a) => a.id)
   assert.deepEqual(baru.sort(), [...vizIds, ...penjelajahIds].sort(), 'daftar viz di data = konfigurasi visualizer + penjelajah')
-  assert.equal(baru.length, 19)
+  assert.equal(baru.length, 20)
   assert.ok(penjelajahIds.every((id) => !vizIds.includes(id)), 'satu id tidak dilayani dua mekanisme')
   assert.deepEqual(algoritma.filter((a) => !a.viz), [])
   for (const a of algoritma) assert.equal(algoritmaHref(a), a.viz ? `/algoritma/${a.id}` : a.href)

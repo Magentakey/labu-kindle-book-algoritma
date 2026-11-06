@@ -424,6 +424,33 @@ export const modul = [
       'Menjelaskan pilihan greedy pada Huffman dan running time $O(n \\lg n)$.',
     ],
   },
+  {
+    no: 16,
+    id: '16',
+    bab: 'BAB VI',
+    topik: 'ALGORITMA GRAF',
+    judul: 'Graf dan Representasinya',
+    judulPanjang: 'Graf dan Representasinya: Adjacency List dan Adjacency Matrix',
+    ringkas: 'Istilah dasar graf dan dua cara menyimpannya di komputer, sebagai fondasi semua algoritma graf.',
+    prasyarat: [3, 6],
+    prasyaratTeks: 'Modul 03 dan 06: running time dan notasi asimtotik.',
+    materiAsal: 'Materi 11.1 ALGORITMA GRAF, BFS (bagian Graf, Representasi adjacency-list dan adjacency-matrix)',
+    posisi: { urutan: ['16', '17', '18'], aktif: 0, catatan: 'Fondasi Bab VI. Prasyarat untuk BFS (17), DFS (18), MST (19–21), dan lintasan terpendek (22–24).' },
+    halaman: 9,
+    soal: 7,
+    menit: 25, // perkiraan: sekitar 3 menit per halaman
+    pdf: 'modul-16-graf-dan-representasinya.pdf',
+    algoritmaId: 'representasi-graf',
+    // Struktur PDF: 1 Dunia yang Terhubung, 2 Istilah Dasar Graf, 3 Representasi Adjacency-List, 4 Representasi Adjacency-Matrix, 5 Membandingkan dan Membangun Representasi,
+    // 6 Mengapa Representasi Penting bagi Algoritma Graf, 7 Kesimpulan. Bagian 2 tidak punya tab sendiri (tab hanya enam), tetapi tetap tampil dan ada di daftar isi.
+    tabs: { algoritma: '3 Adjacency-List', penelusuran: '4 Adjacency-Matrix', analisis: '5 Perbandingan', makna: '6 Mengapa Penting', kesimpulan: '7 Kesimpulan' },
+    tujuan: [
+      'Menjelaskan istilah dasar graf: simpul, busur, graf berarah dan tak berarah, derajat, lintasan, cycle, graf berbobot, dan tree.',
+      'Menyusun representasi adjacency-list dan adjacency-matrix dari sebuah graf.',
+      'Membandingkan kedua representasi dari sisi memori dan waktu operasi.',
+      'Menjelaskan mengapa algoritma graf umumnya memakai adjacency list dan dianalisis dalam $\\lvert V \\rvert$ dan $\\lvert E \\rvert$.',
+    ],
+  },
 ]
 
 export const modulById = (id) => modul.find((m) => m.id === id) ?? null
