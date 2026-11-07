@@ -507,6 +507,33 @@ export const modul = [
       'Menjelaskan running time $\\Theta(V + E)$ dan perbedaan DFS dengan BFS.',
     ],
   },
+  {
+    no: 19,
+    id: '19',
+    bab: 'BAB VI',
+    topik: 'ALGORITMA GRAF',
+    judul: 'Konsep Minimum Spanning Tree',
+    judulPanjang: 'Konsep Minimum Spanning Tree (MST)',
+    ringkas: 'Menghubungkan semua simpul dengan total bobot sekecil mungkin: definisi, sifat, dan dasar teoretis algoritma Kruskal dan Prim.',
+    prasyarat: [16, 13],
+    prasyaratTeks: 'Modul 16: graf, graf berbobot, dan tree. Modul 13: konsep Greedy.',
+    materiAsal: 'Materi 12. MINIMUM SPANNING TREE, algoritma Kruskal dan Prim (bagian pengantar)',
+    posisi: { urutan: ['19', '20', '21'], aktif: 0, catatan: 'Konsep umum MST. Diterapkan oleh algoritma Kruskal (Modul 20) dan Prim (Modul 21).' },
+    halaman: 9,
+    soal: 7,
+    menit: 25, // perkiraan: sekitar 3 menit per halaman
+    pdf: 'modul-19-konsep-minimum-spanning-tree.pdf',
+    algoritmaId: null, // modul konsep: visualizer ada di Modul 20 (Kruskal) dan 21 (Prim)
+    // Struktur PDF: 1 Kabel Termurah, 2 Spanning Tree dan MST, 3 Dasar Teoretis: Cut dan Safe Edge, 4 MST Tidak Selalu Tunggal, 5 Keterkaitan Konsep, 6 Kesimpulan.
+    tabs: { algoritma: '2 Spanning Tree', penelusuran: '3 Cut dan Safe Edge', analisis: '4 MST Tidak Tunggal', makna: '5 Keterkaitan', kesimpulan: '6 Kesimpulan' },
+    tujuan: [
+      'Menjelaskan arti spanning tree dan minimum spanning tree pada graf tak berarah berbobot.',
+      'Menyebutkan sifat-sifat tree yang dipakai dalam algoritma MST.',
+      'Menjelaskan konsep cut, crossing edge, light edge, dan safe edge, serta teorema yang menjamin kebenaran algoritma MST.',
+      'Menjelaskan mengapa MST bisa lebih dari satu dan menunjukkan dua MST pada contoh bahan kuliah.',
+      'Membandingkan strategi Kruskal dan Prim secara garis besar.',
+    ],
+  },
 ]
 
 export const modulById = (id) => modul.find((m) => m.id === id) ?? null

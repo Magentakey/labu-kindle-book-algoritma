@@ -76,7 +76,7 @@ test('metadata sama dengan PDF dan katalog; visualizer DFS terhubung dua arah; M
   assert.equal(m.tujuan.length, 5)
   assert.equal(petaBab[5].modul[2].judul, m.judul)
   assert.deepEqual(tabsOf(m).map((x) => x.tab), ['1 Pendahuluan', '2 Cara Kerja', '3 Klasifikasi Busur', '4 Penelusuran', '5 Running Time', '6 Kesimpulan', 'Kuis', 'Referensi'])
-  assert.deepEqual(neighbors('18'), { prev: modulById('17'), next: null })
+  assert.deepEqual(neighbors('18'), { prev: modulById('17'), next: modulById('19') })
   assert.equal(neighbors('17').next, m)
   assert.ok(readFileSync(new URL('../../public/' + m.pdf, import.meta.url)).subarray(0, 4).toString() === '%PDF')
   assert.deepEqual(m.prasyarat, [16, 17, 2])

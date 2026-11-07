@@ -202,6 +202,16 @@ export const daftarKuis = [
     tipe: ['pilihan', 'penelusuran', 'analisis', 'benarsalah', 'perhitungan'],
     thumb: 'graph',
   },
+  {
+    id: '19',
+    modul: '19',
+    judul: 'Konsep Minimum Spanning Tree (MST)',
+    tingkat: 'medium',
+    soal: 7,
+    menit: 10,
+    tipe: ['pilihan', 'analisis', 'benarsalah'],
+    thumb: 'graph',
+  },
 ]
 
 export const kuisById = (id) => daftarKuis.find((k) => k.id === id) ?? null
