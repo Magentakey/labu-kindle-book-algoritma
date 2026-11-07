@@ -52,7 +52,7 @@ test('metadata sama dengan PDF dan katalog; penjelajah Representasi Graf terhubu
   assert.equal(m.tujuan.length, 4)
   assert.equal(petaBab[5].modul[0].judul, m.judul)
   assert.deepEqual(tabsOf(m).map((x) => x.tab), ['1 Pendahuluan', '3 Adjacency-List', '4 Adjacency-Matrix', '5 Perbandingan', '6 Mengapa Penting', '7 Kesimpulan', 'Kuis', 'Referensi'])
-  assert.deepEqual(neighbors('16'), { prev: modulById('15'), next: null })
+  assert.deepEqual(neighbors('16'), { prev: modulById('15'), next: modulById('17') })
   assert.equal(neighbors('15').next, m)
   assert.ok(readFileSync(new URL('../../public/' + m.pdf, import.meta.url)).subarray(0, 4).toString() === '%PDF')
   assert.equal(m.algoritmaId, 'representasi-graf')

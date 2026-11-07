@@ -451,6 +451,34 @@ export const modul = [
       'Menjelaskan mengapa algoritma graf umumnya memakai adjacency list dan dianalisis dalam $\\lvert V \\rvert$ dan $\\lvert E \\rvert$.',
     ],
   },
+  {
+    no: 17,
+    id: '17',
+    bab: 'BAB VI',
+    topik: 'ALGORITMA GRAF',
+    judul: 'Breadth-First Search',
+    judulPanjang: 'Breadth-First Search (BFS)',
+    ringkas: 'Menelusuri graf lapis demi lapis untuk menemukan lintasan dengan jumlah busur paling sedikit dari satu simpul awal.',
+    prasyarat: [16],
+    prasyaratTeks: 'Modul 16: graf dan adjacency-list.',
+    materiAsal: 'Materi 11.1 ALGORITMA GRAF, BFS',
+    posisi: { urutan: ['16', '17', '18'], aktif: 1, catatan: 'Algoritma penelusuran graf pertama. Dibandingkan dengan DFS di Modul 18; konsep jarak dan predecessor dipakai lagi pada Modul 22–24.' },
+    halaman: 11,
+    soal: 8,
+    menit: 35, // perkiraan: sekitar 3 menit per halaman
+    pdf: 'modul-17-breadth-first-search-bfs.pdf',
+    algoritmaId: 'bfs',
+    // Struktur PDF hanya lima bagian: 1 Menyebar seperti Riak Air, 2 Prosedur BFS, 3 Penelusuran BFS dari Simpul s, 4 Analisis Running Time dan Sifat BFS, 5 Kesimpulan.
+    // Tab selalu enam, jadi bagian 4 dipecah dua di halaman: 4.1 Running time (analisis) dan 4.2 Sifat penting (makna); isi dan urutannya tetap sama dengan PDF.
+    tabs: { algoritma: '2 Prosedur', penelusuran: '3 Penelusuran', analisis: '4.1 Running Time', makna: '4.2 Sifat BFS', kesimpulan: '5 Kesimpulan' },
+    tujuan: [
+      'Menjelaskan cara kerja BFS dan peran antrean (FIFO) di dalamnya.',
+      'Menjelaskan arti atribut $u.\\mathit{color}$, $u.d$, dan $u.\\pi$ serta arti warna WHITE, GRAY, BLACK.',
+      'Menelusuri prosedur BFS pada graf, termasuk isi antrean di setiap langkah.',
+      'Menyusun lintasan terpendek (dalam jumlah busur) dari atribut predecessor.',
+      'Menjelaskan running time $O(V + E)$.',
+    ],
+  },
 ]
 
 export const modulById = (id) => modul.find((m) => m.id === id) ?? null
