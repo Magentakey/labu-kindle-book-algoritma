@@ -479,6 +479,34 @@ export const modul = [
       'Menjelaskan running time $O(V + E)$.',
     ],
   },
+  {
+    no: 18,
+    id: '18',
+    bab: 'BAB VI',
+    topik: 'ALGORITMA GRAF',
+    judul: 'Depth-First Search',
+    judulPanjang: 'Depth-First Search (DFS)',
+    ringkas: 'Menelusuri graf sedalam mungkin lalu mundur (backtrack), mencatat waktu ditemukan dan waktu selesai setiap simpul.',
+    prasyarat: [16, 17, 2],
+    prasyaratTeks: 'Modul 16: graf dan adjacency-list. Modul 17: BFS (sebagai pembanding). Modul 02: rekursi dan call stack.',
+    materiAsal: 'Materi 11.2 ALGORITMA GRAF, DFS',
+    posisi: { urutan: ['16', '17', '18'], aktif: 2, catatan: 'Algoritma penelusuran graf kedua. Menutup bagian penelusuran sebelum masuk ke Minimum Spanning Tree (Modul 19).' },
+    halaman: 11,
+    soal: 8,
+    menit: 35, // perkiraan: sekitar 3 menit per halaman
+    pdf: 'modul-18-depth-first-search-dfs.pdf',
+    algoritmaId: 'dfs',
+    // Struktur PDF: 1 Menyusuri Labirin, 2 Cara Kerja DFS, 3 Klasifikasi Busur, 4 Penelusuran DFS pada Graf Berarah, 5 Running Time dan Perbandingan dengan BFS, 6 Kesimpulan.
+    // Enam bagian, jadi setiap bagian PDF mendapat satu tab.
+    tabs: { algoritma: '2 Cara Kerja', penelusuran: '3 Klasifikasi Busur', analisis: '4 Penelusuran', makna: '5 Running Time', kesimpulan: '6 Kesimpulan' },
+    tujuan: [
+      'Menjelaskan cara kerja DFS: penelusuran mendalam dan backtrack.',
+      'Menjelaskan arti timestamp $u.d$ (*discovery time*) dan $u.f$ (*finishing time*).',
+      'Menelusuri prosedur DFS dan DFS-VISIT pada graf berarah secara lengkap.',
+      'Mengklasifikasikan busur menjadi tree, back, forward, dan cross, serta menggambar DFS-forest.',
+      'Menjelaskan running time $\\Theta(V + E)$ dan perbedaan DFS dengan BFS.',
+    ],
+  },
 ]
 
 export const modulById = (id) => modul.find((m) => m.id === id) ?? null

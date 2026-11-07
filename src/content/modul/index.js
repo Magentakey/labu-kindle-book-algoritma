@@ -1,5 +1,10 @@
 // Pendaftaran isi modul. Teks dimuat saat dibutuhkan (dynamic import) agar tidak membebani halaman daftar.
 export const modulKonten = {
+  '18': {
+    teks: () => import('./18.md?raw').then((m) => m.default),
+    kuis: () => import('./18.kuis.js').then((m) => m.kuis18),
+    blok: () => import('./18.blok.js'),
+  },
   '17': {
     teks: () => import('./17.md?raw').then((m) => m.default),
     kuis: () => import('./17.kuis.js').then((m) => m.kuis17),

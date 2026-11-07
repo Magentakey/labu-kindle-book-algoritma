@@ -157,10 +157,18 @@ const modulComponents = {
     const props = child?.props ?? {}
     const code = String(props.children ?? '').replace(/\n$/, '')
     const lang = (/language-(\S+)/.exec(props.className ?? '') ?? [])[1] ?? 'text'
+    const nama = lang === 'text' ? 'Keluaran' : lang === 'python' ? 'Python' : lang === 'pseudo' ? 'Pseudocode' : lang
     return (
       <figure className="my-5 overflow-hidden rounded-sm border border-line bg-code-bg">
-        <figcaption className="text-caption border-b border-line bg-panel px-4 py-2 text-ink-soft">{lang === 'text' ? 'Keluaran' : lang === 'python' ? 'Python' : lang === 'pseudo' ? 'Pseudocode' : lang}</figcaption>
-        <pre className="overflow-x-auto px-4 py-3 font-code text-[13px] leading-[22px] text-ink">
+        <figcaption className="text-caption border-b border-line bg-panel px-4 py-2 text-ink-soft">{nama}</figcaption>
+        <pre
+          // Blok yang lebar harus bisa digeser dengan keyboard (WCAG 2.1.1), seperti tabel di bawah. role="group" agar tidak menjadi landmark kembar.
+          // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+          tabIndex={0}
+          role="group"
+          aria-label={`${nama}, bisa digeser ke samping`}
+          className={`overflow-x-auto px-4 py-3 font-code text-[13px] leading-[22px] text-ink ${modulFocus}`}
+        >
           <code>{code}</code>
         </pre>
       </figure>

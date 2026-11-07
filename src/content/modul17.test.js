@@ -68,7 +68,7 @@ test('metadata sama dengan PDF dan katalog; visualizer BFS terhubung dua arah', 
   assert.equal(m.tujuan.length, 5)
   assert.equal(petaBab[5].modul[1].judul, m.judul)
   assert.deepEqual(tabsOf(m).map((x) => x.tab), ['1 Pendahuluan', '2 Prosedur', '3 Penelusuran', '4.1 Running Time', '4.2 Sifat BFS', '5 Kesimpulan', 'Kuis', 'Referensi'])
-  assert.deepEqual(neighbors('17'), { prev: modulById('16'), next: null })
+  assert.deepEqual(neighbors('17'), { prev: modulById('16'), next: modulById('18') })
   assert.equal(neighbors('16').next, m)
   assert.ok(readFileSync(new URL('../../public/' + m.pdf, import.meta.url)).subarray(0, 4).toString() === '%PDF')
   assert.equal(m.algoritmaId, 'bfs')
