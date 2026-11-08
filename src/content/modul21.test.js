@@ -69,7 +69,7 @@ test('metadata sama dengan PDF dan katalog; visualizer Prim terhubung dua arah; 
   assert.equal(m.tujuan.length, 5)
   assert.equal(petaBab[6].modul[2].judul, m.judul)
   assert.deepEqual(tabsOf(m).map((x) => x.tab), ['1 Pendahuluan', '2 Pseudocode', '3 Penelusuran', '4.1–4.2 Analisis', '4.3 Perbandingan', '5 Kesimpulan', 'Kuis', 'Referensi'])
-  assert.deepEqual(neighbors('21'), { prev: modulById('20'), next: null })
+  assert.deepEqual(neighbors('21'), { prev: modulById('20'), next: modulById('22') })
   assert.equal(neighbors('20').next, m)
   assert.ok(readFileSync(new URL('../../public/' + m.pdf, import.meta.url)).subarray(0, 4).toString() === '%PDF')
   assert.deepEqual(m.prasyarat, [19, 16, 20])

@@ -9,9 +9,9 @@ import { PASS_PERCENT } from '../data/modul.js'
  */
 export const TIPE_LABEL = { penelusuran: 'Penelusuran', pilihan: 'Pilihan Ganda', perhitungan: 'Perhitungan', benarsalah: 'Benar/Salah', analisis: 'Analisis', pembuktian: 'Pembuktian', rancang: 'Merancang' }
 
-/** "1.000" → 1000, "1,5" → 1.5, "20" → 20; null bila bukan angka. */
+/** "1.000" → 1000, "1,5" → 1.5, "20" → 20, "−3" (minus Unicode U+2212 atau tanda hubung panjang) → -3; null bila bukan angka. */
 export function parseAngka(text) {
-  const t = String(text ?? '').trim().replace(/\s+/g, '')
+  const t = String(text ?? '').trim().replace(/\s+/g, '').replace(/^[\u2212\u2013\u2012]/, '-')
   if (!/^-?[\d.,]+$/.test(t)) return null
   let s = t
   if (s.includes(',') && s.includes('.')) s = s.replace(/\./g, '').replace(',', '.')

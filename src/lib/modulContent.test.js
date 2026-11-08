@@ -148,6 +148,13 @@ test('parseAngka: koma desimal, titik ribuan, spasi, dan teks bukan angka', () =
   assert.equal(parseAngka('20'), 20)
   assert.equal(parseAngka(' 1,5 '), 1.5)
   assert.equal(parseAngka('1.000'), 1000)
+  // tanda minus: ASCII, minus Unicode (U+2212, seperti di soal dan tabel), dan tanda hubung panjang dibaca sebagai angka negatif
+  assert.equal(parseAngka('-3'), -3)
+  assert.equal(parseAngka('\u22123'), -3)
+  assert.equal(parseAngka('\u22121,5'), -1.5)
+  assert.equal(parseAngka('\u20131'), -1)
+  assert.equal(parseAngka('3\u2212'), null)
+  assert.equal(parseAngka('\u2212'), null)
   assert.equal(parseAngka('2.000,5'), 2000.5)
   assert.equal(parseAngka('0,01'), 0.01)
   assert.equal(parseAngka('-3'), -3)

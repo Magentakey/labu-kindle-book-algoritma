@@ -589,6 +589,35 @@ export const modul = [
       'Membandingkan Prim dengan Kruskal.',
     ],
   },
+  {
+    no: 22,
+    id: '22',
+    bab: 'BAB VI',
+    topik: 'ALGORITMA GRAF',
+    judul: 'Konsep Shortest Path',
+    judulPanjang: 'Single-Source Shortest Paths: Konsep dan Relaksasi',
+    ringkas: 'Apa arti lintasan terpendek pada graf berbobot, peran bobot dan cycle negatif, serta operasi RELAX yang menjadi inti Bellman-Ford dan Dijkstra.',
+    prasyarat: [16, 17],
+    prasyaratTeks: 'Modul 16: graf berarah berbobot. Modul 17: BFS (jarak dalam jumlah busur, predecessor).',
+    materiAsal: 'Materi 13.1 SINGLE SOURCE SHORTEST PATHS, Algoritma Bellman Ford (bagian pengantar); Materi 13.2 SINGLE SOURCE SHORTEST PATHS, Algoritma Dijkstra (INITIALIZE-SINGLE-SOURCE dan RELAX)',
+    posisi: { urutan: ['22', '23', '24'], aktif: 0, catatan: 'Konsep umum lintasan terpendek. Diterapkan oleh Bellman-Ford (Modul 23) dan Dijkstra (Modul 24).' },
+    halaman: 9,
+    soal: 7,
+    menit: 25, // perkiraan: sekitar 3 menit per halaman
+    pdf: 'modul-22-konsep-shortest-paths-dan-relaksasi.pdf',
+    algoritmaId: null, // modul konsep: visualizer ada di Modul 23 (Bellman-Ford) dan 24 (Dijkstra)
+    // Struktur PDF punya tujuh bagian: 1 Bukan Sekadar Jumlah Busur, 2 Bobot Lintasan dan Jarak Terpendek, 3 Busur dan Cycle Berbobot Negatif, 4 Representasi Hasil dan Relaksasi,
+    // 5 Memeriksa dengan Program, 6 Keterkaitan Konsep, 7 Kesimpulan. Halaman modul hanya punya enam tab, jadi bagian 2 dan 3 berbagi satu tab ("2–3");
+    // bagian 3 tetap tampil di halaman dan di daftar isi (id 'negatif', tanpa tab sendiri).
+    tabs: { algoritma: '2–3 Jarak Terpendek', penelusuran: '4 Relaksasi', analisis: '5 Program', makna: '6 Keterkaitan', kesimpulan: '7 Kesimpulan' },
+    tujuan: [
+      'Menjelaskan masalah *single-source shortest paths* dan arti bobot lintasan $w(p)$ serta jarak terpendek $\\delta(s, v)$.',
+      'Menjelaskan mengapa lintasan terpendek bisa tidak tunggal dan bagaimana predecessor membentuk *shortest-path tree*.',
+      'Menjelaskan pengaruh busur berbobot negatif dan cycle berbobot negatif.',
+      'Menjalankan INITIALIZE-SINGLE-SOURCE dan RELAX serta menjelaskan sifat-sifat relaksasi.',
+      'Membandingkan Bellman-Ford dan Dijkstra secara garis besar.',
+    ],
+  },
 ]
 
 export const modulById = (id) => modul.find((m) => m.id === id) ?? null
