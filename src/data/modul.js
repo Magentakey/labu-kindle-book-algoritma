@@ -534,6 +534,33 @@ export const modul = [
       'Membandingkan strategi Kruskal dan Prim secara garis besar.',
     ],
   },
+  {
+    no: 20,
+    id: '20',
+    bab: 'BAB VI',
+    topik: 'ALGORITMA GRAF',
+    judul: 'Algoritma Kruskal',
+    judulPanjang: 'Algoritma Kruskal untuk Minimum Spanning Tree',
+    ringkas: 'Memilih busur dari yang paling ringan, menolak yang membentuk cycle, sampai semua simpul tergabung dalam satu tree.',
+    prasyarat: [19, 8],
+    prasyaratTeks: 'Modul 19: konsep MST, cut, light edge, safe edge. Modul 08: pengurutan O(n lg n).',
+    materiAsal: 'Materi 12. MINIMUM SPANNING TREE, algoritma Kruskal dan Prim (bagian Algoritma Kruskal)',
+    posisi: { urutan: ['19', '20', '21'], aktif: 1, catatan: 'Algoritma MST pertama. Dibandingkan dengan algoritma Prim di Modul 21.' },
+    halaman: 10,
+    soal: 7,
+    menit: 30, // perkiraan: sekitar 3 menit per halaman
+    pdf: 'modul-20-algoritma-kruskal.pdf',
+    algoritmaId: 'kruskal',
+    // Struktur PDF hanya lima bagian: 1 Busur Termurah Lebih Dulu, 2 Pseudocode Kruskal, 3 Penelusuran Kruskal pada Graf Contoh, 4 Kebenaran dan Running Time, 5 Kesimpulan.
+    // Bagian 4 dipecah dua tab agar halaman modul tetap enam tab: 4.1 Kebenaran, 4.2 Running Time (beserta 4.3 Hubungan dengan modul lain).
+    tabs: { algoritma: '2 Pseudocode', penelusuran: '3 Penelusuran', analisis: '4.1 Kebenaran', makna: '4.2 Running Time', kesimpulan: '5 Kesimpulan' },
+    tujuan: [
+      'Menjelaskan langkah-langkah algoritma Kruskal dan peran fungsi MAKE-SET, FIND-SET, dan UNION.',
+      'Menjalankan Kruskal pada graf contoh dan menyusun tabel himpunan busur $A$ serta himpunan simpul setiap langkah.',
+      'Menjelaskan mengapa busur yang diterima Kruskal selalu aman (*safe*).',
+      'Menganalisis running time $O(E \\lg V)$ beserta bagian yang dominan.',
+    ],
+  },
 ]
 
 export const modulById = (id) => modul.find((m) => m.id === id) ?? null

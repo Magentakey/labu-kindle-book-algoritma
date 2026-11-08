@@ -62,13 +62,13 @@ test('struktur: enam bagian PDF + referensi, dua gambar, GENERIC-MST, tiga tabel
   for (const rumus of md.matchAll(/(?<!\$)\$(?!\$)([^$\n]+)\$(?!\$)/g)) assert.ok(rumus[1].length < 120, `rumus sebaris terlalu panjang: ${rumus[1].slice(0, 50)}`)
 })
 
-test('metadata sama dengan PDF dan katalog; Modul 19 membuka Bab VI-b dan belum punya visualizer sendiri', () => {
+test('metadata sama dengan PDF dan katalog; Modul 19 membuka Bab VI-b dan tidak punya visualizer sendiri', () => {
   assert.deepEqual([m.no, m.bab, m.halaman, m.soal], [19, 'BAB VI', 9, 7])
   assert.equal(m.soal, kuis19.soal.length)
   assert.equal(m.tujuan.length, 5)
   assert.equal(petaBab[6].modul[0].judul, m.judul)
   assert.deepEqual(tabsOf(m).map((x) => x.tab), ['1 Pendahuluan', '2 Spanning Tree', '3 Cut dan Safe Edge', '4 MST Tidak Tunggal', '5 Keterkaitan', '6 Kesimpulan', 'Kuis', 'Referensi'])
-  assert.deepEqual(neighbors('19'), { prev: modulById('18'), next: null })
+  assert.deepEqual(neighbors('19'), { prev: modulById('18'), next: modulById('20') })
   assert.equal(neighbors('18').next, m)
   assert.ok(readFileSync(new URL('../../public/' + m.pdf, import.meta.url)).subarray(0, 4).toString() === '%PDF')
   assert.deepEqual(m.prasyarat, [16, 13])

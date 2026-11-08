@@ -9,14 +9,17 @@ const HALO = { paintOrder: 'stroke' }
  * Graf tak berarah berbobot (Gambar 1 dan 2 Modul 19). Bobot ditulis di tengah busur.
  * Penanda tidak bergantung warna: busur MST/A tebal (oranye atau biru), crossing edge putus-putus merah, busur lain tipis abu-abu;
  * simpul di S berisi biru dan bersegi, simpul di V − S berlingkar putus-putus. Daftar teks lengkap untuk pembaca layar.
- * @param {{ simpul: string[], busur: Array<[string,string,number]>, posisi: object, tebal?: string[], gayaTebal?: 'oranye'|'biru', silang?: string[], light?: string|null, S?: string[]|null, label: string, className?: string }} props
+ * `baru` (opsional, Modul 20): busur yang baru saja diterima, oranye dan paling tebal, berbeda dari `tebal` (biru, sudah ada).
+ * @param {{ simpul: string[], busur: Array<[string,string,number]>, posisi: object, tebal?: string[], gayaTebal?: 'oranye'|'biru', baru?: string[], silang?: string[], namaSilang?: string, namaTebal?: string|null, namaBaru?: string, light?: string|null, S?: string[]|null, label: string, className?: string }} props
  */
-export default function GrafBerbobot({ simpul, busur, posisi, tebal = [], gayaTebal = 'oranye', silang = [], light = null, S = null, label, className }) {
+export default function GrafBerbobot({ simpul, busur, posisi, tebal = [], gayaTebal = 'oranye', baru = [], silang = [], namaSilang = 'Crossing edge', namaTebal = null, namaBaru = 'Busur baru diterima', light = null, S = null, label, className }) {
   const P = Object.fromEntries(simpul.map((v) => [v, { x: 24 + posisi[v].x * (VW - 48), y: 24 + posisi[v].y * (VH - 48) }]))
   const tebalSet = new Set(tebal)
   const silangSet = new Set(silang)
+  const baruSet = new Set(baru)
   const dalamS = S ? new Set(S) : null
-  const urut = [...busur].sort((p, q) => (tebalSet.has(namaBusur(p[0], p[1])) ? 1 : 0) - (tebalSet.has(namaBusur(q[0], q[1])) ? 1 : 0))
+  const bobotGambar = (e) => { const n = namaBusur(e[0], e[1]); return baruSet.has(n) ? 2 : tebalSet.has(n) ? 1 : 0 }
+  const urut = [...busur].sort((p, q) => bobotGambar(p) - bobotGambar(q))
   const kelasTebal = gayaTebal === 'biru' ? 'stroke-brand-blue' : 'stroke-brand-orange'
   return (
     <div className={className}>
@@ -25,7 +28,8 @@ export default function GrafBerbobot({ simpul, busur, posisi, tebal = [], gayaTe
           const n = namaBusur(u, v)
           const a = P[u]
           const b = P[v]
-          const isTebal = tebalSet.has(n)
+          const isBaru = baruSet.has(n)
+          const isTebal = tebalSet.has(n) || isBaru
           const isSilang = silangSet.has(n)
           const len = Math.hypot(b.x - a.x, b.y - a.y)
           const ux = (b.x - a.x) / len
@@ -34,9 +38,9 @@ export default function GrafBerbobot({ simpul, busur, posisi, tebal = [], gayaTe
             <g key={n}>
               <line
                 x1={a.x + ux * R} y1={a.y + uy * R} x2={b.x - ux * R} y2={b.y - uy * R}
-                strokeWidth={isTebal ? 5 : isSilang ? 2.5 : 1.5}
+                strokeWidth={isBaru ? 6.5 : isTebal ? (gayaTebal === 'oranye' ? 5 : 4) : isSilang ? 2.5 : 1.5}
                 strokeDasharray={isSilang ? '6 4' : undefined}
-                className={isTebal ? kelasTebal : isSilang ? 'stroke-bad' : 'stroke-muted'}
+                className={isBaru ? 'stroke-brand-orange' : isTebal ? kelasTebal : isSilang ? 'stroke-bad' : 'stroke-muted'}
               />
               <text x={(a.x + b.x) / 2} y={(b.y + a.y) / 2 + (light === n ? -13 : 0)} textAnchor="middle" dominantBaseline="central" style={HALO} strokeWidth="4" className={`stroke-card font-bold ${light === n ? 'text-[13px]' : 'text-[11px]'} ${isSilang ? 'fill-bad-text' : 'fill-ink'}`}>
                 {w}{light === n ? '★' : ''}
@@ -64,9 +68,10 @@ export default function GrafBerbobot({ simpul, busur, posisi, tebal = [], gayaTe
       </svg>
       <div className="sr-only">
         <p>Graf tak berarah berbobot dengan {simpul.length} simpul dan {busur.length} busur: {busur.map(([u, v, w]) => `${u} dengan ${v} bobot ${w}`).join('; ')}.</p>
-        {tebal.length > 0 && <p>Busur tebal ({gayaTebal}): {tebal.map((n) => `(${n[0]}, ${n[1]}) bobot ${bobotBusur(busur, n[0], n[1])}`).join('; ')}.</p>}
+        {tebal.length > 0 && <p>{namaTebal ?? `Busur tebal (${gayaTebal})`}: {tebal.map((n) => `(${n[0]}, ${n[1]}) bobot ${bobotBusur(busur, n[0], n[1])}`).join('; ')}.</p>}
         {S && <p>Cut: S = {'{'}{S.join(', ')}{'}'}, V − S = {'{'}{simpul.filter((v) => !dalamS.has(v)).join(', ')}{'}'}.</p>}
-        {silang.length > 0 && <p>Crossing edge: {silang.map((n) => `(${n[0]}, ${n[1]}) bobot ${bobotBusur(busur, n[0], n[1])}${light === n ? ', light edge' : ''}`).join('; ')}.</p>}
+        {baru.length > 0 && <p>{namaBaru}: {baru.map((n) => `(${n[0]}, ${n[1]}) bobot ${bobotBusur(busur, n[0], n[1])}`).join('; ')}.</p>}
+        {silang.length > 0 && <p>{namaSilang}: {silang.map((n) => `(${n[0]}, ${n[1]}) bobot ${bobotBusur(busur, n[0], n[1])}${light === n ? ', light edge' : ''}`).join('; ')}.</p>}
       </div>
     </div>
   )
