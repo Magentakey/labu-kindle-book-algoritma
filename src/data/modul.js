@@ -561,6 +561,34 @@ export const modul = [
       'Menganalisis running time $O(E \\lg V)$ beserta bagian yang dominan.',
     ],
   },
+  {
+    no: 21,
+    id: '21',
+    bab: 'BAB VI',
+    topik: 'ALGORITMA GRAF',
+    judul: 'Algoritma Prim',
+    judulPanjang: 'Algoritma Prim untuk Minimum Spanning Tree',
+    ringkas: 'Menumbuhkan satu tree dari sebuah akar dengan selalu mengambil simpul terdekat yang belum masuk tree.',
+    prasyarat: [19, 16, 20],
+    prasyaratTeks: 'Modul 19: konsep MST, cut, dan light edge. Modul 16: adjacency-list graf berbobot. Modul 20 (disarankan): algoritma Kruskal sebagai pembanding.',
+    materiAsal: 'Materi 12. MINIMUM SPANNING TREE, algoritma Kruskal dan Prim (bagian Algoritma Prim)',
+    posisi: { urutan: ['19', '20', '21'], aktif: 2, catatan: 'Algoritma MST kedua. Strukturnya hampir sama dengan Dijkstra (Modul 24).' },
+    halaman: 10,
+    soal: 7,
+    menit: 30, // perkiraan: sekitar 3 menit per halaman
+    pdf: 'modul-21-algoritma-prim.pdf',
+    algoritmaId: 'prim',
+    // Struktur PDF hanya lima bagian: 1 Tumbuh dari Satu Titik, 2 Pseudocode Prim, 3 Penelusuran Prim dengan Akar a, 4 Kebenaran, Running Time, dan Perbandingan, 5 Kesimpulan.
+    // Bagian 4 dipecah dua tab agar halaman modul tetap enam tab: 4.1–4.2 (kebenaran dan running time) dan 4.3 (perbandingan dengan Kruskal dan kemiripan dengan Dijkstra).
+    tabs: { algoritma: '2 Pseudocode', penelusuran: '3 Penelusuran', analisis: '4.1–4.2 Analisis', makna: '4.3 Perbandingan', kesimpulan: '5 Kesimpulan' },
+    tujuan: [
+      'Menjelaskan langkah-langkah algoritma Prim serta arti atribut $v.\\mathit{key}$ dan $v.\\pi$.',
+      'Menjalankan Prim pada graf contoh dan mencatat nilai *key* setiap simpul pada setiap iterasi.',
+      'Menjelaskan mengapa simpul yang di-*extract* Prim selalu menambahkan *safe edge*.',
+      'Menganalisis running time Prim dengan antrean prioritas berbentuk array dan binary heap.',
+      'Membandingkan Prim dengan Kruskal.',
+    ],
+  },
 ]
 
 export const modulById = (id) => modul.find((m) => m.id === id) ?? null

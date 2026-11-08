@@ -70,7 +70,7 @@ test('metadata sama dengan PDF dan katalog; visualizer Kruskal terhubung dua ara
   assert.equal(m.tujuan.length, 4)
   assert.equal(petaBab[6].modul[1].judul, m.judul)
   assert.deepEqual(tabsOf(m).map((x) => x.tab), ['1 Pendahuluan', '2 Pseudocode', '3 Penelusuran', '4.1 Kebenaran', '4.2 Running Time', '5 Kesimpulan', 'Kuis', 'Referensi'])
-  assert.deepEqual(neighbors('20'), { prev: modulById('19'), next: null })
+  assert.deepEqual(neighbors('20'), { prev: modulById('19'), next: modulById('21') })
   assert.equal(neighbors('19').next, m)
   assert.ok(readFileSync(new URL('../../public/' + m.pdf, import.meta.url)).subarray(0, 4).toString() === '%PDF')
   assert.deepEqual(m.prasyarat, [19, 8])

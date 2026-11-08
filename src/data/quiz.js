@@ -222,6 +222,16 @@ export const daftarKuis = [
     tipe: ['pilihan', 'penelusuran', 'analisis', 'benarsalah', 'perhitungan'],
     thumb: 'graph',
   },
+  {
+    id: '21',
+    modul: '21',
+    judul: 'Algoritma Prim',
+    tingkat: 'medium',
+    soal: 7,
+    menit: 12,
+    tipe: ['pilihan', 'penelusuran', 'analisis', 'benarsalah', 'perhitungan'],
+    thumb: 'graph',
+  },
 ]
 
 export const kuisById = (id) => daftarKuis.find((k) => k.id === id) ?? null
