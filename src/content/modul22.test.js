@@ -81,7 +81,7 @@ test('metadata sama dengan PDF dan katalog; Modul 22 membuka Bab VI-c dan tidak 
   assert.equal(m.tujuan.length, 5)
   assert.equal(petaBab[7].modul[0].judul, m.judul)
   assert.deepEqual(tabsOf(m).map((x) => x.tab), ['1 Pendahuluan', '2–3 Jarak Terpendek', '4 Relaksasi', '5 Program', '6 Keterkaitan', '7 Kesimpulan', 'Kuis', 'Referensi'])
-  assert.deepEqual(neighbors('22'), { prev: modulById('21'), next: null })
+  assert.deepEqual(neighbors('22'), { prev: modulById('21'), next: modulById('23') })
   assert.equal(neighbors('21').next, m)
   assert.ok(readFileSync(new URL('../../public/' + m.pdf, import.meta.url)).subarray(0, 4).toString() === '%PDF')
   assert.deepEqual(m.prasyarat, [16, 17])

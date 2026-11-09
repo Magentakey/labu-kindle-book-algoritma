@@ -618,6 +618,33 @@ export const modul = [
       'Membandingkan Bellman-Ford dan Dijkstra secara garis besar.',
     ],
   },
+  {
+    no: 23,
+    id: '23',
+    bab: 'BAB VI',
+    topik: 'ALGORITMA GRAF',
+    judul: 'Algoritma Bellman-Ford',
+    judulPanjang: 'Algoritma Bellman-Ford',
+    ringkas: 'Lintasan terpendek dari satu sumber yang mengizinkan bobot negatif dan mampu mendeteksi cycle berbobot negatif.',
+    prasyarat: [22],
+    prasyaratTeks: 'Modul 22: jarak terpendek, cycle negatif, INITIALIZE-SINGLE-SOURCE, dan RELAX.',
+    materiAsal: 'Materi 13.1 SINGLE SOURCE SHORTEST PATHS, Algoritma Bellman Ford',
+    posisi: { urutan: ['22', '23', '24'], aktif: 1, catatan: 'Algoritma lintasan terpendek pertama. Dibandingkan dengan Dijkstra di Modul 24.' },
+    halaman: 10,
+    soal: 7,
+    menit: 30, // perkiraan: sekitar 3 menit per halaman
+    pdf: 'modul-23-algoritma-bellman-ford.pdf',
+    algoritmaId: 'bellman-ford',
+    // Struktur PDF hanya lima bagian: 1 Ketika Bobot Boleh Negatif, 2 Pseudocode Bellman-Ford, 3 Penelusuran pada Graf Contoh, 4 Kebenaran dan Running Time, 5 Kesimpulan.
+    // Bagian 4 dipecah dua tab agar halaman modul tetap enam tab: 4.1–4.2 (kebenaran) dan 4.3–4.4 (running time dan hubungan dengan modul lain).
+    tabs: { algoritma: '2 Pseudocode', penelusuran: '3 Penelusuran', analisis: '4.1–4.2 Kebenaran', makna: '4.3–4.4 Running Time', kesimpulan: '5 Kesimpulan' },
+    tujuan: [
+      'Menjelaskan langkah-langkah algoritma Bellman-Ford dan arti nilai kembalian TRUE/FALSE.',
+      'Menjalankan Bellman-Ford putaran demi putaran dengan urutan busur tertentu.',
+      'Menjelaskan mengapa $\\lvert V \\rvert - 1$ putaran relaksasi sudah cukup dan bagaimana cycle negatif terdeteksi.',
+      'Menganalisis running time $\\Theta(V E)$.',
+    ],
+  },
 ]
 
 export const modulById = (id) => modul.find((m) => m.id === id) ?? null

@@ -242,6 +242,16 @@ export const daftarKuis = [
     tipe: ['perhitungan', 'pilihan', 'penelusuran', 'analisis', 'benarsalah'],
     thumb: 'graph',
   },
+  {
+    id: '23',
+    modul: '23',
+    judul: 'Algoritma Bellman-Ford',
+    tingkat: 'medium',
+    soal: 7,
+    menit: 12,
+    tipe: ['pilihan', 'penelusuran', 'analisis', 'perhitungan', 'benarsalah'],
+    thumb: 'graph',
+  },
 ]
 
 export const kuisById = (id) => daftarKuis.find((k) => k.id === id) ?? null
