@@ -16,8 +16,14 @@ export default function CodePanel({ code, procedures, line }) {
   const sections = useMemo(() => buildCodeSections(code, procedures, line), [code, procedures, line])
   const box = useRef(null)
   useEffect(() => {
-    const el = box.current?.querySelector('[data-active="true"]')
-    if (el) el.scrollIntoView({ block: 'nearest', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })
+    // Gulir hanya area kode itu sendiri (bukan scrollIntoView, yang ikut menggulir seluruh halaman dan membuat layar terseret kembali saat animasi berjalan).
+    const kotak = box.current
+    const el = kotak?.querySelector('[data-active="true"]')
+    if (!kotak || !el) return
+    const k = kotak.getBoundingClientRect()
+    const r = el.getBoundingClientRect()
+    if (r.top < k.top) kotak.scrollTop -= k.top - r.top
+    else if (r.bottom > k.bottom) kotak.scrollTop += r.bottom - k.bottom
   }, [line])
   return (
     <div>
