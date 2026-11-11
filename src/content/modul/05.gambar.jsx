@@ -1,4 +1,4 @@
-// Gambar Modul 05 untuk penanda {{gambar:id}}: Gambar 1 (grafik fungsi pertumbuhan). Memakai komponen grafik yang sama dengan visualizer.
+// Gambar Modul 05 untuk penanda {{gambar:id}}: Gambar 1 (grafik fungsi pertumbuhan).
 import GrafikPertumbuhan from '../../viz/GrafikPertumbuhan.jsx'
 import { GAMBAR_1 } from './05.hitung.js'
 

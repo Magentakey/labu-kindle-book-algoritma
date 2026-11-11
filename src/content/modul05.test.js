@@ -48,17 +48,17 @@ test('struktur: enam bagian sesuai PDF, semua tab terpenuhi, satu gambar, tanpa 
   assert.deepEqual([...md.matchAll(/\*Tabel (\d+)\./g)].map((x) => Number(x[1])), [1, 2, 3])
 })
 
-test('metadata sama dengan katalog Modul 00; visualizer penjelajah terhubung dua arah', () => {
+test('metadata sama dengan katalog Modul 00; modul konsep tanpa visualizer', () => {
   assert.deepEqual([m.no, m.bab, m.halaman, m.soal, m.prasyarat], [5, 'BAB II', 9, 7, [3, 4]])
   assert.equal(m.soal, kuis05.soal.length)
   assert.equal(m.tujuan.length, 4)
   assert.equal(petaBab[1].modul[2].judul, m.judul)
   assert.deepEqual(tabsOf(m).map((x) => x.tab), ['1 Pendahuluan', '2 Bentuk Fungsi', '3 Rasio', '4 Studi Kasus', '5 Asimtotik', '6 Kesimpulan', 'Kuis', 'Referensi'])
   assert.deepEqual(neighbors('05'), { prev: modulById('04'), next: modulById('06') })
-  assert.equal(m.algoritmaId, 'pertumbuhan-fungsi')
-  assert.ok(penjelajahIds.includes(m.algoritmaId))
-  const kartu = algoritma.find((a) => a.id === m.algoritmaId)
-  assert.deepEqual([kartu.modul, kartu.viz, kartu.thumb], [5, true, 'growth'], 'kartu galeri menunjuk Modul 05 dan penjelajah')
+  assert.equal(m.algoritmaId, null)
+  assert.equal(algoritma.some((a) => a.modul === 5), false, 'tidak ada kartu galeri untuk Modul 05')
+  assert.ok(!penjelajahIds.includes('pertumbuhan-fungsi'))
+  assert.doesNotMatch(md, /Lihat di Visualizer/, 'teks modul tidak menyuruh membuka visualizer yang tidak ada')
   assert.equal(kuisById('05').soal, 7)
   assert.equal(kuisById('05').judul, kuis05.judul)
 })

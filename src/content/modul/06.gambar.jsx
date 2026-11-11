@@ -1,5 +1,5 @@
 // Gambar Modul 06 untuk penanda {{gambar:id}}: Gambar 1 (gambaran grafis tiga notasi). Kurva dihitung dari rumus sederhana (bukan jalur tangan)
-// supaya urutan f, batas bawah, dan batas atas pasti benar di sebelah kanan n₀, dan gayanya sama dengan grafik penjelajah.
+// supaya urutan f, batas bawah, dan batas atas pasti benar di sebelah kanan n₀, dan gayanya sama dengan komponen GrafikBatas.
 import { useId } from 'react'
 import { SwatchBatas } from '../../viz/GrafikBatas.jsx'
 import { gayaBatas } from '../../viz/boundModel.js'

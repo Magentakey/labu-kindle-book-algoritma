@@ -51,12 +51,12 @@ Tes yang menjalankan Python (`cariPython()` di `src/test/python.js`) di-skip oto
 
 ## Visualizer "penjelajah" (halaman interaktif non-langkah)
 
-Konsep yang tidak punya langkah eksekusi (mis. grafik pertumbuhan fungsi di Modul 05) tidak cocok dengan pemutar langkah. Untuk itu ada "penjelajah": halaman bebas di `/algoritma/:id`.
+Konsep yang tidak punya langkah eksekusi tetapi tetap enak dieksplorasi (mis. Pohon Recurrence di Modul 09) tidak cocok dengan pemutar langkah. Untuk itu ada "penjelajah": halaman bebas di `/algoritma/:id`. Kalau konsepnya hanya perhitungan atau pembuktian tanpa algoritma bertahap (Modul 05 dan 06), lebih baik tanpa visualizer: isi `algoritmaId: null` dan jangan buat kartu galeri.
 
-1. Tulis model hitung murni tanpa React (contoh: `src/viz/growthModel.js`) beserta tesnya. Cocokkan angkanya dengan tabel di PDF modul.
-2. Tulis halaman (contoh: `src/viz/PenjelajahPertumbuhan.jsx`) memakai `PenjelajahShell` untuk kepala halaman. Setiap grafik wajib punya padanan tabel, nama/deskripsi (`role="img"`), dan pembeda selain warna.
+1. Tulis model hitung murni tanpa React (contoh: `src/viz/masterModel.js`) beserta tesnya. Cocokkan angkanya dengan tabel di PDF modul.
+2. Tulis halaman (contoh: `src/viz/PenjelajahPohon.jsx`) memakai `PenjelajahShell` untuk kepala halaman. Setiap grafik wajib punya padanan tabel, nama/deskripsi (`role="img"`), dan pembeda selain warna.
 3. Daftarkan id di `src/viz/penjelajahIds.js` dan komponen lazy di `src/viz/penjelajah.js`. Di `src/data/algoritma.js` set `viz: true` pada kartunya (dan `thumb` bila perlu gambar baru di `src/ui/Thumb.jsx`).
-4. Modul yang menautkannya cukup mengisi `algoritmaId` di `src/data/modul.js`. Komponen grafik yang sama bisa dipakai ulang sebagai gambar di teks modul (lihat `05.gambar.jsx`).
+4. Modul yang menautkannya cukup mengisi `algoritmaId` di `src/data/modul.js`. Komponen grafik yang sama bisa dipakai ulang sebagai gambar di teks modul (lihat `05.gambar.jsx`, yang memakai `GrafikPertumbuhan`).
 5. Tambahkan rutenya, dan keadaan interaktif yang penting, ke `scripts/a11y-audit.mjs`.
 
 ## Teks polos dan teks TeX

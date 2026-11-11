@@ -27,27 +27,6 @@ const rute = [
   { nama: 'algoritma-galeri', path: '/' },
   { nama: 'algoritma-insertion-sort', path: '/algoritma/insertion-sort' },
   { nama: 'algoritma-dijkstra', path: '/algoritma/dijkstra' },
-  { nama: 'penjelajah-pertumbuhan', path: '/algoritma/pertumbuhan-fungsi' },
-  {
-    nama: 'penjelajah-log-dan-galat',
-    path: '/algoritma/pertumbuhan-fungsi',
-    siapkan: async (p) => {
-      await klik(p, /Logaritmik/)
-      for (const lbl of ['1', 'n³', 'n!']) await p.locator('[aria-label="Fungsi yang ditampilkan"] button', { hasText: lbl }).first().click()
-      await p.getByLabel('n₂ (ukuran baru)').fill('abc') // memunculkan pesan galat input
-      await p.waitForSelector('[role="alert"]')
-    },
-  },
-  { nama: 'penjelajah-batas', path: '/algoritma/batas-asimtotik' },
-  {
-    nama: 'penjelajah-batas-gagal',
-    path: '/algoritma/batas-asimtotik',
-    siapkan: async (p) => {
-      await p.getByLabel('Contoh').selectOption('bukan-big')
-      await p.getByLabel('c (batas atas)').fill('abc') // memunculkan pesan galat input
-      await p.waitForSelector('[role="alert"]')
-    },
-  },
   { nama: 'penjelajah-limit', path: '/algoritma/little-o-omega' },
   {
     nama: 'penjelajah-limit-eks',

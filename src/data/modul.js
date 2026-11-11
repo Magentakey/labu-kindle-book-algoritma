@@ -140,7 +140,7 @@ export const modul = [
     soal: 7,
     menit: 30, // perkiraan: sekitar 3 menit per halaman, seperti Modul 04
     pdf: 'modul-05-pertumbuhan-fungsi.pdf',
-    algoritmaId: 'pertumbuhan-fungsi',
+    algoritmaId: null, // modul konsep: tidak ada langkah eksekusi untuk diputar, jadi tidak punya visualizer
     // Struktur PDF: 1 Pendahuluan, 2 Bentuk-Bentuk Umum, 3 Rasio Pertumbuhan, 4 Studi Kasus, 5 Dari Rasio ke Notasi Asimtotik, 6 Kesimpulan.
     tabs: { algoritma: '2 Bentuk Fungsi', penelusuran: '3 Rasio', analisis: '4 Studi Kasus', makna: '5 Asimtotik' },
     tujuan: [
@@ -166,7 +166,7 @@ export const modul = [
     soal: 8,
     menit: 35, // perkiraan: sekitar 3 menit per halaman, seperti Modul 04
     pdf: 'modul-06-notasi-asimtotik.pdf',
-    algoritmaId: 'batas-asimtotik',
+    algoritmaId: null, // modul konsep: pembuktian dengan konstanta, bukan algoritma bertahap, jadi tidak punya visualizer
     // Struktur PDF: 1 Pendahuluan, 2 Gagasan Dasar, 3 Theta, 4 Big-Oh, 5 Omega, 6 Hubungan, 7 Penerapan, 8 Mengapa Berguna, 9 Kesimpulan.
     // Bagian 6, 7, dan 8 tidak punya tab sendiri (tab hanya enam), tetapi tetap tampil dan ada di daftar isi.
     tabs: { algoritma: '2 Fungsi Acuan', penelusuran: '3 Theta (Θ)', analisis: '4 Big-Oh (O)', makna: '5 Omega (Ω)', kesimpulan: '9 Kesimpulan' },

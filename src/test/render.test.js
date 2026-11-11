@@ -260,31 +260,3 @@ test('Modul 05: gambar grafik dirender dengan nama dan deskripsi; seluruh teks d
   assert.ok(hitung(html, /class="katex|<mjx-container|<math/g) > 60, 'banyak rumus dirender')
   assert.doesNotMatch(html, /\{\{|@@/)
 })
-
-test('Penjelajah Pertumbuhan Fungsi: kepala halaman, kontrol berlabel, grafik bernama, tabel nilai dan rasio, studi kasus, titik potong', async () => {
-  const Penjelajah = await ssr.load('/src/viz/PenjelajahPertumbuhan.jsx')
-  const { algoritma } = await ssr.modul('/src/data/algoritma.js')
-  const a = algoritma.find((x) => x.id === 'pertumbuhan-fungsi')
-  const html = ssr.render(ssr.createElement(Penjelajah, { a }), '/algoritma/pertumbuhan-fungsi')
-  assert.equal(hitung(html, /<h1[ >]/g), 2, 'satu h1 untuk HP dan satu untuk desktop (salah satunya disembunyikan CSS)')
-  assert.equal(hitung(html, /<h2 /g), 4, 'empat panel')
-  assert.match(html, /Baca materi · Modul 05/)
-  assert.match(html, /href="\/materi\/05"/)
-  // kontrol
-  assert.equal(hitung(html, /aria-pressed=/g), 8 + 2, 'delapan tombol fungsi + dua pilihan skala')
-  assert.equal(hitung(html, /type="range"/g), 2)
-  assert.match(html, /aria-label="Batas ukuran masukan pada grafik"/)
-  assert.match(html, /aria-label="Ukuran masukan n untuk tabel nilai"/)
-  assert.match(html, /aria-label="Skala sumbu tegak"/)
-  // grafik dan padanan teks
-  assert.match(html, /<svg [^>]*role="img"/)
-  assert.match(html, /<caption[^>]*>Nilai fungsi pada n = 10<\/caption>/)
-  assert.match(html, /<caption[^>]*>\s*Rasio pertumbuhan dari n = 5 menjadi n = 25/)
-  assert.equal(hitung(html, /role="region" aria-label="Tabel/g), 2, 'dua tabel lebar bisa digulir dan bisa difokus')
-  // isi awal sama dengan Tabel 2 dan studi kasus bahan kuliah
-  for (const t of ['1.048.576', '1,29 × 10²³', '1.280 T', '65.536 T', '3.276,8 T', '51,2×', 'Mulai n = 190']) assert.ok(html.includes(t), t)
-  assert.equal(hitung(html, /<input /g), 2 + (2 + 3 + 2), 'dua penggeser + isian n₁ n₂; n₀ n k; dua konstanta')
-  assert.equal(hitung(html, /<input [^>]*inputMode=/g), 7, 'tujuh isian bilangan')
-  assert.equal(hitung(html, /<label /g) >= 7, true, 'setiap isian punya label')
-  assert.equal(hitung(html, /role="status"/g), 2, 'kesimpulan studi kasus dan titik potong diumumkan')
-})

@@ -7,11 +7,11 @@ import { vizIds } from '../viz/vizConfig.js'
 
 const materials = JSON.parse(readFileSync(new URL('../content/materials.json', import.meta.url), 'utf8'))
 
-test('galeri: 20 algoritma di 8 kategori (17 dari desain + Konsep DP untuk Modul 10 + Konsep Greedy untuk Modul 13 + Representasi Graf untuk Modul 16)', () => {
-  assert.equal(algoritma.length, 20)
+test('galeri: 18 algoritma di 8 kategori (Modul 05 dan 06 tidak punya visualizer, jadi tidak ada kartunya)', () => {
+  assert.equal(algoritma.length, 18)
   assert.equal(kategori.length, 8)
   const count = Object.fromEntries(kategori.map((k) => [k.id, algoritma.filter((a) => a.kategori === k.id).length]))
-  assert.deepEqual(count, { pencarian: 1, sorting: 2, analisis: 4, dp: 3, greedy: 3, graf: 3, mst: 2, 'shortest-path': 2 })
+  assert.deepEqual(count, { pencarian: 1, sorting: 2, analisis: 2, dp: 3, greedy: 3, graf: 3, mst: 2, 'shortest-path': 2 })
 })
 
 test('galeri: id unik, modul unik dalam 1 sampai 24, naik di dalam tiap kategori, dan semua kolom terisi', () => {
@@ -40,24 +40,22 @@ test('galeri: kartu tanpa visualizer baru (bila ada) menunjuk ke materi lama yan
   }
 })
 
-test('galeri: tidak ada lagi kartu yang memakai maskot labu; tiga kartu Analisis punya gambar grafik sendiri', () => {
+test('galeri: tidak ada lagi kartu yang memakai maskot labu; kartu Analisis punya gambar grafik sendiri', () => {
   assert.deepEqual(algoritma.filter((a) => a.thumb === 'pumpkin').map((a) => a.id), [])
   assert.equal(algoritma.find((a) => a.id === 'little-o-omega').thumb, 'limit')
-  assert.equal(algoritma.find((a) => a.id === 'pertumbuhan-fungsi').thumb, 'growth')
-  assert.equal(algoritma.find((a) => a.id === 'batas-asimtotik').thumb, 'bound')
+  assert.equal(algoritma.find((a) => a.id === 'pohon-recurrence').thumb, 'levels')
 })
 
-test('galeri: semua 20 kartu punya visualizer baru (13 pemutar langkah + 7 penjelajah), tidak ada lagi yang membuka materi lama', () => {
+test('galeri: semua 18 kartu punya visualizer baru (13 pemutar langkah + 5 penjelajah), tidak ada lagi yang membuka materi lama', () => {
   const baru = algoritma.filter((a) => a.viz).map((a) => a.id)
   assert.deepEqual(baru.sort(), [...vizIds, ...penjelajahIds].sort(), 'daftar viz di data = konfigurasi visualizer + penjelajah')
-  assert.equal(baru.length, 20)
+  assert.equal(baru.length, 18)
   assert.ok(penjelajahIds.every((id) => !vizIds.includes(id)), 'satu id tidak dilayani dua mekanisme')
   assert.deepEqual(algoritma.filter((a) => !a.viz), [])
   for (const a of algoritma) assert.equal(algoritmaHref(a), a.viz ? `/algoritma/${a.id}` : a.href)
   assert.equal(algoritmaHref(algoritma.find((a) => a.id === 'dijkstra')), '/algoritma/dijkstra')
   assert.equal(algoritmaHref(algoritma.find((a) => a.id === 'insertion-sort')), '/algoritma/insertion-sort')
-  assert.equal(algoritmaHref(algoritma.find((a) => a.id === 'pertumbuhan-fungsi')), '/algoritma/pertumbuhan-fungsi', 'Pertumbuhan Fungsi sudah punya penjelajah')
-  assert.equal(algoritmaHref(algoritma.find((a) => a.id === 'batas-asimtotik')), '/algoritma/batas-asimtotik', 'Batas Θ / O / Ω sudah punya penjelajah')
+  assert.deepEqual(algoritma.filter((a) => a.modul === 5 || a.modul === 6), [], 'Modul 05 dan 06 sengaja tanpa visualizer')
   assert.equal(algoritmaHref(algoritma.find((a) => a.id === 'little-o-omega')), '/algoritma/little-o-omega', 'Little-o / ω sudah punya penjelajah')
   assert.equal(algoritmaHref(algoritma.find((a) => a.id === 'pohon-recurrence')), '/algoritma/pohon-recurrence', 'Pohon Recurrence sudah punya penjelajah')
 })

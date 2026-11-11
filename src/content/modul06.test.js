@@ -65,7 +65,7 @@ test('struktur: sembilan bagian sesuai PDF, semua tab terpenuhi, satu gambar, em
   for (const jdl of ['3.1', '4.1', '4.2', '5.1', '6.1', '7.1', '7.2', '7.3']) assert.ok(md.includes(`### ${jdl} `), `subbagian ${jdl}`)
 })
 
-test('metadata sama dengan PDF dan katalog; penjelajah terhubung dua arah', () => {
+test('metadata sama dengan PDF dan katalog; modul konsep tanpa visualizer', () => {
   assert.deepEqual([m.no, m.bab, m.halaman, m.soal, m.prasyarat], [6, 'BAB II', 11, 8, [4, 5]])
   assert.equal(m.soal, kuis06.soal.length)
   assert.equal(m.tujuan.length, 4)
@@ -75,10 +75,10 @@ test('metadata sama dengan PDF dan katalog; penjelajah terhubung dua arah', () =
   assert.equal(neighbors('05').next, m)
   assert.equal(m.pdf, 'modul-06-notasi-asimtotik.pdf')
   assert.ok(readFileSync(new URL('../../public/' + m.pdf, import.meta.url)).subarray(0, 4).toString() === '%PDF')
-  assert.equal(m.algoritmaId, 'batas-asimtotik')
-  assert.ok(penjelajahIds.includes(m.algoritmaId))
-  const kartu = algoritma.find((a) => a.id === m.algoritmaId)
-  assert.deepEqual([kartu.modul, kartu.viz, kartu.thumb], [6, true, 'bound'], 'kartu galeri menunjuk Modul 06 dan penjelajah')
+  assert.equal(m.algoritmaId, null)
+  assert.equal(algoritma.some((a) => a.modul === 6), false, 'tidak ada kartu galeri untuk Modul 06')
+  assert.ok(!penjelajahIds.includes('batas-asimtotik'))
+  assert.doesNotMatch(md, /Lihat di Visualizer/, 'teks modul tidak menyuruh membuka visualizer yang tidak ada')
   assert.equal(kuisById('06').soal, 8)
   assert.equal(kuisById('06').judul, kuis06.judul)
   assert.equal(kuisById('06').tingkat, 'medium')
