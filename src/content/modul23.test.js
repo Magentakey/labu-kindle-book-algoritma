@@ -78,7 +78,7 @@ test('metadata sama dengan PDF dan katalog; visualizer Bellman-Ford terhubung du
   assert.equal(m.tujuan.length, 4)
   assert.equal(petaBab[7].modul[1].judul, m.judul)
   assert.deepEqual(tabsOf(m).map((x) => x.tab), ['1 Pendahuluan', '2 Pseudocode', '3 Penelusuran', '4.1–4.2 Kebenaran', '4.3–4.4 Running Time', '5 Kesimpulan', 'Kuis', 'Referensi'])
-  assert.deepEqual(neighbors('23'), { prev: modulById('22'), next: null })
+  assert.deepEqual(neighbors('23'), { prev: modulById('22'), next: modulById('24') })
   assert.equal(neighbors('22').next, m)
   assert.ok(readFileSync(new URL('../../public/' + m.pdf, import.meta.url)).subarray(0, 4).toString() === '%PDF')
   assert.deepEqual(m.prasyarat, [22])

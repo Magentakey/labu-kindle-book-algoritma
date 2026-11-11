@@ -252,6 +252,16 @@ export const daftarKuis = [
     tipe: ['pilihan', 'penelusuran', 'analisis', 'perhitungan', 'benarsalah'],
     thumb: 'graph',
   },
+  {
+    id: '24',
+    modul: '24',
+    judul: 'Algoritma Dijkstra',
+    tingkat: 'medium',
+    soal: 7,
+    menit: 12,
+    tipe: ['pilihan', 'penelusuran', 'analisis', 'benarsalah', 'perhitungan'],
+    thumb: 'graph',
+  },
 ]
 
 export const kuisById = (id) => daftarKuis.find((k) => k.id === id) ?? null

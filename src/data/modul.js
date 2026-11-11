@@ -645,6 +645,34 @@ export const modul = [
       'Menganalisis running time $\\Theta(V E)$.',
     ],
   },
+  {
+    no: 24,
+    id: '24',
+    bab: 'BAB VI',
+    topik: 'ALGORITMA GRAF',
+    judul: 'Algoritma Dijkstra',
+    judulPanjang: 'Algoritma Dijkstra',
+    ringkas: 'Lintasan terpendek dari satu sumber untuk bobot nonnegatif: selalu selesaikan simpul yang jaraknya paling kecil lebih dulu.',
+    prasyarat: [22, 23, 13],
+    prasyaratTeks: 'Modul 22: jarak terpendek, INITIALIZE-SINGLE-SOURCE, RELAX. Modul 23 (disarankan): Bellman-Ford sebagai pembanding. Modul 13: konsep Greedy.',
+    materiAsal: 'Materi 13.2 SINGLE SOURCE SHORTEST PATHS, Algoritma Dijkstra',
+    posisi: { urutan: ['22', '23', '24'], aktif: 2, catatan: 'Modul terakhir. Menutup Bab VI dan menghubungkan konsep Greedy, antrean prioritas, dan relaksasi.' },
+    halaman: 11,
+    soal: 7,
+    menit: 35, // perkiraan: sekitar 3 menit per halaman
+    pdf: 'modul-24-algoritma-dijkstra.pdf',
+    algoritmaId: 'dijkstra',
+    // Struktur PDF punya enam bagian: 1 Menyelesaikan yang Terdekat Lebih Dulu, 2 Pseudocode Dijkstra, 3 Penelusuran Dijkstra dari Simpul s,
+    // 4 Mengapa Dijkstra Benar, dan Kapan Gagal, 5 Running Time dan Perbandingan, 6 Kesimpulan. Setiap bagian mendapat satu tab.
+    tabs: { algoritma: '2 Pseudocode', penelusuran: '3 Penelusuran', analisis: '4 Kebenaran', makna: '5 Running Time', kesimpulan: '6 Kesimpulan' },
+    tujuan: [
+      'Menjelaskan langkah-langkah algoritma Dijkstra serta peran himpunan $S$ dan antrean $Q$.',
+      'Menelusuri Dijkstra iterasi demi iterasi dan menyusun lintasan terpendek dari predecessor.',
+      'Menjelaskan mengapa Dijkstra benar untuk bobot nonnegatif dan memberi contoh kegagalannya pada bobot negatif.',
+      'Menganalisis running time Dijkstra untuk beberapa implementasi antrean prioritas.',
+      'Membandingkan Dijkstra dengan Bellman-Ford, BFS, dan Prim.',
+    ],
+  },
 ]
 
 export const modulById = (id) => modul.find((m) => m.id === id) ?? null
