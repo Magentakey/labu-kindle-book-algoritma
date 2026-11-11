@@ -9,7 +9,7 @@ import { modul, modulById, neighbors, tabsOf } from '../data/modul.js'
 import { daftarKuis, kuisById } from '../data/quiz.js'
 import { petaBab } from '../data/credit.js'
 import { cariPython } from '../test/python.js'
-import { penjelajahIds } from '../viz/penjelajahIds.js'
+import { vizIds } from '../viz/vizConfig.js'
 import { rand } from '../lib/testRandom.js'
 import { contoh, contohById, klasifikasi, logBA, nilaiPengurangan, nilaiT, pembagiSolusi, pendominasi, pohonRekursi, rasioNumerik, teksRecurrence, teksSolusi, teksSuku } from '../viz/masterModel.js'
 import { kuis09 } from './modul/09.kuis.js'
@@ -44,7 +44,7 @@ test('struktur: enam bagian sesuai PDF dan enam tab, dua tabel, kode Python; tek
   assert.ok(!/\\text\{[^}]*\\textbf/.test(md))
 })
 
-test('metadata sama dengan PDF dan katalog; penjelajah Pohon Recurrence terhubung dua arah', () => {
+test('metadata sama dengan PDF dan katalog; visualizer langkah Pohon Recurrence terhubung dua arah', () => {
   assert.deepEqual([m.no, m.bab, m.halaman, m.soal, m.prasyarat], [9, 'BAB III', 10, 8, [6, 7, 8]])
   assert.equal(m.soal, kuis09.soal.length)
   assert.equal(m.tujuan.length, 4)
@@ -54,7 +54,7 @@ test('metadata sama dengan PDF dan katalog; penjelajah Pohon Recurrence terhubun
   assert.equal(neighbors('08').next, m)
   assert.ok(readFileSync(new URL('../../public/' + m.pdf, import.meta.url)).subarray(0, 4).toString() === '%PDF')
   assert.equal(m.algoritmaId, 'pohon-recurrence')
-  assert.ok(penjelajahIds.includes(m.algoritmaId))
+  assert.ok(vizIds.includes(m.algoritmaId), 'visualizer pemutar langkah terhubung')
   const kartu = algoritma.find((a) => a.id === m.algoritmaId)
   assert.deepEqual([kartu.modul, kartu.viz, kartu.thumb], [9, true, 'levels'])
   assert.equal(kuisById('09').soal, 8)

@@ -9,7 +9,7 @@ import { modul, modulById, neighbors, tabsOf } from '../data/modul.js'
 import { daftarKuis, kuisById } from '../data/quiz.js'
 import { petaBab } from '../data/credit.js'
 import { cariPython } from '../test/python.js'
-import { penjelajahIds } from '../viz/penjelajahIds.js'
+import { vizIds } from '../viz/vizConfig.js'
 import { rand } from '../lib/testRandom.js'
 import { caraKurung, fib, hargaModul, hitungSimpul, kaliDihitung, pemanggilanBatangNaif, pemanggilanMemo, pemanggilanNaif, penjumlahanBottomUp, perbandinganBatang, pohonFibonacci, potongBatang, setHarga, simulasiNaif, submasalahBerbeda, susunPotongan, teksBesar } from '../viz/dpModel.js'
 import { kuis10 } from './modul/10.kuis.js'
@@ -43,7 +43,7 @@ test('struktur: tujuh bagian sesuai PDF, enam tab terpenuhi, satu gambar, lima t
   for (const x of modul) assert.ok(![x.judul, x.judulPanjang, x.ringkas, x.prasyaratTeks].some((t) => /[$\\]/.test(t ?? '')), `${x.id}: teks polos`)
 })
 
-test('metadata sama dengan PDF dan katalog; penjelajah Konsep DP terhubung dua arah', () => {
+test('metadata sama dengan PDF dan katalog; visualizer langkah Konsep DP terhubung dua arah', () => {
   assert.deepEqual([m.no, m.bab, m.halaman, m.soal], [10, 'BAB IV', 9, 7])
   assert.equal(m.soal, kuis10.soal.length)
   assert.equal(m.tujuan.length, 5)
@@ -53,7 +53,7 @@ test('metadata sama dengan PDF dan katalog; penjelajah Konsep DP terhubung dua a
   assert.equal(neighbors('09').next, m)
   assert.ok(readFileSync(new URL('../../public/' + m.pdf, import.meta.url)).subarray(0, 4).toString() === '%PDF')
   assert.equal(m.algoritmaId, 'konsep-dp')
-  assert.ok(penjelajahIds.includes(m.algoritmaId))
+  assert.ok(vizIds.includes(m.algoritmaId), 'visualizer pemutar langkah terhubung')
   const kartu = algoritma.find((a) => a.id === m.algoritmaId)
   assert.deepEqual([kartu.modul, kartu.viz, kartu.kategori], [10, true, 'dp'])
   assert.equal(kuisById('10').soal, 7)

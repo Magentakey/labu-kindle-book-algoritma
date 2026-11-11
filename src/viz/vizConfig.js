@@ -185,6 +185,34 @@ Object.assign(vizConfig, {
     legend: legendOf(['queued', 'Akar di antrean Q'], ['active', 'Sedang digabung'], ['done', 'Bagian pohon']),
     presets: defPresets('huffman'),
   },
+  'pohon-recurrence': {
+    stage: 'table',
+    trace: 'recurrence-tree',
+    procedures: defProcedures('recurrence-tree'),
+    legend: legendOf(['active', 'Level yang sedang dihitung'], ['idle', 'Belum dihitung']),
+    presets: defPresets('recurrence-tree'),
+  },
+  'konsep-dp': {
+    stage: 'table',
+    trace: 'bottom-up-cut-rod',
+    procedures: defProcedures('bottom-up-cut-rod'),
+    legend: legendOf(['active', 'r[j] yang sedang dicari'], ['left', 'Sel r[j-i] yang dijumlahkan'], ['idle', 'Belum terisi']),
+    presets: defPresets('bottom-up-cut-rod'),
+  },
+  'konsep-greedy': {
+    stage: 'table',
+    trace: 'greedy-coin-change',
+    procedures: defProcedures('greedy-coin-change'),
+    legend: legendOf(['active', 'Pecahan yang sedang diproses'], ['idle', 'Belum dikerjakan']),
+    presets: defPresets('greedy-coin-change'),
+  },
+  'representasi-graf': {
+    stage: 'table',
+    trace: 'graph-representation',
+    procedures: defProcedures('graph-representation'),
+    legend: legendOf(['active', 'List atau sel yang baru berubah'], ['idle', 'Masih kosong (∅ atau 0)']),
+    presets: defPresets('graph-representation'),
+  },
 })
 
 /** Pasangan algoritma yang bisa dibandingkan, dengan nama tampil dan jenis tampilan. */

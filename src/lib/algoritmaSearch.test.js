@@ -38,12 +38,12 @@ test('filterAlgoritma: filter kategori digabung dengan pencarian', () => {
   assert.deepEqual(ids(filterAlgoritma('', 'shortest-path')), ['bellman-ford', 'dijkstra'])
   assert.deepEqual(ids(filterAlgoritma('sort', 'pencarian')), [])
   assert.deepEqual(ids(filterAlgoritma('merge', 'sorting')), ['merge-sort'])
-  assert.equal(filterAlgoritma('', 'semua').length, 18)
+  assert.equal(filterAlgoritma('', 'semua').length, 17)
 })
 
 test('groupByKategori: urutan kategori tetap dan kategori kosong dilewati', () => {
   const g = groupByKategori(algoritma)
-  assert.deepEqual(g.map((x) => [x.id, x.items.length]), [['pencarian', 1], ['sorting', 2], ['analisis', 2], ['dp', 3], ['greedy', 3], ['graf', 3], ['mst', 2], ['shortest-path', 2]])
+  assert.deepEqual(g.map((x) => [x.id, x.items.length]), [['pencarian', 1], ['sorting', 2], ['analisis', 1], ['dp', 3], ['greedy', 3], ['graf', 3], ['mst', 2], ['shortest-path', 2]])
   assert.equal(g[3].title, 'Dynamic Programming')
   assert.deepEqual(groupByKategori(filterAlgoritma('dijk')).map((x) => x.id), ['shortest-path'])
   assert.deepEqual(groupByKategori([]), [])

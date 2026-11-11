@@ -9,7 +9,7 @@ import { modul, modulById, neighbors, tabsOf } from '../data/modul.js'
 import { daftarKuis, kuisById } from '../data/quiz.js'
 import { petaBab } from '../data/credit.js'
 import { cariPython } from '../test/python.js'
-import { penjelajahIds } from '../viz/penjelajahIds.js'
+import { vizIds } from '../viz/vizConfig.js'
 import { rand } from '../lib/testRandom.js'
 import { bangun, grafA, grafB, grafSoal1, maksBusurTakBerarah, memori } from '../viz/representasiGrafModel.js'
 import { kuis16 } from './modul/16.kuis.js'
@@ -46,7 +46,7 @@ test('struktur: tujuh bagian sesuai PDF (bagian 2 tanpa tab), dua gambar, enam t
   assert.equal([...md.matchAll(/Catatan koreksi terhadap sumber/g)].length, 1)
 })
 
-test('metadata sama dengan PDF dan katalog; penjelajah Representasi Graf terhubung dua arah', () => {
+test('metadata sama dengan PDF dan katalog; visualizer langkah Representasi Graf terhubung dua arah', () => {
   assert.deepEqual([m.no, m.bab, m.halaman, m.soal], [16, 'BAB VI', 9, 7])
   assert.equal(m.soal, kuis16.soal.length)
   assert.equal(m.tujuan.length, 4)
@@ -56,7 +56,7 @@ test('metadata sama dengan PDF dan katalog; penjelajah Representasi Graf terhubu
   assert.equal(neighbors('15').next, m)
   assert.ok(readFileSync(new URL('../../public/' + m.pdf, import.meta.url)).subarray(0, 4).toString() === '%PDF')
   assert.equal(m.algoritmaId, 'representasi-graf')
-  assert.ok(penjelajahIds.includes(m.algoritmaId))
+  assert.ok(vizIds.includes(m.algoritmaId), 'visualizer pemutar langkah terhubung')
   const kartu = algoritma.find((a) => a.id === m.algoritmaId)
   assert.deepEqual([kartu.modul, kartu.viz, kartu.kategori], [16, true, 'graf'])
   assert.equal(kuisById('16').soal, 7)

@@ -27,56 +27,10 @@ const rute = [
   { nama: 'algoritma-galeri', path: '/' },
   { nama: 'algoritma-insertion-sort', path: '/algoritma/insertion-sort' },
   { nama: 'algoritma-dijkstra', path: '/algoritma/dijkstra' },
-  { nama: 'penjelajah-limit', path: '/algoritma/little-o-omega' },
-  {
-    nama: 'penjelajah-limit-eks',
-    path: '/algoritma/little-o-omega',
-    siapkan: async (p) => {
-      await p.getByLabel('Contoh').first().selectOption('e') // n² dan 2ⁿ: skala logaritmik ekstrem
-      await p.getByLabel('Koefisien f (c_f)').fill('abc') // memunculkan pesan galat input
-      await p.waitForSelector('[role="alert"]')
-    },
-  },
-  { nama: 'penjelajah-pohon', path: '/algoritma/pohon-recurrence' },
-  {
-    nama: 'penjelajah-pohon-celah',
-    path: '/algoritma/pohon-recurrence',
-    siapkan: async (p) => {
-      await p.getByLabel('Contoh').first().selectOption('celah') // celah antara kasus 2 dan 3
-      await p.getByLabel('a (banyak submasalah)').fill('abc') // memunculkan pesan galat input
-      await p.waitForSelector('[role="alert"]')
-    },
-  },
-  { nama: 'penjelajah-dp', path: '/algoritma/konsep-dp' },
-  {
-    nama: 'penjelajah-dp-pohon',
-    path: '/algoritma/konsep-dp',
-    siapkan: async (p) => {
-      await p.getByLabel('n (0 sampai 200)').fill('5') // memunculkan pohon pemanggilan
-      await p.getByLabel('n matriks (1 sampai 40)').fill('abc') // memunculkan pesan galat input
-      await p.waitForSelector('[role="alert"]')
-    },
-  },
-  { nama: 'penjelajah-greedy', path: '/algoritma/konsep-greedy' },
-  { nama: 'penjelajah-graf', path: '/algoritma/representasi-graf' },
-  {
-    nama: 'penjelajah-graf-berarah',
-    path: '/algoritma/representasi-graf',
-    siapkan: async (p) => {
-      await p.getByLabel('Contoh').selectOption({ label: 'Graf (b): berarah, 6 simpul' }) // graf berarah dengan self-loop dan derajat masuk
-      await p.getByLabel('Busur (pisahkan dengan koma, mis. 1-2, 2-3)').fill('1-9') // memunculkan pesan galat input
-      await p.waitForSelector('[role="alert"]')
-    },
-  },
-  {
-    nama: 'penjelajah-greedy-galat',
-    path: '/algoritma/konsep-greedy',
-    siapkan: async (p) => {
-      await p.getByLabel('Pecahan koin (pisahkan dengan koma)').fill('2, 5') // memunculkan pesan galat input (tanpa pecahan 1)
-      await p.getByLabel('Kapasitas tas W (kg, 1 sampai 60)').fill('50') // knapsack 0-1 gagal
-      await p.waitForSelector('[role="alert"]')
-    },
-  },
+  { nama: 'algoritma-pohon-recurrence', path: '/algoritma/pohon-recurrence' },
+  { nama: 'algoritma-konsep-dp', path: '/algoritma/konsep-dp' },
+  { nama: 'algoritma-konsep-greedy', path: '/algoritma/konsep-greedy' },
+  { nama: 'algoritma-representasi-graf', path: '/algoritma/representasi-graf' },
   { nama: 'algoritma-bandingkan', path: '/algoritma/bandingkan/insertion-sort/merge-sort' },
   { nama: 'materi-daftar', path: '/materi' },
   { nama: 'materi-01', path: '/materi/01' },

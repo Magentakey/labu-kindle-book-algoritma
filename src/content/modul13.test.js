@@ -9,7 +9,7 @@ import { modul, modulById, neighbors, tabsOf } from '../data/modul.js'
 import { daftarKuis, kuisById } from '../data/quiz.js'
 import { petaBab } from '../data/credit.js'
 import { cariPython } from '../test/python.js'
-import { penjelajahIds } from '../viz/penjelajahIds.js'
+import { vizIds } from '../viz/vizConfig.js'
 import { barangModul, kapasitasGagal, knapsack01Greedy, knapsack01Optimal, knapsackPecahan, koinGreedy, koinOptimal, penyangkalKoin } from '../viz/greedyModel.js'
 import { kuis13 } from './modul/13.kuis.js'
 
@@ -43,7 +43,7 @@ test('struktur: enam bagian sesuai PDF pas dengan enam tab, tiga tabel, kode Pyt
   assert.equal([...md.matchAll(/^[1-4]\. \*\*/gm)].length, 4)
 })
 
-test('metadata sama dengan PDF dan katalog; penjelajah Konsep Greedy terhubung dua arah dan modul baru bab V', () => {
+test('metadata sama dengan PDF dan katalog; visualizer langkah Konsep Greedy terhubung dua arah dan modul baru bab V', () => {
   assert.deepEqual([m.no, m.bab, m.halaman, m.soal], [13, 'BAB V', 8, 7])
   assert.equal(m.soal, kuis13.soal.length)
   assert.equal(m.tujuan.length, 5)
@@ -53,7 +53,7 @@ test('metadata sama dengan PDF dan katalog; penjelajah Konsep Greedy terhubung d
   assert.equal(neighbors('12').next, m)
   assert.ok(readFileSync(new URL('../../public/' + m.pdf, import.meta.url)).subarray(0, 4).toString() === '%PDF')
   assert.equal(m.algoritmaId, 'konsep-greedy')
-  assert.ok(penjelajahIds.includes(m.algoritmaId))
+  assert.ok(vizIds.includes(m.algoritmaId), 'visualizer pemutar langkah terhubung')
   const kartu = algoritma.find((a) => a.id === m.algoritmaId)
   assert.deepEqual([kartu.modul, kartu.viz, kartu.kategori, kartu.paradigma], [13, true, 'greedy', 'Greedy'])
   assert.equal(kuisById('13').soal, 7)

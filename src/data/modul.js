@@ -193,7 +193,7 @@ export const modul = [
     soal: 7,
     menit: 30, // perkiraan: sekitar 3 menit per halaman, seperti Modul 04
     pdf: 'modul-07-notasi-little-o-omega.pdf',
-    algoritmaId: 'little-o-omega',
+    algoritmaId: null, // modul konsep: perbandingan laju pertumbuhan lewat limit, bukan algoritma bertahap, jadi tidak punya visualizer
     // Struktur PDF: 1 Pendahuluan, 2 Ketat dan Tidak Ketat, 3 Little-o, 4 Little-Omega, 5 Lima Notasi dan Uji Limit, 6 Contoh Penerapan, 7 Peran, 8 Kesimpulan.
     // Bagian 6 dan 7 tidak punya tab sendiri (tab hanya enam), tetapi tetap tampil dan ada di daftar isi.
     tabs: { algoritma: '2 Ketat & Tidak', penelusuran: '3 Little-o', analisis: '4 Little-ω', makna: '5 Uji Limit', kesimpulan: '8 Kesimpulan' },
