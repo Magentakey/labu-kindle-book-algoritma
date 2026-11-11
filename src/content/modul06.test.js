@@ -81,7 +81,7 @@ test('metadata sama dengan PDF dan katalog; modul konsep tanpa visualizer', () =
   assert.doesNotMatch(md, /Lihat di Visualizer/, 'teks modul tidak menyuruh membuka visualizer yang tidak ada')
   assert.equal(kuisById('06').soal, 8)
   assert.equal(kuisById('06').judul, kuis06.judul)
-  assert.equal(kuisById('06').tingkat, 'medium')
+  assert.equal(kuisById('06').tingkat, 'hard')
 })
 
 // ---------------------------------------------------------------- Tabel 1 sampai 4 dicocokkan dengan hitungan mandiri

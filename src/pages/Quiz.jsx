@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { TOTAL_MODUL } from '../data/modul.js'
-import { daftarKuis, tipeSoal } from '../data/quiz.js'
+import { daftarKuis } from '../data/quiz.js'
 import { kelompokkan, ringkasan, saring } from '../lib/quizList.js'
 import KuisKartu from '../quiz/KuisKartu.jsx'
 import { useProgress } from '../materi/useProgress.js'
@@ -9,29 +9,6 @@ import { cx } from '../ui/cx.js'
 
 const statusOpsi = [{ id: 'semua', label: 'Semua' }, { id: 'belum', label: 'Belum' }, { id: 'lulus', label: 'Lulus' }, { id: 'gagal', label: 'Gagal' }]
 const modulOpsi = [{ value: 'semua', label: 'Semua modul' }, ...[...new Set(daftarKuis.map((k) => k.modul))].map((m) => ({ value: m, label: `Modul ${m}` }))]
-
-/** Filter jenis soal: tombol hidup-mati (bisa dipilih lebih dari satu). Kosong = semua jenis. */
-function JenisSoal({ nilai, onChange }) {
-  return (
-    <div role="group" aria-label="Jenis soal" className="flex flex-wrap items-center gap-2">
-      {tipeSoal.map((t) => {
-        const on = nilai.includes(t.id)
-        return (
-          <button
-            key={t.id}
-            type="button"
-            aria-pressed={on}
-            onClick={() => onChange(on ? nilai.filter((x) => x !== t.id) : [...nilai, t.id])}
-            className={cx('text-caption inline-flex items-center gap-1.5 rounded-sm border px-2.5 py-1.5 transition-colors', on ? 'border-brand-blue bg-info-bg font-semibold text-control' : 'border-transparent bg-panel text-ink hover:border-line')}
-          >
-            <span className={cx('size-1.5 shrink-0', on ? 'bg-brand-blue' : 'bg-muted')} aria-hidden="true" />
-            {t.label}
-          </button>
-        )
-      })}
-    </div>
-  )
-}
 
 function Grup({ g, progres, tutup, onToggle }) {
   return (
@@ -55,26 +32,24 @@ function Grup({ g, progres, tutup, onToggle }) {
   )
 }
 
-/** Halaman Quiz (Figma: Quiz · Daftar): kuis dikelompokkan menurut tingkat, dengan pencarian dan filter modul, status, dan jenis soal. */
+/** Halaman Quiz (Figma: Quiz · Daftar): kuis dikelompokkan menurut tingkat, dengan pencarian dan filter modul dan status. */
 export default function Quiz() {
   const progres = useProgress()
   const [q, setQ] = useState('')
   const [modul, setModul] = useState('semua')
   const [status, setStatus] = useState('semua')
-  const [tipe, setTipe] = useState([])
   const [tutup, setTutup] = useState({})
   useEffect(() => {
     document.title = 'Quiz · LABU'
   }, [])
 
   const ring = useMemo(() => ringkasan(daftarKuis, progres), [progres])
-  const hasil = useMemo(() => saring(daftarKuis, progres, { q, modul, status, tipe }), [progres, q, modul, status, tipe])
+  const hasil = useMemo(() => saring(daftarKuis, progres, { q, modul, status }), [progres, q, modul, status])
   const grup = useMemo(() => kelompokkan(hasil), [hasil])
   const reset = () => {
     setQ('')
     setModul('semua')
     setStatus('semua')
-    setTipe([])
   }
 
   return (
@@ -100,7 +75,6 @@ export default function Quiz() {
           <Select label="Modul" value={modul} onChange={setModul} options={modulOpsi} />
           <Segmented options={statusOpsi} value={status} onChange={setStatus} label="Filter status kuis" />
         </div>
-        <JenisSoal nilai={tipe} onChange={setTipe} />
       </div>
 
       <p className="sr-only" role="status" aria-live="polite">
@@ -126,7 +100,7 @@ export default function Quiz() {
       <div className="mt-8 flex items-center gap-4 rounded-sm border border-dashed border-line bg-panel p-4">
         <Mascot expression="berpikir" size={64} />
         <p className="text-body text-ink-soft">
-          Kuis modul lain sedang disiapkan. Saat ini baru {ring.kuis} kuis yang tersedia; kuis Easy, Hard, dan Complex akan muncul di sini.
+          Kuis modul lain sedang disiapkan. Saat ini baru {ring.kuis} kuis yang tersedia; kuis tingkat Complex akan muncul di sini.
         </p>
       </div>
     </div>

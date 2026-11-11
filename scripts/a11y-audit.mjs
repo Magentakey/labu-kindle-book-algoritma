@@ -119,6 +119,29 @@ const rute = [
       await p.getByRole('button', { name: /Lihat pembahasan/ }).nth(1).click()
     },
   },
+  {
+    nama: 'quiz-01-banyak-jawaban',
+    path: '/quiz/01',
+    siapkan: async (p) => {
+      await klik(p, /Mulai kuis/)
+      await klik(p, /Berikutnya/) // soal 2: pilih dua jawaban
+      await p.getByRole('checkbox').nth(0).click()
+      await p.getByRole('checkbox').nth(2).click()
+    },
+  },
+  {
+    nama: 'quiz-01-hasil',
+    path: '/quiz/01',
+    siapkan: async (p) => {
+      await klik(p, /Mulai kuis/)
+      await klik(p, /Berikutnya/)
+      await p.getByRole('checkbox').nth(0).click()
+      await p.getByRole('checkbox').nth(1).click()
+      for (let i = 0; i < 6; i++) await klik(p, /Berikutnya/)
+      await klik(p, /Selesai dan lihat hasil/)
+      await p.getByRole('button', { name: /Lihat pembahasan/ }).nth(1).click()
+    },
+  },
   { nama: 'credit', path: '/credit' },
   { nama: 'materi-lama-insertion-sort', path: '/materi/insertion-sort' },
 ]

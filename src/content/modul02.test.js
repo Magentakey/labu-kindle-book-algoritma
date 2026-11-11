@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import { spawnSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import { parseModul } from '../lib/modulContent.js'
-import { hitungHasil, nilaiSoal, TIPE_LABEL } from '../lib/kuis.js'
+import { hitungHasil, nilaiSoal, jenisSoal } from '../lib/kuis.js'
 import { modulById, neighbors, sections, tabsOf } from '../data/modul.js'
 import { algoritma } from '../data/algoritma.js'
 import { daftarKuis, kuisById } from '../data/quiz.js'
@@ -185,47 +185,59 @@ test('kasus terbaik 1 perbandingan; pada array tidak terurut hasilnya bisa salah
 })
 
 // ---------------------------------------------------------------- kuis
-test('kunci kuis dihitung ulang: soal 2, 3, 4, 5', () => {
+test('kunci kuis dihitung ulang: soal 2, 3, 4, 5, 6', () => {
   assert.deepEqual(jejakBinarySearch(A, 9, 1, 6).putaran.map((x) => [x.p, x.n, x.mid]), [[1, 6, 3]])
+  assert.equal(kuis02.soal[1].kunci, 'B')
   const rantai = rekursif(A, 21, 1, 6).rantai
   assert.deepEqual(rantai.map((c) => [c.p, c.n]), [[1, 6], [4, 6], [6, 6], [7, 6]])
   assert.deepEqual(rantai.slice(0, 3).map((c) => c.mid), [3, 5, 6])
   assert.equal(rantai.length, 4, 'kedalaman rekursi 4')
+  assert.deepEqual(kuis02.soal[2].kunci, ['B', 'D'])
   assert.ok(kuis02.soal[2].pembahasan.includes('**4 pemanggilan**'))
-  assert.deepEqual(kuis02.soal[4].isian.map((f) => f.kunci), [lg(5000) + 1, 5000])
-  assert.ok(kuis02.soal[3].pembahasan.startsWith('**Salah.**'))
+  assert.equal(kuis02.soal[4].opsi.find((o) => o.id === 'A').teks, `Binary Search membutuhkan ${lg(5000) + 1} perbandingan.`)
+  assert.equal(kuis02.soal[4].opsi.find((o) => o.id === 'B').teks, `Binary Search membutuhkan ${lg(5000)} perbandingan.`, 'distraktor lupa +1')
+  assert.ok(kuis02.soal[4].opsi.find((o) => o.id === 'C').teks.includes('5.000'))
+  assert.equal(kuis02.soal[3].kunci, 'D')
+  assert.ok(kuis02.soal[3].opsi[3].teks.includes('`NIL`'))
   assert.ok(kuis02.soal[5].pembahasan.includes('Fungsi tidak memiliki **kasus dasar**'))
 })
 
-test('struktur kuis: 7 soal, jenis sesuai PDF, kunci ada di opsi, satu jenis jawaban per soal', () => {
+test('struktur kuis: 7 soal pilihan ganda saja; kunci tunggal atau larik, semua id kunci ada di opsi', () => {
   assert.deepEqual(kuis02.soal.map((q) => q.no), [1, 2, 3, 4, 5, 6, 7])
-  assert.deepEqual(kuis02.soal.map((q) => TIPE_LABEL[q.tipe]), ['Pilihan Ganda', 'Penelusuran', 'Penelusuran', 'Benar/Salah', 'Perhitungan', 'Analisis', 'Pilihan Ganda'])
-  assert.deepEqual(kuis02.soal.filter((q) => q.opsi).map((q) => q.kunci), ['B', 'C'])
+  assert.deepEqual(kuis02.soal.map((q) => jenisSoal(q)), ['banyak', 'satu', 'banyak', 'satu', 'banyak', 'satu', 'satu'])
+  assert.deepEqual(kuis02.soal.map((q) => q.kunci), [['A', 'C'], 'B', ['B', 'D'], 'D', ['A', 'C'], 'A', 'C'])
   for (const q of kuis02.soal) {
     assert.ok(q.teks.length > 10 && q.pembahasan.length > 10, `soal ${q.no}`)
-    if (q.opsi) assert.ok(q.opsi.some((o) => o.id === q.kunci), `kunci soal ${q.no}`)
-    if (q.mandiri) assert.ok(q.kunciTeks, `kunciTeks soal ${q.no}`)
-    assert.equal([q.mandiri, q.opsi, q.isian].filter(Boolean).length, 1, `satu jenis jawaban per soal (${q.no})`)
+    assert.ok(q.opsi && q.opsi.length >= 4 && q.opsi.length <= 5, `soal ${q.no}: 4–5 opsi`)
+    assert.equal(new Set(q.opsi.map((o) => o.id)).size, q.opsi.length, `id opsi unik (soal ${q.no})`)
+    for (const k of [].concat(q.kunci)) assert.ok(q.opsi.some((o) => o.id === k), `kunci ${k} soal ${q.no}`)
+    assert.ok(!q.tipe && !q.mandiri && !q.isian && !q.kunciTeks, `soal ${q.no} tidak memakai format lama`)
+    if (Array.isArray(q.kunci)) {
+      assert.ok(q.kunci.length >= 2 && q.kunci.length < q.opsi.length, `soal ${q.no}: banyak jawaban 2..${q.opsi.length - 1}`)
+      assert.deepEqual([...q.kunci], [...q.kunci].sort(), `kunci terurut (soal ${q.no})`)
+      assert.match(q.teks, new RegExp(`\\*\\*${q.kunci.length === 2 ? 'dua' : 'tiga'}\\*\\*`), `teks soal ${q.no} menyebut jumlah jawaban`)
+    }
   }
-  assert.deepEqual(kuis02.soal.filter((q) => q.mandiri).map((q) => q.no), [2, 3, 4, 6])
-  assert.deepEqual([...new Set(kuis02.soal.map((q) => q.tipe))].sort(), [...daftarKuis.find((k) => k.id === '02').tipe].sort())
-  assert.ok(kuis02.soal[5].teks.includes('```pseudo'), 'soal 6 memuat pseudocode FAKTORIAL')
+  assert.deepEqual([...new Set(kuis02.soal.map((q) => jenisSoal(q)))].sort(), ['banyak', 'satu'], 'campuran satu jawaban dan banyak jawaban')
+  assert.deepEqual(daftarKuis.find((k) => k.id === '02').tipe, ['pilihan'])
 })
 
-test('penilaian soal Modul 02: pilihan, isian angka (13 vs 12 perbandingan), dan hasil lulus pada 70%', () => {
-  const [q1, , , , q5, , q7] = kuis02.soal
-  assert.equal(nilaiSoal(q1, 'B').benar, true)
+test('penilaian soal Modul 02: satu dan banyak jawaban, dan hasil lulus pada 70%', () => {
+  const [q1, , q3, , q5, q6, q7] = kuis02.soal
+  assert.equal(nilaiSoal(q1, ['A', 'C']).benar, true)
+  assert.equal(nilaiSoal(q1, ['A']).benar, false)
+  assert.equal(nilaiSoal(q3, ['B', 'D']).benar, true)
+  assert.equal(nilaiSoal(q3, ['A', 'D']).benar, false, 'lupa menghitung pemanggilan terakhir (rentang kosong)')
+  assert.equal(nilaiSoal(q5, ['A', 'C']).benar, true)
+  assert.equal(nilaiSoal(q5, ['B', 'C']).benar, false, 'lupa perbandingan terakhir (⌊lg N⌋ tanpa +1)')
+  assert.equal(nilaiSoal(q6, 'A').benar, true)
   assert.equal(nilaiSoal(q7, 'C').benar, true)
   assert.equal(nilaiSoal(q7, 'B').benar, false)
-  assert.equal(nilaiSoal(q5, ['13', '5000']).benar, true)
-  assert.equal(nilaiSoal(q5, ['12', '5000']).benar, false, 'lupa perbandingan terakhir (⌊lg N⌋ tanpa +1)')
-  assert.equal(nilaiSoal(q5, ['5.000', '13']).benar, false)
-  const mandiriOk = (t) => ({ teks: t, sesuai: true })
-  const semua = { 1: 'B', 2: mandiriOk('a'), 3: mandiriOk('b'), 4: mandiriOk('c'), 5: ['13', '5000'], 6: mandiriOk('d'), 7: 'C' }
+  const semua = { 1: ['A', 'C'], 2: 'B', 3: ['B', 'D'], 4: 'D', 5: ['A', 'C'], 6: 'A', 7: 'C' }
   const h = hitungHasil(kuis02.soal, semua)
   assert.deepEqual([h.skor, h.total, h.lulus], [7, 7, true])
-  const lima = hitungHasil(kuis02.soal, { ...semua, 1: 'A', 7: 'A' })
+  const lima = hitungHasil(kuis02.soal, { ...semua, 2: 'A', 7: 'A' })
   assert.deepEqual([lima.skor, lima.persen, lima.lulus], [5, 71, true], '5 dari 7 = 71% tetap lulus (batas 70%)')
-  const empat = hitungHasil(kuis02.soal, { ...semua, 1: 'A', 7: 'A', 5: ['12', '5000'] })
+  const empat = hitungHasil(kuis02.soal, { ...semua, 2: 'A', 7: 'A', 5: ['B', 'C'] })
   assert.deepEqual([empat.skor, empat.persen, empat.lulus], [4, 57, false])
 })

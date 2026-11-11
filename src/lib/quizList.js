@@ -24,15 +24,13 @@ export function labelTerbaik(entry) {
  * Menyaring daftar kuis.
  * @param {Array<object>} daftar
  * @param {Record<string, object>} progres kemajuan menurut id modul
- * @param {{ q?: string, modul?: string, status?: string, tipe?: string[] }} f `modul` dan `status` bernilai 'semua' untuk tanpa saring; `tipe` kosong = semua jenis
+ * @param {{ q?: string, modul?: string, status?: string }} f `modul` dan `status` bernilai 'semua' untuk tanpa saring
  */
 export function saring(daftar, progres, f = {}) {
   const q = norm(f.q ?? '').trim()
-  const tipe = f.tipe ?? []
   return daftar.filter((k) => {
     if (f.modul && f.modul !== 'semua' && k.modul !== f.modul) return false
     if (f.status && f.status !== 'semua' && statusKuis(progres[k.modul]) !== f.status) return false
-    if (tipe.length > 0 && !tipe.some((t) => k.tipe.includes(t))) return false
     if (q && !norm(`${k.judul} modul ${k.modul} ${k.tingkat}`).includes(q)) return false
     return true
   })

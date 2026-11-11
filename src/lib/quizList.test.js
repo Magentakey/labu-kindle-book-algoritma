@@ -2,6 +2,7 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { daftarKuis, kuisById, tingkat, tipeSoal } from '../data/quiz.js'
 import { kelompokkan, labelTerbaik, ringkasan, saring, statusKuis } from './quizList.js'
+import { nilaiSoal } from './kuis.js'
 
 const k = (attempts, passed, best) => ({ kuis: { attempts, passed, best } })
 const dua = [kuisById('04'), { id: '08', modul: '08', judul: 'Telusuri Merge Sort', tingkat: 'easy', soal: 7, menit: 5, tipe: ['pilihan'], thumb: 'tree' }]
@@ -44,8 +45,6 @@ test('saring: kata kunci tanpa memandang huruf besar dan aksen, modul, status, d
   assert.deepEqual(saring(dua, progres, { modul: '08' }).map((x) => x.id), ['08'])
   assert.deepEqual(saring(dua, progres, { modul: 'semua', status: 'lulus' }).map((x) => x.id), ['04'])
   assert.deepEqual(saring(dua, progres, { status: 'belum' }).map((x) => x.id), ['08'])
-  assert.deepEqual(saring(dua, progres, { tipe: ['analisis'] }).map((x) => x.id), ['04'])
-  assert.deepEqual(saring(dua, progres, { tipe: ['analisis', 'pilihan'] }).map((x) => x.id), ['04', '08'])
   assert.equal(saring(dua, progres, { q: 'tidak ada' }).length, 0)
 })
 
@@ -75,7 +74,49 @@ test('rincianTipe: benar per jenis soal sesuai urutan kemunculan; soal belum din
   ]
   const hasil = hitungHasil(soal, { 1: { teks: 'jawab', sesuai: null }, 2: 'B', 3: 'B' })
   assert.deepEqual(rincianTipe(soal, hasil), [
-    { tipe: 'penelusuran', label: 'Penelusuran', benar: 0, total: 1 },
-    { tipe: 'pilihan', label: 'Pilihan Ganda', benar: 1, total: 2 },
+    { tipe: 'mandiri', label: 'Tulis sendiri', benar: 0, total: 1 },
+    { tipe: 'satu', label: 'Satu jawaban', benar: 1, total: 2 },
+  ])
+})
+
+import { banyakJawaban, jenisSoal, jumlahKunci, labelSoal, sudahDijawab, terpilih } from './kuis.js'
+
+test('soal banyak jawaban: dinilai utuh (himpunan pilihan harus sama persis dengan kunci), urutan bebas, duplikat diabaikan', () => {
+  const q = { no: 1, opsi: ['A', 'B', 'C', 'D', 'E'].map((id) => ({ id, teks: `opsi ${id}` })), kunci: ['A', 'C'] }
+  assert.equal(banyakJawaban(q), true)
+  assert.equal(jumlahKunci(q), 2)
+  assert.equal(jenisSoal(q), 'banyak')
+  assert.equal(labelSoal(q), 'Pilih 2 jawaban')
+  assert.equal(nilaiSoal(q, ['A', 'C']).benar, true)
+  assert.equal(nilaiSoal(q, ['C', 'A']).benar, true)
+  assert.equal(nilaiSoal(q, ['A', 'A', 'C']).benar, true)
+  assert.equal(nilaiSoal(q, ['A']).benar, false)
+  assert.equal(nilaiSoal(q, ['A', 'B']).benar, false)
+  assert.equal(nilaiSoal(q, ['A', 'C', 'D']).benar, false)
+  assert.equal(nilaiSoal(q, []).benar, false)
+  assert.equal(nilaiSoal(q, undefined).benar, false)
+  const r = nilaiSoal(q, ['C', 'B'])
+  assert.match(r.jawabanTeks, /B\. opsi B · C\. opsi C/, 'ditampilkan menurut urutan opsi')
+  assert.match(r.kunciTeks, /A\. opsi A · C\. opsi C/)
+  assert.equal(sudahDijawab(q, []), false)
+  assert.equal(sudahDijawab(q, ['B']), true)
+  assert.deepEqual(terpilih(q, undefined), [])
+})
+
+test('soal satu jawaban: label "Pilih 1 jawaban"; terpilih membungkus jawaban tunggal; rincianTipe memisahkan satu dan banyak jawaban', () => {
+  const opsi = ['A', 'B', 'C', 'D'].map((id) => ({ id, teks: id }))
+  const s1 = { no: 1, opsi, kunci: 'B' }
+  const s2 = { no: 2, opsi, kunci: ['A', 'D'] }
+  const s3 = { no: 3, opsi, kunci: 'C' }
+  assert.equal(labelSoal(s1), 'Pilih 1 jawaban')
+  assert.equal(jenisSoal(s1), 'satu')
+  assert.deepEqual(terpilih(s1, 'B'), ['B'])
+  assert.deepEqual(terpilih(s1, undefined), [])
+  assert.equal(sudahDijawab(s1, 'B'), true)
+  assert.equal(sudahDijawab(s1, undefined), false)
+  const hasil = hitungHasil([s1, s2, s3], { 1: 'B', 2: ['A'], 3: 'C' })
+  assert.deepEqual(rincianTipe([s1, s2, s3], hasil), [
+    { tipe: 'satu', label: 'Satu jawaban', benar: 2, total: 2 },
+    { tipe: 'banyak', label: 'Banyak jawaban', benar: 0, total: 1 },
   ])
 })

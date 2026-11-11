@@ -2,7 +2,7 @@ import test, { after, before } from 'node:test'
 import assert from 'node:assert/strict'
 import { hitung, startSsr } from './ssr.js'
 import { tim } from '../data/credit.js'
-import { daftarKuis, tipeSoal } from '../data/quiz.js'
+import { daftarKuis } from '../data/quiz.js'
 
 let ssr
 before(async () => {
@@ -21,6 +21,7 @@ test('Quiz: satu h1, kelompok Easy dan Medium, kartu menaut ke /quiz/NN tanpa ar
   assert.match(html, /<h1[^>]*>Quiz<\/h1>/)
   assert.match(html, /<h2 id="grup-easy"/)
   assert.match(html, /<h2 id="grup-medium"/)
+  assert.match(html, /<h2 id="grup-hard"/, 'ada kuis tingkat Hard')
   for (const k of daftarKuis) {
     const tag = html.match(new RegExp(`<a [^>]*href="/quiz/${k.id}"[^>]*>`))?.[0]
     assert.ok(tag, `kartu kuis ${k.id}`)
@@ -31,8 +32,8 @@ test('Quiz: satu h1, kelompok Easy dan Medium, kartu menaut ke /quiz/NN tanpa ar
   assert.match(html, new RegExp(`${daftarKuis.length} kuis`))
   // semua filter punya nama aksesibel
   assert.match(html, /aria-label="Filter status kuis"/)
-  assert.match(html, /role="group"[^>]*aria-label="Jenis soal"/)
-  assert.equal(hitung(html, /aria-pressed=/g), 4 + tipeSoal.length, 'segmented status (4) + jenis soal adalah tombol aria-pressed')
+  assert.doesNotMatch(html, /aria-label="Jenis soal"/, 'filter jenis soal sudah dihapus (semua soal pilihan ganda)')
+  assert.equal(hitung(html, /aria-pressed=/g), 4, 'hanya segmented status (4) yang berupa tombol aria-pressed')
 })
 
 test('KuisKartu: chip status mengikuti kemajuan (lulus, gagal, belum) dengan teks, bukan hanya warna', async () => {
@@ -259,4 +260,29 @@ test('Modul 05: gambar grafik dirender dengan nama dan deskripsi; seluruh teks d
   assert.equal(hitung(html, /<figure[^>]*>\s*<figcaption[^>]*>(?:Python|Keluaran)/g), 2)
   assert.ok(hitung(html, /class="katex|<mjx-container|<math/g) > 60, 'banyak rumus dirender')
   assert.doesNotMatch(html, /\{\{|@@/)
+})
+
+test('SoalView: soal banyak jawaban memakai role=checkbox, status "Terpilih k dari N", dan label tidak hanya warna; satu jawaban tetap tombol aria-pressed', async () => {
+  const { SoalView, SuaraToggle } = await ssr.modul('/src/materi/KuisModul.jsx')
+  const opsi = ['A', 'B', 'C', 'D', 'E'].map((id) => ({ id, teks: `Opsi ${id}` }))
+  const banyak = { no: 2, teks: 'x', opsi, kunci: ['A', 'C'], pembahasan: 'p' }
+  const html = ssr.render(ssr.createElement(SoalView, { q: banyak, jawaban: ['A'], setJawaban() {}, kunciTampil: false, tampilkanKunci: false }))
+  assert.match(html, /role="group"[^>]*aria-labelledby="teks-soal-2"/)
+  assert.equal(hitung(html, /role="checkbox"/g), 5)
+  assert.equal(hitung(html, /aria-checked="true"/g), 1)
+  assert.match(html, /Pilih 2 jawaban yang benar/)
+  assert.match(html, /Terpilih 1 dari 2/)
+  assert.match(html, /role="status"/)
+  assert.match(html, /Dipilih/, 'pilihan ditandai dengan teks, bukan hanya warna')
+  const lebih = ssr.render(ssr.createElement(SoalView, { q: banyak, jawaban: ['A', 'B', 'C'], setJawaban() {}, kunciTampil: false, tampilkanKunci: false }))
+  assert.match(lebih, /kurangi sampai tepat 2/)
+
+  const satu = ssr.render(ssr.createElement(SoalView, { q: { ...banyak, kunci: 'B' }, jawaban: 'B', setJawaban() {}, kunciTampil: false, tampilkanKunci: false }))
+  assert.equal(hitung(satu, /role="checkbox"/g), 0)
+  assert.equal(hitung(satu, /aria-pressed=/g), 5)
+  assert.doesNotMatch(satu, /role="status"/)
+
+  const suara = ssr.render(ssr.createElement(SuaraToggle))
+  assert.match(suara, /role="switch"/)
+  assert.match(suara, /Suara kuis/)
 })

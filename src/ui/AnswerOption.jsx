@@ -18,16 +18,21 @@ const label = {
   correct: { icon: 'check', text: 'Jawaban benar', cls: 'text-ok-text' },
   wrong: { icon: 'x', text: 'Jawabanmu', cls: 'text-bad-text' },
 }
+// Pada soal banyak jawaban, opsi terpilih ditandai juga dengan centang dan tulisan, bukan hanya warna.
+const labelBanyak = { selected: { icon: 'check', text: 'Dipilih', cls: 'text-control' } }
 
-/** @param {{ letter: string, state?: 'default'|'selected'|'correct'|'wrong', onClick?: () => void, disabled?: boolean, children: any }} props */
-export default function AnswerOption({ letter, state = 'default', onClick, disabled, children }) {
-  const l = label[state]
+/**
+ * Satu opsi jawaban. `multi` = soal banyak jawaban: opsi berperan sebagai kotak centang (role="checkbox"), bukan tombol tekan.
+ * @param {{ letter: string, state?: 'default'|'selected'|'correct'|'wrong', onClick?: () => void, disabled?: boolean, multi?: boolean, children: any }} props
+ */
+export default function AnswerOption({ letter, state = 'default', onClick, disabled, multi = false, children }) {
+  const l = (multi ? labelBanyak[state] : null) ?? label[state]
   return (
     <button
       type="button"
       onClick={onClick}
       disabled={disabled}
-      aria-pressed={state === 'selected'}
+      {...(multi ? { role: 'checkbox', 'aria-checked': state === 'selected' } : { 'aria-pressed': state === 'selected' })}
       className={cx('flex w-full items-center gap-3 rounded-sm px-3 py-2.5 text-left transition-colors disabled:cursor-default', box[state])}
     >
       <span className={cx('text-body-strong flex size-7 shrink-0 items-center justify-center rounded-sm', badge[state])}>{letter}</span>
