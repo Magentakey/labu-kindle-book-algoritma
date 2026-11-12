@@ -1,48 +1,37 @@
-// Kuis Pemahaman Modul 16 (7 soal) dan kunci serta pembahasannya, dari PDF "16 - Graf dan Representasinya" halaman 7–8.
-// Teks memakai Markdown dengan rumus TeX ($...$). Semua soal dinilai otomatis lewat isian atau pilihan; soal 1 (menyusun representasi) dinilai dari
-// pilihan adjacency-list dan tiga angka pada matriksnya, soal 5 dan 6 (analisis) dari pilihan dan angka hasil hitung. Soal 4 (benar/salah dengan
-// alasan) dinilai pada pilihan Benar/Salah; alasannya ada di pembahasan.
+// Kuis Pemahaman Modul 16 (7 soal pilihan ganda), bersumber dari soal PDF "16 - Graf dan Representasinya" halaman 7–8.
+// Teks memakai Markdown dengan rumus TeX ($...$). `kunci` berupa satu id (satu jawaban) atau larik id (banyak jawaban, dinilai utuh).
 export const kuis16 = {
   judul: 'Graf dan Representasinya',
   modul: '16',
   soal: [
     {
       no: 1,
-      tipe: 'penelusuran',
-      teks: 'Sebuah graf tak berarah memiliki simpul $\\{a, b, c, d\\}$ dan busur $\\{(a,b), (a,c), (b,c), (c,d)\\}$. Tuliskan adjacency-list dan adjacency-matrix-nya (urutan simpul a, b, c, d).',
-      isian: [
-        {
-          label: 'Adjacency-list',
-          jenis: 'pilih',
-          opsi: [
-            'a → b → c; b → a → c; c → a → b → d; d → c',
-            'a → b → c; b → c; c → d; d',
-            'a → b → c; b → a → c; c → a → b; d → c',
-            'a → b; b → a → c; c → b → d; d → c',
-          ],
-          kunci: 'a → b → c; b → a → c; c → a → b → d; d → c',
-        },
-        { label: 'Total panjang semua list', jenis: 'angka', kunci: 8 },
-        { label: 'Banyak sel bernilai 1 pada matriks', jenis: 'angka', kunci: 8 },
-        { label: 'Apakah matriksnya simetris?', jenis: 'pilih', opsi: ['Ya', 'Tidak'], kunci: 'Ya' },
+      teks: 'Sebuah graf tak berarah memiliki simpul $\\{a, b, c, d\\}$ dan busur $\\{(a,b), (a,c), (b,c), (c,d)\\}$. Pilih **tiga** pernyataan yang benar tentang representasinya.',
+      opsi: [
+        { id: 'A', teks: 'Total panjang semua adjacency-list adalah 8.' },
+        { id: 'B', teks: 'Adjacency-matrix-nya memiliki 8 sel bernilai 1.' },
+        { id: 'C', teks: 'Adjacency-matrix-nya simetris.' },
+        { id: 'D', teks: 'Total panjang semua adjacency-list adalah 4.' },
+        { id: 'E', teks: 'Adjacency-matrix-nya tidak simetris.' },
       ],
+      kunci: ['A', 'B', 'C'],
       pembahasan:
-        'Adjacency-list: $a \\to b \\to c$; $b \\to a \\to c$; $c \\to a \\to b \\to d$; $d \\to c$.\n\n| | a | b | c | d |\n| --- | --- | --- | --- | --- |\n| a | 0 | 1 | 1 | 0 |\n| b | 1 | 0 | 1 | 0 |\n| c | 1 | 1 | 0 | 1 |\n| d | 0 | 0 | 1 | 0 |\n\nMatriksnya simetris karena grafnya tak berarah.',
+        '**Jawaban: A, B, dan C.** Adjacency-list: $a \\to b \\to c$; $b \\to a \\to c$; $c \\to a \\to b \\to d$; $d \\to c$ (total 8).\n\n| | a | b | c | d |\n| --- | --- | --- | --- | --- |\n| a | 0 | 1 | 1 | 0 |\n| b | 1 | 0 | 1 | 0 |\n| c | 1 | 1 | 0 | 1 |\n| d | 0 | 0 | 1 | 0 |\n\nMatriksnya memiliki 8 sel bernilai 1 dan simetris karena grafnya tak berarah.',
     },
     {
       no: 2,
-      tipe: 'perhitungan',
-      teks: 'Graf tak berarah dengan 8 simpul dan 12 busur disimpan sebagai adjacency-list. Berapa total panjang semua list? Berapa banyak sel adjacency-matrix-nya dan berapa yang bernilai 1?',
-      isian: [
-        { label: 'Total panjang semua list', jenis: 'angka', kunci: 24 },
-        { label: 'Banyak sel adjacency-matrix', jenis: 'angka', kunci: 64 },
-        { label: 'Banyak sel bernilai 1', jenis: 'angka', kunci: 24 },
+      teks: 'Graf tak berarah dengan 8 simpul dan 12 busur disimpan sebagai adjacency-matrix. Berapa banyak sel yang bernilai 1?',
+      opsi: [
+        { id: 'A', teks: '12' },
+        { id: 'B', teks: '64' },
+        { id: 'C', teks: '8' },
+        { id: 'D', teks: '24' },
       ],
-      pembahasan: 'Total panjang list $= 2\\lvert E \\rvert =$ **24**. Matriks berisi $8^2 =$ **64 sel**, dengan **24** sel bernilai 1 (setiap busur menghasilkan dua angka 1: $a_{uv}$ dan $a_{vu}$).',
+      kunci: 'D',
+      pembahasan: '**Jawaban: D.** Matriks berisi $8^2 = 64$ sel, dan setiap busur menghasilkan dua angka 1 ($a_{uv}$ dan $a_{vu}$), sehingga ada $2 \\times 12 =$ **24** sel bernilai 1 (sama dengan total panjang list $= 2\\lvert E \\rvert$).',
     },
     {
       no: 3,
-      tipe: 'pilihan',
       teks: 'Operasi mana yang lebih cepat dengan adjacency-matrix daripada adjacency-list?',
       opsi: [
         { id: 'A', teks: 'Menelusuri seluruh busur graf jarang.' },
@@ -55,53 +44,55 @@ export const kuis16 = {
     },
     {
       no: 4,
-      tipe: 'benarsalah',
-      teks: '"Adjacency-matrix graf berarah selalu simetris." Benar atau salah? Berikan contoh dari graf (b).',
+      teks: 'Pernyataan "Adjacency-matrix graf berarah selalu simetris" adalah ...',
       opsi: [
-        { id: 'Benar', teks: 'Benar' },
-        { id: 'Salah', teks: 'Salah' },
+        { id: 'A', teks: 'Benar, karena setiap busur menghasilkan dua angka 1.' },
+        { id: 'B', teks: 'Benar, karena matriks selalu persegi.' },
+        { id: 'C', teks: 'Salah: pada graf (b), $a_{12} = 1$ tetapi $a_{21} = 0$; simetri hanya dijamin untuk graf tak berarah.' },
+        { id: 'D', teks: 'Salah, karena graf berarah tidak dapat disimpan sebagai matriks.' },
       ],
-      kunci: 'Salah',
-      pembahasan: '**Salah.** Pada graf (b), $a_{12} = 1$ (busur $1 \\to 2$) tetapi $a_{21} = 0$ (tidak ada busur $2 \\to 1$). Matriks simetris hanya dijamin untuk graf tak berarah.',
+      kunci: 'C',
+      pembahasan: '**Jawaban: C.** Pada graf (b), $a_{12} = 1$ (busur $1 \\to 2$) tetapi $a_{21} = 0$ (tidak ada busur $2 \\to 1$). Matriks simetris hanya dijamin untuk graf tak berarah.',
     },
     {
       no: 5,
-      tipe: 'analisis',
-      teks: 'Dari adjacency-matrix graf (b), bagaimana cara menghitung derajat masuk dan derajat keluar suatu simpul? Hitung untuk simpul 2.',
-      isian: [
-        { label: 'Derajat keluar simpul u dihitung dari', jenis: 'pilih', opsi: ['jumlah angka 1 pada baris u', 'jumlah angka 1 pada kolom u'], kunci: 'jumlah angka 1 pada baris u' },
-        { label: 'Derajat masuk simpul u dihitung dari', jenis: 'pilih', opsi: ['jumlah angka 1 pada baris u', 'jumlah angka 1 pada kolom u'], kunci: 'jumlah angka 1 pada kolom u' },
-        { label: 'Derajat keluar simpul 2', jenis: 'angka', kunci: 1 },
-        { label: 'Derajat masuk simpul 2', jenis: 'angka', kunci: 2 },
+      teks: 'Pada adjacency-matrix graf (b), pilih **tiga** pernyataan yang benar tentang derajat simpul.',
+      opsi: [
+        { id: 'A', teks: 'Derajat keluar simpul $u$ adalah jumlah angka 1 pada baris $u$.' },
+        { id: 'B', teks: 'Derajat keluar simpul $u$ adalah jumlah angka 1 pada kolom $u$.' },
+        { id: 'C', teks: 'Derajat masuk simpul $u$ adalah jumlah angka 1 pada kolom $u$.' },
+        { id: 'D', teks: 'Derajat masuk simpul $u$ adalah jumlah angka 1 pada baris $u$.' },
+        { id: 'E', teks: 'Derajat masuk simpul 2 adalah 2.' },
       ],
+      kunci: ['A', 'C', 'E'],
       pembahasan:
-        'Derajat keluar simpul $u$ = jumlah angka 1 pada **baris** $u$; derajat masuk = jumlah angka 1 pada **kolom** $u$. Simpul 2: baris 2 berisi satu angka 1 ($a_{25}$), jadi derajat keluar = 1; kolom 2 berisi $a_{12}$ dan $a_{42}$, jadi derajat masuk = 2.',
+        '**Jawaban: A, C, dan E.** Derajat keluar simpul $u$ = jumlah angka 1 pada **baris** $u$; derajat masuk = jumlah angka 1 pada **kolom** $u$. Simpul 2: baris 2 berisi satu angka 1 ($a_{25}$), jadi derajat keluar = 1; kolom 2 berisi $a_{12}$ dan $a_{42}$, jadi derajat masuk = 2.',
     },
     {
       no: 6,
-      tipe: 'analisis',
-      teks: 'Sebuah graf media sosial memiliki 1 juta pengguna (simpul), dan rata-rata setiap pengguna berteman dengan 200 pengguna lain. Representasi mana yang tepat? Hitung perkiraan banyaknya elemen yang disimpan oleh masing-masing representasi.',
-      isian: [
-        { label: 'Representasi yang tepat', jenis: 'pilih', opsi: ['Adjacency-list', 'Adjacency-matrix'], kunci: 'Adjacency-list' },
-        { label: 'Banyak pertemanan |E|', jenis: 'angka', kunci: 100000000 },
-        { label: 'Elemen list (2|E|)', jenis: 'angka', kunci: 200000000 },
-        { label: 'Sel adjacency-matrix (|V|²)', jenis: 'angka', kunci: 1000000000000 },
+      teks: 'Sebuah graf media sosial memiliki 1 juta pengguna (simpul), dan rata-rata setiap pengguna berteman dengan 200 pengguna lain. Pilih **dua** pernyataan yang benar.',
+      opsi: [
+        { id: 'A', teks: 'Adjacency-matrix adalah representasi yang tepat.' },
+        { id: 'B', teks: 'Adjacency-list adalah representasi yang tepat.' },
+        { id: 'C', teks: 'Banyak pertemanan $\\lvert E \\rvert$ kira-kira $10^8$.' },
+        { id: 'D', teks: 'Adjacency-matrix menyimpan sekitar $10^8$ sel.' },
+        { id: 'E', teks: 'Banyak pertemanan $\\lvert E \\rvert$ kira-kira $2 \\times 10^8$.' },
       ],
+      kunci: ['B', 'C'],
       pembahasan:
-        '$\\lvert V \\rvert = 10^6$, $\\lvert E \\rvert \\approx \\frac{10^6 \\times 200}{2} = 10^8$ pertemanan. Adjacency-list menyimpan $10^6$ kepala list ditambah $2\\lvert E \\rvert = 2 \\times 10^8$ elemen. Adjacency-matrix membutuhkan $(10^6)^2 = 10^{12}$ sel, sekitar 5.000 kali lebih banyak. Graf ini jarang, sehingga **adjacency-list** yang tepat.',
+        '**Jawaban: B dan C.** $\\lvert V \\rvert = 10^6$, $\\lvert E \\rvert \\approx \\frac{10^6 \\times 200}{2} = 10^8$ pertemanan. Adjacency-list menyimpan $10^6$ kepala list ditambah $2\\lvert E \\rvert = 2 \\times 10^8$ elemen. Adjacency-matrix membutuhkan $(10^6)^2 = 10^{12}$ sel, sekitar 5.000 kali lebih banyak. Graf ini jarang, sehingga **adjacency-list** yang tepat.',
     },
     {
       no: 7,
-      tipe: 'pilihan',
       teks: 'Sebuah tree memiliki 15 simpul. Berapa banyak busurnya?',
       opsi: [
         { id: 'A', teks: '13' },
-        { id: 'B', teks: '14' },
-        { id: 'C', teks: '15' },
+        { id: 'B', teks: '15' },
+        { id: 'C', teks: '14' },
         { id: 'D', teks: 'Tidak dapat ditentukan' },
       ],
-      kunci: 'B',
-      pembahasan: '**Jawaban: B.** Tree dengan $\\lvert V \\rvert$ simpul selalu memiliki $\\lvert V \\rvert - 1 = 14$ busur.',
+      kunci: 'C',
+      pembahasan: '**Jawaban: C.** Tree dengan $\\lvert V \\rvert$ simpul selalu memiliki $\\lvert V \\rvert - 1 = 14$ busur.',
     },
   ],
 }

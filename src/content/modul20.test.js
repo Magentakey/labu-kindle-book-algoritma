@@ -3,10 +3,9 @@ import assert from 'node:assert/strict'
 import { spawnSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import { parseModul } from '../lib/modulContent.js'
-import { hitungHasil, nilaiSoal, TIPE_LABEL } from '../lib/kuis.js'
 import { algoritma } from '../data/algoritma.js'
 import { modul, modulById, neighbors, tabsOf } from '../data/modul.js'
-import { daftarKuis, kuisById } from '../data/quiz.js'
+import { kuisById } from '../data/quiz.js'
 import { petaBab } from '../data/credit.js'
 import { cariPython } from '../test/python.js'
 import { vizIds } from '../viz/vizConfig.js'
@@ -286,23 +285,19 @@ test('4.2 Running time: operasi MAKE-SET/UNION, α(1000), biaya pengurutan 780.0
 
 test('kunci kuis dihitung ulang: soal 2, 3, 4, 5, 6, 7', () => {
   const [q1, q2, q3, q4, q5, q6, q7] = kuis20.soal
+  assert.deepEqual([q2.kunci, q3.kunci, q5.kunci, q6.kunci], [['A', 'B', 'C'], 'D', ['A', 'C'], ['B', 'C', 'D']])
   // soal 2
   const g2 = [['p', 'q', 3], ['p', 'r', 1], ['q', 'r', 2], ['q', 's', 5], ['r', 's', 4], ['s', 't', 6], ['r', 't', 7]]
   const r2 = kruskal('pqrst'.split(''), g2)
   assert.deepEqual(r2.langkah.map((l) => `${l.u}${l.v}${l.w}:${l.diterima ? 'Diterima' : 'Ditolak'}`), ['pr1:Diterima', 'qr2:Diterima', 'pq3:Ditolak', 'rs4:Diterima', 'qs5:Ditolak', 'st6:Diterima', 'rt7:Ditolak'])
-  assert.deepEqual(q2.isian.slice(0, 7).map((f) => f.kunci), r2.langkah.map((l) => (l.diterima ? 'Diterima' : 'Ditolak')))
   assert.equal(r2.total, 13)
-  assert.equal(q2.isian[7].kunci, 13)
-  assert.deepEqual(q2.isian.slice(0, 7).map((f) => f.label), r2.langkah.map((l) => `Busur (${l.u}, ${l.v}) = ${l.w}`))
   // soal 3: sebelum (h,i) diproses, lintasan di A antara h dan i
   const iHI = hasil.langkah.findIndex((l) => l.u === 'h' && l.v === 'i')
   const A3 = hasil.langkah.slice(0, iHI).filter((l) => l.diterima).map((l) => namaBusur(l.u, l.v))
   assert.deepEqual(lintasanDiTree(A3, 'h', 'i'), ['h', 'g', 'f', 'c', 'i'])
   assert.equal(hasil.langkah[iHI].diterima, false)
   const jalur = lintasanDiTree(A3, 'h', 'i')
-  const cycle = [...jalur, 'h'].join(' → ')
-  assert.equal(q3.isian[2].kunci, cycle)
-  assert.equal(q3.isian[1].kunci, jalur.join(' − '))
+  assert.equal([...jalur, 'h'].join(' → '), 'h → g → f → c → i → h')
   // pengecoh bukan lintasan di A pada saat itu
   assert.equal(A3.includes('ah') || A3.includes('gi'), false)
   // soal 4: setelah (d,e) diterima, sisa busur ditolak
@@ -310,13 +305,10 @@ test('kunci kuis dihitung ulang: soal 2, 3, 4, 5, 6, 7', () => {
   assert.deepEqual(hasil.langkah.slice(iDE + 1).map((l) => `${l.u}${l.v}`), ['ef', 'bh', 'df'])
   assert.ok(hasil.langkah.slice(iDE + 1).every((l) => !l.diterima))
   assert.equal(hasil.A.length, simpulContoh.length - 1)
-  assert.equal(q4.kunci, 'Benar')
+  assert.equal(q4.kunci, 'A')
   // soal 5
   const b = perkiraanBiaya(1000, 50000)
   assert.equal(Math.round(b.pengurutan / 10000) * 10000, 780000)
-  assert.equal(q5.isian[0].kunci, 'sekitar 780.000')
-  assert.equal(q5.isian[1].kunci, 'sekitar 200.000')
-  assert.equal(q5.isian[2].kunci, b.pengurutan > 50000 * 4 ? 'Pengurutan' : 'Pemrosesan busur')
   // soal 6: bobot (e,f) menjadi 5
   const ubah = busurContoh.map(([u, v, w]) => (namaBusur(u, v) === 'ef' ? [u, v, 5] : [u, v, w]))
   const urutBaru = urutanBahan.map(([u, v, w]) => (namaBusur(u, v) === 'ef' ? [u, v, 5] : [u, v, w]))
@@ -327,10 +319,8 @@ test('kunci kuis dihitung ulang: soal 2, 3, 4, 5, 6, 7', () => {
   const berubah = Object.keys(sebelum).filter((n) => sebelum[n] !== sesudah[n]).sort()
   assert.deepEqual(berubah, ['de', 'ef'])
   assert.deepEqual([sebelum.ef, sesudah.ef, sesudah.de], [false, true, false])
-  assert.deepEqual(q6.isian.slice(0, 3).map((f) => f.kunci), ['Ditolak', 'Diterima', 'Ditolak'])
   assert.equal(r6.total, 33)
   assert.equal(37 - 9 + 5, 33)
-  assert.equal(q6.isian[3].kunci, 33)
   // 33 memang bobot MST graf yang diubah (brute force)
   assert.equal(ringkasBruteForce(simpulContoh, ubah).min, 33)
   // saat (d,e) diproses d dan e sudah terhubung lewat d − c − f − e
@@ -338,44 +328,9 @@ test('kunci kuis dihitung ulang: soal 2, 3, 4, 5, 6, 7', () => {
   const A6 = r6.langkah.slice(0, iDE6).filter((l) => l.diterima).map((l) => namaBusur(l.u, l.v))
   assert.deepEqual(lintasanDiTree(A6, 'd', 'e'), ['d', 'c', 'f', 'e'])
   // soal 7: A selalu forest, mulai dari |V| tree dan akhirnya satu tree
-  assert.equal(q7.kunci, 'B')
+  assert.equal(q7.kunci, 'C')
   assert.equal(hasil.langkah[0].himpunan.length, 8)
   assert.equal(hasil.langkah.at(-1).himpunan.length, 1)
   assert.equal(q1.kunci, 'B')
 })
 
-test('struktur kuis: 7 soal, jenis sesuai PDF, semua dinilai otomatis', () => {
-  assert.deepEqual(kuis20.soal.map((q) => q.no), [1, 2, 3, 4, 5, 6, 7])
-  assert.deepEqual(kuis20.soal.map((q) => TIPE_LABEL[q.tipe]), ['Pilihan Ganda', 'Penelusuran', 'Analisis', 'Benar/Salah', 'Perhitungan', 'Analisis', 'Pilihan Ganda'])
-  assert.deepEqual(kuis20.soal.filter((q) => q.mandiri).map((q) => q.no), [])
-  assert.deepEqual(kuis20.soal[1].isian.length, 8)
-  for (const q of kuis20.soal) {
-    assert.ok(q.teks.length > 10 && q.pembahasan.length > 10, `soal ${q.no}`)
-    if (q.opsi) assert.ok(q.opsi.some((o) => o.id === q.kunci))
-    for (const f of q.isian ?? []) if (f.jenis === 'pilih') assert.ok(f.opsi.includes(f.kunci), `soal ${q.no}: kunci "${f.kunci}" ada di opsi`)
-    assert.equal([q.mandiri, q.opsi, q.isian].filter(Boolean).length, 1, `satu jenis jawaban per soal (${q.no})`)
-  }
-  assert.deepEqual([...new Set(kuis20.soal.map((q) => q.tipe))].sort(), [...daftarKuis.find((k) => k.id === '20').tipe].sort())
-})
-
-test('penilaian soal Modul 20', () => {
-  const [q1, q2, q3, q4, q5, q6, q7] = kuis20.soal
-  const kunci = (q) => q.isian.map((f) => String(f.kunci))
-  assert.equal(nilaiSoal(q1, 'B').benar, true)
-  assert.equal(nilaiSoal(q1, 'A').benar, false)
-  assert.equal(nilaiSoal(q2, kunci(q2)).benar, true)
-  assert.equal(nilaiSoal(q2, [...kunci(q2).slice(0, 2), 'Diterima', ...kunci(q2).slice(3)]).benar, false)
-  assert.equal(nilaiSoal(q2, [...kunci(q2).slice(0, 7), '14']).benar, false)
-  assert.equal(nilaiSoal(q3, kunci(q3)).benar, true)
-  assert.equal(nilaiSoal(q3, ['Ya', 'h − g − i', q3.isian[2].kunci]).benar, false)
-  assert.equal(nilaiSoal(q4, 'Benar').benar, true)
-  assert.equal(nilaiSoal(q4, 'Salah').benar, false)
-  assert.equal(nilaiSoal(q5, kunci(q5)).benar, true)
-  assert.equal(nilaiSoal(q5, ['sekitar 780.000', 'sekitar 200.000', 'Pemrosesan busur']).benar, false)
-  assert.equal(nilaiSoal(q6, kunci(q6)).benar, true)
-  assert.equal(nilaiSoal(q6, ['Ditolak', 'Diterima', 'Ditolak', '32']).benar, false)
-  assert.equal(nilaiSoal(q7, 'B').benar, true)
-  const semua = { 1: 'B', 2: kunci(q2), 3: kunci(q3), 4: 'Benar', 5: kunci(q5), 6: kunci(q6), 7: 'B' }
-  const h = hitungHasil(kuis20.soal, semua)
-  assert.deepEqual([h.skor, h.lulus, h.belumDinilai], [7, true, []])
-})

@@ -262,11 +262,12 @@ test('Modul 05: gambar grafik dirender dengan nama dan deskripsi; seluruh teks d
   assert.doesNotMatch(html, /\{\{|@@/)
 })
 
-test('SoalView: soal banyak jawaban memakai role=checkbox, status "Terpilih k dari N", dan label tidak hanya warna; satu jawaban tetap tombol aria-pressed', async () => {
+test('SoalView: soal banyak jawaban memakai role=checkbox dan status "Terpilih k dari N"; setelah dijawab tiap opsi dikoreksi dengan ikon dan teks', async () => {
   const { SoalView, SuaraToggle } = await ssr.modul('/src/materi/KuisModul.jsx')
   const opsi = ['A', 'B', 'C', 'D', 'E'].map((id) => ({ id, teks: `Opsi ${id}` }))
   const banyak = { no: 2, teks: 'x', opsi, kunci: ['A', 'C'], pembahasan: 'p' }
-  const html = ssr.render(ssr.createElement(SoalView, { q: banyak, jawaban: ['A'], setJawaban() {}, kunciTampil: false, tampilkanKunci: false }))
+  const el = (q, props) => ssr.render(ssr.createElement(SoalView, { q, pilihan: [], terkunci: false, onPilih() {}, ...props }))
+  const html = el(banyak, { pilihan: ['A'] })
   assert.match(html, /role="group"[^>]*aria-labelledby="teks-soal-2"/)
   assert.equal(hitung(html, /role="checkbox"/g), 5)
   assert.equal(hitung(html, /aria-checked="true"/g), 1)
@@ -274,12 +275,22 @@ test('SoalView: soal banyak jawaban memakai role=checkbox, status "Terpilih k da
   assert.match(html, /Terpilih 1 dari 2/)
   assert.match(html, /role="status"/)
   assert.match(html, /Dipilih/, 'pilihan ditandai dengan teks, bukan hanya warna')
-  const lebih = ssr.render(ssr.createElement(SoalView, { q: banyak, jawaban: ['A', 'B', 'C'], setJawaban() {}, kunciTampil: false, tampilkanKunci: false }))
-  assert.match(lebih, /kurangi sampai tepat 2/)
+  assert.match(el(banyak, { pilihan: ['A', 'B', 'C'] }), /kurangi sampai tepat 2/)
 
-  const satu = ssr.render(ssr.createElement(SoalView, { q: { ...banyak, kunci: 'B' }, jawaban: 'B', setJawaban() {}, kunciTampil: false, tampilkanKunci: false }))
+  // setelah dikunci: A benar dipilih, B salah dipilih, C benar tetapi terlewat
+  const kunci = el(banyak, { jawaban: ['A', 'B'], terkunci: true })
+  assert.equal(hitung(kunci, /Jawaban benar/g), 1)
+  assert.equal(hitung(kunci, /Pilihanmu salah/g), 1)
+  assert.equal(hitung(kunci, /Seharusnya dipilih/g), 1)
+  assert.equal(hitung(kunci, /aria-checked="true"/g), 2, 'yang dipilih pengguna tetap terbaca sebagai dicentang')
+  assert.equal(hitung(kunci, /aria-disabled="true"/g), 5)
+  assert.doesNotMatch(kunci, /Terpilih \d dari/)
+
+  const satu = el({ ...banyak, kunci: 'B' }, { jawaban: 'D', terkunci: true })
   assert.equal(hitung(satu, /role="checkbox"/g), 0)
-  assert.equal(hitung(satu, /aria-pressed=/g), 5)
+  assert.equal(hitung(satu, /aria-pressed="true"/g), 1)
+  assert.equal(hitung(satu, /Jawaban benar/g), 1, 'kunci ditunjukkan walau salah pilih')
+  assert.equal(hitung(satu, /Pilihanmu salah/g), 1)
   assert.doesNotMatch(satu, /role="status"/)
 
   const suara = ssr.render(ssr.createElement(SuaraToggle))

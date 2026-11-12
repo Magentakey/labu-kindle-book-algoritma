@@ -21,6 +21,18 @@ const ONLY = process.env.AUDIT_ONLY
 const TEMA = process.env.AUDIT_TEMA // 'light' atau 'dark' untuk memeriksa satu mode saja
 
 const klik = (page, name) => page.getByRole('button', { name }).first().click()
+/** Menjawab soal apa pun: banyak jawaban (pilih dua, lalu periksa) atau satu jawaban. */
+const jawab = async (page) => {
+  if (await page.getByRole('checkbox').count()) {
+    const perlu = Number((await page.getByText(/^Pilih \d jawaban$/).first().textContent()).match(/\d/)[0])
+    for (let i = 0; i < perlu; i++) await page.getByRole('checkbox').nth(i).click()
+    await klik(page, /Periksa jawaban/)
+  } else {
+    await jawabSatu(page)
+  }
+}
+/** Menjawab soal satu jawaban: memilih opsi pertama (langsung dikoreksi). */
+const jawabSatu = (page) => page.getByRole('group').getByRole('button').first().click()
 
 /** Rute yang diperiksa. `siapkan` membawa halaman ke keadaan yang ingin diperiksa. */
 const rute = [
@@ -106,6 +118,7 @@ const rute = [
     path: '/quiz/04',
     siapkan: async (p) => {
       await klik(p, /Mulai kuis/)
+      await jawab(p)
       await klik(p, /Berikutnya/)
     },
   },
@@ -114,9 +127,21 @@ const rute = [
     path: '/quiz/04',
     siapkan: async (p) => {
       await klik(p, /Mulai kuis/)
-      for (let i = 0; i < 7; i++) await klik(p, /Berikutnya/)
+      for (let i = 0; i < 7; i++) {
+        await jawab(p)
+        await klik(p, /Berikutnya/)
+      }
+      await jawab(p)
       await klik(p, /Selesai dan lihat hasil/)
       await p.getByRole('button', { name: /Lihat pembahasan/ }).nth(1).click()
+    },
+  },
+  {
+    nama: 'quiz-01-satu-jawaban-koreksi',
+    path: '/quiz/01',
+    siapkan: async (p) => {
+      await klik(p, /Mulai kuis/)
+      await jawabSatu(p) // soal 1: satu jawaban, langsung dikoreksi
     },
   },
   {
@@ -124,9 +149,22 @@ const rute = [
     path: '/quiz/01',
     siapkan: async (p) => {
       await klik(p, /Mulai kuis/)
+      await jawabSatu(p)
       await klik(p, /Berikutnya/) // soal 2: pilih dua jawaban
       await p.getByRole('checkbox').nth(0).click()
       await p.getByRole('checkbox').nth(2).click()
+    },
+  },
+  {
+    nama: 'quiz-01-banyak-jawaban-koreksi',
+    path: '/quiz/01',
+    siapkan: async (p) => {
+      await klik(p, /Mulai kuis/)
+      await jawabSatu(p)
+      await klik(p, /Berikutnya/)
+      await p.getByRole('checkbox').nth(0).click()
+      await p.getByRole('checkbox').nth(1).click()
+      await klik(p, /Periksa jawaban/)
     },
   },
   {
@@ -134,11 +172,10 @@ const rute = [
     path: '/quiz/01',
     siapkan: async (p) => {
       await klik(p, /Mulai kuis/)
-      await klik(p, /Berikutnya/)
-      await p.getByRole('checkbox').nth(0).click()
-      await p.getByRole('checkbox').nth(1).click()
-      for (let i = 0; i < 6; i++) await klik(p, /Berikutnya/)
-      await klik(p, /Selesai dan lihat hasil/)
+      for (let i = 0; i < 8; i++) {
+        await jawab(p)
+        await klik(p, i === 7 ? /Selesai dan lihat hasil/ : /Berikutnya/)
+      }
       await p.getByRole('button', { name: /Lihat pembahasan/ }).nth(1).click()
     },
   },

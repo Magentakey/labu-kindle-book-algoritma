@@ -23,7 +23,7 @@ const konteksPalsu = () => {
 }
 
 test('NADA: tiap kejadian punya nada pendek (< 1 detik) dengan frekuensi dan lama yang masuk akal', () => {
-  assert.deepEqual(Object.keys(NADA).sort(), ['benar', 'gagal', 'lulus', 'pilih', 'ragu', 'salah'])
+  assert.deepEqual(Object.keys(NADA).sort(), ['benar', 'gagal', 'lulus', 'pilih', 'salah'])
   for (const [nama, nada] of Object.entries(NADA)) {
     assert.ok(nada.length >= 1, nama)
     const akhir = Math.max(...nada.map((n) => n.t + n.d))

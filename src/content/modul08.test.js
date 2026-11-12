@@ -3,10 +3,9 @@ import assert from 'node:assert/strict'
 import { spawnSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import { parseModul } from '../lib/modulContent.js'
-import { hitungHasil, nilaiSoal, TIPE_LABEL } from '../lib/kuis.js'
 import { algoritma } from '../data/algoritma.js'
 import { modul, modulById, neighbors, tabsOf } from '../data/modul.js'
-import { daftarKuis, kuisById } from '../data/quiz.js'
+import { kuisById } from '../data/quiz.js'
 import { petaBab } from '../data/credit.js'
 import { cariPython } from '../test/python.js'
 import { penjelajahIds } from '../viz/penjelajahIds.js'
@@ -236,41 +235,9 @@ test('kunci kuis dihitung ulang: soal 2, 3, 6, 7, dan 8', () => {
   // soal 6: n = 16 → 5 tingkat, 80c, 256c; dan n = 1024
   assert.equal(Math.log2(16) + 1, 5)
   assert.deepEqual([totalPohon(16), 16 ** 2], [80, 256])
-  assert.deepEqual(kuis08.soal[5].isian.map((f) => f.kunci), [5, 80, 256])
   assert.deepEqual([totalPohon(1024), 1024 ** 2], [11264, 1048576])
   // soal 7: tiga submasalah n/3 → T(n) = 3T(n/3) + Θ(n); jumlah ukuran tiap tingkat = n sehingga juga n lg n (basis 3)
-  assert.ok(kuis08.soal[6].kunciTeks.startsWith('T(n) = 3T(n/3) + Θ(n)'))
   for (const n of [3, 9, 27, 81]) assert.equal(3 * (n / 3), n)
   // soal 4: Merge Sort pada data terurut tetap n lg n langkah MERGE (lihat uji recurrence)
-  assert.equal(kuis08.soal[3].kunci, 'Salah')
 })
 
-test('struktur kuis: 8 soal, jenis sesuai PDF, soal 2, 3, 5, dan 7 dinilai sendiri', () => {
-  assert.deepEqual(kuis08.soal.map((q) => q.no), [1, 2, 3, 4, 5, 6, 7, 8])
-  assert.deepEqual(kuis08.soal.map((q) => TIPE_LABEL[q.tipe]), ['Pilihan Ganda', 'Penelusuran', 'Penelusuran', 'Benar/Salah', 'Analisis', 'Perhitungan', 'Analisis', 'Pilihan Ganda'])
-  assert.deepEqual(kuis08.soal.filter((q) => q.opsi).map((q) => q.kunci), ['B', 'Salah', 'B'])
-  assert.deepEqual(kuis08.soal.filter((q) => q.mandiri).map((q) => q.no), [2, 3, 5, 7])
-  for (const q of kuis08.soal) {
-    assert.ok(q.teks.length > 10 && q.pembahasan.length > 10, `soal ${q.no}`)
-    if (q.opsi) assert.ok(q.opsi.some((o) => o.id === q.kunci))
-    if (q.mandiri) assert.ok(q.kunciTeks)
-    assert.equal([q.mandiri, q.opsi, q.isian].filter(Boolean).length, 1, `satu jenis jawaban per soal (${q.no})`)
-  }
-  assert.deepEqual([...new Set(kuis08.soal.map((q) => q.tipe))].sort(), [...daftarKuis.find((k) => k.id === '08').tipe].sort())
-})
-
-test('penilaian soal Modul 08', () => {
-  const [q1, , , q4, , q6, , q8] = kuis08.soal
-  assert.equal(nilaiSoal(q1, 'B').benar, true)
-  assert.equal(nilaiSoal(q1, 'C').benar, false)
-  assert.equal(nilaiSoal(q4, 'Salah').benar, true)
-  assert.equal(nilaiSoal(q4, 'Benar').benar, false)
-  assert.equal(nilaiSoal(q6, ['5', '80', '256']).benar, true)
-  assert.equal(nilaiSoal(q6, ['5', '80', '255']).benar, false)
-  assert.equal(nilaiSoal(q8, 'B').benar, true)
-  const ok = { teks: 'a', sesuai: true }
-  const semua = { 1: 'B', 2: ok, 3: ok, 4: 'Salah', 5: ok, 6: ['5', '80', '256'], 7: ok, 8: 'B' }
-  const h = hitungHasil(kuis08.soal, semua)
-  assert.deepEqual([h.skor, h.lulus], [8, true])
-  assert.deepEqual(hitungHasil(kuis08.soal, { ...semua, 2: undefined }).belumDinilai, [2])
-})

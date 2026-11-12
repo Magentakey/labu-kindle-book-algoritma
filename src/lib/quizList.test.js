@@ -66,15 +66,15 @@ test('ringkasan: jumlah, lulus, dan rata-rata hanya dari kuis yang pernah dicoba
 
 import { hitungHasil, rincianTipe } from './kuis.js'
 
-test('rincianTipe: benar per jenis soal sesuai urutan kemunculan; soal belum dinilai tidak dihitung benar', () => {
+test('rincianTipe: benar per jenis soal sesuai urutan kemunculan; soal belum dijawab tidak dihitung benar', () => {
   const soal = [
-    { no: 1, tipe: 'penelusuran', mandiri: true, kunciTeks: 'x' },
-    { no: 2, tipe: 'pilihan', opsi: [{ id: 'A', teks: 'a' }, { id: 'B', teks: 'b' }], kunci: 'B' },
-    { no: 3, tipe: 'pilihan', opsi: [{ id: 'A', teks: 'a' }, { id: 'B', teks: 'b' }], kunci: 'A' },
+    { no: 1, opsi: [{ id: 'A', teks: 'a' }, { id: 'B', teks: 'b' }, { id: 'C', teks: 'c' }], kunci: ['A', 'C'] },
+    { no: 2, opsi: [{ id: 'A', teks: 'a' }, { id: 'B', teks: 'b' }], kunci: 'B' },
+    { no: 3, opsi: [{ id: 'A', teks: 'a' }, { id: 'B', teks: 'b' }], kunci: 'A' },
   ]
-  const hasil = hitungHasil(soal, { 1: { teks: 'jawab', sesuai: null }, 2: 'B', 3: 'B' })
+  const hasil = hitungHasil(soal, { 2: 'B', 3: 'B' })
   assert.deepEqual(rincianTipe(soal, hasil), [
-    { tipe: 'mandiri', label: 'Tulis sendiri', benar: 0, total: 1 },
+    { tipe: 'banyak', label: 'Banyak jawaban', benar: 0, total: 1 },
     { tipe: 'satu', label: 'Satu jawaban', benar: 1, total: 2 },
   ])
 })

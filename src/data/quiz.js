@@ -59,7 +59,7 @@ export const daftarKuis = [
     tingkat: 'medium',
     soal: 8,
     menit: 8,
-    tipe: ['penelusuran', 'pilihan', 'perhitungan', 'benarsalah', 'analisis'],
+    tipe: ['pilihan'],
     thumb: 'bars',
   },
   {
@@ -69,7 +69,7 @@ export const daftarKuis = [
     tingkat: 'medium',
     soal: 7,
     menit: 7,
-    tipe: ['perhitungan', 'pilihan', 'benarsalah', 'analisis'],
+    tipe: ['pilihan'],
     thumb: 'growth',
   },
   {
@@ -79,7 +79,7 @@ export const daftarKuis = [
     tingkat: 'hard',
     soal: 8,
     menit: 10,
-    tipe: ['pembuktian', 'benarsalah', 'pilihan', 'analisis'],
+    tipe: ['pilihan'],
     thumb: 'bound',
   },
   {
@@ -89,7 +89,7 @@ export const daftarKuis = [
     tingkat: 'hard',
     soal: 7,
     menit: 9,
-    tipe: ['pilihan', 'pembuktian', 'benarsalah', 'perhitungan', 'analisis'],
+    tipe: ['pilihan'],
     thumb: 'limit',
   },
   {
@@ -99,7 +99,7 @@ export const daftarKuis = [
     tingkat: 'medium',
     soal: 8,
     menit: 12,
-    tipe: ['pilihan', 'penelusuran', 'benarsalah', 'analisis', 'perhitungan'],
+    tipe: ['pilihan'],
     thumb: 'tree',
   },
   {
@@ -109,7 +109,7 @@ export const daftarKuis = [
     tingkat: 'hard',
     soal: 8,
     menit: 12,
-    tipe: ['perhitungan', 'pilihan', 'benarsalah', 'analisis'],
+    tipe: ['pilihan'],
     thumb: 'levels',
   },
   {
@@ -119,7 +119,7 @@ export const daftarKuis = [
     tingkat: 'medium',
     soal: 7,
     menit: 10,
-    tipe: ['pilihan', 'analisis', 'perhitungan', 'benarsalah'],
+    tipe: ['pilihan'],
     thumb: 'table',
   },
   {
@@ -129,7 +129,7 @@ export const daftarKuis = [
     tingkat: 'hard',
     soal: 8,
     menit: 12,
-    tipe: ['pilihan', 'perhitungan', 'analisis', 'penelusuran', 'benarsalah'],
+    tipe: ['pilihan'],
     thumb: 'table',
   },
   {
@@ -139,7 +139,7 @@ export const daftarKuis = [
     tingkat: 'hard',
     soal: 8,
     menit: 12,
-    tipe: ['pilihan', 'perhitungan', 'benarsalah', 'analisis'],
+    tipe: ['pilihan'],
     thumb: 'table',
   },
   {
@@ -149,7 +149,7 @@ export const daftarKuis = [
     tingkat: 'medium',
     soal: 7,
     menit: 10,
-    tipe: ['pilihan', 'perhitungan', 'benarsalah', 'analisis'],
+    tipe: ['pilihan'],
     thumb: 'bars',
   },
   {
@@ -159,7 +159,7 @@ export const daftarKuis = [
     tingkat: 'medium',
     soal: 7,
     menit: 12,
-    tipe: ['pilihan', 'penelusuran', 'analisis', 'benarsalah', 'perhitungan', 'pembuktian'],
+    tipe: ['pilihan'],
     thumb: 'bars',
   },
   {
@@ -169,7 +169,7 @@ export const daftarKuis = [
     tingkat: 'hard',
     soal: 8,
     menit: 12,
-    tipe: ['pilihan', 'perhitungan', 'penelusuran', 'benarsalah', 'analisis'],
+    tipe: ['pilihan'],
     thumb: 'tree',
   },
   {
@@ -179,7 +179,7 @@ export const daftarKuis = [
     tingkat: 'easy',
     soal: 7,
     menit: 10,
-    tipe: ['penelusuran', 'perhitungan', 'pilihan', 'benarsalah', 'analisis'],
+    tipe: ['pilihan'],
     thumb: 'graph',
   },
   {
@@ -189,7 +189,7 @@ export const daftarKuis = [
     tingkat: 'medium',
     soal: 8,
     menit: 12,
-    tipe: ['pilihan', 'penelusuran', 'analisis', 'benarsalah', 'perhitungan'],
+    tipe: ['pilihan'],
     thumb: 'graph',
   },
   {
@@ -199,7 +199,7 @@ export const daftarKuis = [
     tingkat: 'medium',
     soal: 8,
     menit: 12,
-    tipe: ['pilihan', 'penelusuran', 'analisis', 'benarsalah', 'perhitungan'],
+    tipe: ['pilihan'],
     thumb: 'graph',
   },
   {
@@ -209,7 +209,7 @@ export const daftarKuis = [
     tingkat: 'medium',
     soal: 7,
     menit: 10,
-    tipe: ['pilihan', 'analisis', 'benarsalah'],
+    tipe: ['pilihan'],
     thumb: 'graph',
   },
   {
@@ -219,7 +219,7 @@ export const daftarKuis = [
     tingkat: 'hard',
     soal: 7,
     menit: 12,
-    tipe: ['pilihan', 'penelusuran', 'analisis', 'benarsalah', 'perhitungan'],
+    tipe: ['pilihan'],
     thumb: 'graph',
   },
   {
@@ -229,7 +229,7 @@ export const daftarKuis = [
     tingkat: 'hard',
     soal: 7,
     menit: 12,
-    tipe: ['pilihan', 'penelusuran', 'analisis', 'benarsalah', 'perhitungan'],
+    tipe: ['pilihan'],
     thumb: 'graph',
   },
   {
@@ -239,7 +239,7 @@ export const daftarKuis = [
     tingkat: 'medium',
     soal: 7,
     menit: 10,
-    tipe: ['perhitungan', 'pilihan', 'penelusuran', 'analisis', 'benarsalah'],
+    tipe: ['pilihan'],
     thumb: 'graph',
   },
   {
@@ -249,7 +249,7 @@ export const daftarKuis = [
     tingkat: 'hard',
     soal: 7,
     menit: 12,
-    tipe: ['pilihan', 'penelusuran', 'analisis', 'perhitungan', 'benarsalah'],
+    tipe: ['pilihan'],
     thumb: 'graph',
   },
   {
@@ -259,7 +259,7 @@ export const daftarKuis = [
     tingkat: 'hard',
     soal: 7,
     menit: 12,
-    tipe: ['pilihan', 'penelusuran', 'analisis', 'benarsalah', 'perhitungan'],
+    tipe: ['pilihan'],
     thumb: 'graph',
   },
 ]

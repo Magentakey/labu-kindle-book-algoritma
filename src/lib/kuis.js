@@ -2,65 +2,38 @@
 import { PASS_PERCENT } from '../data/modul.js'
 
 /**
- * Jenis soal:
- * - satu jawaban: `opsi` dan `kunci` = id satu opsi (mis. 'C'), dinilai otomatis.
+ * Jenis soal (semuanya pilihan ganda, dinilai otomatis):
+ * - satu jawaban: `opsi` dan `kunci` = id satu opsi (mis. 'C').
  * - banyak jawaban: `opsi` dan `kunci` = daftar id (mis. ['A', 'C']). Benar hanya bila yang dipilih persis sama dengan kunci:
  *   semua pilihan benar terpilih dan tidak ada pilihan salah (tanpa nilai sebagian). Jumlah jawaban ditulis di soal.
- * - isian dan mandiri (warisan, tinggal di modul yang belum diubah): isian dinilai otomatis, mandiri dinilai sendiri oleh pengguna.
- *   Keduanya dihapus setelah semua kuis modul menjadi pilihan ganda.
  */
-export const TIPE_LABEL = { penelusuran: 'Penelusuran', pilihan: 'Pilihan Ganda', perhitungan: 'Perhitungan', benarsalah: 'Benar/Salah', analisis: 'Analisis', pembuktian: 'Pembuktian', rancang: 'Merancang' }
-
-/** "1.000" → 1000, "1,5" → 1.5, "20" → 20, "−3" (minus Unicode U+2212 atau tanda hubung panjang) → -3; null bila bukan angka. */
-export function parseAngka(text) {
-  const t = String(text ?? '').trim().replace(/\s+/g, '').replace(/^[\u2212\u2013\u2012]/, '-')
-  if (!/^-?[\d.,]+$/.test(t)) return null
-  let s = t
-  if (s.includes(',') && s.includes('.')) s = s.replace(/\./g, '').replace(',', '.')
-  else if (s.includes(',')) s = s.replace(',', '.')
-  else if ((s.match(/\./g) ?? []).length > 1 || /\.\d{3}$/.test(s)) s = s.replace(/\./g, '')
-  const n = Number(s)
-  return Number.isFinite(n) ? n : null
-}
-
-const sama = (a, b) => Math.abs(a - b) < 1e-9
 
 /** Soal pilihan ganda yang harus memilih lebih dari satu jawaban (kunci berupa daftar). */
 export const banyakJawaban = (q) => Array.isArray(q.kunci)
 /** Banyaknya jawaban yang harus dipilih pada soal pilihan ganda (1 untuk satu jawaban). */
 export const jumlahKunci = (q) => (Array.isArray(q.kunci) ? q.kunci.length : 1)
-/** Jenis soal menurut bentuk jawabannya. */
-export const jenisSoal = (q) => (q.mandiri ? 'mandiri' : q.opsi ? (banyakJawaban(q) ? 'banyak' : 'satu') : 'isian')
-export const JENIS_LABEL = { satu: 'Satu jawaban', banyak: 'Banyak jawaban', isian: 'Isian', mandiri: 'Tulis sendiri' }
-/** Label kecil di atas soal: soal baru "Pilih 2 jawaban"; soal warisan memakai label jenis lamanya. */
-export const labelSoal = (q) => (q.opsi && !q.mandiri && (banyakJawaban(q) || !q.tipe) ? `Pilih ${jumlahKunci(q)} jawaban` : (TIPE_LABEL[q.tipe] ?? 'Soal'))
+/** Jenis soal menurut bentuk jawabannya: 'banyak' atau 'satu'. */
+export const jenisSoal = (q) => (banyakJawaban(q) ? 'banyak' : 'satu')
+export const JENIS_LABEL = { satu: 'Satu jawaban', banyak: 'Banyak jawaban' }
+/** Label kecil di atas soal, mis. "Pilih 2 jawaban". */
+export const labelSoal = (q) => `Pilih ${jumlahKunci(q)} jawaban`
 /** Jawaban terpilih sebagai daftar id (satu jawaban dibungkus menjadi daftar). */
 export const terpilih = (q, jawaban) => (banyakJawaban(q) ? (Array.isArray(jawaban) ? jawaban : []) : jawaban === undefined || jawaban === '' || jawaban === null ? [] : [jawaban])
 
-/** Menilai satu soal. @returns {{ benar: boolean | null, jawabanTeks: string, kunciTeks: string }} `benar` null = belum dinilai (soal mandiri yang belum dinilai sendiri). */
+/** Menilai satu soal. @returns {{ benar: boolean, jawabanTeks: string, kunciTeks: string }} */
 export function nilaiSoal(q, jawaban) {
-  if (q.mandiri) {
-    return { benar: typeof jawaban?.sesuai === 'boolean' ? jawaban.sesuai : null, jawabanTeks: String(jawaban?.teks ?? '').trim(), kunciTeks: q.kunciTeks }
-  }
-  if (q.opsi) {
-    const kunciIds = banyakJawaban(q) ? q.kunci : [q.kunci]
-    const pilih = [...new Set(terpilih(q, jawaban))]
-    const benar = pilih.length === kunciIds.length && kunciIds.every((k) => pilih.includes(k))
-    const teks = (ids) => q.opsi.filter((o) => ids.includes(o.id)).map((o) => `${o.id}. ${o.teks}`).join(' · ')
-    return { benar, jawabanTeks: teks(pilih), kunciTeks: teks(kunciIds) }
-  }
-  // isian: jawaban = daftar nilai kolom
-  const isi = Array.isArray(jawaban) ? jawaban : []
-  const benar = q.isian.every((f, i) => (f.jenis === 'pilih' ? isi[i] === f.kunci : parseAngka(isi[i]) !== null && sama(parseAngka(isi[i]), f.kunci)))
-  const fmt = (vals) => q.isian.map((f, i) => `${f.label} = ${vals[i] === undefined || vals[i] === '' ? '…' : vals[i]}`).join(' · ')
-  return { benar, jawabanTeks: fmt(isi), kunciTeks: fmt(q.isian.map((f) => f.kunci)) }
+  const kunciIds = banyakJawaban(q) ? q.kunci : [q.kunci]
+  const pilih = [...new Set(terpilih(q, jawaban))]
+  const benar = pilih.length === kunciIds.length && kunciIds.every((k) => pilih.includes(k))
+  const teks = (ids) => q.opsi.filter((o) => ids.includes(o.id)).map((o) => `${o.id}. ${o.teks}`).join(' · ')
+  return { benar, jawabanTeks: teks(pilih), kunciTeks: teks(kunciIds) }
 }
 
 /**
  * Menghitung hasil seluruh kuis.
  * @param {Array<object>} soal daftar soal yang dikerjakan (boleh sebagian saja pada "ulangi yang salah")
  * @param {Record<number, any>} jawaban jawaban menurut nomor soal
- * @returns {{ skor: number, total: number, persen: number, lulus: boolean, perSoal: Array<{ no: number, benar: boolean | null, jawabanTeks: string, kunciTeks: string }>, salah: number[], belumDinilai: number[] }}
+ * @returns {{ skor: number, total: number, persen: number, lulus: boolean, perSoal: Array<{ no: number, benar: boolean, jawabanTeks: string, kunciTeks: string }>, salah: number[], belumDinilai: number[] }}
  */
 export function hitungHasil(soal, jawaban) {
   const perSoal = soal.map((q) => ({ no: q.no, ...nilaiSoal(q, jawaban[q.no]) }))
@@ -148,11 +121,7 @@ export function clearDraft(storage, modulId) {
 }
 
 /** Apakah soal sudah dijawab (untuk penanda blok soal). */
-export function sudahDijawab(q, jawaban) {
-  if (q.mandiri) return String(jawaban?.teks ?? '').trim() !== ''
-  if (q.opsi) return terpilih(q, jawaban).length > 0
-  return Array.isArray(jawaban) && jawaban.some((v) => String(v ?? '').trim() !== '')
-}
+export const sudahDijawab = (q, jawaban) => terpilih(q, jawaban).length > 0
 
 /**
  * Rincian benar per bentuk soal untuk kartu statistik hasil, mis. [{ tipe: 'satu', label: 'Satu jawaban', benar: 3, total: 4 }].

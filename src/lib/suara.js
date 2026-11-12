@@ -4,17 +4,16 @@
 
 export const SUARA_KUNCI = 'labu-suara'
 
-/** Nada per kejadian: frekuensi (Hz), waktu mulai (detik), lama (detik), jenis gelombang. Volume kecil. */
+/** Nada per kejadian: frekuensi (Hz), waktu mulai (detik), lama (detik), jenis gelombang. Volume sedang (jelas terdengar, tidak mengagetkan). */
 export const NADA = {
-  pilih: [{ f: 660, t: 0, d: 0.06, tipe: 'sine' }],
-  ragu: [{ f: 392, t: 0, d: 0.07, tipe: 'triangle' }, { f: 349, t: 0.08, d: 0.09, tipe: 'triangle' }],
+  pilih: [{ f: 660, t: 0, d: 0.07, tipe: 'sine', v: 0.6 }],
   benar: [{ f: 659, t: 0, d: 0.12, tipe: 'sine' }, { f: 880, t: 0.12, d: 0.24, tipe: 'sine' }],
   salah: [{ f: 233, t: 0, d: 0.16, tipe: 'triangle' }, { f: 175, t: 0.17, d: 0.28, tipe: 'triangle' }],
   lulus: [{ f: 523, t: 0, d: 0.14, tipe: 'sine' }, { f: 659, t: 0.14, d: 0.14, tipe: 'sine' }, { f: 784, t: 0.28, d: 0.14, tipe: 'sine' }, { f: 1047, t: 0.42, d: 0.4, tipe: 'sine' }],
   gagal: [{ f: 392, t: 0, d: 0.18, tipe: 'triangle' }, { f: 330, t: 0.19, d: 0.18, tipe: 'triangle' }, { f: 262, t: 0.38, d: 0.34, tipe: 'triangle' }],
 }
 
-const PUNCAK = 0.12 // volume tertinggi (0 sampai 1)
+const PUNCAK = 0.5 // volume tertinggi (0 sampai 1); nada pendek dan tidak bertumpuk, jadi tidak pecah
 
 /** Suara menyala bila belum pernah dimatikan. */
 export function suaraAktif(storage) {
@@ -50,7 +49,7 @@ export function jadwalkan(ctx, nada, mulai = ctx.currentTime) {
     osc.frequency.value = n.f
     const awal = mulai + n.t
     gain.gain.setValueAtTime(0.0001, awal)
-    gain.gain.exponentialRampToValueAtTime(PUNCAK, awal + 0.015)
+    gain.gain.exponentialRampToValueAtTime(PUNCAK * (n.v ?? 1), awal + 0.015)
     gain.gain.exponentialRampToValueAtTime(0.0001, awal + n.d)
     osc.connect(gain)
     gain.connect(ctx.destination)

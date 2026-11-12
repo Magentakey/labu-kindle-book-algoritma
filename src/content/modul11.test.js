@@ -3,10 +3,9 @@ import assert from 'node:assert/strict'
 import { spawnSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import { parseModul } from '../lib/modulContent.js'
-import { hitungHasil, nilaiSoal, TIPE_LABEL } from '../lib/kuis.js'
 import { algoritma } from '../data/algoritma.js'
 import { modul, modulById, neighbors, tabsOf } from '../data/modul.js'
-import { daftarKuis, kuisById } from '../data/quiz.js'
+import { kuisById } from '../data/quiz.js'
 import { petaBab } from '../data/credit.js'
 import { cariPython } from '../test/python.js'
 import { vizIds } from '../viz/vizConfig.js'
@@ -281,40 +280,28 @@ test('Tabel: hubungan Modul 05, 10, dan 12 yang disebut di 6.3 ada di katalog', 
 
 // ---------------------------------------------------------------- kuis
 test('kunci kuis dihitung ulang: soal 1, 2, 3, 5, dan 6', () => {
-  const [q1, q2, q3, , q5, q6] = kuis11.soal
   // soal 2
-  const p2 = [10, 100, 5, 50]
-  assert.equal(biayaKurung('((A1A2)A3)', p2).biaya, q2.isian[0].kunci)
-  assert.equal(biayaKurung('(A1(A2A3))', p2).biaya, q2.isian[1].kunci)
-  assert.equal(q2.isian[2].kunci, '((A1A2)A3)')
-  assert.equal(q2.isian[1].kunci / q2.isian[0].kunci, 10)
   assert.deepEqual([10 * 100 * 5, 10 * 5 * 50, 100 * 5 * 50, 10 * 100 * 50], [5000, 2500, 25000, 50000])
   // soal 3
   const { m: M, s: S } = solveMatrixChain(ukuranContoh)
   const p = ukuranContoh
   assert.deepEqual([3, 4].map((k) => M[3][k] + M[k + 1][5] + p[2] * p[k] * p[5]), [2500, 3750])
-  assert.deepEqual([q3.isian[0].kunci, q3.isian[1].kunci], [M[3][5], S[3][5]])
   // soal 5
   const t = pohonPemecahan(S, p, 2, 6)
   assert.equal(totalBiaya(t), M[2][6])
-  assert.equal(q5.isian[1].kunci, M[2][6])
   assert.equal(2625 + 3500 + 35 * 5 * 25, 10500)
-  const urutan = (s, i, j) => (i === j ? `A${i}` : `(${urutan(s, i, s[i][j])}${urutan(s, s[i][j] + 1, j)})`)
-  assert.equal(urutan(S, 2, 6), q5.isian[0].kunci)
   assert.deepEqual([S[2][6], S[2][3], S[4][6]], [3, 2, 5])
   assert.equal(bruteBest(p, 2, 6).best, 10500)
-  for (const o of q5.isian[0].opsi) assert.ok(biayaKurung(o, [35, 15, 5, 10, 20, 25]) !== null, `opsi sah: ${o}`)
-  const lain = q5.isian[0].opsi.filter((o) => o !== q5.isian[0].kunci)
-  for (const o of lain) assert.ok(biayaKurung(o.replace(/A(\d)/g, (_, d) => `A${Number(d) - 1}`), [35, 15, 5, 10, 20, 25]).biaya > 10500, `pengecoh lebih mahal: ${o}`)
+  // pengecoh soal 5 lebih mahal dari 10.500 (matriks A2..A6 diberi nomor ulang A1..A5)
+  for (const o of ['(A1(A2(A3(A4A5))))', '(((A1A2)A3)(A4A5))', '((A1A2)(A3(A4A5)))']) assert.ok(biayaKurung(o, [35, 15, 5, 10, 20, 25]).biaya >= 10500, `pengecoh: ${o}`)
   // soal 6
   const p6 = [4, 10, 3, 12, 20, 7]
   const r6 = solveMatrixChain(p6)
   assert.deepEqual([r6.m[1][2], r6.m[2][3]], [120, 360])
   assert.deepEqual([0 + 360 + 4 * 10 * 12, 120 + 0 + 4 * 3 * 12], [840, 264])
-  assert.deepEqual([r6.m[1][3], r6.s[1][3]], [q6.isian[0].kunci, q6.isian[1].kunci])
   assert.deepEqual([r6.m[1][5], r6.order], [1344, '((A1A2)((A3A4)A5))'])
   assert.equal(bruteBest(p6, 1, 5).best, 1344)
-  assert.equal(q1.kunci, 'B')
+  assert.deepEqual(kuis11.soal.map((q) => q.kunci), ['D', ['A', 'B', 'C'], 'B', 'C', 'A', ['B', 'D'], ['C', 'E'], 'D'])
 })
 
 test('soal 7 dan 8: memori Θ(n²) (dua tabel n × n), running time Θ(n³); isi s[i,j] adalah letak pemecah', () => {
@@ -322,7 +309,6 @@ test('soal 7 dan 8: memori Θ(n²) (dua tabel n × n), running time Θ(n³); isi
   const { m: M, s: S } = solveMatrixChain(Array.from({ length: n + 1 }, (_, i) => 2 + (i % 7)))
   assert.equal(M.length * M[0].length, (n + 1) ** 2)
   assert.equal(S.length * S[0].length, (n + 1) ** 2)
-  assert.deepEqual([kuis11.soal[6].kunci, kuis11.soal[7].kunci], ['Salah', 'C'])
   // s[i,j] adalah k yang menghasilkan m[i,j]; ukuran hasil selalu p[i−1] × p[j] dan tidak disimpan
   const p = ukuranContoh
   const r = solveMatrixChain(p)
@@ -332,37 +318,3 @@ test('soal 7 dan 8: memori Θ(n²) (dua tabel n × n), running time Θ(n³); isi
   }
 })
 
-test('struktur kuis: 8 soal, jenis sesuai PDF, hanya soal 4 dinilai sendiri', () => {
-  assert.deepEqual(kuis11.soal.map((q) => q.no), [1, 2, 3, 4, 5, 6, 7, 8])
-  assert.deepEqual(kuis11.soal.map((q) => TIPE_LABEL[q.tipe]), ['Pilihan Ganda', 'Perhitungan', 'Perhitungan', 'Analisis', 'Penelusuran', 'Perhitungan', 'Benar/Salah', 'Pilihan Ganda'])
-  assert.deepEqual(kuis11.soal.filter((q) => q.mandiri).map((q) => q.no), [4])
-  for (const q of kuis11.soal) {
-    assert.ok(q.teks.length > 10 && q.pembahasan.length > 10, `soal ${q.no}`)
-    if (q.opsi) assert.ok(q.opsi.some((o) => o.id === q.kunci))
-    if (q.mandiri) assert.ok(q.kunciTeks)
-    for (const f of q.isian ?? []) if (f.jenis === 'pilih') assert.ok(f.opsi.includes(f.kunci), `soal ${q.no}: kunci "${f.kunci}" ada di opsi`)
-    assert.equal([q.mandiri, q.opsi, q.isian].filter(Boolean).length, 1, `satu jenis jawaban per soal (${q.no})`)
-  }
-  assert.deepEqual([...new Set(kuis11.soal.map((q) => q.tipe))].sort(), [...daftarKuis.find((k) => k.id === '11').tipe].sort())
-})
-
-test('penilaian soal Modul 11', () => {
-  const [q1, , q3, , q5, q6, q7, q8] = kuis11.soal
-  const q2 = kuis11.soal[1]
-  assert.equal(nilaiSoal(q1, 'B').benar, true)
-  assert.equal(nilaiSoal(q1, 'A').benar, false)
-  assert.equal(nilaiSoal(q2, ['7.500', '75.000', '((A1A2)A3)']).benar, true, 'angka boleh memakai titik ribuan')
-  assert.equal(nilaiSoal(q2, ['7500', '75000', '(A1(A2A3))']).benar, false)
-  assert.equal(nilaiSoal(q3, ['2.500', '3']).benar, true)
-  assert.equal(nilaiSoal(q3, ['3750', '4']).benar, false)
-  assert.equal(nilaiSoal(q5, ['((A2A3)((A4A5)A6))', '10.500']).benar, true)
-  assert.equal(nilaiSoal(q5, ['((A2A3)((A4A5)A6))', '15.125']).benar, false)
-  assert.equal(nilaiSoal(q6, ['264', '2']).benar, true)
-  assert.equal(nilaiSoal(q7, 'Salah').benar, true)
-  assert.equal(nilaiSoal(q8, 'C').benar, true)
-  const ok = { teks: 'a', sesuai: true }
-  const semua = { 1: 'B', 2: ['7500', '75000', '((A1A2)A3)'], 3: ['2500', '3'], 4: ok, 5: ['((A2A3)((A4A5)A6))', '10500'], 6: ['264', '2'], 7: 'Salah', 8: 'C' }
-  const h = hitungHasil(kuis11.soal, semua)
-  assert.deepEqual([h.skor, h.lulus], [8, true])
-  assert.deepEqual(hitungHasil(kuis11.soal, { ...semua, 4: undefined }).belumDinilai, [4])
-})

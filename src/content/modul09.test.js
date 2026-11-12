@@ -3,10 +3,9 @@ import assert from 'node:assert/strict'
 import { spawnSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import { parseModul } from '../lib/modulContent.js'
-import { hitungHasil, nilaiSoal, TIPE_LABEL } from '../lib/kuis.js'
 import { algoritma } from '../data/algoritma.js'
 import { modul, modulById, neighbors, tabsOf } from '../data/modul.js'
-import { daftarKuis, kuisById } from '../data/quiz.js'
+import { kuisById } from '../data/quiz.js'
 import { petaBab } from '../data/credit.js'
 import { cariPython } from '../test/python.js'
 import { vizIds } from '../viz/vizConfig.js'
@@ -217,64 +216,34 @@ test('program Python di modul dijalankan sungguhan dan sama dengan teks dan mode
 
 // ---------------------------------------------------------------- kuis
 test('kunci kuis dihitung ulang: soal 1, 2, 3, 6, 7, dan 8', () => {
-  const kunci = (no) => kuis09.soal[no - 1].isian
+  const opsi = (no, id) => kuis09.soal[no - 1].opsi.find((o) => o.id === id).teks
   // soal 1: 16T(n/4) + n → kasus 1, Θ(n²)
-  assert.deepEqual([klasifikasi(16, 4, { k: 1 }).kasus, solusiHasil(16, 4, 1)], [1, kunci(1)[1].kunci])
-  assert.equal(String(klasifikasi(16, 4, { k: 1 }).kasus), kunci(1)[0].kunci)
+  assert.deepEqual([klasifikasi(16, 4, { k: 1 }).kasus, solusiHasil(16, 4, 1)], [1, 'Θ(n²)'])
+  assert.equal(opsi(1, 'B'), 'Kasus 1, $\\Theta(n^2)$')
   // soal 2: 2T(n/4) + √n → kasus 2, Θ(√n lg n)
-  assert.equal(String(klasifikasi(2, 4, { k: 0.5 }).kasus), kunci(2)[0].kunci)
-  assert.equal(solusiHasil(2, 4, 0.5), kunci(2)[1].kunci)
+  assert.equal(klasifikasi(2, 4, { k: 0.5 }).kasus, 2)
+  assert.equal(solusiHasil(2, 4, 0.5), 'Θ(√n lg n)')
+  assert.deepEqual(kuis09.soal[1].kunci, ['B', 'D'])
   // soal 3: 3T(n/2) + n² → kasus 3, c = 3/4, Θ(n²)
   const s3 = klasifikasi(3, 2, { k: 2 })
-  assert.equal(String(s3.kasus), kunci(3)[0].kunci)
-  assert.equal(s3.keteraturan.c, kunci(3)[1].kunci)
+  assert.equal(s3.kasus, 3)
+  assert.equal(s3.keteraturan.c, 0.75)
   assert.ok(Math.abs(s3.e - 1.585) < 1e-3 && Math.abs(s3.epsilon.maks - 0.415) < 1e-3)
-  assert.equal(teksSolusi(s3), kunci(3)[2].kunci)
+  assert.equal(teksSolusi(s3), 'Θ(n²)')
+  assert.deepEqual(kuis09.soal[2].kunci, ['B', 'C', 'E'])
   // soal 5: 2T(n/2) + n lg n → celah, bukan kasus 3
   assert.equal(klasifikasi(2, 2, { k: 1, q: 1 }).kasus, 'celah')
-  assert.equal(kuis09.soal[4].kunci, 'Salah')
+  assert.equal(kuis09.soal[4].kunci, 'C')
   // soal 6: 4 submasalah → Θ(n²); 3 submasalah → Θ(n^1,585); yang kedua lebih kecil
-  assert.equal(solusiHasil(4, 2, 1), kunci(6)[0].kunci)
+  assert.equal(solusiHasil(4, 2, 1), 'Θ(n²)')
   assert.ok(Math.abs(logBA(3, 2) - 1.585) < 1e-3 && logBA(3, 2) < logBA(4, 2))
-  assert.equal(kunci(6)[1].kunci, 'Θ(n^1,585)')
-  assert.equal(kunci(6)[2].kunci, '3 submasalah')
+  assert.deepEqual(kuis09.soal[5].kunci, ['A', 'B', 'C'])
   // soal 7: T(n/2) + n → kasus 3, Θ(n), c = 1/2
   const s7 = klasifikasi(1, 2, { k: 1 })
-  assert.equal(String(s7.kasus), kunci(7)[0].kunci)
-  assert.deepEqual([teksSolusi(s7), s7.keteraturan.c], [kunci(7)[1].kunci, 0.5])
+  assert.equal(s7.kasus, 3)
+  assert.deepEqual([teksSolusi(s7), s7.keteraturan.c], ['Θ(n)', 0.5])
+  assert.equal(opsi(7, 'A'), 'Kasus 3, $\\Theta(n)$')
   // soal 8: T(n − 1) + n = n(n + 1)/2
   assert.equal(nilaiPengurangan(10), 55)
-  assert.ok(kuis09.soal[7].kunciTeks.includes('Θ(n²)'))
 })
 
-test('struktur kuis: 8 soal, jenis sesuai PDF, hanya soal 8 dinilai sendiri', () => {
-  assert.deepEqual(kuis09.soal.map((q) => q.no), [1, 2, 3, 4, 5, 6, 7, 8])
-  assert.deepEqual(kuis09.soal.map((q) => TIPE_LABEL[q.tipe]), ['Perhitungan', 'Perhitungan', 'Perhitungan', 'Pilihan Ganda', 'Benar/Salah', 'Analisis', 'Perhitungan', 'Analisis'])
-  assert.deepEqual(kuis09.soal.filter((q) => q.mandiri).map((q) => q.no), [8])
-  for (const q of kuis09.soal) {
-    assert.ok(q.teks.length > 10 && q.pembahasan.length > 10, `soal ${q.no}`)
-    if (q.opsi) assert.ok(q.opsi.some((o) => o.id === q.kunci))
-    if (q.mandiri) assert.ok(q.kunciTeks)
-    for (const f of q.isian ?? []) if (f.jenis === 'pilih') assert.ok(f.opsi.includes(f.kunci), `soal ${q.no}: kunci "${f.kunci}" ada di opsi`)
-    assert.equal([q.mandiri, q.opsi, q.isian].filter(Boolean).length, 1, `satu jenis jawaban per soal (${q.no})`)
-  }
-  assert.deepEqual([...new Set(kuis09.soal.map((q) => q.tipe))].sort(), [...daftarKuis.find((k) => k.id === '09').tipe].sort())
-})
-
-test('penilaian soal Modul 09', () => {
-  const [q1, , q3, q4, q5, q6, q7] = kuis09.soal
-  assert.equal(nilaiSoal(q1, ['1', 'Θ(n²)']).benar, true)
-  assert.equal(nilaiSoal(q1, ['2', 'Θ(n²)']).benar, false)
-  assert.equal(nilaiSoal(q3, ['3', '0,75', 'Θ(n²)']).benar, true)
-  assert.equal(nilaiSoal(q3, ['3', '3/4', 'Θ(n²)']).benar, false, 'c harus ditulis desimal (kolom meminta 0,75)')
-  assert.equal(nilaiSoal(q4, 'C').benar, true)
-  assert.equal(nilaiSoal(q5, 'Salah').benar, true)
-  assert.equal(nilaiSoal(q6, ['Θ(n²)', 'Θ(n^1,585)', '3 submasalah']).benar, true)
-  assert.equal(nilaiSoal(q6, ['Θ(n²)', 'Θ(n^1,585)', '4 submasalah']).benar, false)
-  assert.equal(nilaiSoal(q7, ['3', 'Θ(n)']).benar, true)
-  const ok = { teks: 'a', sesuai: true }
-  const semua = { 1: ['1', 'Θ(n²)'], 2: ['2', 'Θ(√n lg n)'], 3: ['3', '0,75', 'Θ(n²)'], 4: 'C', 5: 'Salah', 6: ['Θ(n²)', 'Θ(n^1,585)', '3 submasalah'], 7: ['3', 'Θ(n)'], 8: ok }
-  const h = hitungHasil(kuis09.soal, semua)
-  assert.deepEqual([h.skor, h.lulus], [8, true])
-  assert.deepEqual(hitungHasil(kuis09.soal, { ...semua, 8: undefined }).belumDinilai, [8])
-})

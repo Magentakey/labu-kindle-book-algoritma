@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import MarkdownView from '../components/MarkdownView/MarkdownView.jsx'
 import { PASS_PERCENT } from '../data/modul.js'
-import { banyakJawaban, clearDraft, durasi, gabungHasil, hitungHasil, jam, jumlahKunci, labelSoal, loadDraft, saveDraft, soalSalah, sudahDijawab, terpilih } from '../lib/kuis.js'
+import { banyakJawaban, clearDraft, durasi, gabungHasil, hitungHasil, jam, jumlahKunci, labelSoal, loadDraft, nilaiSoal, saveDraft, soalSalah, terpilih } from '../lib/kuis.js'
 import { mainkan } from '../lib/suara.js'
 import { entryOf } from '../lib/progress.js'
 import { AnswerOption, Button, Chip, Icon, Mascot, Toggle } from '../ui/index.js'
@@ -25,93 +25,46 @@ export function SuaraToggle() {
 }
 
 // ------------------------------------------------------------------ satu soal
-function IsianField({ f, value, onChange }) {
-  const id = `isian-${f.label}`
+/**
+ * Pilihan jawaban satu soal. Sebelum dikunci, opsi terpilih ditandai biru. Setelah dijawab (`terkunci`) setiap opsi langsung dikoreksi:
+ * benar (hijau, centang), salah (merah, silang), atau "seharusnya dipilih" pada soal banyak jawaban; semuanya dengan ikon dan teks, bukan hanya warna.
+ * @param {{ q: any, pilihan: string[], jawaban?: any, terkunci: boolean, onPilih: (id: string) => void }} props
+ */
+export function SoalView({ q, pilihan, jawaban, terkunci, onPilih }) {
+  const banyak = banyakJawaban(q)
+  const perlu = jumlahKunci(q)
+  const kunciIds = [].concat(q.kunci)
+  const pilih = terkunci ? terpilih(q, jawaban) : pilihan
+  const stateOpsi = (id) => {
+    if (!terkunci) return pilih.includes(id) ? 'selected' : 'default'
+    const dipilih = pilih.includes(id)
+    const benar = kunciIds.includes(id)
+    if (dipilih) return benar ? 'correct' : 'wrong'
+    return benar ? (banyak ? 'missed' : 'correct') : 'default'
+  }
   return (
-    <label htmlFor={id} className="flex flex-col gap-1">
-      <span className="text-caption text-ink-soft">{f.label}</span>
-      {f.jenis === 'pilih' ? (
-        <select id={id} value={value ?? ''} onChange={(e) => onChange(e.target.value)} className="text-body h-10 rounded-sm border border-line bg-card px-3 text-ink">
-          <option value="">Pilih…</option>
-          {f.opsi.map((o) => (
-            <option key={o} value={o}>
-              {o}
-            </option>
-          ))}
-        </select>
-      ) : (
-        <input id={id} inputMode="decimal" value={value ?? ''} onChange={(e) => onChange(e.target.value)} className="text-code h-10 rounded-sm border border-line bg-card px-3 text-ink" placeholder="angka" />
-      )}
-    </label>
-  )
-}
-
-export function SoalView({ q, jawaban, setJawaban, kunciTampil, tampilkanKunci }) {
-  if (q.opsi) {
-    const banyak = banyakJawaban(q)
-    const pilih = terpilih(q, jawaban)
-    const perlu = jumlahKunci(q)
-    const klik = (id) => setJawaban(banyak ? (pilih.includes(id) ? pilih.filter((x) => x !== id) : [...pilih, id]) : id)
-    return (
-      <div className="mt-4" role="group" aria-labelledby={`teks-soal-${q.no}`}>
-        {banyak && (
-          <p role="status" className="text-caption mb-2 text-ink-soft">
-            Pilih {perlu} jawaban yang benar.{' '}
+    <div className="mt-4" role="group" aria-labelledby={`teks-soal-${q.no}`}>
+      {banyak && (
+        <p role="status" className="text-caption mb-2 text-ink-soft">
+          Pilih {perlu} jawaban yang benar.{' '}
+          {!terkunci && (
             <span className={cx('text-body-strong', pilih.length > perlu ? 'text-bad-text' : 'text-ink')}>
               Terpilih {pilih.length} dari {perlu}{pilih.length > perlu ? `, kurangi sampai tepat ${perlu}` : ''}.
             </span>
-          </p>
-        )}
-        <div className="space-y-2">
-          {q.opsi.map((o) => (
-            <AnswerOption key={o.id} letter={o.id.length === 1 ? o.id : o.id[0]} multi={banyak} state={pilih.includes(o.id) ? 'selected' : 'default'} onClick={() => klik(o.id)}>
-              <Md text={o.teks} inline />
-            </AnswerOption>
-          ))}
-        </div>
-      </div>
-    )
-  }
-  if (q.isian) {
-    const isi = Array.isArray(jawaban) ? jawaban : []
-    return (
-      <div className="mt-4 grid gap-3 sm:grid-cols-2">
-        {q.isian.map((f, i) => (
-          <IsianField key={f.label} f={f} value={isi[i]} onChange={(v) => { const n = q.isian.map((_, k) => isi[k] ?? ''); n[i] = v; setJawaban(n) }} />
+          )}
+        </p>
+      )}
+      <div className="space-y-2">
+        {q.opsi.map((o) => (
+          <AnswerOption key={o.id} letter={o.id} multi={banyak} state={stateOpsi(o.id)} dipilih={terkunci && pilih.includes(o.id)} terkunci={terkunci} onClick={() => !terkunci && onPilih(o.id)}>
+            <Md text={o.teks} inline />
+          </AnswerOption>
         ))}
       </div>
-    )
-  }
-  const j = jawaban ?? { teks: '', sesuai: null }
-  return (
-    <div className="mt-4">
-      <label className="text-caption text-ink-soft" htmlFor={`tulis-${q.no}`}>
-        Tulis jawabanmu
-      </label>
-      <textarea id={`tulis-${q.no}`} rows={4} value={j.teks} onChange={(e) => setJawaban({ ...j, teks: e.target.value })} className="text-body mt-1 w-full rounded-sm border border-line bg-card p-3 text-ink" />
-      {!kunciTampil ? (
-        <Button variant="kontrol" size="s" className="mt-2" onClick={tampilkanKunci}>
-          Tampilkan kunci
-        </Button>
-      ) : (
-        <div className="mt-3 rounded-sm border border-line bg-ok-bg p-3">
-          <p className="text-label text-ok-text uppercase">Kunci</p>
-          <Md text={q.kunciTeks} />
-          <p className="text-body-strong mt-2 text-heading">Apakah jawabanmu sudah sesuai?</p>
-          <div className="mt-2 flex flex-wrap gap-2">
-            <Button variant="konfirmasi" size="s" onClick={() => setJawaban({ ...j, sesuai: true })}>
-              Sudah sesuai
-            </Button>
-            <Button variant="bahaya" size="s" onClick={() => setJawaban({ ...j, sesuai: false })}>
-              Belum sesuai
-            </Button>
-          </div>
-          {typeof j.sesuai === 'boolean' && <p className="text-caption mt-2 text-ink-soft">Dinilai sendiri: {j.sesuai ? 'sesuai' : 'belum sesuai'}.</p>}
-        </div>
-      )}
     </div>
   )
 }
+
 
 // ------------------------------------------------------------------ hasil
 function BarisHasil({ q, r }) {
@@ -147,7 +100,7 @@ function BarisHasil({ q, r }) {
           <div className="grid gap-3 md:grid-cols-2">
             <div className={cx('rounded-sm p-3', status === 'benar' ? 'bg-ok-bg' : 'bg-bad-bg')}>
               <p className="text-caption text-ink-soft">Jawabanmu</p>
-              <div className="text-code-bold text-ink">{q.mandiri ? <span className="whitespace-pre-wrap">{r.jawabanTeks || '(kosong)'}</span> : r.jawabanTeks ? <Md text={r.jawabanTeks} inline /> : '(kosong)'}</div>
+              <div className="text-code-bold text-ink">{r.jawabanTeks ? <Md text={r.jawabanTeks} inline /> : '(kosong)'}</div>
             </div>
             <div className="rounded-sm bg-ok-bg p-3">
               <p className="text-caption text-ink-soft">Kunci</p>
@@ -240,51 +193,59 @@ export function Hasil({ kuis, hasil, next, lanjut, statistik, onUlang, onUlangSa
 // ------------------------------------------------------------------ kuis berjalan
 function Jalan({ modul, kuis, aktif, awal, onSelesai, onKeluar }) {
   const [index, setIndex] = useState(awal?.index ?? 0)
+  // `jawaban` hanya berisi soal yang sudah diperiksa (dikunci); `pilihan` adalah pilihan sementara pada soal banyak jawaban.
   const [jawaban, setJawaban] = useState(awal?.jawaban ?? {})
-  const [ragu, setRagu] = useState(new Set(awal?.ragu ?? []))
-  const [kunci, setKunci] = useState(new Set())
+  const [pilihan, setPilihan] = useState({})
   const [detik, setDetik] = useState(awal?.detik ?? 0)
   const [timer, setTimer] = useState(true)
   const q = aktif[index]
   const last = index === aktif.length - 1
+  const terkunci = jawaban[q.no] !== undefined
+  const banyak = banyakJawaban(q)
+  const perlu = jumlahKunci(q)
+  const sementara = pilihan[q.no] ?? []
+  const hasilSoal = terkunci ? nilaiSoal(q, jawaban[q.no]) : null
 
   useEffect(() => {
     const t = setInterval(() => setDetik((d) => d + 1), 1000)
     return () => clearInterval(t)
   }, [])
   useEffect(() => {
-    saveDraft(store(), modul.id, { nos: aktif.map((x) => x.no), index, jawaban, ragu: [...ragu], detik })
-  }, [modul.id, aktif, index, jawaban, ragu, detik])
+    saveDraft(store(), modul.id, { nos: aktif.map((x) => x.no), index, jawaban, ragu: [], detik })
+  }, [modul.id, aktif, index, jawaban, detik])
+
+  const periksa = (nilai) => {
+    setJawaban((j) => ({ ...j, [q.no]: nilai }))
+    mainkan(nilaiSoal(q, nilai).benar ? 'benar' : 'salah')
+  }
+  const pilih = (id) => {
+    if (terkunci) return
+    if (!banyak) return periksa(id)
+    mainkan('pilih')
+    setPilihan((p) => {
+      const cur = p[q.no] ?? []
+      return { ...p, [q.no]: cur.includes(id) ? cur.filter((x) => x !== id) : [...cur, id] }
+    })
+  }
+  const lanjut = () => (last ? onSelesai({ jawaban, detik }) : setIndex((i) => i + 1))
+
   useEffect(() => {
     const onKey = (e) => {
       const el = e.target
       if (el instanceof HTMLElement && (el.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(el.tagName))) return
       if (e.ctrlKey || e.metaKey || e.altKey) return
-      const opt = q.opsi?.find((o) => o.id.length === 1 && o.id.toLowerCase() === e.key.toLowerCase())
-      if (opt) {
-        mainkan('pilih')
-        if (banyakJawaban(q)) setJawaban((j) => ({ ...j, [q.no]: terpilih(q, j[q.no]).includes(opt.id) ? terpilih(q, j[q.no]).filter((x) => x !== opt.id) : [...terpilih(q, j[q.no]), opt.id] }))
-        else setJawaban((j) => ({ ...j, [q.no]: opt.id }))
-      } else if (e.key === 'Enter' && !last) setIndex((i) => i + 1)
+      const opt = q.opsi.find((o) => o.id.toLowerCase() === e.key.toLowerCase())
+      if (opt) pilih(opt.id)
+      else if (e.key === 'Enter') {
+        if (terkunci) lanjut()
+        else if (banyak && sementara.length === perlu) periksa(sementara)
+      }
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [q, last])
+  })
 
-  const set = (v) => {
-    mainkan('pilih')
-    setJawaban((j) => ({ ...j, [q.no]: v }))
-  }
-  const toggleRagu = () => {
-    mainkan('ragu')
-    setRagu((s) => {
-      const n = new Set(s)
-      if (n.has(q.no)) n.delete(q.no)
-      else n.add(q.no)
-      return n
-    })
-  }
-
+  const benarSejauhIni = aktif.filter((x) => jawaban[x.no] !== undefined && nilaiSoal(x, jawaban[x.no]).benar).length
   return (
     <div>
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
@@ -305,20 +266,15 @@ function Jalan({ modul, kuis, aktif, awal, onSelesai, onKeluar }) {
         <span className="text-body-strong text-heading">
           Soal {index + 1} / {aktif.length}
         </span>
-        <div className="flex gap-1" role="group" aria-label="Lompat ke soal">
-          {aktif.map((x, i) => (
-            <button
-              key={x.no}
-              type="button"
-              aria-label={`Soal ${i + 1}${sudahDijawab(x, jawaban[x.no]) ? ', sudah dijawab' : ''}${ragu.has(x.no) ? ', ditandai ragu' : ''}`}
-              aria-current={i === index ? 'step' : undefined}
-              onClick={() => setIndex(i)}
-              className={cx('h-3 w-7 rounded-[2px] border-2', i === index ? 'border-brand-orange bg-card' : ragu.has(x.no) ? 'border-brand-yellow-strong bg-brand-yellow' : sudahDijawab(x, jawaban[x.no]) ? 'border-ok bg-brand-mint' : 'border-transparent bg-placeholder')}
-            />
-          ))}
+        <div className="flex gap-1" aria-hidden="true">
+          {aktif.map((x, i) => {
+            const j = jawaban[x.no]
+            const ok = j !== undefined && nilaiSoal(x, j).benar
+            return <span key={x.no} className={cx('h-3 w-7 rounded-[2px] border-2', i === index ? 'border-brand-orange bg-card' : j === undefined ? 'border-transparent bg-placeholder' : ok ? 'border-ok bg-brand-mint' : 'border-bad bg-bad')} />
+          })}
         </div>
+        <span className="text-caption ml-auto text-ink-soft">Benar sejauh ini: {benarSejauhIni} dari {Object.keys(jawaban).length}</span>
       </div>
-      <p className="text-caption mt-2 text-ink-soft">Klik blok untuk lompat ke soal. Jawaban tersimpan otomatis di perangkat, juga saat offline.</p>
 
       <div className="mt-4 rounded-sm border border-line bg-card p-4 md:p-5">
         <div className="flex items-center justify-between gap-3">
@@ -328,30 +284,44 @@ function Jalan({ modul, kuis, aktif, awal, onSelesai, onKeluar }) {
         <div id={`teks-soal-${q.no}`} className="text-body-l mt-3 font-medium text-heading">
           <Md text={q.teks} />
         </div>
-        <SoalView q={q} jawaban={jawaban[q.no]} setJawaban={set} kunciTampil={kunci.has(q.no)} tampilkanKunci={() => setKunci((s) => new Set(s).add(q.no))} />
+        <SoalView q={q} pilihan={sementara} jawaban={jawaban[q.no]} terkunci={terkunci} onPilih={pilih} />
+
+        <div role="status" aria-live="polite">
+          {hasilSoal && (
+            <div className={cx('mt-4 rounded-sm border-l-4 px-4 py-3', hasilSoal.benar ? 'border-ok bg-ok-bg' : 'border-bad bg-bad-bg')}>
+              <p className={cx('text-body-strong flex items-center gap-2', hasilSoal.benar ? 'text-ok-text' : 'text-bad-text')}>
+                <Icon name={hasilSoal.benar ? 'check' : 'x'} size={18} />
+                {hasilSoal.benar ? 'Benar!' : banyak && terpilih(q, jawaban[q.no]).some((id) => [].concat(q.kunci).includes(id)) ? 'Belum tepat: pilihanmu belum persis sama dengan kunci.' : 'Belum tepat.'}
+              </p>
+              {!hasilSoal.benar && (
+                <p className="text-body mt-1 text-ink">
+                  Kunci: <Md text={hasilSoal.kunciTeks} inline />
+                </p>
+              )}
+              <div className="mt-2">
+                <Md text={q.pembahasan} />
+              </div>
+            </div>
+          )}
+        </div>
+
         <div className="mt-5 flex flex-wrap items-center gap-3">
-          <Button variant="navigasiGaris" icon="arrowL" disabled={index === 0} onClick={() => setIndex(index - 1)}>
-            Sebelumnya
-          </Button>
-          <div className="ml-auto flex items-center gap-3">
-            <Button variant="kontrol" aria-pressed={ragu.has(q.no)} onClick={toggleRagu}>
-              {ragu.has(q.no) ? 'Batal ragu' : 'Tandai ragu'}
+          {!terkunci && banyak && (
+            <Button variant="konfirmasi" icon="check" disabled={sementara.length !== perlu} onClick={() => periksa(sementara)}>
+              Periksa jawaban
             </Button>
-            {last ? (
-              <Button variant="konfirmasi" icon="check" onClick={() => onSelesai({ jawaban, detik })}>
-                Selesai dan lihat hasil
-              </Button>
-            ) : (
-              <Button variant="navigasi" iconRight="arrowR" onClick={() => setIndex(index + 1)}>
-                Berikutnya
-              </Button>
-            )}
+          )}
+          {!terkunci && <p className="text-caption text-ink-soft">{banyak ? `Pilih tepat ${perlu} jawaban, lalu periksa.` : 'Pilih satu jawaban; langsung diperiksa.'}</p>}
+          <div className="ml-auto flex items-center gap-3">
+            <Button variant={last ? 'konfirmasi' : 'navigasi'} icon={last ? 'check' : undefined} iconRight={last ? undefined : 'arrowR'} disabled={!terkunci} onClick={lanjut}>
+              {last ? 'Selesai dan lihat hasil' : 'Berikutnya'}
+            </Button>
           </div>
         </div>
       </div>
       <p className="text-caption mt-3 flex items-center gap-2 text-ink-soft">
         <Icon name="info" size={14} />
-        {q.opsi && q.opsi.every((o) => o.id.length === 1) ? `Tekan ${q.opsi.map((o) => o.id).join('–')} untuk ${banyakJawaban(q) ? 'memilih atau membatalkan, ' : 'memilih, '}` : ''}Enter untuk lanjut.
+        Tekan {q.opsi.map((o) => o.id).join('–')} untuk memilih{banyak ? ' atau membatalkan' : ''}, Enter untuk {terkunci ? 'lanjut' : banyak ? 'memeriksa' : 'lanjut setelah dijawab'}. Jawaban tersimpan otomatis di perangkat, juga saat offline.
       </p>
     </div>
   )
@@ -417,9 +387,7 @@ export default function KuisModul({ modul, kuis, next, lanjut, statistik }) {
           <p className="text-label text-accent uppercase">Kuis pemahaman · Modul {modul.id}</p>
           <h3 className="text-h3 mt-1 text-heading">Kerjakan {kuis.soal.length} soal {kuis.judul}</h3>
           <p className="text-body mt-1 text-ink-soft">
-            {kuis.soal.every((q) => q.opsi && !q.mandiri)
-              ? `Semua soal pilihan ganda. Ada soal dengan satu jawaban dan ada yang harus memilih beberapa jawaban sekaligus (jumlahnya tertulis di tiap soal; soal baru benar bila semua pilihan yang benar terpilih dan tidak ada yang salah). Batas lulus ${PASS_PERCENT}%. Kunci dan pembahasan muncul setelah kuis selesai.`
-              : `Soal terdiri atas penelusuran, pilihan ganda, perhitungan, benar/salah, dan analisis. Batas lulus ${PASS_PERCENT}%. Soal penelusuran dan analisis dinilai sendiri setelah kunci ditampilkan.`}
+            Semua soal pilihan ganda. Ada soal dengan satu jawaban dan ada yang harus memilih beberapa jawaban sekaligus (jumlahnya tertulis di tiap soal; soal baru benar bila semua pilihan yang benar terpilih dan tidak ada yang salah). Setiap soal langsung dikoreksi begitu dijawab, lengkap dengan pembahasannya, lalu lanjut ke soal berikutnya. Batas lulus {PASS_PERCENT}%.
           </p>
           <div className="mt-3 flex flex-wrap items-center gap-3">
             {draf ? (

@@ -1,9 +1,5 @@
-// Kuis Pemahaman Modul 21 (7 soal) dan kunci serta pembahasannya, dari PDF "21 - Algoritma Prim" halaman 8–9.
-// Teks memakai Markdown dengan rumus TeX ($...$). Semua soal dinilai otomatis (pilihan atau isian); soal penelusuran dan analisis (2, 3, 5, 6)
-// dinilai dari beberapa isian, bukan uraian. Soal 4 (benar/salah dengan alasan) dinilai pada pilihan Benar/Salah; alasannya ada di pembahasan.
-const EXTRACT = ['p (0)', 'q (2)', 'r (1)', 's (4)', 't (6)']
-const BUSUR_H = ['(a, h)', '(b, h)', '(g, h)', '(i, h)']
-const LANGKAH = ['sekitar 500.000 langkah', 'sekitar 1.000.000 langkah', 'sekitar 5.000.000 langkah']
+// Kuis Pemahaman Modul 21 (7 soal pilihan ganda), bersumber dari soal PDF "21 - Algoritma Prim" halaman 8–9.
+// Teks memakai Markdown dengan rumus TeX ($...$). `kunci` berupa satu id (satu jawaban) atau larik id (banyak jawaban, dinilai utuh).
 
 export const kuis21 = {
   judul: 'Algoritma Prim',
@@ -11,89 +7,85 @@ export const kuis21 = {
   soal: [
     {
       no: 1,
-      tipe: 'pilihan',
       teks: 'Pada Prim, nilai $v.\\mathit{key}$ untuk simpul $v$ yang masih di $Q$ menyatakan ...',
       opsi: [
         { id: 'A', teks: 'Jarak terpendek dari akar ke $v$.' },
-        { id: 'B', teks: 'Bobot busur termurah yang menghubungkan $v$ dengan tree saat ini.' },
-        { id: 'C', teks: 'Banyaknya tetangga $v$.' },
+        { id: 'B', teks: 'Banyaknya tetangga $v$.' },
+        { id: 'C', teks: 'Bobot busur termurah yang menghubungkan $v$ dengan tree saat ini.' },
         { id: 'D', teks: 'Urutan $v$ di adjacency-list.' },
       ],
-      kunci: 'B',
-      pembahasan: '**Jawaban: B.** Pilihan A adalah arti $v.d$ pada Dijkstra, bukan key pada Prim.',
+      kunci: 'C',
+      pembahasan: '**Jawaban: C.** Pilihan A adalah arti $v.d$ pada Dijkstra, bukan key pada Prim.',
     },
     {
       no: 2,
-      tipe: 'penelusuran',
-      teks: 'Jalankan Prim dari akar $p$ pada graf dengan busur $(p, q) = 3$, $(p, r) = 1$, $(q, r) = 2$, $(q, s) = 5$, $(r, s) = 4$, $(s, t) = 6$, $(r, t) = 7$. Pilih simpul yang di-extract pada setiap iterasi (beserta key-nya) dan isi total bobot MST.',
-      isian: [
-        { label: 'Extract ke-1', jenis: 'pilih', opsi: EXTRACT, kunci: 'p (0)' },
-        { label: 'Extract ke-2', jenis: 'pilih', opsi: EXTRACT, kunci: 'r (1)' },
-        { label: 'Extract ke-3', jenis: 'pilih', opsi: EXTRACT, kunci: 'q (2)' },
-        { label: 'Extract ke-4', jenis: 'pilih', opsi: EXTRACT, kunci: 's (4)' },
-        { label: 'Extract ke-5', jenis: 'pilih', opsi: EXTRACT, kunci: 't (6)' },
-        { label: 'Total bobot MST', jenis: 'angka', kunci: 13 },
+      teks: 'Jalankan Prim dari akar $p$ pada graf dengan busur $(p, q) = 3$, $(p, r) = 1$, $(q, r) = 2$, $(q, s) = 5$, $(r, s) = 4$, $(s, t) = 6$, $(r, t) = 7$. Pilih **tiga** pernyataan yang benar.',
+      opsi: [
+        { id: 'A', teks: 'Extract ke-2 adalah $r$ dengan key 1.' },
+        { id: 'B', teks: 'Extract ke-3 adalah $q$ dengan key 2.' },
+        { id: 'C', teks: 'Total bobot MST adalah 13.' },
+        { id: 'D', teks: 'Extract ke-2 adalah $q$ dengan key 3.' },
+        { id: 'E', teks: 'Total bobot MST adalah 14.' },
       ],
+      kunci: ['A', 'B', 'C'],
       pembahasan:
-        'Extract $p$ (0): $q.\\mathit{key} = 3$, $r.\\mathit{key} = 1$. Extract $r$ (1): $q.\\mathit{key} = 2$, $s.\\mathit{key} = 4$, $t.\\mathit{key} = 7$. Extract $q$ (2): $w(q, s) = 5 > 4$, tidak berubah. Extract $s$ (4): $t.\\mathit{key} = 6$. Extract $t$ (6). Urutan: **p(0), r(1), q(2), s(4), t(6)**; MST $\\{(r, p), (q, r), (s, r), (t, s)\\}$, total **13**, sama dengan hasil Kruskal pada kuis Modul 20.',
+        '**Jawaban: A, B, dan C.** Extract $p$ (0): $q.\\mathit{key} = 3$, $r.\\mathit{key} = 1$. Extract $r$ (1): $q.\\mathit{key} = 2$, $s.\\mathit{key} = 4$, $t.\\mathit{key} = 7$. Extract $q$ (2): $w(q, s) = 5 > 4$, tidak berubah. Extract $s$ (4): $t.\\mathit{key} = 6$. Extract $t$ (6). Urutan: **p(0), r(1), q(2), s(4), t(6)**; MST $\\{(r, p), (q, r), (s, r), (t, s)\\}$, total **13**, sama dengan hasil Kruskal pada kuis Modul 20.',
     },
     {
       no: 3,
-      tipe: 'analisis',
-      teks: 'Pada iterasi 4 penelusuran di modul ini, key $h$ turun dari 8 menjadi 7, lalu pada iterasi 6 turun lagi menjadi 1. Jelaskan apa arti setiap perubahan itu. Jawab dengan melengkapi pernyataan berikut.',
-      isian: [
-        { label: 'Awalnya (h.key = 8, π = a), h tersambung lewat busur', jenis: 'pilih', opsi: BUSUR_H, kunci: '(a, h)' },
-        { label: 'Setelah i masuk tree, h.key = 7 lewat busur', jenis: 'pilih', opsi: BUSUR_H, kunci: '(i, h)' },
-        { label: 'Setelah g masuk tree, h.key = 1 lewat busur', jenis: 'pilih', opsi: BUSUR_H, kunci: '(g, h)' },
-        {
-          label: 'Key selalu mencerminkan',
-          jenis: 'pilih',
-          opsi: ['Sambungan termurah yang diketahui sejauh ini ke tree yang terus membesar', 'Jarak terpendek dari akar a ke h', 'Banyaknya tetangga h yang sudah di tree'],
-          kunci: 'Sambungan termurah yang diketahui sejauh ini ke tree yang terus membesar',
-        },
+      teks: 'Pada penelusuran di modul ini, key $h$ mula-mula 8 (dari $a$), turun menjadi 7 pada iterasi 4, lalu turun lagi menjadi 1 pada iterasi 6. Pilih **tiga** pernyataan yang benar.',
+      opsi: [
+        { id: 'A', teks: 'Awalnya $h$ tersambung lewat busur $(a, h)$ dengan key 8.' },
+        { id: 'B', teks: 'Setelah $i$ masuk tree, $h.\\mathit{key} = 7$ lewat busur $(i, h)$.' },
+        { id: 'C', teks: 'Setelah $g$ masuk tree, $h.\\mathit{key} = 1$ lewat busur $(g, h)$.' },
+        { id: 'D', teks: 'Setelah $g$ masuk tree, $h.\\mathit{key} = 1$ lewat busur $(a, h)$.' },
+        { id: 'E', teks: 'Key mencerminkan jarak terpendek dari akar $a$ ke $h$.' },
       ],
+      kunci: ['A', 'B', 'C'],
       pembahasan:
-        'Awalnya ($h.\\mathit{key} = 8$, $\\pi = a$) cara termurah menyambungkan $h$ adalah lewat busur $(a, h)$. Setelah $i$ masuk tree, ditemukan sambungan lebih murah $(i, h) = 7$. Setelah $g$ masuk tree, ditemukan sambungan yang lebih murah lagi $(g, h) = 1$. Key selalu mencerminkan sambungan termurah yang diketahui sejauh ini ke tree yang terus membesar.',
+        '**Jawaban: A, B, dan C.** Awalnya ($h.\\mathit{key} = 8$, $\\pi = a$) cara termurah menyambungkan $h$ adalah lewat busur $(a, h)$. Setelah $i$ masuk tree, ditemukan sambungan lebih murah $(i, h) = 7$. Setelah $g$ masuk tree, ditemukan sambungan yang lebih murah lagi $(g, h) = 1$. Key selalu mencerminkan sambungan termurah yang diketahui sejauh ini ke tree yang terus membesar, bukan jarak dari akar.',
     },
     {
       no: 4,
-      tipe: 'benarsalah',
-      teks: '"Jika Prim dijalankan dari akar yang berbeda, bobot MST yang dihasilkan bisa berbeda." Benar atau salah? Pikirkan alasannya.',
+      teks: 'Pernyataan "Jika Prim dijalankan dari akar yang berbeda, bobot MST yang dihasilkan bisa berbeda" adalah ...',
       opsi: [
-        { id: 'Benar', teks: 'Benar' },
-        { id: 'Salah', teks: 'Salah' },
+        { id: 'A', teks: 'Benar, karena akar menentukan bobot busur pertama.' },
+        { id: 'B', teks: 'Benar, bila graf memiliki lebih dari 5 simpul.' },
+        { id: 'C', teks: 'Salah, karena urutan extract dan MST juga selalu sama.' },
+        { id: 'D', teks: 'Salah: akar berbeda dapat memberi urutan extract atau MST yang berbeda (bila ada bobot sama), tetapi bobot MST selalu sama, yaitu minimum.' },
       ],
-      kunci: 'Salah',
-      pembahasan: '**Salah.** Akar yang berbeda dapat menghasilkan urutan extract dan bahkan MST yang berbeda (bila ada bobot sama), tetapi **bobot** MST selalu sama, yaitu bobot minimum. Pada graf contoh, bobotnya selalu 37.',
+      kunci: 'D',
+      pembahasan: '**Jawaban: D.** Akar yang berbeda dapat menghasilkan urutan extract dan bahkan MST yang berbeda (bila ada bobot sama), tetapi **bobot** MST selalu sama, yaitu bobot minimum. Pada graf contoh, bobotnya selalu 37.',
     },
     {
       no: 5,
-      tipe: 'perhitungan',
-      teks: 'Sebuah graf padat memiliki $\\lvert V \\rvert = 1.000$ dan $\\lvert E \\rvert \\approx 500.000$. Bandingkan perkiraan running time Prim dengan array ($V^2$) dan dengan binary heap ($E \\lg V$). Mana yang lebih baik?',
-      isian: [
-        { label: 'Array: V²', jenis: 'pilih', opsi: LANGKAH, kunci: 'sekitar 1.000.000 langkah' },
-        { label: 'Binary heap: E lg V (lg 1.000 ≈ 10)', jenis: 'pilih', opsi: LANGKAH, kunci: 'sekitar 5.000.000 langkah' },
-        { label: 'Yang lebih baik untuk graf padat ini', jenis: 'pilih', opsi: ['Array', 'Binary heap'], kunci: 'Array' },
-        { label: 'Array kira-kira berapa kali lebih sedikit langkahnya', jenis: 'angka', kunci: 5 },
+      teks: 'Sebuah graf padat memiliki $\\lvert V \\rvert = 1.000$ dan $\\lvert E \\rvert \\approx 500.000$. Pilih **tiga** pernyataan yang benar tentang Prim.',
+      opsi: [
+        { id: 'A', teks: 'Dengan array, $V^2$ sekitar 1.000.000 langkah.' },
+        { id: 'B', teks: 'Dengan binary heap, $E \\lg V$ sekitar 5.000.000 langkah.' },
+        { id: 'C', teks: 'Untuk graf padat ini, array lebih baik.' },
+        { id: 'D', teks: 'Untuk graf padat ini, binary heap lebih baik.' },
+        { id: 'E', teks: 'Dengan array, $V^2$ sekitar 5.000.000 langkah.' },
       ],
-      pembahasan: 'Array: $V^2 = 10^6$ langkah. Binary heap: $E \\lg V \\approx 500.000 \\times 10 = 5 \\times 10^6$ langkah. Untuk graf padat ini, **array lebih baik** (sekitar 5 kali lebih sedikit).',
+      kunci: ['A', 'B', 'C'],
+      pembahasan: '**Jawaban: A, B, dan C.** Array: $V^2 = 10^6$ langkah. Binary heap: $E \\lg V \\approx 500.000 \\times 10 = 5 \\times 10^6$ langkah. Untuk graf padat ini, **array lebih baik** (sekitar 5 kali lebih sedikit).',
     },
     {
       no: 6,
-      tipe: 'analisis',
-      teks: 'Jalankan Prim pada graf contoh dengan akar $e$ (gunakan aturan abjad bila key sama). Simpul mana yang di-extract pertama kali setelah $e$, dan berapa bobot MST-nya?',
-      isian: [
-        { label: 'Simpul yang di-extract pertama setelah e', jenis: 'pilih', opsi: ['d', 'f'], kunci: 'd' },
-        { label: 'Key simpul itu', jenis: 'angka', kunci: 9 },
-        { label: 'Bobot MST', jenis: 'angka', kunci: 37 },
-        { label: 'MST yang terbentuk memuat busur (a, h)', jenis: 'pilih', opsi: ['Ya', 'Tidak'], kunci: 'Ya' },
+      teks: 'Jalankan Prim pada graf contoh dengan akar $e$ (gunakan aturan abjad bila key sama). Pilih **dua** pernyataan yang benar.',
+      opsi: [
+        { id: 'A', teks: 'Simpul yang di-extract pertama setelah $e$ adalah $d$ dengan key 9.' },
+        { id: 'B', teks: 'Simpul yang di-extract pertama setelah $e$ adalah $f$ dengan key 10.' },
+        { id: 'C', teks: 'Bobot MST adalah 33.' },
+        { id: 'D', teks: 'Bobot MST adalah 37.' },
+        { id: 'E', teks: 'MST yang terbentuk tidak memuat busur $(a, h)$.' },
       ],
+      kunci: ['A', 'D'],
       pembahasan:
-        'Dari $e$: $Adj[e] = d, f$ memberi $d.\\mathit{key} = 9$, $f.\\mathit{key} = 10$, sehingga yang di-extract pertama setelah $e$ adalah $d$ (key 9). Selanjutnya $c$ (7), $i$ (2), $f$ (4), $g$ (2), $h$ (1), $a$ (8, lewat $(a, h)$ karena $h$ sudah di tree sebelum $b$), $b$ (4). Bobot MST tetap **37** ($9 + 7 + 2 + 4 + 2 + 1 + 8 + 4$). MST yang terbentuk kali ini memuat $(a, h)$, yaitu $T_2$ dari Modul 19.',
+        '**Jawaban: A dan D.** Dari $e$: $Adj[e] = d, f$ memberi $d.\\mathit{key} = 9$, $f.\\mathit{key} = 10$, sehingga yang di-extract pertama setelah $e$ adalah $d$ (key 9). Selanjutnya $c$ (7), $i$ (2), $f$ (4), $g$ (2), $h$ (1), $a$ (8, lewat $(a, h)$ karena $h$ sudah di tree sebelum $b$), $b$ (4). Bobot MST tetap **37** ($9 + 7 + 2 + 4 + 2 + 1 + 8 + 4$). MST yang terbentuk kali ini memuat $(a, h)$, yaitu $T_2$ dari Modul 19.',
     },
     {
       no: 7,
-      tipe: 'pilihan',
       teks: 'Mengapa pada langkah 9 diperiksa syarat "$v \\in Q$"?',
       opsi: [
         { id: 'A', teks: 'Agar simpul yang sudah masuk tree tidak diperbarui lagi; jika diperbarui, struktur tree bisa rusak.' },

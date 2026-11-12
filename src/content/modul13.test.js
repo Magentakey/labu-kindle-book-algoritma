@@ -3,10 +3,9 @@ import assert from 'node:assert/strict'
 import { spawnSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import { parseModul } from '../lib/modulContent.js'
-import { hitungHasil, nilaiSoal, TIPE_LABEL } from '../lib/kuis.js'
 import { algoritma } from '../data/algoritma.js'
 import { modul, modulById, neighbors, tabsOf } from '../data/modul.js'
-import { daftarKuis, kuisById } from '../data/quiz.js'
+import { kuisById } from '../data/quiz.js'
 import { petaBab } from '../data/credit.js'
 import { cariPython } from '../test/python.js'
 import { vizIds } from '../viz/vizConfig.js'
@@ -114,50 +113,17 @@ test('program Python di modul dijalankan sungguhan dan keluarannya sama dengan t
 })
 
 test('kunci kuis dihitung ulang: soal 2 (koin {1,6,10}), soal 3 (penyangkal {1,3,4}), soal 5 (knapsack W = 30)', () => {
-  const [, q2, q3, , q5] = kuis13.soal
+  const [, , q3] = kuis13.soal
   assert.deepEqual(koinGreedy([1, 6, 10], 12), [10, 1, 1])
   assert.deepEqual(koinOptimal([1, 6, 10], 12), { jumlah: 2, koin: [6, 6] })
-  assert.deepEqual([q2.isian[0].kunci, q2.isian[1].kunci, q2.isian[2].kunci], [3, 'Tidak', 2])
   assert.equal(penyangkalKoin([1, 3, 4]), 6)
-  assert.equal(q3.kunci, 'Salah')
+  assert.equal(q3.kunci, 'C')
   const g = knapsack01Greedy(barangModul, 30)
   const o = knapsack01Optimal(barangModul, 30)
   assert.deepEqual([g.total, g.berat, o.total], [160, 30, 160])
-  assert.deepEqual([q5.isian[0].kunci, q5.isian[1].kunci, q5.isian[2].kunci], [g.total, o.total, g.total === o.total ? 'Ya' : 'Tidak'])
   assert.ok(!kapasitasGagal(barangModul, 60).includes(30), 'W = 30 bukan kapasitas gagal')
   // "kemungkinan lain yang muat": barang 3 saja 120, barang 1 + 2 160; barang 1 + 3 (40 kg) dan 2 + 3 (50 kg) tidak muat
   assert.deepEqual([barangModul[2].nilai, barangModul[0].nilai + barangModul[1].nilai], [120, 160])
   assert.ok(barangModul[0].berat + barangModul[2].berat > 30 && barangModul[1].berat + barangModul[2].berat > 30)
 })
 
-test('struktur kuis: 7 soal, jenis sesuai PDF, soal 4 dan 7 dinilai sendiri', () => {
-  assert.deepEqual(kuis13.soal.map((q) => q.no), [1, 2, 3, 4, 5, 6, 7])
-  assert.deepEqual(kuis13.soal.map((q) => TIPE_LABEL[q.tipe]), ['Pilihan Ganda', 'Perhitungan', 'Benar/Salah', 'Analisis', 'Analisis', 'Pilihan Ganda', 'Analisis'])
-  assert.deepEqual(kuis13.soal.filter((q) => q.mandiri).map((q) => q.no), [4, 7])
-  assert.deepEqual([kuis13.soal[0].kunci, kuis13.soal[5].kunci], ['C', 'C'])
-  for (const q of kuis13.soal) {
-    assert.ok(q.teks.length > 10 && q.pembahasan.length > 10, `soal ${q.no}`)
-    if (q.opsi) assert.ok(q.opsi.some((o) => o.id === q.kunci))
-    if (q.mandiri) assert.ok(q.kunciTeks)
-    for (const f of q.isian ?? []) if (f.jenis === 'pilih') assert.ok(f.opsi.includes(f.kunci), `soal ${q.no}: kunci "${f.kunci}" ada di opsi`)
-    assert.equal([q.mandiri, q.opsi, q.isian].filter(Boolean).length, 1, `satu jenis jawaban per soal (${q.no})`)
-  }
-  assert.deepEqual([...new Set(kuis13.soal.map((q) => q.tipe))].sort(), [...daftarKuis.find((k) => k.id === '13').tipe].sort())
-})
-
-test('penilaian soal Modul 13', () => {
-  const [q1, q2, q3, , q5, q6] = kuis13.soal
-  assert.equal(nilaiSoal(q1, 'C').benar, true)
-  assert.equal(nilaiSoal(q1, 'D').benar, false)
-  assert.equal(nilaiSoal(q2, ['3', 'Tidak', '2']).benar, true)
-  assert.equal(nilaiSoal(q2, ['3', 'Ya', '3']).benar, false)
-  assert.equal(nilaiSoal(q3, 'Salah').benar, true)
-  assert.equal(nilaiSoal(q5, ['160', '160', 'Ya']).benar, true)
-  assert.equal(nilaiSoal(q5, ['160', '220', 'Tidak']).benar, false)
-  assert.equal(nilaiSoal(q6, 'C').benar, true)
-  const ok = { teks: 'a', sesuai: true }
-  const semua = { 1: 'C', 2: ['3', 'Tidak', '2'], 3: 'Salah', 4: ok, 5: ['160', '160', 'Ya'], 6: 'C', 7: ok }
-  const h = hitungHasil(kuis13.soal, semua)
-  assert.deepEqual([h.skor, h.lulus], [7, true])
-  assert.deepEqual(hitungHasil(kuis13.soal, { ...semua, 4: undefined, 7: undefined }).belumDinilai, [4, 7])
-})

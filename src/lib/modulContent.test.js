@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs'
 import { parseModul } from './modulContent.js'
 import { insertionLoops, totalLoops } from './insertionLoops.js'
 import { PASS_PERCENT, modulById, sections } from '../data/modul.js'
-import { hitungHasil, nilaiSoal, parseAngka, soalSalah, durasi, jam, TIPE_LABEL } from './kuis.js'
+import { hitungHasil, nilaiSoal, soalSalah, durasi, jam } from './kuis.js'
 import { kuis04 } from '../content/modul/04.kuis.js'
 
 const text = readFileSync(new URL('../content/modul/04.md', import.meta.url), 'utf8')
@@ -115,90 +115,55 @@ test('metadata modul 04 sama dengan PDF: 11 halaman, 8 soal, prasyarat Modul 03,
 })
 
 // ---------------------------------------------------------------- kuis
+const BENAR = { 1: ['A', 'C'], 2: 'C', 3: ['A', 'C', 'D'], 4: 'D', 5: ['B', 'D'], 6: 'A', 7: 'B', 8: 'D' }
+
 test('kunci kuis dihitung ulang: tabel soal 1, jumlah soal 3, soal 5, soal 8', () => {
   const s1 = sim([8, 3, 5, 1])
   assert.deepEqual(s1.rows.map((r) => [r.j, r.key, r.after.join(', '), r.t]), [[2, 3, '3, 8, 5, 1', 2], [3, 5, '3, 5, 8, 1', 2], [4, 1, '1, 3, 5, 8', 4]])
-  for (const r of s1.rows) assert.ok(kuis04.soal[0].kunciTeks.includes(`$t_${r.j} = ${r.t}$`) || kuis04.soal[0].pembahasan.includes(`$t_${r.j} = ${r.t}$`), `t_${r.j}`)
+  for (const r of s1.rows) assert.ok(kuis04.soal[0].pembahasan.includes(`$t_${r.j} = ${r.t}$`), `t_${r.j}`)
   const n = 6
   const best = sim(Array.from({ length: n }, (_, i) => i))
   const worst = sim(Array.from({ length: n }, (_, i) => n - i))
-  const q3 = kuis04.soal[2].isian.map((f) => f.kunci)
-  assert.deepEqual(q3, [best.sumT, best.geser, worst.sumT, worst.geser])
-  assert.deepEqual(q3, [5, 0, 20, 15])
+  assert.deepEqual([best.sumT, best.geser, worst.sumT, worst.geser], [5, 0, 20, 15])
+  const teks3 = (id) => kuis04.soal[2].opsi.find((o) => o.id === id).teks
+  assert.ok(teks3('A').includes(`= ${best.sumT}$`) && teks3('C').includes(`= ${worst.sumT}$`) && teks3('D').includes(`= ${worst.geser}$`))
   const q5 = sim([1, 2, 3, 4, 5, 6, 7, 0])
-  assert.equal(kuis04.soal[4].isian[0].kunci, q5.geser)
+  assert.ok(kuis04.soal[4].opsi.find((o) => o.id === 'B').teks.includes(`= ${q5.geser}$`))
   assert.ok(q5.geser > 0 && q5.geser < (8 * 8 - 8) / 2, 'di antara terbaik dan terburuk (28)')
-  assert.equal(kuis04.soal[4].isian[1].kunci, 'di antaranya')
-  assert.equal(kuis04.soal[7].isian[0].kunci, 0.01 * (20000 / 2000) ** 2)
+  assert.equal(0.01 * (20000 / 2000) ** 2, 1)
+  assert.equal(kuis04.soal[7].opsi.find((o) => o.id === 'D').teks, '1 detik')
 })
 
-test('struktur kuis: 8 soal berurutan, jenis sama dengan PDF, kunci ada di opsi, dan tiap soal punya pembahasan', () => {
-  assert.deepEqual(kuis04.soal.map((q) => q.no), [1, 2, 3, 4, 5, 6, 7, 8])
-  assert.deepEqual(kuis04.soal.map((q) => TIPE_LABEL[q.tipe]), ['Penelusuran', 'Pilihan Ganda', 'Perhitungan', 'Benar/Salah', 'Analisis', 'Pilihan Ganda', 'Analisis', 'Perhitungan'])
-  for (const q of kuis04.soal) {
-    assert.ok(q.teks.length > 10 && q.pembahasan.length > 10, `soal ${q.no}`)
-    if (q.opsi) assert.ok(q.opsi.some((o) => o.id === q.kunci), `kunci soal ${q.no}`)
-    if (q.mandiri) assert.ok(q.kunciTeks)
-    assert.equal([q.mandiri, q.opsi, q.isian].filter(Boolean).length, 1, `satu jenis jawaban per soal (${q.no})`)
-  }
-  assert.deepEqual(kuis04.soal.filter((q) => q.tipe === 'pilihan').map((q) => q.kunci), ['B', 'B'])
-})
-
-test('parseAngka: koma desimal, titik ribuan, spasi, dan teks bukan angka', () => {
-  assert.equal(parseAngka('20'), 20)
-  assert.equal(parseAngka(' 1,5 '), 1.5)
-  assert.equal(parseAngka('1.000'), 1000)
-  // tanda minus: ASCII, minus Unicode (U+2212, seperti di soal dan tabel), dan tanda hubung panjang dibaca sebagai angka negatif
-  assert.equal(parseAngka('-3'), -3)
-  assert.equal(parseAngka('\u22123'), -3)
-  assert.equal(parseAngka('\u22121,5'), -1.5)
-  assert.equal(parseAngka('\u20131'), -1)
-  assert.equal(parseAngka('3\u2212'), null)
-  assert.equal(parseAngka('\u2212'), null)
-  assert.equal(parseAngka('2.000,5'), 2000.5)
-  assert.equal(parseAngka('0,01'), 0.01)
-  assert.equal(parseAngka('-3'), -3)
-  assert.equal(parseAngka('dua'), null)
-  assert.equal(parseAngka(''), null)
-  assert.equal(parseAngka(undefined), null)
-})
-
-test('nilaiSoal: pilihan, isian (angka dan pilih), dan soal mandiri (dinilai sendiri)', () => {
-  const [q1, q2, q3, q4, q5, , q7, q8] = kuis04.soal
-  assert.equal(nilaiSoal(q2, 'B').benar, true)
+test('nilaiSoal: satu jawaban, banyak jawaban (utuh), dan jawaban kosong', () => {
+  const [q1, q2, q3, q4, q5, , , q8] = kuis04.soal
+  assert.equal(nilaiSoal(q2, 'C').benar, true)
   assert.equal(nilaiSoal(q2, 'A').benar, false)
   assert.equal(nilaiSoal(q2, undefined).benar, false)
-  assert.match(nilaiSoal(q2, 'A').kunciTeks, /^B\. Karena posisi/)
-  assert.equal(nilaiSoal(q4, 'Salah').benar, true)
-  assert.equal(nilaiSoal(q3, ['5', '0', '20', '15']).benar, true)
-  assert.equal(nilaiSoal(q3, ['5', '0', '15', '10']).benar, false)
-  assert.equal(nilaiSoal(q3, ['5', '0', '20']).benar, false, 'kolom kosong salah')
-  assert.equal(nilaiSoal(q3, ['5', '0', 'dua puluh', '15']).benar, false)
-  assert.equal(nilaiSoal(q3, ['5', '0', '15', '10']).jawabanTeks, 'Terbaik: Σtj = 5 · Terbaik: Σ(tj − 1) = 0 · Terburuk: Σtj = 15 · Terburuk: Σ(tj − 1) = 10')
-  assert.equal(nilaiSoal(q5, ['7', 'di antaranya']).benar, true)
-  assert.equal(nilaiSoal(q5, ['7', 'terburuk']).benar, false)
-  assert.equal(nilaiSoal(q8, ['1']).benar, true)
-  assert.equal(nilaiSoal(q8, ['1,0']).benar, true)
-  assert.equal(nilaiSoal(q8, ['100']).benar, false)
-  assert.equal(nilaiSoal(q1, { teks: '  3, 8, 5, 1  ', sesuai: null }).benar, null, 'belum dinilai sendiri')
-  assert.equal(nilaiSoal(q1, { teks: 'x', sesuai: true }).benar, true)
-  assert.equal(nilaiSoal(q7, { teks: 'x', sesuai: false }).benar, false)
-  assert.equal(nilaiSoal(q7, undefined).benar, null)
+  assert.match(nilaiSoal(q2, 'A').kunciTeks, /^C\. Karena posisi/)
+  assert.equal(nilaiSoal(q4, 'D').benar, true)
+  assert.equal(nilaiSoal(q1, ['C', 'A']).benar, true)
+  assert.equal(nilaiSoal(q3, ['A', 'C', 'D']).benar, true)
+  assert.equal(nilaiSoal(q3, ['A', 'C']).benar, false, 'kurang satu pilihan')
+  assert.equal(nilaiSoal(q3, ['A', 'C', 'B']).benar, false)
+  assert.equal(nilaiSoal(q3, []).benar, false)
+  assert.equal(nilaiSoal(q5, ['B', 'D']).benar, true)
+  assert.equal(nilaiSoal(q5, ['B', 'E']).benar, false)
+  assert.equal(nilaiSoal(q8, 'D').benar, true)
+  assert.equal(nilaiSoal(q8, 'A').benar, false)
+  assert.match(nilaiSoal(q3, ['C', 'A']).jawabanTeks, /^A\. .* · C\. /, 'jawaban ditampilkan menurut urutan opsi')
 })
 
-test('hitungHasil: skor, persen, lulus pada batas 70%, soal salah, dan soal yang belum dinilai', () => {
+test('hitungHasil: skor, persen, lulus pada batas 70%, soal salah, dan soal belum dijawab', () => {
   assert.equal(PASS_PERCENT, 70)
-  const benar = { 1: { teks: 'a', sesuai: true }, 2: 'B', 3: ['5', '0', '20', '15'], 4: 'Salah', 5: ['7', 'di antaranya'], 6: 'B', 7: { teks: 'b', sesuai: true }, 8: ['1'] }
-  const semua = hitungHasil(kuis04.soal, benar)
+  const semua = hitungHasil(kuis04.soal, BENAR)
   assert.deepEqual([semua.skor, semua.total, semua.persen, semua.lulus, semua.salah], [8, 8, 100, true, []])
-  const enam = hitungHasil(kuis04.soal, { ...benar, 3: ['5', '0', '15', '10'], 8: ['100'] })
+  const enam = hitungHasil(kuis04.soal, { ...BENAR, 3: ['A', 'C'], 8: 'A' })
   assert.deepEqual([enam.skor, enam.persen, enam.lulus, enam.salah], [6, 75, true, [3, 8]])
-  assert.equal(enam.perSoal[2].kunciTeks, 'Terbaik: Σtj = 5 · Terbaik: Σ(tj − 1) = 0 · Terburuk: Σtj = 20 · Terburuk: Σ(tj − 1) = 15')
-  const lima = hitungHasil(kuis04.soal, { ...benar, 3: [], 8: [], 2: 'A' })
+  assert.match(enam.perSoal[2].kunciTeks, /^A\. .* · C\. .* · D\. /)
+  const lima = hitungHasil(kuis04.soal, { ...BENAR, 3: [], 8: undefined, 2: 'A' })
   assert.deepEqual([lima.skor, lima.persen, lima.lulus], [5, 63, false])
-  const belum = hitungHasil(kuis04.soal, {})
-  assert.deepEqual(belum.belumDinilai, [1, 7])
-  assert.equal(belum.skor, 0)
+  const kosong = hitungHasil(kuis04.soal, {})
+  assert.deepEqual([kosong.skor, kosong.belumDinilai, kosong.salah.length], [0, [], 8])
   assert.deepEqual(soalSalah(kuis04.soal, enam).map((q) => q.no), [3, 8])
   assert.deepEqual(hitungHasil([], {}), { skor: 0, total: 0, persen: 0, lulus: false, perSoal: [], salah: [], belumDinilai: [] })
 })
@@ -221,12 +186,11 @@ test('pseudocode di modul = pseudocode peraga = pseudocode di PDF (7 baris, isi 
 
 test('gabungHasil: soal yang diulang mengganti hasil lama, soal lain tetap, dan skor dihitung ulang', async () => {
   const { gabungHasil, soalSalah: salah } = await import('./kuis.js')
-  const benar = { 1: { teks: 'a', sesuai: true }, 2: 'B', 3: ['5', '0', '20', '15'], 4: 'Salah', 5: ['7', 'di antaranya'], 6: 'B', 7: { teks: 'b', sesuai: true }, 8: ['1'] }
-  const lama = hitungHasil(kuis04.soal, { ...benar, 3: ['5', '0', '15', '10'], 8: ['100'] })
+  const lama = hitungHasil(kuis04.soal, { ...BENAR, 3: ['A', 'C'], 8: 'A' })
   assert.deepEqual(lama.salah, [3, 8])
   const ulang = salah(kuis04.soal, lama)
   assert.deepEqual(ulang.map((q) => q.no), [3, 8])
-  const baru = hitungHasil(ulang, { 3: ['5', '0', '20', '15'], 8: ['100'] })
+  const baru = hitungHasil(ulang, { 3: ['A', 'C', 'D'], 8: 'A' })
   const gabung = gabungHasil(lama, baru)
   assert.deepEqual([gabung.skor, gabung.total, gabung.persen, gabung.salah], [7, 8, 88, [8]])
   assert.equal(gabung.perSoal.length, 8)
@@ -235,26 +199,19 @@ test('gabungHasil: soal yang diulang mengganti hasil lama, soal lain tetap, dan 
 })
 
 test('draf jawaban: simpan, baca ulang, buang nomor asing, dan tahan data rusak', async () => {
-  const { loadDraft, saveDraft, clearDraft, draftKey, sudahDijawab } = await import('./kuis.js')
+  const { loadDraft, saveDraft, clearDraft, draftKey } = await import('./kuis.js')
   const m = {}
   const st = { getItem: (k) => (k in m ? m[k] : null), setItem: (k, v) => { m[k] = String(v) }, removeItem: (k) => { delete m[k] } }
   const sah = [1, 2, 3, 4, 5, 6, 7, 8]
   assert.equal(loadDraft(st, '04', sah), null)
-  saveDraft(st, '04', { nos: [3, 8, 99], index: 5, jawaban: { 3: ['5'], 99: 'x' }, ragu: [8, 99], detik: 42 })
+  saveDraft(st, '04', { nos: [3, 8, 99], index: 5, jawaban: { 3: ['A', 'C', 'D'], 99: 'x' }, ragu: [], detik: 42 })
   const d = loadDraft(st, '04', sah)
-  assert.deepEqual(d, { nos: [3, 8], index: 1, jawaban: { 3: ['5'] }, ragu: [8], detik: 42 })
+  assert.deepEqual(d, { nos: [3, 8], index: 1, jawaban: { 3: ['A', 'C', 'D'] }, ragu: [], detik: 42 })
   clearDraft(st, '04')
   assert.equal(m[draftKey('04')], undefined)
   assert.equal(loadDraft({ getItem: () => '{rusak' }, '04', sah), null)
   assert.equal(loadDraft({ getItem: () => '{"nos":[99]}' }, '04', sah), null)
   assert.equal(loadDraft(undefined, '04', sah), null)
-  const [q1, q2, q3] = kuis04.soal
-  assert.equal(sudahDijawab(q1, { teks: '  ' }), false)
-  assert.equal(sudahDijawab(q1, { teks: 'x' }), true)
-  assert.equal(sudahDijawab(q2, undefined), false)
-  assert.equal(sudahDijawab(q2, 'A'), true)
-  assert.equal(sudahDijawab(q3, ['', '', '', '']), false)
-  assert.equal(sudahDijawab(q3, ['', '', '1', '']), true)
 })
 
 test('parseModul: akhir baris CRLF (git di Windows) menghasilkan struktur yang sama dengan LF untuk semua modul', () => {

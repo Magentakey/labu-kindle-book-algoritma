@@ -3,9 +3,8 @@ import assert from 'node:assert/strict'
 import { spawnSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import { parseModul } from '../lib/modulContent.js'
-import { hitungHasil, nilaiSoal, TIPE_LABEL } from '../lib/kuis.js'
 import { modul, modulById, neighbors, tabsOf } from '../data/modul.js'
-import { daftarKuis, kuisById } from '../data/quiz.js'
+import { kuisById } from '../data/quiz.js'
 import { petaBab } from '../data/credit.js'
 import { cariPython } from '../test/python.js'
 import { rand } from '../lib/testRandom.js'
@@ -395,10 +394,10 @@ test('6 Keterkaitan: bobot semua 1 = jarak BFS; shortest-path tree bukan MST (co
 
 test('kunci kuis dihitung ulang: soal 1–7', () => {
   const [q1, q2, q3, q4, q5, q6, q7] = kuis22.soal
+  assert.deepEqual([q1.kunci, q3.kunci, q4.kunci, q6.kunci], [['A', 'B'], ['A', 'B', 'C'], ['B', 'C', 'D'], ['A', 'B']])
   const delta = jarakTerpendek(simpulSP, busurSP, 's')
   // soal 1
   assert.equal(bobotLintasan(adjSP, ['s', 'y', 't', 'x', 'z']), 14)
-  assert.deepEqual(q1.isian.map((f) => f.kunci), [14, delta.z, 'Bukan'])
   assert.ok(14 > delta.z)
   // soal 2
   assert.equal(q2.kunci, 'B')
@@ -411,17 +410,13 @@ test('kunci kuis dihitung ulang: soal 1–7', () => {
   const d3 = { u: 4, v: 10 }
   const p3 = { v: 'lama' }
   relax(d3, p3, 'u', 'v', 3)
-  assert.deepEqual([d3.v, p3.v], [q3.isian[0].kunci, 'u'])
   const d3b = { u: 4, v: 7 }
   const p3b = { v: 'lama' }
   assert.equal(relax(d3b, p3b, 'u', 'v', 3), false)
-  assert.deepEqual([d3b.v, p3b.v], [q3.isian[2].kunci, 'lama'])
-  assert.deepEqual([q3.isian[1].kunci, q3.isian[3].kunci], ['u', 'Tidak ada perubahan'])
   // soal 4
   const dn = jarakTerpendek(simpulNeg, busurNeg, 's')
   assert.equal(dn.b, -1)
   assert.equal(dn.e, -Infinity)
-  assert.deepEqual([q4.isian[1].kunci, q4.isian[3].kunci, q4.isian[4].kunci], [bobotLintasan(adjNeg, ['s', 'a', 'b']), adjNeg.e.f + adjNeg.f.e, teksJarak(-Infinity)])
   for (let putaran = 0; putaran < 5; putaran++) { const jalur = ['s', 'e', ...Array.from({ length: putaran }, () => ['f', 'e']).flat()]; assert.equal(bobotLintasan(adjNeg, jalur), 2 - 3 * putaran, 'tiap putaran cycle mengurangi 3') }
   // soal 5: 10 simpul tanpa cycle negatif → paling banyak 9 busur
   for (let k = 0; k < 60; k++) {
@@ -429,52 +424,13 @@ test('kunci kuis dihitung ulang: soal 1–7', () => {
     const bf = bellmanFord(simpul, busur, s)
     for (const v of simpul) if (bf.d[v] < Infinity) assert.ok(jalurPohon(bf.pi, v).length - 1 <= 9)
   }
-  assert.equal(q5.kunci, 'Benar')
+  assert.equal(q5.kunci, 'C')
   // soal 6
   assert.equal(bobotLintasan(adjSP, ['s', 't', 'y', 'x']), 9)
   assert.equal(delta.x, 9)
   assert.equal(delta.y, 5)
-  assert.equal(bobotLintasan(adjSP, ['s', 't', 'y']), q6.isian[1].kunci)
-  assert.equal(q6.isian[0].kunci, 'y')
-  assert.ok(q6.isian[2].kunci.startsWith('Substruktur optimal'))
   // soal 7
-  assert.equal(q7.kunci, 'B')
-  assert.ok(q7.opsi.find((o) => o.id === 'B').teks.includes('paling banyak $\\lvert V \\rvert - 1$ busur'))
+  assert.equal(q7.kunci, 'D')
+  assert.ok(q7.opsi.find((o) => o.id === 'D').teks.includes('paling banyak $\\lvert V \\rvert - 1$ busur'))
 })
 
-test('struktur kuis: 7 soal, jenis sesuai PDF, semua dinilai otomatis', () => {
-  assert.deepEqual(kuis22.soal.map((q) => q.no), [1, 2, 3, 4, 5, 6, 7])
-  assert.deepEqual(kuis22.soal.map((q) => TIPE_LABEL[q.tipe]), ['Perhitungan', 'Pilihan Ganda', 'Penelusuran', 'Analisis', 'Benar/Salah', 'Analisis', 'Pilihan Ganda'])
-  assert.deepEqual(kuis22.soal.filter((q) => q.mandiri).map((q) => q.no), [])
-  for (const q of kuis22.soal) {
-    assert.ok(q.teks.length > 10 && q.pembahasan.length > 10, `soal ${q.no}`)
-    if (q.opsi) assert.ok(q.opsi.some((o) => o.id === q.kunci))
-    for (const f of q.isian ?? []) if (f.jenis === 'pilih') assert.ok(f.opsi.includes(f.kunci), `soal ${q.no}: kunci "${f.kunci}" ada di opsi`)
-    assert.equal([q.mandiri, q.opsi, q.isian].filter(Boolean).length, 1, `satu jenis jawaban per soal (${q.no})`)
-  }
-  assert.deepEqual([...new Set(kuis22.soal.map((q) => q.tipe))].sort(), [...daftarKuis.find((k) => k.id === '22').tipe].sort())
-})
-
-test('penilaian soal Modul 22', () => {
-  const [q1, q2, q3, q4, q5, q6, q7] = kuis22.soal
-  const kunci = (q) => q.isian.map((f) => String(f.kunci))
-  assert.equal(nilaiSoal(q1, kunci(q1)).benar, true)
-  assert.equal(nilaiSoal(q1, ['14', '11', 'Ya']).benar, false)
-  assert.equal(nilaiSoal(q2, 'B').benar, true)
-  assert.equal(nilaiSoal(q2, 'A').benar, false)
-  assert.equal(nilaiSoal(q3, kunci(q3)).benar, true)
-  assert.equal(nilaiSoal(q3, ['7', 'u', '7', 'Ada perubahan']).benar, false)
-  assert.equal(nilaiSoal(q4, kunci(q4)).benar, true)
-  assert.equal(nilaiSoal(q4, [...kunci(q4).slice(0, 4), '−3']).benar, false)
-  assert.equal(nilaiSoal(q4, ['Satu kali saja', '1', q4.isian[2].kunci, '-3', '−∞']).benar, false, 'bobot lintasan s → a → b adalah −1, bukan 1')
-  // jawaban negatif boleh diketik dengan minus ASCII maupun minus Unicode (seperti tertulis di soal)
-  assert.equal(nilaiSoal(q4, ['Satu kali saja', '\u22121', q4.isian[2].kunci, '\u22123', '−∞']).benar, true)
-  assert.equal(nilaiSoal(q5, 'Benar').benar, true)
-  assert.equal(nilaiSoal(q5, 'Salah').benar, false)
-  assert.equal(nilaiSoal(q6, kunci(q6)).benar, true)
-  assert.equal(nilaiSoal(q6, ['t', '5', q6.isian[2].kunci]).benar, false)
-  assert.equal(nilaiSoal(q7, 'B').benar, true)
-  const semua = { 1: kunci(q1), 2: 'B', 3: kunci(q3), 4: kunci(q4), 5: 'Benar', 6: kunci(q6), 7: 'B' }
-  const h = hitungHasil(kuis22.soal, semua)
-  assert.deepEqual([h.skor, h.lulus, h.belumDinilai], [7, true, []])
-})

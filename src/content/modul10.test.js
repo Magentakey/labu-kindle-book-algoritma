@@ -3,10 +3,9 @@ import assert from 'node:assert/strict'
 import { spawnSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import { parseModul } from '../lib/modulContent.js'
-import { hitungHasil, nilaiSoal, TIPE_LABEL } from '../lib/kuis.js'
 import { algoritma } from '../data/algoritma.js'
 import { modul, modulById, neighbors, tabsOf } from '../data/modul.js'
-import { daftarKuis, kuisById } from '../data/quiz.js'
+import { kuisById } from '../data/quiz.js'
 import { petaBab } from '../data/credit.js'
 import { cariPython } from '../test/python.js'
 import { vizIds } from '../viz/vizConfig.js'
@@ -238,52 +237,19 @@ test('Tabel 3, 4, dan 5: isi sesuai PDF', () => {
 test('kunci kuis dihitung ulang: soal 3, 4, dan 6', () => {
   // soal 3: F2 dihitung 5 kali dan total 25 pemanggilan ketika menghitung F6
   const sim = simulasiNaif(6)
-  assert.deepEqual([sim.hitung[2], sim.total], [kuis10.soal[2].isian[0].kunci, kuis10.soal[2].isian[1].kunci])
+  assert.deepEqual([sim.hitung[2], sim.total], [5, 25])
+  assert.deepEqual(kuis10.soal[2].kunci, ['B', 'D'])
   assert.equal(pemanggilanNaif(6), 2n * fib(7) - 1n)
   assert.equal(fib(7), 13n)
   // soal 4: r5 = 13 dengan potongan 2 dan 3
-  const { r, s, kandidat } = potongBatang(hargaModul, 5)
+  const { s, kandidat } = potongBatang(hargaModul, 5)
+  assert.equal(kuis10.soal[3].kunci, 'B')
   assert.deepEqual(kandidat[5].map((c) => c.nilai), [11, 13, 13, 10, 10])
-  assert.deepEqual([r[5], kuis10.soal[3].isian[0].kunci], [13, 13])
   assert.deepEqual(susunPotongan(s, 5), [2, 3])
-  assert.equal(kuis10.soal[3].isian[1].kunci, susunPotongan(s, 5).join(' + '))
   // soal 6: n² sel × O(n) pemeriksaan = O(n³); memori Θ(n²)
   let kerja = 0
   const n = 30
   for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) for (let k = 0; k < n; k++) kerja++
   assert.equal(kerja, n ** 3)
-  assert.deepEqual(kuis10.soal[5].isian.map((f) => f.kunci), ['O(n³)', 'Θ(n²)'])
-  assert.deepEqual([kuis10.soal[0].kunci, kuis10.soal[4].kunci, kuis10.soal[6].kunci], ['B', 'Salah', 'C'])
 })
 
-test('struktur kuis: 7 soal, jenis sesuai PDF, hanya soal 2 dinilai sendiri', () => {
-  assert.deepEqual(kuis10.soal.map((q) => q.no), [1, 2, 3, 4, 5, 6, 7])
-  assert.deepEqual(kuis10.soal.map((q) => TIPE_LABEL[q.tipe]), ['Pilihan Ganda', 'Analisis', 'Perhitungan', 'Perhitungan', 'Benar/Salah', 'Perhitungan', 'Pilihan Ganda'])
-  assert.deepEqual(kuis10.soal.filter((q) => q.mandiri).map((q) => q.no), [2])
-  for (const q of kuis10.soal) {
-    assert.ok(q.teks.length > 10 && q.pembahasan.length > 10, `soal ${q.no}`)
-    if (q.opsi) assert.ok(q.opsi.some((o) => o.id === q.kunci))
-    if (q.mandiri) assert.ok(q.kunciTeks)
-    for (const f of q.isian ?? []) if (f.jenis === 'pilih') assert.ok(f.opsi.includes(f.kunci), `soal ${q.no}: kunci "${f.kunci}" ada di opsi`)
-    assert.equal([q.mandiri, q.opsi, q.isian].filter(Boolean).length, 1, `satu jenis jawaban per soal (${q.no})`)
-  }
-  assert.deepEqual([...new Set(kuis10.soal.map((q) => q.tipe))].sort(), [...daftarKuis.find((k) => k.id === '10').tipe].sort())
-})
-
-test('penilaian soal Modul 10', () => {
-  const [q1, , q3, q4, q5, q6, q7] = kuis10.soal
-  assert.equal(nilaiSoal(q1, 'B').benar, true)
-  assert.equal(nilaiSoal(q3, ['5', '25']).benar, true)
-  assert.equal(nilaiSoal(q3, ['5', '15']).benar, false)
-  assert.equal(nilaiSoal(q4, ['13', '2 + 3']).benar, true)
-  assert.equal(nilaiSoal(q4, ['13', '1 + 4']).benar, false)
-  assert.equal(nilaiSoal(q5, 'Salah').benar, true)
-  assert.equal(nilaiSoal(q6, ['O(n³)', 'Θ(n²)']).benar, true)
-  assert.equal(nilaiSoal(q6, ['O(n²)', 'Θ(n²)']).benar, false)
-  assert.equal(nilaiSoal(q7, 'C').benar, true)
-  const ok = { teks: 'a', sesuai: true }
-  const semua = { 1: 'B', 2: ok, 3: ['5', '25'], 4: ['13', '2 + 3'], 5: 'Salah', 6: ['O(n³)', 'Θ(n²)'], 7: 'C' }
-  const h = hitungHasil(kuis10.soal, semua)
-  assert.deepEqual([h.skor, h.lulus], [7, true])
-  assert.deepEqual(hitungHasil(kuis10.soal, { ...semua, 2: undefined }).belumDinilai, [2])
-})
