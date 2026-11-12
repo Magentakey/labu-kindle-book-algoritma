@@ -1,3 +1,0 @@
-Hapus dua berkas ini setelah mengekstrak zip:
-src/viz/PenjelajahPertumbuhan.jsx
-src/viz/PenjelajahBatas.jsx
