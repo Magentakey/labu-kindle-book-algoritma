@@ -1,0 +1,45 @@
+{
+  "id": "modul-05-pertumbuhan-fungsi",
+  "title": "Lengkapi Pencarian n untuk 2ⁿ Mengalahkan c·n²",
+  "description": "Fungsi solve(c) di bawah mengembalikan n terkecil (n ≥ 1) sehingga c·n² < 2ⁿ berlaku untuk n itu dan semua n yang lebih besar. Perulangan sudah ada; lengkapi bagian TODO: catat n yang masih GAGAL, yaitu ketika c·n² ≥ 2ⁿ.\nContoh: solve(1) mengembalikan 5 (n = 2, 3, 4 masih gagal). Di JavaScript, 2ⁿ ditulis 2 ** n.",
+  "starterCode": "function solve(c) {\n  let terakhirGagal = 0\n  for (let n = 1; n <= 100; n++) {\n    // TODO: jika c * n * n >= 2 ** n, simpan n ke\n    //   terakhirGagal\n  }\n  // Setelah n terakhir yang gagal, 2^n selalu menang.\n  return terakhirGagal + 1\n}\n",
+  "solution": "function solve(c) {\n  let terakhirGagal = 0\n  for (let n = 1; n <= 100; n++) {\n    if (c * n * n >= 2 ** n) terakhirGagal = n\n  }\n  // Setelah n terakhir yang gagal, 2^n selalu menang.\n  return terakhirGagal + 1\n}\n",
+  "testCases": [
+    {
+      "input": [
+        1
+      ],
+      "expected": 5
+    },
+    {
+      "input": [
+        2
+      ],
+      "expected": 7
+    },
+    {
+      "input": [
+        5
+      ],
+      "expected": 9
+    },
+    {
+      "input": [
+        10
+      ],
+      "expected": 10
+    },
+    {
+      "input": [
+        50
+      ],
+      "expected": 14
+    },
+    {
+      "input": [
+        100
+      ],
+      "expected": 15
+    }
+  ]
+}

@@ -32,7 +32,7 @@ test('struktur: tujuh bagian sesuai PDF, enam tab terpenuhi, satu gambar, lima t
   assert.deepEqual(bagian.map((s) => s.id), ['pendahuluan', 'optimasi', 'algoritma', 'penelusuran', 'analisis', 'makna', 'kesimpulan', 'referensi'])
   assert.deepEqual(bagian.map((s) => s.judul.match(/^\d+/)?.[0] ?? null), ['1', '2', '3', '4', '5', '6', '7', null])
   for (const t of tabsOf(m).filter((x) => x.id !== 'kuis')) assert.ok(bagian.some((s) => s.id === t.id), t.id)
-  const slots = bagian.flatMap((s) => s.blok.filter((b) => b.type === 'slot')).map((b) => `${b.name}:${b.arg}`)
+  const slots = bagian.flatMap((s) => s.blok.filter((b) => b.type === 'slot' && b.name !== 'tantangan')).map((b) => `${b.name}:${b.arg}`)
   assert.deepEqual(slots, ['gambar:fibonacci'])
   assert.deepEqual([...md.matchAll(/\*Tabel (\d+)\./g)].map((x) => Number(x[1])), [1, 2, 3, 4, 5])
   assert.equal([...md.matchAll(/```python/g)].length, 1)

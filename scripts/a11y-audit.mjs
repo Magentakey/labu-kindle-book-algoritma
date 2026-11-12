@@ -88,6 +88,18 @@ const rute = [
       await p.waitForSelector('text=Hasil test case', { timeout: 15000 })
     },
   },
+  {
+    nama: 'materi-24-tantangan',
+    path: '/materi/24',
+    siapkan: async (p) => {
+      await p.locator('section[aria-label="Tantangan kode"]').scrollIntoViewIfNeeded()
+      await p.waitForSelector('text=Kode Anda (JavaScript)')
+      await klik(p, /Lihat jawaban contoh/)
+      await klik(p, /Salin ke editor/)
+      await klik(p, /Jalankan kode/)
+      await p.waitForSelector('text=Hasil test case', { timeout: 15000 })
+    },
+  },
   { nama: 'quiz-daftar', path: '/quiz' },
   { nama: 'quiz-intro', path: '/quiz/04' },
   { nama: 'quiz-01-intro', path: '/quiz/01' },

@@ -57,7 +57,7 @@ test('struktur: sembilan bagian sesuai PDF, semua tab terpenuhi, satu gambar, em
   assert.deepEqual(bagian.map((s) => s.id), ['pendahuluan', 'algoritma', 'penelusuran', 'analisis', 'makna', 'hubungan', 'penerapan', 'berguna', 'kesimpulan', 'referensi'])
   assert.deepEqual(bagian.map((s) => s.judul.match(/^\d+/)?.[0] ?? null), ['1', '2', '3', '4', '5', '6', '7', '8', '9', null])
   for (const t of tabsOf(m).filter((x) => x.id !== 'kuis')) assert.ok(bagian.some((s) => s.id === t.id), t.id)
-  const slots = bagian.flatMap((s) => s.blok.filter((b) => b.type === 'slot'))
+  const slots = bagian.flatMap((s) => s.blok.filter((b) => b.type === 'slot' && b.name !== 'tantangan'))
   assert.deepEqual(slots.map((b) => `${b.name}:${b.arg}`), ['gambar:batas'])
   assert.deepEqual([...md.matchAll(/\*Tabel (\d+)\./g)].map((x) => Number(x[1])), [1, 2, 3, 4])
   assert.equal([...md.matchAll(/```python/g)].length, 1)

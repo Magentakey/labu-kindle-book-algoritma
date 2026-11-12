@@ -1,0 +1,58 @@
+{
+  "id": "modul-12-dp-lcs",
+  "title": "Lengkapi Tabel LCS",
+  "description": "solve(x, y) mengembalikan panjang Longest Common Subsequence dua string. Tabel t sudah disiapkan (t[i][j] = LCS dari i karakter pertama x dan j karakter pertama y); lengkapi bagian TODO: isi t[i][j] untuk kasus karakter sama dan karakter beda.\nContoh: solve(\"ABCBDAB\", \"BDCABA\") mengembalikan 4.",
+  "starterCode": "function solve(x, y) {\n  const t = Array.from({ length: x.length + 1 }, () =>\n    Array(y.length + 1).fill(0),\n  )\n  for (let i = 1; i <= x.length; i++) {\n    for (let j = 1; j <= y.length; j++) {\n      // TODO: jika x[i - 1] === y[j - 1] perpanjang LCS\n      //   dari t[i - 1][j - 1]; jika beda, ambil yang\n      //   terbesar dari t[i - 1][j] dan t[i][j - 1]\n    }\n  }\n  return t[x.length][y.length]\n}\n",
+  "solution": "function solve(x, y) {\n  const t = Array.from({ length: x.length + 1 }, () =>\n    Array(y.length + 1).fill(0),\n  )\n  for (let i = 1; i <= x.length; i++) {\n    for (let j = 1; j <= y.length; j++) {\n      if (x[i - 1] === y[j - 1]) {\n        t[i][j] = t[i - 1][j - 1] + 1\n      } else {\n        t[i][j] = Math.max(t[i - 1][j], t[i][j - 1])\n      }\n    }\n  }\n  return t[x.length][y.length]\n}\n",
+  "testCases": [
+    {
+      "input": [
+        "ABCBDAB",
+        "BDCABA"
+      ],
+      "expected": 4
+    },
+    {
+      "input": [
+        "",
+        ""
+      ],
+      "expected": 0
+    },
+    {
+      "input": [
+        "",
+        "ABC"
+      ],
+      "expected": 0
+    },
+    {
+      "input": [
+        "ABC",
+        "ABC"
+      ],
+      "expected": 3
+    },
+    {
+      "input": [
+        "ABC",
+        "DEF"
+      ],
+      "expected": 0
+    },
+    {
+      "input": [
+        "AGGTAB",
+        "GXTXAYB"
+      ],
+      "expected": 4
+    },
+    {
+      "input": [
+        "AAAA",
+        "AA"
+      ],
+      "expected": 2
+    }
+  ]
+}

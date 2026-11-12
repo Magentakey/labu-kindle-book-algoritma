@@ -259,7 +259,7 @@ export function Tantangan({ muat }) {
         Tantangan kode
         <span className="text-caption ml-auto font-normal normal-case text-ink-soft">JavaScript</span>
       </p>
-      <h3 className="text-h3 mt-2 text-heading">{challenge?.title ?? 'Lengkapi baris pergeseran pada insertionSort(A)'}</h3>
+      <h3 className="text-h3 mt-2 text-heading">{challenge?.title ?? 'Memuat tantangan…'}</h3>
       <div className="mt-3">
         {gagal && <p role="alert" className="text-body text-bad-text">Tantangan tidak bisa dimuat.</p>}
         {!gagal && !challenge && <Skeleton className="h-48 w-full" />}

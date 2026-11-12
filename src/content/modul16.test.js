@@ -34,7 +34,7 @@ test('struktur: tujuh bagian sesuai PDF (bagian 2 tanpa tab), dua gambar, enam t
   assert.deepEqual(bagian.map((x) => x.id), ['pendahuluan', 'istilah', 'algoritma', 'penelusuran', 'analisis', 'makna', 'kesimpulan', 'referensi'])
   assert.deepEqual(bagian.map((x) => x.judul.match(/^\d+/)?.[0] ?? null), ['1', '2', '3', '4', '5', '6', '7', null])
   for (const t of tabsOf(m).filter((x) => x.id !== 'kuis')) assert.ok(bagian.some((x) => x.id === t.id), t.id)
-  assert.deepEqual(bagian.flatMap((x) => x.blok.filter((b) => b.type === 'slot')).map((b) => `${b.name}:${b.arg}`), ['gambar:grafa', 'gambar:grafb'])
+  assert.deepEqual(bagian.flatMap((x) => x.blok.filter((b) => b.type === 'slot' && b.name !== 'tantangan')).map((b) => `${b.name}:${b.arg}`), ['gambar:grafa', 'gambar:grafb'])
   assert.deepEqual([...md.matchAll(/\*Tabel (\d+)\./g)].map((x) => Number(x[1])), [1, 2, 3, 4, 5, 6])
   assert.equal([...md.matchAll(/```python/g)].length, 1)
   assert.ok(md.includes('### 2.1 Dua graf contoh') && md.includes('### 5.1 Implementasi Python'))

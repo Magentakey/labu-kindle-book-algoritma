@@ -1,0 +1,174 @@
+{
+  "id": "modul-22-relaksasi",
+  "title": "Lengkapi Operasi RELAX",
+  "description": "Graf berarah punya n simpul bernomor 0 sampai n-1; edges berisi [u, v, bobot]. solve(n, edges, source) me-RELAX setiap sisi tepat SATU kali, sesuai urutan di edges, lalu mengembalikan array d (jarak sementara; \"INF\" bila belum terjangkau). Inisialisasi sudah ada; lengkapi bagian TODO: RELAX(u, v, w), yaitu perbarui d[v] bila lewat u lebih pendek.\nPerhatikan: urutan sisi memengaruhi hasil. solve(3, [[0, 1, 4], [1, 2, 1]], 0) mengembalikan [0, 4, 5], tetapi solve(3, [[1, 2, 1], [0, 1, 4]], 0) mengembalikan [0, 4, \"INF\"].",
+  "starterCode": "function solve(n, edges, source) {\n  const d = Array(n).fill(Infinity)\n  d[source] = 0\n  for (const [u, v, w] of edges) {\n    // TODO: RELAX(u, v, w): jika d[u] + w < d[v],\n    //   perbarui d[v]\n  }\n  return d.map((x) => (x === Infinity ? 'INF' : x))\n}\n",
+  "solution": "function solve(n, edges, source) {\n  const d = Array(n).fill(Infinity)\n  d[source] = 0\n  for (const [u, v, w] of edges) {\n    if (d[u] + w < d[v]) d[v] = d[u] + w\n  }\n  return d.map((x) => (x === Infinity ? 'INF' : x))\n}\n",
+  "testCases": [
+    {
+      "input": [
+        3,
+        [
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            1,
+            2,
+            1
+          ]
+        ],
+        0
+      ],
+      "expected": [
+        0,
+        4,
+        5
+      ]
+    },
+    {
+      "input": [
+        3,
+        [
+          [
+            1,
+            2,
+            1
+          ],
+          [
+            0,
+            1,
+            4
+          ]
+        ],
+        0
+      ],
+      "expected": [
+        0,
+        4,
+        "INF"
+      ]
+    },
+    {
+      "input": [
+        3,
+        [
+          [
+            0,
+            1,
+            5
+          ],
+          [
+            0,
+            1,
+            2
+          ]
+        ],
+        0
+      ],
+      "expected": [
+        0,
+        2,
+        "INF"
+      ]
+    },
+    {
+      "input": [
+        2,
+        [],
+        0
+      ],
+      "expected": [
+        0,
+        "INF"
+      ]
+    },
+    {
+      "input": [
+        3,
+        [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            0,
+            1,
+            3
+          ],
+          [
+            1,
+            2,
+            3
+          ]
+        ],
+        0
+      ],
+      "expected": [
+        0,
+        3,
+        6
+      ]
+    },
+    {
+      "input": [
+        3,
+        [
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            1,
+            2,
+            -1
+          ],
+          [
+            0,
+            2,
+            5
+          ]
+        ],
+        0
+      ],
+      "expected": [
+        0,
+        4,
+        3
+      ]
+    },
+    {
+      "input": [
+        4,
+        [
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            2,
+            1
+          ],
+          [
+            2,
+            3,
+            1
+          ]
+        ],
+        0
+      ],
+      "expected": [
+        0,
+        1,
+        2,
+        3
+      ]
+    }
+  ]
+}

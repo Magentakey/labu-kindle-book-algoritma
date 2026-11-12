@@ -30,7 +30,7 @@ test('struktur: enam bagian sesuai PDF pas dengan enam tab, tiga tabel, kode Pyt
   assert.deepEqual(bagian.map((s) => s.id), ['pendahuluan', 'algoritma', 'penelusuran', 'analisis', 'makna', 'kesimpulan', 'referensi'])
   assert.deepEqual(bagian.map((s) => s.judul.match(/^\d+/)?.[0] ?? null), ['1', '2', '3', '4', '5', '6', null])
   for (const t of tabsOf(m).filter((x) => x.id !== 'kuis')) assert.ok(bagian.some((s) => s.id === t.id), t.id)
-  assert.deepEqual(bagian.flatMap((s) => s.blok.filter((b) => b.type === 'slot')), [], 'modul ini tanpa gambar atau pseudocode')
+  assert.deepEqual(bagian.flatMap((s) => s.blok.filter((b) => b.type === 'slot' && b.name !== 'tantangan')), [], 'modul ini tanpa gambar atau pseudocode')
   assert.deepEqual([...md.matchAll(/\*Tabel (\d+)\./g)].map((x) => Number(x[1])), [1, 2, 3])
   assert.equal([...md.matchAll(/```python/g)].length, 1)
   for (const jdl of ['3.1', '3.2', '3.3', '4.1', '4.2', '4.3', '4.4']) assert.ok(md.includes(`### ${jdl} `), `subbagian ${jdl}`)

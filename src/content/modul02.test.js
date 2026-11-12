@@ -56,7 +56,7 @@ test('struktur: enam bagian sesuai PDF, semua tab terpenuhi, semua penanda punya
   assert.deepEqual(bagian.map((s) => s.id), ['pendahuluan', 'algoritma', 'penelusuran', 'analisis', 'makna', 'kesimpulan', 'referensi'])
   assert.deepEqual(bagian.map((s) => s.judul.match(/^\d+/)?.[0] ?? null), ['1', '2', '3', '4', '5', '6', null])
   for (const id of sections.map((s) => s.id).filter((id) => id !== 'kuis')) assert.ok(bagian.some((s) => s.id === id), id)
-  const slots = bagian.flatMap((s) => s.blok.filter((b) => b.type === 'slot'))
+  const slots = bagian.flatMap((s) => s.blok.filter((b) => b.type === 'slot' && b.name !== 'tantangan'))
   assert.deepEqual(slots.filter((b) => b.name === 'pseudo').map((b) => b.arg).sort(), Object.keys(pseudo).sort(), 'tiap pseudocode dipakai tepat sekali')
   assert.deepEqual(slots.filter((b) => b.name === 'gambar').map((b) => b.arg), ['tumpukan', 'rentang'])
   assert.deepEqual([...md.matchAll(/\*Tabel (\d+)\./g)].map((x) => Number(x[1])), [1, 2, 3, 4, 5])

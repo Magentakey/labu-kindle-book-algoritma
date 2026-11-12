@@ -1,0 +1,147 @@
+{
+  "id": "modul-07-little-o-omega",
+  "title": "Lengkapi Hubungan Asimtotik Dua Polinom",
+  "description": "Polinom ditulis sebagai array koefisien dari pangkat terendah ke tertinggi, mis. [5, 0, 3] berarti 3n² + 5. solve(f, g) mengembalikan array notasi yang BENAR untuk f(n) terhadap g(n), dari: \"little-o\", \"big-O\", \"theta\", \"big-omega\", \"little-omega\" (ingat o termasuk O, ω termasuk Ω).\nDerajat sudah dihitung; lengkapi bagian TODO untuk tiga kasus: df < dg, df > dg, dan df = dg.\nContoh: solve([0, 1], [0, 0, 1]) mengembalikan [\"little-o\", \"big-O\"].",
+  "starterCode": "function solve(f, g) {\n  const df = f.length - 1\n  const dg = g.length - 1\n  // TODO: kembalikan array notasi untuk kasus df < dg,\n  //   df > dg, dan df sama dengan dg\n}\n",
+  "solution": "function solve(f, g) {\n  const df = f.length - 1\n  const dg = g.length - 1\n  if (df < dg) return ['little-o', 'big-O']\n  if (df > dg) return ['big-omega', 'little-omega']\n  return ['big-O', 'theta', 'big-omega']\n}\n",
+  "testCases": [
+    {
+      "input": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          1
+        ]
+      ],
+      "expected": [
+        "little-o",
+        "big-O"
+      ]
+    },
+    {
+      "input": [
+        [
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "expected": [
+        "big-omega",
+        "little-omega"
+      ]
+    },
+    {
+      "input": [
+        [
+          5,
+          0,
+          3
+        ],
+        [
+          0,
+          0,
+          7
+        ]
+      ],
+      "expected": [
+        "big-O",
+        "theta",
+        "big-omega"
+      ]
+    },
+    {
+      "input": [
+        [
+          7
+        ],
+        [
+          1
+        ]
+      ],
+      "expected": [
+        "big-O",
+        "theta",
+        "big-omega"
+      ]
+    },
+    {
+      "input": [
+        [
+          100
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "expected": [
+        "little-o",
+        "big-O"
+      ]
+    },
+    {
+      "input": [
+        [
+          0,
+          0,
+          0,
+          1
+        ],
+        [
+          1,
+          1,
+          1
+        ]
+      ],
+      "expected": [
+        "big-omega",
+        "little-omega"
+      ]
+    },
+    {
+      "input": [
+        [
+          1,
+          1,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          1
+        ]
+      ],
+      "expected": [
+        "little-o",
+        "big-O"
+      ]
+    },
+    {
+      "input": [
+        [
+          9,
+          9
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "expected": [
+        "big-O",
+        "theta",
+        "big-omega"
+      ]
+    }
+  ]
+}

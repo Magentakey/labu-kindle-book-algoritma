@@ -1,0 +1,102 @@
+{
+  "id": "modul-02-binary-search",
+  "title": "Lengkapi Binary Search Rekursif",
+  "description": "Fungsi solve(A, x) di bawah sudah memuat kerangka Binary Search rekursif pada array A yang terurut naik. Lengkapi bagian TODO: panggil cari() pada setengah kanan bila A[mid] < x, atau pada setengah kiri bila sebaliknya, lalu kembalikan hasilnya.\nsolve harus mengembalikan indeks x di A, atau -1 jika x tidak ada.\nContoh: solve([1, 3, 5, 7, 9], 7) mengembalikan 3.",
+  "starterCode": "function solve(A, x) {\n  function cari(lo, hi) {\n    if (lo > hi) return -1 // ruang pencarian kosong\n    const mid = Math.floor((lo + hi) / 2)\n    if (A[mid] === x) return mid\n    // TODO: panggil cari() pada setengah kanan atau\n    //   kiri, lalu kembalikan hasilnya\n  }\n  return cari(0, A.length - 1)\n}\n",
+  "solution": "function solve(A, x) {\n  function cari(lo, hi) {\n    if (lo > hi) return -1 // ruang pencarian kosong\n    const mid = Math.floor((lo + hi) / 2)\n    if (A[mid] === x) return mid\n    if (A[mid] < x) return cari(mid + 1, hi)\n    return cari(lo, mid - 1)\n  }\n  return cari(0, A.length - 1)\n}\n",
+  "testCases": [
+    {
+      "input": [
+        [
+          1,
+          3,
+          5,
+          7,
+          9
+        ],
+        7
+      ],
+      "expected": 3
+    },
+    {
+      "input": [
+        [
+          1,
+          3,
+          5,
+          7,
+          9
+        ],
+        4
+      ],
+      "expected": -1
+    },
+    {
+      "input": [
+        [],
+        1
+      ],
+      "expected": -1
+    },
+    {
+      "input": [
+        [
+          5
+        ],
+        5
+      ],
+      "expected": 0
+    },
+    {
+      "input": [
+        [
+          5
+        ],
+        3
+      ],
+      "expected": -1
+    },
+    {
+      "input": [
+        [
+          2,
+          4,
+          6,
+          8,
+          10,
+          12
+        ],
+        2
+      ],
+      "expected": 0
+    },
+    {
+      "input": [
+        [
+          2,
+          4,
+          6,
+          8,
+          10,
+          12
+        ],
+        12
+      ],
+      "expected": 5
+    },
+    {
+      "input": [
+        [
+          2,
+          4,
+          6,
+          8,
+          10,
+          12
+        ],
+        8
+      ],
+      "expected": 3
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "id": "modul-15-greedy-huffman",
+  "title": "Lengkapi Biaya Kode Huffman",
+  "description": "solve(freq) mengembalikan biaya minimum kode Huffman (jumlah frekuensi × panjang kode). Tiap putaran, dua frekuensi terkecil digabung dan hasilnya disisipkan kembali; lengkapi bagian TODO: tambahkan biaya penggabungan itu ke total.\nContoh: solve([1, 2, 3]) mengembalikan 9 (1+2 = 3, lalu 3+3 = 6, total 3+6).",
+  "starterCode": "function solve(freq) {\n  const f = [...freq].sort((a, b) => a - b)\n  let total = 0\n  while (f.length > 1) {\n    // Gabungkan dua frekuensi terkecil.\n    const gabung = f.shift() + f.shift()\n    // TODO: tambahkan gabung ke total\n    let i = 0\n    while (i < f.length && f[i] < gabung) i++\n    f.splice(i, 0, gabung) // sisipkan agar tetap terurut\n  }\n  return total\n}\n",
+  "solution": "function solve(freq) {\n  const f = [...freq].sort((a, b) => a - b)\n  let total = 0\n  while (f.length > 1) {\n    // Gabungkan dua frekuensi terkecil.\n    const gabung = f.shift() + f.shift()\n    total += gabung\n    let i = 0\n    while (i < f.length && f[i] < gabung) i++\n    f.splice(i, 0, gabung) // sisipkan agar tetap terurut\n  }\n  return total\n}\n",
+  "testCases": [
+    {
+      "input": [
+        [
+          45,
+          13,
+          12,
+          16,
+          9,
+          5
+        ]
+      ],
+      "expected": 224
+    },
+    {
+      "input": [
+        [
+          1,
+          1
+        ]
+      ],
+      "expected": 2
+    },
+    {
+      "input": [
+        [
+          1,
+          2,
+          3
+        ]
+      ],
+      "expected": 9
+    },
+    {
+      "input": [
+        [
+          5,
+          5,
+          5,
+          5
+        ]
+      ],
+      "expected": 40
+    },
+    {
+      "input": [
+        [
+          1,
+          1,
+          2,
+          3,
+          5,
+          8,
+          13,
+          21
+        ]
+      ],
+      "expected": 132
+    },
+    {
+      "input": [
+        [
+          3,
+          3,
+          3
+        ]
+      ],
+      "expected": 15
+    }
+  ]
+}

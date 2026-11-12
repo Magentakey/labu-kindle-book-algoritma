@@ -1,0 +1,95 @@
+{
+  "id": "modul-13-koin-greedy",
+  "title": "Lengkapi Penukaran Koin dengan Greedy",
+  "description": "solve(coins, amount) memakai strategi greedy: dari koin terbesar, ambil sebanyak mungkin, lalu lanjut ke koin berikutnya. Kembalikan banyak koin yang dipakai greedy, atau -1 bila sisa tidak habis. Koin sudah diurutkan menurun; lengkapi bagian TODO: ambil koin c sebanyak mungkin.\nPerhatikan: greedy tidak selalu optimal. solve([1, 3, 4], 6) mengembalikan 3 (4 + 1 + 1), padahal yang optimal 2 (3 + 3).",
+  "starterCode": "function solve(coins, amount) {\n  // Koin terbesar lebih dulu.\n  const urut = [...coins].sort((a, b) => b - a)\n  let sisa = amount\n  let jumlah = 0\n  for (const c of urut) {\n    // TODO: ambil koin c sebanyak mungkin: tambahkan ke\n    //   jumlah dan kurangi sisa\n  }\n  return sisa === 0 ? jumlah : -1\n}\n",
+  "solution": "function solve(coins, amount) {\n  // Koin terbesar lebih dulu.\n  const urut = [...coins].sort((a, b) => b - a)\n  let sisa = amount\n  let jumlah = 0\n  for (const c of urut) {\n    const k = Math.floor(sisa / c)\n    jumlah += k\n    sisa -= k * c\n  }\n  return sisa === 0 ? jumlah : -1\n}\n",
+  "testCases": [
+    {
+      "input": [
+        [
+          1,
+          5,
+          10,
+          25
+        ],
+        63
+      ],
+      "expected": 6
+    },
+    {
+      "input": [
+        [
+          1,
+          3,
+          4
+        ],
+        6
+      ],
+      "expected": 3
+    },
+    {
+      "input": [
+        [
+          1,
+          6,
+          10
+        ],
+        12
+      ],
+      "expected": 3
+    },
+    {
+      "input": [
+        [
+          2,
+          5
+        ],
+        3
+      ],
+      "expected": -1
+    },
+    {
+      "input": [
+        [
+          1
+        ],
+        0
+      ],
+      "expected": 0
+    },
+    {
+      "input": [
+        [
+          1,
+          5,
+          10
+        ],
+        30
+      ],
+      "expected": 3
+    },
+    {
+      "input": [
+        [
+          5,
+          2,
+          1
+        ],
+        8
+      ],
+      "expected": 3
+    },
+    {
+      "input": [
+        [
+          4,
+          3,
+          1
+        ],
+        6
+      ],
+      "expected": 3
+    }
+  ]
+}

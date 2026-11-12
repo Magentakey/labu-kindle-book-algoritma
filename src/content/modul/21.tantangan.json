@@ -1,0 +1,186 @@
+{
+  "id": "modul-21-prim",
+  "title": "Lengkapi Algoritma Prim",
+  "description": "Graf tak berarah terhubung punya n simpul bernomor 0 sampai n-1; edges berisi [u, v, bobot]. solve(n, edges) mengembalikan total bobot MST dengan Prim dari simpul 0. key[v] adalah bobot sisi termurah yang menghubungkan v ke tree. Pemilihan simpul u (EXTRACT-MIN) sudah ada; lengkapi bagian TODO: perbarui key tetangga u yang belum masuk tree.\nContoh: solve(3, [[0, 1, 1], [1, 2, 2], [0, 2, 3]]) mengembalikan 3.",
+  "starterCode": "function solve(n, edges) {\n  const key = Array(n).fill(Infinity)\n  const masuk = Array(n).fill(false)\n  key[0] = 0\n  let total = 0\n  for (let k = 0; k < n; k++) {\n    // EXTRACT-MIN: simpul di luar tree dengan key terkecil.\n    let u = -1\n    for (let i = 0; i < n; i++) {\n      if (!masuk[i] && (u === -1 || key[i] < key[u])) u = i\n    }\n    masuk[u] = true\n    total += key[u]\n    // TODO: untuk setiap sisi [a, b, w] yang menyentuh\n    //   u dengan ujung lain belum masuk tree, turunkan\n    //   key ujung itu bila w lebih kecil\n  }\n  return total\n}\n",
+  "solution": "function solve(n, edges) {\n  const key = Array(n).fill(Infinity)\n  const masuk = Array(n).fill(false)\n  key[0] = 0\n  let total = 0\n  for (let k = 0; k < n; k++) {\n    // EXTRACT-MIN: simpul di luar tree dengan key terkecil.\n    let u = -1\n    for (let i = 0; i < n; i++) {\n      if (!masuk[i] && (u === -1 || key[i] < key[u])) u = i\n    }\n    masuk[u] = true\n    total += key[u]\n    for (const [a, b, w] of edges) {\n      if (a === u && !masuk[b] && w < key[b]) key[b] = w\n      if (b === u && !masuk[a] && w < key[a]) key[a] = w\n    }\n  }\n  return total\n}\n",
+  "testCases": [
+    {
+      "input": [
+        1,
+        []
+      ],
+      "expected": 0
+    },
+    {
+      "input": [
+        2,
+        [
+          [
+            0,
+            1,
+            5
+          ]
+        ]
+      ],
+      "expected": 5
+    },
+    {
+      "input": [
+        3,
+        [
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            2,
+            2
+          ],
+          [
+            0,
+            2,
+            3
+          ]
+        ]
+      ],
+      "expected": 3
+    },
+    {
+      "input": [
+        9,
+        [
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            0,
+            7,
+            8
+          ],
+          [
+            1,
+            2,
+            8
+          ],
+          [
+            1,
+            7,
+            11
+          ],
+          [
+            2,
+            3,
+            7
+          ],
+          [
+            2,
+            8,
+            2
+          ],
+          [
+            2,
+            5,
+            4
+          ],
+          [
+            3,
+            4,
+            9
+          ],
+          [
+            3,
+            5,
+            14
+          ],
+          [
+            4,
+            5,
+            10
+          ],
+          [
+            5,
+            6,
+            2
+          ],
+          [
+            6,
+            7,
+            1
+          ],
+          [
+            6,
+            8,
+            6
+          ],
+          [
+            7,
+            8,
+            7
+          ]
+        ]
+      ],
+      "expected": 37
+    },
+    {
+      "input": [
+        4,
+        [
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            2,
+            1
+          ],
+          [
+            2,
+            3,
+            1
+          ],
+          [
+            3,
+            0,
+            1
+          ]
+        ]
+      ],
+      "expected": 3
+    },
+    {
+      "input": [
+        4,
+        [
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            2,
+            1
+          ],
+          [
+            2,
+            3,
+            1
+          ],
+          [
+            0,
+            3,
+            100
+          ]
+        ]
+      ],
+      "expected": 3
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "id": "modul-10-fibonacci-memo",
+  "title": "Lengkapi Fibonacci dengan Memoization",
+  "description": "solve(n) mengembalikan bilangan Fibonacci ke-n (F0 = 0, F1 = 1) dengan memoization agar tiap submasalah dihitung sekali. Kasus dasar dan pemeriksaan memo sudah ada; lengkapi bagian TODO: hitung F(k) dari dua submasalah sebelumnya, simpan di memo[k], lalu kembalikan.\nContoh: solve(10) mengembalikan 55.",
+  "starterCode": "function solve(n) {\n  const memo = {}\n  function fib(k) {\n    if (k < 2) return k // kasus dasar\n    if (memo[k] !== undefined) return memo[k] // sudah ada\n    // TODO: hitung fib(k - 1) + fib(k - 2), simpan ke\n    //   memo[k], lalu kembalikan\n  }\n  return fib(n)\n}\n",
+  "solution": "function solve(n) {\n  const memo = {}\n  function fib(k) {\n    if (k < 2) return k // kasus dasar\n    if (memo[k] !== undefined) return memo[k] // sudah ada\n    memo[k] = fib(k - 1) + fib(k - 2)\n    return memo[k]\n  }\n  return fib(n)\n}\n",
+  "testCases": [
+    {
+      "input": [
+        0
+      ],
+      "expected": 0
+    },
+    {
+      "input": [
+        1
+      ],
+      "expected": 1
+    },
+    {
+      "input": [
+        2
+      ],
+      "expected": 1
+    },
+    {
+      "input": [
+        10
+      ],
+      "expected": 55
+    },
+    {
+      "input": [
+        30
+      ],
+      "expected": 832040
+    },
+    {
+      "input": [
+        50
+      ],
+      "expected": 12586269025
+    },
+    {
+      "input": [
+        70
+      ],
+      "expected": 190392490709135
+    }
+  ]
+}

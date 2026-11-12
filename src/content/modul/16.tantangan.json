@@ -1,0 +1,175 @@
+{
+  "id": "modul-16-adjacency-list",
+  "title": "Lengkapi Pembuatan Adjacency List",
+  "description": "Graf tak berarah punya n simpul bernomor 0 sampai n-1; edges berisi pasangan [u, v]. solve(n, edges) mengembalikan adjacency list: array berukuran n, tiap elemen berisi tetangga simpul itu, terurut naik. Lengkapi bagian TODO: untuk setiap sisi, masukkan v ke daftar u dan u ke daftar v.\nContoh: solve(3, [[0, 1], [1, 2]]) mengembalikan [[1], [0, 2], [1]].",
+  "starterCode": "function solve(n, edges) {\n  const adj = Array.from({ length: n }, () => [])\n  for (const [u, v] of edges) {\n    // TODO: tambahkan v ke adj[u] dan u ke adj[v] (graf\n    //   tak berarah)\n  }\n  return adj.map((a) => a.sort((p, q) => p - q))\n}\n",
+  "solution": "function solve(n, edges) {\n  const adj = Array.from({ length: n }, () => [])\n  for (const [u, v] of edges) {\n    adj[u].push(v)\n    adj[v].push(u)\n  }\n  return adj.map((a) => a.sort((p, q) => p - q))\n}\n",
+  "testCases": [
+    {
+      "input": [
+        3,
+        [
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            2
+          ]
+        ]
+      ],
+      "expected": [
+        [
+          1
+        ],
+        [
+          0,
+          2
+        ],
+        [
+          1
+        ]
+      ]
+    },
+    {
+      "input": [
+        1,
+        []
+      ],
+      "expected": [
+        []
+      ]
+    },
+    {
+      "input": [
+        3,
+        []
+      ],
+      "expected": [
+        [],
+        [],
+        []
+      ]
+    },
+    {
+      "input": [
+        4,
+        [
+          [
+            3,
+            0
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            0,
+            1
+          ]
+        ]
+      ],
+      "expected": [
+        [
+          1,
+          2,
+          3
+        ],
+        [
+          0
+        ],
+        [
+          0
+        ],
+        [
+          0
+        ]
+      ]
+    },
+    {
+      "input": [
+        4,
+        [
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            3,
+            0
+          ]
+        ]
+      ],
+      "expected": [
+        [
+          1,
+          3
+        ],
+        [
+          0,
+          2
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          0,
+          2
+        ]
+      ]
+    },
+    {
+      "input": [
+        5,
+        [
+          [
+            4,
+            3
+          ],
+          [
+            3,
+            2
+          ],
+          [
+            2,
+            1
+          ],
+          [
+            1,
+            0
+          ]
+        ]
+      ],
+      "expected": [
+        [
+          1
+        ],
+        [
+          0,
+          2
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3
+        ]
+      ]
+    }
+  ]
+}

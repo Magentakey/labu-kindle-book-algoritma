@@ -50,7 +50,7 @@ export default function SolutionPanel({ id, code, onCopy }) {
           basicSetup={basicSetup}
           readOnly
           indentWithTab={false}
-          maxHeight="24rem"
+          maxHeight="44rem"
         />
       </div>
       <div className="mt-3">

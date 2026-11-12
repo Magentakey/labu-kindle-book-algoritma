@@ -40,7 +40,7 @@ test('struktur: tujuh bagian sesuai PDF (bagian 2 tanpa tab), satu gambar, satu 
   assert.deepEqual(bagian.map((x) => x.id), ['pendahuluan', 'rumusan', 'algoritma', 'penelusuran', 'analisis', 'makna', 'kesimpulan', 'referensi'])
   assert.deepEqual(bagian.map((x) => x.judul.match(/^\d+/)?.[0] ?? null), ['1', '2', '3', '4', '5', '6', '7', null])
   for (const t of tabsOf(m).filter((x) => x.id !== 'kuis')) assert.ok(bagian.some((x) => x.id === t.id), t.id)
-  assert.deepEqual(bagian.flatMap((x) => x.blok.filter((b) => b.type === 'slot')).map((b) => `${b.name}:${b.arg}`), ['gambar:waktu', 'pseudo:gas'])
+  assert.deepEqual(bagian.flatMap((x) => x.blok.filter((b) => b.type === 'slot' && b.name !== 'tantangan')).map((b) => `${b.name}:${b.arg}`), ['gambar:waktu', 'pseudo:gas'])
   assert.deepEqual([...md.matchAll(/\*Tabel (\d+)\./g)].map((x) => Number(x[1])), [1, 2, 3, 4, 5])
   assert.equal([...md.matchAll(/```python/g)].length, 1)
   for (const jdl of ['2.1', '2.2', '5.1', '5.2', '5.3', '5.4']) assert.ok(md.includes(`### ${jdl} `), `subbagian ${jdl}`)

@@ -1,0 +1,202 @@
+{
+  "id": "modul-18-graph-dfs",
+  "title": "Lengkapi Penjelajahan DFS",
+  "description": "Graf tak berarah punya n simpul bernomor 0 sampai n-1; edges berisi [u, v]. solve(n, edges, start) mengembalikan urutan simpul yang dikunjungi DFS dari start (tetangga bernomor kecil lebih dulu; catat simpul saat pertama dikunjungi). Lengkapi bagian TODO di dalam dfs(u): kunjungi tetangga yang belum dikunjungi secara rekursif.\nContoh: solve(4, [[0, 1], [0, 2], [1, 3]], 0) mengembalikan [0, 1, 3, 2].",
+  "starterCode": "function solve(n, edges, start) {\n  const adj = Array.from({ length: n }, () => [])\n  for (const [u, v] of edges) {\n    adj[u].push(v)\n    adj[v].push(u)\n  }\n  adj.forEach((a) => a.sort((p, q) => p - q))\n\n  const dikunjungi = Array(n).fill(false)\n  const urutan = []\n  function dfs(u) {\n    dikunjungi[u] = true\n    urutan.push(u) // catat saat pertama kali dikunjungi\n    // TODO: untuk setiap v di adj[u] yang belum\n    //   dikunjungi, panggil dfs(v)\n  }\n  dfs(start)\n  return urutan\n}\n",
+  "solution": "function solve(n, edges, start) {\n  const adj = Array.from({ length: n }, () => [])\n  for (const [u, v] of edges) {\n    adj[u].push(v)\n    adj[v].push(u)\n  }\n  adj.forEach((a) => a.sort((p, q) => p - q))\n\n  const dikunjungi = Array(n).fill(false)\n  const urutan = []\n  function dfs(u) {\n    dikunjungi[u] = true\n    urutan.push(u) // catat saat pertama kali dikunjungi\n    for (const v of adj[u]) {\n      if (!dikunjungi[v]) dfs(v)\n    }\n  }\n  dfs(start)\n  return urutan\n}\n",
+  "testCases": [
+    {
+      "input": [
+        1,
+        [],
+        0
+      ],
+      "expected": [
+        0
+      ]
+    },
+    {
+      "input": [
+        5,
+        [
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            1,
+            3
+          ],
+          [
+            2,
+            4
+          ]
+        ],
+        0
+      ],
+      "expected": [
+        0,
+        1,
+        3,
+        2,
+        4
+      ]
+    },
+    {
+      "input": [
+        4,
+        [
+          [
+            0,
+            1
+          ],
+          [
+            2,
+            3
+          ]
+        ],
+        0
+      ],
+      "expected": [
+        0,
+        1
+      ]
+    },
+    {
+      "input": [
+        4,
+        [
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            3,
+            0
+          ]
+        ],
+        2
+      ],
+      "expected": [
+        2,
+        1,
+        0,
+        3
+      ]
+    },
+    {
+      "input": [
+        6,
+        [
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            0,
+            3
+          ],
+          [
+            3,
+            4
+          ],
+          [
+            4,
+            5
+          ]
+        ],
+        3
+      ],
+      "expected": [
+        3,
+        0,
+        1,
+        2,
+        4,
+        5
+      ]
+    },
+    {
+      "input": [
+        5,
+        [
+          [
+            4,
+            3
+          ],
+          [
+            3,
+            2
+          ],
+          [
+            2,
+            1
+          ],
+          [
+            1,
+            0
+          ]
+        ],
+        4
+      ],
+      "expected": [
+        4,
+        3,
+        2,
+        1,
+        0
+      ]
+    },
+    {
+      "input": [
+        5,
+        [
+          [
+            0,
+            2
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            3
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            3,
+            4
+          ]
+        ],
+        0
+      ],
+      "expected": [
+        0,
+        1,
+        3,
+        2,
+        4
+      ]
+    }
+  ]
+}

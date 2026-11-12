@@ -186,7 +186,7 @@ export default function ChallengeIDE({ challenge, run = runInWorker, progress = 
           basicSetup={basicSetup}
           indentWithTab={false}
           minHeight="14rem"
-          maxHeight="28rem"
+          maxHeight="40rem"
         />
       </div>
 

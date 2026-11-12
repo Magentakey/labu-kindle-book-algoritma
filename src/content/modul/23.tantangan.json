@@ -1,0 +1,270 @@
+{
+  "id": "modul-23-bellman-ford",
+  "title": "Lengkapi Pemeriksaan Siklus Negatif Bellman-Ford",
+  "description": "Graf berarah punya n simpul bernomor 0 sampai n-1; edges berisi [u, v, bobot] (boleh negatif). solve(n, edges, source) mengembalikan jarak terpendek dari source (\"INF\" bila tak terjangkau), atau false bila ada siklus negatif yang dapat dicapai dari source. Putaran n - 1 kali sudah ada; lengkapi bagian TODO: pemeriksaan akhir, yaitu return false bila masih ada sisi yang bisa di-RELAX.\nContoh: solve(3, [[0, 1, 4], [1, 2, -1]], 0) mengembalikan [0, 4, 3].",
+  "starterCode": "function solve(n, edges, source) {\n  const jarak = Array(n).fill(Infinity)\n  jarak[source] = 0\n  for (let i = 1; i < n; i++) {\n    for (const [u, v, w] of edges) {\n      if (jarak[u] + w < jarak[v]) jarak[v] = jarak[u] + w\n    }\n  }\n  // TODO: pemeriksaan akhir: jika ada sisi [u, v, w]\n  //   dengan jarak[u] + w < jarak[v], return false\n  return jarak.map((d) => (d === Infinity ? 'INF' : d))\n}\n",
+  "solution": "function solve(n, edges, source) {\n  const jarak = Array(n).fill(Infinity)\n  jarak[source] = 0\n  for (let i = 1; i < n; i++) {\n    for (const [u, v, w] of edges) {\n      if (jarak[u] + w < jarak[v]) jarak[v] = jarak[u] + w\n    }\n  }\n  for (const [u, v, w] of edges) {\n    if (jarak[u] + w < jarak[v]) return false\n  }\n  return jarak.map((d) => (d === Infinity ? 'INF' : d))\n}\n",
+  "testCases": [
+    {
+      "input": [
+        1,
+        [],
+        0
+      ],
+      "expected": [
+        0
+      ]
+    },
+    {
+      "input": [
+        5,
+        [
+          [
+            1,
+            2,
+            5
+          ],
+          [
+            1,
+            3,
+            8
+          ],
+          [
+            1,
+            4,
+            -4
+          ],
+          [
+            2,
+            1,
+            -2
+          ],
+          [
+            3,
+            2,
+            -3
+          ],
+          [
+            3,
+            4,
+            9
+          ],
+          [
+            4,
+            2,
+            7
+          ],
+          [
+            4,
+            0,
+            2
+          ],
+          [
+            0,
+            1,
+            6
+          ],
+          [
+            0,
+            3,
+            7
+          ]
+        ],
+        0
+      ],
+      "expected": [
+        0,
+        2,
+        4,
+        7,
+        -2
+      ]
+    },
+    {
+      "input": [
+        4,
+        [
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            1,
+            2,
+            -1
+          ]
+        ],
+        0
+      ],
+      "expected": [
+        0,
+        4,
+        3,
+        "INF"
+      ]
+    },
+    {
+      "input": [
+        4,
+        [
+          [
+            2,
+            3,
+            1
+          ],
+          [
+            1,
+            2,
+            -2
+          ],
+          [
+            0,
+            1,
+            5
+          ],
+          [
+            0,
+            2,
+            9
+          ]
+        ],
+        0
+      ],
+      "expected": [
+        0,
+        5,
+        3,
+        4
+      ]
+    },
+    {
+      "input": [
+        3,
+        [
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            2,
+            -3
+          ],
+          [
+            2,
+            1,
+            1
+          ]
+        ],
+        0
+      ],
+      "expected": false
+    },
+    {
+      "input": [
+        4,
+        [
+          [
+            0,
+            1,
+            2
+          ],
+          [
+            2,
+            3,
+            -5
+          ],
+          [
+            3,
+            2,
+            1
+          ]
+        ],
+        0
+      ],
+      "expected": [
+        0,
+        2,
+        "INF",
+        "INF"
+      ]
+    },
+    {
+      "input": [
+        3,
+        [
+          [
+            0,
+            1,
+            -1
+          ],
+          [
+            1,
+            2,
+            -1
+          ],
+          [
+            2,
+            0,
+            3
+          ]
+        ],
+        1
+      ],
+      "expected": [
+        2,
+        0,
+        -1
+      ]
+    },
+    {
+      "input": [
+        2,
+        [
+          [
+            0,
+            1,
+            -1
+          ],
+          [
+            1,
+            0,
+            -1
+          ]
+        ],
+        0
+      ],
+      "expected": false
+    },
+    {
+      "input": [
+        3,
+        [
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            0,
+            2,
+            5
+          ],
+          [
+            1,
+            2,
+            -3
+          ]
+        ],
+        0
+      ],
+      "expected": [
+        0,
+        4,
+        1
+      ]
+    }
+  ]
+}

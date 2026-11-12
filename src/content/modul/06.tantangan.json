@@ -1,0 +1,89 @@
+{
+  "id": "modul-06-notasi-asimtotik",
+  "title": "Lengkapi Pencarian n₀ pada Bukti Θ",
+  "description": "f(n) = a·n² + b·n + c termasuk Θ(n²) bila ada c1, c2, n₀ sehingga c1·n² ≤ f(n) ≤ c2·n² untuk semua n ≥ n₀. solve(a, b, c, c1, c2) harus mengembalikan n₀ terkecil (≥ 1), atau -1 bila syarat itu tidak pernah terpenuhi untuk n besar.\nLengkapi bagian TODO: catat n yang MELANGGAR syarat (f(n) < c1·n² atau f(n) > c2·n²).\nContoh: solve(3, 10, 5, 1, 4) mengembalikan 11; solve(3, 10, 5, 4, 5) mengembalikan -1.",
+  "starterCode": "function solve(a, b, c, c1, c2) {\n  let terakhirMelanggar = 0\n  for (let n = 1; n <= 1000; n++) {\n    const f = a * n * n + b * n + c\n    // TODO: jika f < c1 * n * n atau f > c2 * n * n,\n    //   simpan n ke terakhirMelanggar\n  }\n  // Masih melanggar di n = 1000: syarat tidak akan terpenuhi.\n  if (terakhirMelanggar === 1000) return -1\n  return terakhirMelanggar + 1\n}\n",
+  "solution": "function solve(a, b, c, c1, c2) {\n  let terakhirMelanggar = 0\n  for (let n = 1; n <= 1000; n++) {\n    const f = a * n * n + b * n + c\n    if (f < c1 * n * n || f > c2 * n * n) {\n      terakhirMelanggar = n\n    }\n  }\n  // Masih melanggar di n = 1000: syarat tidak akan terpenuhi.\n  if (terakhirMelanggar === 1000) return -1\n  return terakhirMelanggar + 1\n}\n",
+  "testCases": [
+    {
+      "input": [
+        3,
+        10,
+        5,
+        1,
+        4
+      ],
+      "expected": 11
+    },
+    {
+      "input": [
+        3,
+        10,
+        5,
+        4,
+        5
+      ],
+      "expected": -1
+    },
+    {
+      "input": [
+        3,
+        10,
+        5,
+        1,
+        2
+      ],
+      "expected": -1
+    },
+    {
+      "input": [
+        3,
+        0,
+        0,
+        3,
+        3
+      ],
+      "expected": 1
+    },
+    {
+      "input": [
+        3,
+        1,
+        0,
+        3,
+        3
+      ],
+      "expected": -1
+    },
+    {
+      "input": [
+        2,
+        0,
+        100,
+        1,
+        3
+      ],
+      "expected": 10
+    },
+    {
+      "input": [
+        1,
+        5,
+        6,
+        1,
+        2
+      ],
+      "expected": 6
+    },
+    {
+      "input": [
+        5,
+        2,
+        2,
+        2,
+        6
+      ],
+      "expected": 3
+    }
+  ]
+}
