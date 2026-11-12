@@ -44,6 +44,9 @@ const rute = [
   { nama: 'algoritma-konsep-greedy', path: '/algoritma/konsep-greedy' },
   { nama: 'algoritma-representasi-graf', path: '/algoritma/representasi-graf' },
   { nama: 'algoritma-bandingkan', path: '/algoritma/bandingkan/insertion-sort/merge-sort' },
+  { nama: 'algoritma-bandingkan-bfs-dfs', path: '/algoritma/bandingkan/bfs/dfs' },
+  { nama: 'algoritma-bandingkan-mst', path: '/algoritma/bandingkan/kruskal/prim' },
+  { nama: 'algoritma-bandingkan-jalur', path: '/algoritma/bandingkan/dijkstra/bellman-ford' },
   { nama: 'materi-daftar', path: '/materi' },
   { nama: 'materi-01', path: '/materi/01' },
   {

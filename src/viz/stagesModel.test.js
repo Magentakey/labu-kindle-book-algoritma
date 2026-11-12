@@ -2,7 +2,7 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { runTrace, traces } from '../algorithms/traces.js'
 import { BAR_GROUP, barLayout } from './barsModel.js'
-import { alignIndex, conclusion, insertionStats, mergeCost, mergeStats } from './compareModel.js'
+import { alignIndex, conclusion, graphConclusion, graphStats, insertionStats, mergeCost, mergeStats } from './compareModel.js'
 import { buildForest, layoutForest, parseLeaves, parseMerged } from './huffmanModel.js'
 import { timelineLayout } from './timelineModel.js'
 
@@ -157,11 +157,12 @@ test('mergeCost dan mergeStats: total cocok dengan Merge Sort dua penunjuk biasa
   }
 })
 
-test('alignIndex: dua algoritma selesai bersamaan, dan langkah awal serta akhir tepat', () => {
-  assert.equal(alignIndex(0, 66, 28), 0)
-  assert.equal(alignIndex(65, 66, 28), 27)
-  assert.equal(alignIndex(65, 66, 66), 65)
-  assert.equal(alignIndex(33, 67, 11), 5)
+test('alignIndex: langkah berjalan serempak, yang lebih pendek berhenti di langkah terakhirnya', () => {
+  assert.equal(alignIndex(0, 100, 80), 0)
+  assert.equal(alignIndex(79, 100, 80), 79)
+  assert.equal(alignIndex(80, 100, 80), 79, 'algoritma 1 selesai, tidak bergerak lagi')
+  assert.equal(alignIndex(99, 100, 80), 79)
+  assert.equal(alignIndex(99, 100, 100), 99)
   assert.equal(alignIndex(5, 1, 1), 0)
   assert.equal(alignIndex(5, 10, 0), 0)
 })
@@ -184,8 +185,10 @@ test('conclusion: kalimat "X lebih baik dalam ... daripada Y (a vs b)", sama, da
 test('pasangan perbandingan: kedua algoritma terdaftar bertampilan batang dan punya fungsi hitung', async () => {
   const { comparePairs, comparePresets, vizConfig } = await import('./vizConfig.js')
   const { statsById } = await import('./compareModel.js')
-  assert.deepEqual(comparePairs, [{ a: 'insertion-sort', b: 'merge-sort', faster: 'merge-sort' }])
-  for (const p of comparePairs) {
+  const sort = comparePairs.find((p) => p.a === 'insertion-sort')
+  assert.equal(sort.b, 'merge-sort')
+  assert.equal(sort.faster, 'merge-sort')
+  for (const p of comparePairs.filter((x) => x.stage === 'bars')) {
     for (const id of [p.a, p.b]) {
       assert.equal(vizConfig[id].stage, 'bars')
       assert.ok(statsById[id], `statistik ${id}`)
@@ -213,4 +216,94 @@ test('Bandingkan: pada preset "Terbalik" Insertion Sort melakukan lebih banyak p
   assert.equal(sorted.a.comparisons, 7, 'n - 1 untuk data terurut')
   assert.ok(sorted.a.comparisons < sorted.b.comparisons)
   assert.equal(sorted.a.detail, 0, 'tidak ada pergeseran')
+})
+
+// ------------------------------------------------------------------ Bandingkan: pasangan graf
+const graphRun = async (id, values) => {
+  const { vizConfig } = await import('./vizConfig.js')
+  const { buildGraph } = await import('./graphModel.js')
+  const { deriveViews } = await import('./graphViews.js')
+  const cfg = vizConfig[id]
+  const r = runTrace(traces[cfg.trace], values)
+  assert.ok(r.ok, `${id}: ${r.error}`)
+  const graph = buildGraph(cfg.kind, values)
+  assert.ok(graph, `${id}: graf sah`)
+  return { steps: r.steps, views: deriveViews(cfg.kind, r.steps, graph), graph }
+}
+const finalStats = async (pair, preset) => {
+  const a = await graphRun(pair.a, preset.a)
+  const b = await graphRun(pair.b, preset.b)
+  return { a: graphStats(a.steps, a.views, pair), b: graphStats(b.steps, b.views, pair), ga: a.graph, gb: b.graph }
+}
+
+test('pasangan graf: setiap preset sah untuk kedua algoritma dan graf kedua sisi sama', async () => {
+  const { comparePairs, vizConfig } = await import('./vizConfig.js')
+  const graphPairs = comparePairs.filter((p) => p.stage === 'graph')
+  assert.deepEqual(graphPairs.map((p) => `${p.a}/${p.b}`), ['bfs/dfs', 'kruskal/prim', 'dijkstra/bellman-ford'])
+  for (const p of graphPairs) {
+    assert.equal(vizConfig[p.a].stage, 'graph')
+    assert.equal(vizConfig[p.b].stage, 'graph')
+    assert.ok(p.presets.length >= 3, `${p.a}: minimal tiga masukan`)
+    for (const preset of p.presets) {
+      const { ga, gb } = await finalStats(p, preset)
+      assert.deepEqual([...ga.names].sort(), [...gb.names].sort(), `${p.a} ${preset.label}: simpul sama`)
+      const key = (g) => g.edges.map((e) => [e.u, e.v].sort().join('-') + ':' + e.w).sort()
+      if (!ga.directed && !gb.directed) assert.deepEqual(key(ga), key(gb), `${p.a} ${preset.label}: sisi sama`)
+    }
+  }
+})
+
+test('BFS vs DFS: jumlah sisi diperiksa sama, simpul ditemukan semua, urutan berbeda pada graf contoh materi', async () => {
+  const { comparePairs } = await import('./vizConfig.js')
+  const pair = comparePairs.find((p) => p.a === 'bfs')
+  const r = await finalStats(pair, pair.presets[1])
+  const a = r.a.at(-1)
+  const b = r.b.at(-1)
+  assert.equal(a.checks, b.checks, 'keduanya O(V + E): 2E pemeriksaan pada graf tak berarah')
+  assert.equal(a.checks, 2 * r.ga.edges.length)
+  assert.equal(a.visited, 8)
+  assert.equal(b.visited, 8)
+  assert.notDeepEqual(a.order, b.order)
+  const mono = r.a.every((s, i) => i === 0 || (s.checks >= r.a[i - 1].checks && s.visited >= r.a[i - 1].visited))
+  assert.ok(mono, 'hitungan tidak pernah turun')
+})
+
+test('Kruskal vs Prim: bobot tree akhir selalu sama (MST), Kruskal memeriksa tiap sisi sekali', async () => {
+  const { comparePairs } = await import('./vizConfig.js')
+  const pair = comparePairs.find((p) => p.a === 'kruskal')
+  for (const preset of pair.presets) {
+    const r = await finalStats(pair, preset)
+    assert.equal(r.a.at(-1).weight, r.b.at(-1).weight, preset.label)
+    assert.equal(r.a.at(-1).checks, r.ga.edges.length, `${preset.label}: Kruskal E pemeriksaan`)
+  }
+  const materi = await finalStats(pair, pair.presets[1])
+  assert.equal(materi.a.at(-1).weight, 37, 'MST graf buku teks bobot 37')
+})
+
+test('Dijkstra vs Bellman-Ford: Bellman-Ford memeriksa (V − 1) x E + E sisi, Dijkstra hanya E', async () => {
+  const { comparePairs } = await import('./vizConfig.js')
+  const pair = comparePairs.find((p) => p.a === 'dijkstra')
+  for (const preset of pair.presets) {
+    const r = await finalStats(pair, preset)
+    const e = r.ga.edges.length
+    const v = r.ga.names.length
+    assert.equal(r.a.at(-1).checks, e, `${preset.label}: Dijkstra E`)
+    assert.equal(r.b.at(-1).checks, (v - 1) * e + e, `${preset.label}: Bellman-Ford`)
+    assert.ok(r.a.at(-1).updates <= r.b.at(-1).updates + e)
+  }
+})
+
+test('graphConclusion: kalimat sesuai topik dan status selesai atau sementara', () => {
+  const side = (name, stats, big) => ({ name, stats: { checks: 0, visited: 0, weight: 0, updates: 0, order: [], ...stats }, big })
+  const t = graphConclusion('traversal', side('BFS', { checks: 18, order: ['A', 'B'] }, 'O(V + E)'), side('DFS', { checks: 18, order: ['A', 'C'] }, 'O(V + E)'), true)
+  assert.match(t[0], /Keduanya sama dalam jumlah sisi yang diperiksa \(18\)/)
+  assert.match(t[1], /BFS A, B; DFS A, C/)
+  assert.match(t.at(-1), /seluruh langkah/)
+  const m = graphConclusion('mst', side('Kruskal', { checks: 9, weight: 13 }, 'O(E lg V)'), side('Prim', { checks: 18, weight: 13 }, 'O(E lg V)'), true)
+  assert.match(m[0], /Kruskal lebih sedikit dalam jumlah sisi yang diperiksa daripada Prim \(9 vs 18\)/)
+  assert.match(m[1], /Bobot tree akhir sama: 13/)
+  const s = graphConclusion('shortest', side('Dijkstra', { checks: 9, updates: 9 }, 'O(E lg V)'), side('Bellman-Ford', { checks: 54, updates: 8 }, 'O(VE)'), false)
+  assert.match(s[0], /Dijkstra lebih sedikit dalam jumlah sisi yang diperiksa/)
+  assert.match(s[1], /Bellman-Ford lebih sedikit dalam jumlah pembaruan jarak/)
+  assert.match(s.at(-1), /baru berdasarkan langkah yang sudah berjalan/)
 })

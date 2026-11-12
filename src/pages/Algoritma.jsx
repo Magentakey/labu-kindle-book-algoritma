@@ -9,6 +9,7 @@ import { Button, Chip, ConfirmDialog, Icon, Mascot, SearchField, Segmented, Thum
 import { cx } from '../ui/cx.js'
 
 const filterOptions = [{ id: 'semua', label: 'Semua' }, ...kategori.map((k) => ({ id: k.id, label: k.label }))]
+const judulDari = (id) => algoritma.find((x) => x.id === id)?.judul ?? id
 const modulLabel = (n) => `Modul ${String(n).padStart(2, '0')}`
 
 // Kartu yang bisa diklik = PINDAH: garis Coral dan naik 2px saat hover/fokus; teks "Buka" Coral Tua + panah.
@@ -145,9 +146,13 @@ export default function Algoritma() {
           </p>
           <h1 className="text-h1 text-heading">Algoritma</h1>
         </div>
-        <Button as={Link} to={`/algoritma/bandingkan/${comparePairs[0].a}/${comparePairs[0].b}`} variant="navigasiGaris" icon="compare">
-          Bandingkan dua algoritma
-        </Button>
+        <nav aria-label="Bandingkan dua algoritma" className="flex flex-wrap justify-end gap-2">
+          {comparePairs.map((p) => (
+            <Button key={`${p.a}-${p.b}`} as={Link} to={`/algoritma/bandingkan/${p.a}/${p.b}`} variant="navigasiGaris" icon="compare">
+              {judulDari(p.a)} vs {judulDari(p.b)}
+            </Button>
+          ))}
+        </nav>
       </div>
 
       <div className="flex flex-col gap-3 md:mt-5 md:flex-row md:items-center">

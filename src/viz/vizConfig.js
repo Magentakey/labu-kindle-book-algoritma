@@ -215,8 +215,56 @@ Object.assign(vizConfig, {
   },
 })
 
-/** Pasangan algoritma yang bisa dibandingkan, dengan nama tampil dan jenis tampilan. */
-export const comparePairs = [{ a: 'insertion-sort', b: 'merge-sort', faster: 'merge-sort' }]
+const cp = (label, a, b = a, positions = null) => ({ label, a, b, positions })
+const ADJ_TREE = 'A: B, C; B: A, D, E; C: A, F; D: B; E: B; F: C'
+const E_DESIGN = 'A-B:4, A-C:2, B-C:1, B-D:5, C-D:8, C-E:10, D-E:2, D-F:6, E-F:3'
+const E_DESIGN_DIR = 'A>B:4, A>C:2, C>B:1, B>D:5, C>D:8, C>E:10, D>E:2, D>F:6, E>F:3'
+
+/**
+ * Pasangan algoritma yang bisa dibandingkan. `stage` = jenis gambar kedua sisi (bars atau graph);
+ * `presets` = masukan bersama (a untuk algoritma pertama, b untuk yang kedua; keduanya menggambarkan data yang sama);
+ * `topic` + `metrics` = cara kesimpulan disusun (hanya pasangan graf); `faster` = algoritma yang bertanda "lebih cepat" (bila ada).
+ */
+export const comparePairs = [
+  { a: 'insertion-sort', b: 'merge-sort', faster: 'merge-sort', stage: 'bars', presets: comparePresets.map((p) => cp(p.label, p.values)) },
+  {
+    a: 'bfs',
+    b: 'dfs',
+    stage: 'graph',
+    topic: 'traversal',
+    metrics: [{ key: 'checks', label: 'Sisi diperiksa' }, { key: 'visited', label: 'Simpul ditemukan' }],
+    presets: [
+      cp('Graf contoh desain', { G: DESIGN_ADJ, s: 'A' }, { G: DESIGN_ADJ }, DESIGN_POSITIONS),
+      cp('Contoh materi (r sampai y)', traces.bfs.presets[0].values, { G: traces.bfs.presets[0].values.G }),
+      cp('Pohon kecil (A sampai F)', { G: ADJ_TREE, s: 'A' }, { G: ADJ_TREE }),
+    ],
+  },
+  {
+    a: 'kruskal',
+    b: 'prim',
+    stage: 'graph',
+    topic: 'mst',
+    metrics: [{ key: 'checks', label: 'Sisi diperiksa' }, { key: 'weight', label: 'Bobot tree' }],
+    presets: [
+      cp('Graf contoh desain', { V: DESIGN_V, E: E_DESIGN }, { G: DESIGN_ADJ_W, r: 'A' }, DESIGN_POSITIONS),
+      cp('Contoh materi (a sampai i)', traces['mst-kruskal'].presets[0].values, traces['mst-prim'].presets[0].values),
+      cp('Segitiga bobot sama', traces['mst-kruskal'].presets[2].values, traces['mst-prim'].presets[2].values),
+    ],
+  },
+  {
+    a: 'dijkstra',
+    b: 'bellman-ford',
+    stage: 'graph',
+    topic: 'shortest',
+    updateLine: 14,
+    metrics: [{ key: 'checks', label: 'Sisi diperiksa' }, { key: 'updates', label: 'Jarak diperbarui' }],
+    presets: [
+      cp('Graf contoh desain', { V: DESIGN_V, E: E_DESIGN_DIR, s: 'A' }, undefined, DESIGN_POSITIONS),
+      cp('Contoh materi (s, t, x, y, z)', traces.dijkstra.presets[0].values),
+      cp('Jalan langsung lebih mahal', { V: 'A, B, C', E: 'A>C:10, A>B:3, B>C:3', s: 'A' }),
+    ],
+  },
+]
 export const comparePairOf = (id) => comparePairs.find((p) => p.a === id || p.b === id) ?? null
 
 export const vizIds = Object.keys(vizConfig)

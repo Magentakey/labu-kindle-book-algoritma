@@ -59,10 +59,13 @@ export function mergeStats(steps) {
   return out
 }
 
-/** Langkah milik satu algoritma saat pemutar gabungan di langkah k dari `total`: keduanya selesai bersamaan. */
+/**
+ * Langkah milik satu algoritma saat pemutar gabungan di langkah k: keduanya berjalan serempak, satu langkah per ketukan.
+ * Algoritma yang lebih pendek berhenti di langkah terakhirnya dan menunggu, sementara yang lain terus berjalan.
+ */
 export function alignIndex(k, total, n) {
-  if (n <= 1 || total <= 1) return 0
-  return Math.min(n - 1, Math.round((k * (n - 1)) / (total - 1)))
+  if (n <= 0) return 0
+  return Math.max(0, Math.min(n - 1, k))
 }
 
 const lessBetter = (a, b) => (a === b ? 0 : a < b ? -1 : 1)
@@ -90,6 +93,77 @@ export function conclusion(a, b, done) {
   metric({ key: 'writes', text: 'jumlah penulisan ke array' }, a, b)
   out.push(`Secara asimtotik ${a.name} ${a.big} dan ${b.name} ${b.big}, jadi pemenangnya bergantung pada ukuran dan susunan data.`)
   out.push(done ? 'Kesimpulan ini dihitung dari seluruh langkah.' : 'Kesimpulan ini baru berdasarkan langkah yang sudah berjalan, dan bisa berubah sampai kedua algoritma selesai.')
+  return out
+}
+
+const NAMA = { traversal: 'penelusuran', mst: 'pohon rentang minimum', shortest: 'jalur terpendek' }
+
+/**
+ * Hitungan kumulatif untuk pasangan graf, satu elemen per langkah. Semua dihitung dari keadaan gambar (`views`, hasil deriveViews):
+ * - checks: berapa sisi sudah diperiksa (sisi berstatus "flow"; satu pemeriksaan = satu kali sisi itu mulai diperiksa),
+ * - visited: berapa simpul sudah tidak lagi "belum dikunjungi", dan `order` = urutan simpul pertama kali ditemukan,
+ * - weight: jumlah bobot sisi yang sudah menjadi sisi pohon,
+ * - updates: berapa kali jarak d diperbarui (langkah di baris `updateLine`, bila diberikan).
+ * @param {Array<{ line: number }>} steps
+ * @param {Array<{ nodes: Array<{ name: string, status: string }>, edges: Array<{ w: number | null, status: string }> }>} views
+ * @param {{ updateLine?: number }} [opt]
+ */
+export function graphStats(steps, views, opt = {}) {
+  let checks = 0
+  let updates = 0
+  let prevFlow = -1
+  const order = []
+  return steps.map((step, i) => {
+    const view = views[i]
+    const flow = view.edges.findIndex((e) => e.status === 'flow')
+    if (flow >= 0 && (flow !== prevFlow || (i > 0 && step.line < steps[i - 1].line))) checks += 1
+    prevFlow = flow
+    if (opt.updateLine && step.line === opt.updateLine) updates += 1
+    for (const n of view.nodes) if (n.status !== 'unvisited' && !order.includes(n.name)) order.push(n.name)
+    const weight = view.edges.reduce((sum, e) => (e.status === 'tree' ? sum + (e.w ?? 0) : sum), 0)
+    return { checks, visited: order.length, weight, updates, order: [...order] }
+  })
+}
+
+/**
+ * Kesimpulan otomatis untuk pasangan graf.
+ * @param {'traversal' | 'mst' | 'shortest'} topic
+ * @param {{ name: string, stats: object, big: string }} a
+ * @param {{ name: string, stats: object, big: string }} b
+ * @param {boolean} done
+ * @returns {string[]}
+ */
+export function graphConclusion(topic, a, b, done) {
+  const out = []
+  const sa = a.stats
+  const sb = b.stats
+  const lines = (label, key) => {
+    if (sa[key] === 0 && sb[key] === 0) return
+    if (sa[key] === sb[key]) out.push(`Keduanya sama dalam ${label} (${sa[key]}).`)
+    else {
+      const win = sa[key] < sb[key] ? a : b
+      const lose = win === a ? b : a
+      out.push(`${win.name} lebih sedikit dalam ${label} daripada ${lose.name} (${win.stats[key]} vs ${lose.stats[key]}).`)
+    }
+  }
+  if (topic === 'traversal') {
+    lines('jumlah sisi yang diperiksa', 'checks')
+    if (sa.order.length) out.push(`Urutan simpul ditemukan: ${a.name} ${sa.order.join(', ')}; ${b.name} ${sb.order.join(', ')}.`)
+    out.push(`${a.name} menjelajah per lapis memakai antrean, ${b.name} masuk sedalam mungkin dulu memakai tumpukan (rekursi), sehingga urutannya berbeda walau biayanya sama.`)
+  } else if (topic === 'mst') {
+    lines('jumlah sisi yang diperiksa', 'checks')
+    if (sa.weight > 0 || sb.weight > 0) {
+      if (sa.weight === sb.weight) out.push(`Bobot tree ${done ? 'akhir' : 'sementara'} sama: ${sa.weight}.`)
+      else out.push(`Bobot tree sementara berbeda: ${a.name} ${sa.weight}, ${b.name} ${sb.weight}.`)
+    }
+    out.push(`${a.name} memilih sisi termurah dari seluruh graf (hutan yang menyatu), ${b.name} menumbuhkan satu pohon dari simpul awal.`)
+  } else {
+    lines('jumlah sisi yang diperiksa', 'checks')
+    lines('jumlah pembaruan jarak', 'updates')
+    out.push(`${a.name} memproses tiap simpul sekali tetapi tidak boleh ada bobot negatif; ${b.name} mengulang V − 1 putaran dan bisa mendeteksi siklus negatif.`)
+  }
+  out.push(`Secara asimtotik ${a.name} ${a.big} dan ${b.name} ${b.big}, jadi pemenangnya bergantung pada bentuk graf.`)
+  out.push(done ? `Kesimpulan ${NAMA[topic]} ini dihitung dari seluruh langkah.` : 'Kesimpulan ini baru berdasarkan langkah yang sudah berjalan, dan bisa berubah sampai kedua algoritma selesai.')
   return out
 }
 
