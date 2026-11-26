@@ -1,12 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { algoritma, algoritmaHref, kategori, membukaHalamanLama } from '../data/algoritma.js'
-import { filterAlgoritma, groupByKategori, suggest } from '../lib/algoritmaSearch.js'
-import { groupClasses } from '../lib/galeriClasses.js'
-import { readCollapsed, writeCollapsed } from '../lib/galeriState.js'
+import { filterAlgoritma, suggest } from '../lib/algoritmaSearch.js'
 import { comparePairs } from '../viz/vizConfig.js'
-import { Button, Chip, ConfirmDialog, Icon, Mascot, SearchField, Segmented, Thumb } from '../ui/index.js'
-import { cx } from '../ui/cx.js'
+import { Button, Chip, ConfirmDialog, DropdownMenu, Icon, Mascot, SearchField, Thumb } from '../ui/index.js'
 
 const filterOptions = [{ id: 'semua', label: 'Semua' }, ...kategori.map((k) => ({ id: k.id, label: k.label }))]
 const judulDari = (id) => algoritma.find((x) => x.id === id)?.judul ?? id
@@ -25,7 +22,7 @@ function Kartu({ a, onLama }) {
           onLama(a)
         }
       }}
-      className="group block w-[300px] shrink-0 snap-start overflow-hidden rounded-sm border border-line bg-card shadow-block transition-[transform,box-shadow,border-color] duration-200 ease-out hover:-translate-y-0.5 hover:border-brand-orange hover:shadow-hover focus-visible:-translate-y-0.5 focus-visible:border-brand-orange md:w-auto"
+      className="group block w-full overflow-hidden rounded-sm border border-line bg-card shadow-block transition-[transform,box-shadow,border-color] duration-200 ease-out hover:-translate-y-0.5 hover:border-brand-orange hover:shadow-hover focus-visible:-translate-y-0.5 focus-visible:border-brand-orange"
     >
       <Thumb kind={a.thumb} />
       <div className="flex flex-col gap-2 p-3.5">
@@ -50,31 +47,6 @@ function Kartu({ a, onLama }) {
 }
 
 // Grup bisa dilipat: tinggi dan putaran chevron 250 ms (instan bila gerak dikurangi). Di HP isinya satu baris yang digeser.
-function Grup({ g, tutup, onToggle, onLama }) {
-  const cls = groupClasses(g.items.length)
-  return (
-    <section aria-labelledby={`grup-${g.id}`} className={cx('min-w-0', cls.span)}>
-      <h2 id={`grup-${g.id}`} className="mb-4">
-        <button type="button" aria-expanded={!tutup} aria-controls={`isi-${g.id}`} onClick={onToggle} className="flex w-full items-center gap-3 rounded-sm text-left">
-          <Icon name="right" size={18} className={cx('shrink-0 text-ink transition-transform duration-[250ms] ease-in-out', !tutup && 'rotate-90')} />
-          <span className="text-h3 uppercase text-heading">{g.title}</span>
-          <span className="text-h3 text-ink-soft">({g.items.length})</span>
-          <span className="h-px flex-1 bg-line" aria-hidden="true" />
-        </button>
-      </h2>
-      <div id={`isi-${g.id}`} inert={tutup} className={cx('grid transition-[grid-template-rows] duration-[250ms] ease-in-out', tutup ? 'grid-rows-[0fr]' : 'grid-rows-[1fr]')}>
-        <div className={cx('min-h-0 min-w-0 md:-m-4 md:overflow-hidden md:p-4', tutup && 'max-md:hidden')}>
-          <div className={cx('-mx-4 flex snap-x items-start gap-4 overflow-x-auto px-4 pb-3 md:mx-0 md:grid md:gap-6 md:overflow-visible md:px-0 md:pb-0', cls.inner)}>
-            {g.items.map((a) => (
-              <Kartu key={a.id} a={a} onLama={onLama} />
-            ))}
-          </div>
-        </div>
-      </div>
-    </section>
-  )
-}
-
 // Empty state memakai gaya hero yang sama dengan semua hero (Kuning muda + garis Kuning tua 1,5px).
 function Kosong({ query, kategoriId, onQuery, onKategori }) {
   const saran = suggest(query)
@@ -107,7 +79,6 @@ function Kosong({ query, kategoriId, onQuery, onKategori }) {
 export default function Algoritma() {
   const [query, setQuery] = useState('')
   const [kategoriId, setKategoriId] = useState('semua')
-  const [tutup, setTutup] = useState(() => readCollapsed(window.localStorage))
   const cari = useRef(null)
   const [lama, setLama] = useState(null) // kartu yang akan membuka halaman materi versi lama (menunggu konfirmasi)
   const navigate = useNavigate()
@@ -127,16 +98,6 @@ export default function Algoritma() {
   }, [])
 
   const hasil = useMemo(() => filterAlgoritma(query, kategoriId), [query, kategoriId])
-  const grup = useMemo(() => groupByKategori(hasil), [hasil])
-  const toggle = (id) =>
-    setTutup((s) => {
-      const n = new Set(s)
-      if (n.has(id)) n.delete(id)
-      else n.add(id)
-      writeCollapsed(window.localStorage, n)
-      return n
-    })
-
   return (
     <div className="mx-auto w-full max-w-[1344px] px-4 pt-5 md:px-8 md:pt-6">
       <div className="hidden items-end justify-between gap-4 md:flex">
@@ -146,18 +107,48 @@ export default function Algoritma() {
           </p>
           <h1 className="text-h1 text-heading">Algoritma</h1>
         </div>
-        <nav aria-label="Bandingkan dua algoritma" className="flex flex-wrap justify-end gap-2">
-          {comparePairs.map((p) => (
-            <Button key={`${p.a}-${p.b}`} as={Link} to={`/algoritma/bandingkan/${p.a}/${p.b}`} variant="navigasiGaris" icon="compare">
-              {judulDari(p.a)} vs {judulDari(p.b)}
-            </Button>
-          ))}
-        </nav>
+        <DropdownMenu label="Algoritma perbandingan" icon="compare" panelClassName="w-72">
+          {(tutupMenu) => (
+            <nav aria-label="Bandingkan dua algoritma">
+              <ul>
+                {comparePairs.map((p) => (
+                  <li key={`${p.a}-${p.b}`}>
+                    <Link to={`/algoritma/bandingkan/${p.a}/${p.b}`} onClick={tutupMenu} className="text-body-strong flex items-center gap-2 rounded-sm px-3 py-2.5 text-ink hover:bg-orange-soft hover:text-link">
+                      <Icon name="compare" size={16} className="shrink-0 text-link" />
+                      {judulDari(p.a)} vs {judulDari(p.b)}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          )}
+        </DropdownMenu>
       </div>
 
       <div className="flex flex-col gap-3 md:mt-5 md:flex-row md:items-center">
         <SearchField value={query} onChange={setQuery} inputRef={cari} label="Cari algoritma" placeholder="Cari algoritma, mis. “dijk” atau “O(n²)”…" className="md:w-[370px] md:shrink-0" />
-        <Segmented options={filterOptions} value={kategoriId} onChange={setKategoriId} label="Filter kategori" />
+        <DropdownMenu label={`Kategori: ${filterOptions.find((o) => o.id === kategoriId).label}`} icon="filter" variant="kontrol" align="kiri" panelClassName="w-60">
+          {(tutupMenu) => (
+            <ul aria-label="Filter kategori">
+              {filterOptions.map((o) => (
+                <li key={o.id}>
+                  <button
+                    type="button"
+                    aria-pressed={kategoriId === o.id}
+                    onClick={() => {
+                      setKategoriId(o.id)
+                      tutupMenu()
+                    }}
+                    className="text-body flex w-full items-center justify-between gap-2 rounded-sm px-3 py-2.5 text-left text-ink hover:bg-info-bg aria-pressed:font-semibold aria-pressed:text-control"
+                  >
+                    {o.label}
+                    {kategoriId === o.id && <Icon name="check" size={16} />}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </DropdownMenu>
       </div>
 
       <div className="mt-5 hidden items-center gap-5 rounded-sm border-[1.5px] border-dashed border-brand-yellow-strong bg-surface px-6 py-4 md:flex">
@@ -172,14 +163,16 @@ export default function Algoritma() {
         {hasil.length} algoritma ditemukan
       </p>
 
-      {grup.length === 0 ? (
+      {hasil.length === 0 ? (
         <Kosong query={query} kategoriId={kategoriId} onQuery={setQuery} onKategori={setKategoriId} />
       ) : (
-        <div className="mt-8 grid grid-cols-1 items-start gap-x-6 gap-y-10 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {grup.map((g) => (
-            <Grup key={g.id} g={g} tutup={tutup.has(g.id)} onToggle={() => toggle(g.id)} onLama={setLama} />
+        <ul className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {hasil.map((a) => (
+            <li key={a.id} className="flex">
+              <Kartu a={a} onLama={setLama} />
+            </li>
           ))}
-        </div>
+        </ul>
       )}
 
       <ConfirmDialog

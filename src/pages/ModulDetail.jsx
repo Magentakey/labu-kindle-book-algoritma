@@ -8,7 +8,7 @@ import { Callout, KasusCards, KodeBlok, LoopStepper, PseudoBlok, Tantangan } fro
 import KuisModul from '../materi/KuisModul.jsx'
 import ModulBar from '../materi/ModulBar.jsx'
 import { useScrollSpy } from '../materi/scroll.js'
-import { markRead, useProgress } from '../materi/useProgress.js'
+import { markSeen, useProgress } from '../materi/useProgress.js'
 import { Button, Chip, ErrorState, Icon, PageLoading } from '../ui/index.js'
 import { cx } from '../ui/cx.js'
 import { useOfflineReady } from '../ui/useOfflineReady.js'
@@ -134,10 +134,11 @@ function Isi({ m }) {
     document.title = `${m.judul} · Modul ${m.id} · LABU`
   }, [m])
 
-  const { aktif, baca } = useScrollSpy(IDS)
+  const { aktif, baca, dilihat } = useScrollSpy(IDS)
+  // Semua bagian yang sudah dicapai atau dilewati dicatat, bukan hanya bagian aktif, supaya bagian pendek di dasar halaman dan bagian yang terlewat saat gulir cepat tetap terhitung di daftar Materi.
   useEffect(() => {
-    if (state.status === 'siap') markRead(m.id, aktif)
-  }, [state.status, m.id, aktif])
+    if (state.status === 'siap') markSeen(m.id, aktif, dilihat)
+  }, [state.status, m.id, aktif, dilihat])
 
   const hasilKuis = entryOf(progress, m.id).kuis.hasil
   const ref = useMemo(() => (state.status === 'siap' ? state.bagian.find((s) => s.id === 'referensi') : null), [state])

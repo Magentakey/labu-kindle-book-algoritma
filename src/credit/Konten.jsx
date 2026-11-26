@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import MarkdownView from '../components/MarkdownView/MarkdownView.jsx'
-import { glosarium, sumber, tentang, tim } from '../data/credit.js'
+import { glosarium, identitas, sumber, tentang, tim } from '../data/credit.js'
 import { modulById } from '../data/modul.js'
 import { Chip, Icon, Mascot } from '../ui/index.js'
 import { JudulBagian } from './Progres.jsx'
@@ -47,8 +47,50 @@ function KartuAnggota({ a }) {
         <img src={fotoUrl(a.foto)} alt={`Foto ${a.nama}`} width={112} height={112} loading="lazy" className="absolute -top-14 left-1/2 size-28 -translate-x-1/2 rounded-full border-4 border-page bg-panel object-cover" />
         <h3 className="text-h3">{a.nama}</h3>
         <p className="text-body mt-1">{a.peran}</p>
+        <p className="text-caption mt-1">NRP {a.nrp}</p>
       </div>
     </li>
+  )
+}
+
+export function Identitas() {
+  const baris = [
+    ['Kampus', identitas.kampus],
+    ['Program studi', identitas.prodi],
+    ['Mata kuliah', identitas.mataKuliah],
+    ['Proyek', identitas.proyek],
+    ['Periode pengerjaan', identitas.periode],
+  ]
+  return (
+    <>
+      <JudulBagian id="identitas" eyebrow="Identitas">
+        Identitas Proyek
+      </JudulBagian>
+      <div className="mt-4 flex flex-wrap gap-6 rounded-sm border border-line bg-card p-5">
+        <img src={fotoUrl(identitas.logo)} alt={`Logo ${identitas.kampus}`} width={120} height={120} loading="lazy" className="size-28 shrink-0 object-contain md:size-30" />
+        <div className="min-w-0 flex-1 basis-72">
+          <dl className="grid gap-x-6 gap-y-3 sm:grid-cols-[max-content_minmax(0,1fr)]">
+            {baris.map(([k, v]) => (
+              <div key={k} className="contents">
+                <dt className="text-label text-accent uppercase sm:pt-0.5">{k}</dt>
+                <dd className="text-body-strong text-heading">{v}</dd>
+              </div>
+            ))}
+            <dt className="text-label text-accent uppercase sm:pt-0.5">Dosen</dt>
+            <dd>
+              <ul className="space-y-2">
+                {identitas.dosen.map((d) => (
+                  <li key={d.nama}>
+                    <p className="text-body-strong text-heading">{d.nama}</p>
+                    <p className="text-caption text-ink-soft">{d.peran}</p>
+                  </li>
+                ))}
+              </ul>
+            </dd>
+          </dl>
+        </div>
+      </div>
+    </>
   )
 }
 
@@ -85,7 +127,22 @@ export function Sumber() {
   )
 }
 
+const TERBARU = 4
+
+function ItemChangelog({ c }) {
+  return (
+    <li className="text-caption flex gap-2 text-ink-soft">
+      <Icon name="right" size={14} className="mt-0.5 shrink-0" />
+      <span>
+        <span className="font-semibold text-ink">{c.versi}</span> <span>({c.tanggal})</span> — {c.teks}
+      </span>
+    </li>
+  )
+}
+
 export function Tentang() {
+  const terbaru = tentang.changelog.slice(0, TERBARU)
+  const terdahulu = tentang.changelog.slice(TERBARU)
   return (
     <>
       <JudulBagian id="tentang" eyebrow="Tentang LABU">
@@ -102,15 +159,23 @@ export function Tentang() {
           </div>
           <h3 className="text-body-strong mt-4 text-heading">Changelog</h3>
           <ul className="mt-2 space-y-1.5">
-            {tentang.changelog.map((c) => (
-              <li key={c.versi} className="text-caption flex gap-2 text-ink-soft">
-                <Icon name="right" size={14} className="mt-0.5 shrink-0" />
-                <span>
-                  <span className="font-semibold text-ink">{c.versi}</span> — {c.teks}
-                </span>
-              </li>
+            {terbaru.map((c) => (
+              <ItemChangelog key={c.versi} c={c} />
             ))}
           </ul>
+          {terdahulu.length > 0 && (
+            <details className="group mt-2">
+              <summary className="text-button inline-flex cursor-pointer items-center gap-1.5 rounded-sm text-link">
+                <Icon name="right" size={14} className="transition-transform duration-200 group-open:rotate-90 motion-reduce:transition-none" />
+                Riwayat lebih lama ({terdahulu.length} rilis)
+              </summary>
+              <ul className="mt-2 space-y-1.5">
+                {terdahulu.map((c) => (
+                  <ItemChangelog key={c.versi} c={c} />
+                ))}
+              </ul>
+            </details>
+          )}
         </div>
       </div>
     </>

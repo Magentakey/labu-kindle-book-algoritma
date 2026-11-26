@@ -45,6 +45,17 @@ export function markRead(all, id, section, now = Date.now()) {
   return { ...all, [id]: { ...e, visited, last: { section, at: now } } }
 }
 
+/**
+ * Menandai banyak bagian sekaligus sebagai dibaca (semua bagian yang sudah dicapai atau dilewati lewat gulir) dan menjadikan
+ * `terakhir` posisi terakhir. Mengembalikan `all` yang sama bila tidak ada yang berubah.
+ */
+export function markReadMany(all, id, sectionIds, terakhir, now = Date.now()) {
+  const e = entryOf(all, id)
+  const baru = sectionIds.filter((s) => READ_SECTIONS.includes(s) && !e.visited.includes(s))
+  if (baru.length === 0 && e.last?.section === terakhir) return all
+  return { ...all, [id]: { ...e, visited: [...e.visited, ...baru], last: { section: terakhir, at: now } } }
+}
+
 /** Mencatat satu percobaan kuis: jumlah percobaan, skor terbaik, lulus, dan hasil terakhir. */
 export function recordKuis(all, id, hasil, now = Date.now()) {
   const e = entryOf(all, id)

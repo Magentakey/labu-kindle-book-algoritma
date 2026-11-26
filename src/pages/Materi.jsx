@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { TOTAL_MODUL, modul, modulById, sections } from '../data/modul.js'
+import { modul, modulById, sections } from '../data/modul.js'
 import { entryOf, lastOpened, percent, status, timeAgo } from '../lib/progress.js'
 import ModulCard from '../materi/ModulCard.jsx'
 import { useProgress } from '../materi/useProgress.js'
@@ -33,7 +33,7 @@ export default function Materi() {
   return (
     <div className="mx-auto w-full max-w-[1344px] px-4 pt-5 md:px-8 md:pt-6">
       <p className="text-caption text-ink-soft">
-        {modul.length} modul tersedia · {TOTAL_MODUL} modul direncanakan · urut nomor modul
+        {modul.length} modul · urut nomor modul
       </p>
       <h1 className="text-h1 text-heading">Materi</h1>
 
@@ -81,12 +81,6 @@ export default function Materi() {
           </Button>
         </div>
       )}
-      <div className="mt-6 flex items-center gap-4 rounded-sm border border-dashed border-line bg-panel p-4">
-        <Mascot expression="berpikir" size={64} />
-        <p className="text-body text-ink-soft">
-          Modul lain sedang disiapkan. Saat ini baru {modul.length} dari {TOTAL_MODUL} modul yang tersedia; sisanya akan muncul di daftar ini.
-        </p>
-      </div>
     </div>
   )
 }

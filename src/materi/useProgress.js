@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from 'react'
 import { readHari, tambahHari, writeHari } from '../lib/aktivitas.js'
-import { entryOf, markRead as markReadPure, readAll, recordKuis as recordKuisPure, writeAll } from '../lib/progress.js'
+import { entryOf, markRead as markReadPure, markReadMany as markReadManyPure, readAll, recordKuis as recordKuisPure, writeAll } from '../lib/progress.js'
 
 // Satu penyimpanan bersama: daftar Materi, halaman modul, dan Credit selalu membaca data yang sama.
 const storage = typeof window !== 'undefined' ? window.localStorage : undefined
@@ -31,6 +31,12 @@ export function markRead(id, section) {
   const e = entryOf(all, id)
   if (e.last?.section === section && e.visited.includes(section)) return
   commit(markReadPure(all, id, section))
+}
+
+/** Menandai semua bagian yang sudah dicapai atau dilewati (urut dari atas) sebagai dibaca; `terakhir` jadi posisi terakhir. */
+export function markSeen(id, terakhir, dilihat) {
+  const next = markReadManyPure(all, id, dilihat, terakhir)
+  if (next !== all) commit(next)
 }
 
 export function recordKuis(id, hasil) {

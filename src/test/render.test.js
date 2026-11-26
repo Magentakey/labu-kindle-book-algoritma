@@ -46,12 +46,12 @@ test('KuisKartu: chip status mengikuti kemajuan (lulus, gagal, belum) dengan tek
   assert.match(el({ kuis: { attempts: 1, passed: false, best: { skor: 5, total: 8, persen: 63 } } }), /Terbaik 5\/8 · Belum lulus/)
 })
 
-test('Credit: satu h1, enam bagian berjudul, tab bagian, empat anggota tim dengan foto beralt, 24 modul di peta', async () => {
+test('Credit: satu h1, tujuh bagian berjudul, tab bagian, identitas dan NRP tim, empat anggota tim dengan foto beralt, 24 modul di peta', async () => {
   const Credit = await ssr.load('/src/pages/Credit.jsx')
   const html = ssr.render(ssr.createElement(Credit), '/credit')
   assert.equal(hitung(html, /<h1[ >]/g), 1)
   assert.match(html, /Mulai menyusun blok labu pertamamu!/)
-  for (const id of ['progres', 'glosarium', 'peta', 'tim', 'sumber', 'tentang']) {
+  for (const id of ['progres', 'glosarium', 'peta', 'identitas', 'tim', 'sumber', 'tentang']) {
     assert.match(html, new RegExp(`<section[^>]*id="sec-${id}"[^>]*aria-labelledby="h-${id}"`), `bagian ${id}`)
     assert.match(html, new RegExp(`<h2 id="h-${id}"`), `judul ${id}`)
   }
@@ -59,8 +59,10 @@ test('Credit: satu h1, enam bagian berjudul, tab bagian, empat anggota tim denga
   for (const a of tim) {
     assert.ok(decode(html).includes(`alt="Foto ${a.nama}"`), `foto ${a.nama} punya alt`)
     assert.ok(decode(html).includes(a.peran), a.peran)
+    assert.ok(html.includes(`NRP ${a.nrp}`), `NRP ${a.nama}`)
   }
-  assert.equal(hitung(html, /<img /g), tim.length)
+  assert.match(html, /Institut Teknologi Indonesia/)
+  assert.equal(hitung(html, /<img /g), tim.length + 1, 'foto tim dan logo kampus')
   assert.ok(!/<img(?![^>]*alt=)/.test(html), 'semua gambar punya alt')
   // peta belajar + koleksi blok: tiap modul 01–24 muncul dengan status yang dibacakan
   for (let n = 1; n <= 24; n++) assert.match(html, new RegExp(`Modul ${String(n).padStart(2, '0')}, `), `blok ${n}`)

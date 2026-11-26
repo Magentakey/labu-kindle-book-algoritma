@@ -67,7 +67,7 @@ export function Progres() {
           </p>
           <div className="mt-3 flex flex-wrap items-center gap-3 rounded-sm bg-panel px-4 py-3">
             <Icon name="flame" size={18} className="shrink-0 text-ink-soft" />
-            <p className="text-body-strong min-w-0 flex-1 text-heading">{next ? `Blok berikutnya: Modul ${next.id} · ${next.judul} (${next.persen}%)` : 'Semua modul yang tersedia sudah selesai. Modul lain sedang disiapkan.'}</p>
+            <p className="text-body-strong min-w-0 flex-1 text-heading">{next ? `Blok berikutnya: Modul ${next.id} · ${next.judul} (${next.persen}%)` : 'Semua modul sudah selesai.'}</p>
             {next && (
               <Button as={Link} to={`/materi/${next.id}`} variant="tautan" size="s" iconRight="arrowR">
                 Lanjutkan

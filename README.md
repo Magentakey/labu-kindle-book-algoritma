@@ -4,7 +4,18 @@
 
 <h1 align="center">LABU — Kindle Book Algoritma</h1>
 
-Aplikasi web progresif (PWA) untuk belajar **Analisis dan Desain Algoritma** dalam Bahasa Indonesia. LABU menggabungkan materi bacaan, visualisasi langkah demi langkah, kuis, dan tantangan kode dalam satu aplikasi yang bisa dipakai offline.
+Aplikasi web progresif (PWA) untuk belajar **Perancangan dan Analisis Algoritma** dalam Bahasa Indonesia. LABU menggabungkan materi bacaan, visualisasi langkah demi langkah, kuis, dan tantangan kode dalam satu aplikasi yang bisa dipakai offline.
+
+Versi saat ini: **1.1.0**. Riwayat perubahan ada di [`CHANGELOG.md`](CHANGELOG.md) dan di halaman **Credit → Tentang LABU** di dalam aplikasi.
+
+## Halaman
+
+| Halaman | Isi |
+| --- | --- |
+| **Algoritma** | Daftar 17 algoritma dalam satu galeri (tanpa blok kategori) dengan pencarian, menu dropdown **Kategori** untuk memfilter, dan menu dropdown **Algoritma perbandingan** untuk membuka Bandingkan. |
+| **Materi** | 24 modul bacaan dengan kemajuan belajar per modul, filter status, dan unduhan PDF. |
+| **Quiz** | Kuis tiap modul, dikelompokkan per tingkat, dengan filter modul dan status. |
+| **Credit** | Progres belajar, glosarium, peta belajar, identitas proyek (kampus, mata kuliah, dosen), tim pengembang beserta NRP, sumber, dan changelog. |
 
 ## Deploy
 
@@ -14,12 +25,16 @@ LABU adalah PWA, jadi bisa **diunduh dan dipasang** ke perangkat. Buka alamat di
 
 ## Tim
 
-| Nama | Peran |
-| --- | --- |
-| Ramdhany Sunarto | Programmer |
-| Muhammad Andi Rizky Maulana Ibrahim | Analyst |
-| Iqbal Andrianto | Project Manager & Designer |
-| Gilang Putra Wardana | Documenter |
+Proyek ini dikerjakan di Institut Teknologi Indonesia, Teknik Informatika, untuk mata kuliah Perancangan dan Analisis Algoritma, Ganjil 2026/2027 (7 Oktober – 12 November 2026).
+
+| Nama | NRP | Peran |
+| --- | --- | --- |
+| Ramdhany Sunarto | 1152800005 | Programmer |
+| Muhammad Andi Rizky Maulana Ibrahim | 1152800022 | Analyst |
+| Iqbal Andrianto | 1152800014 | Project Manager & Designer |
+| Gilang Putra Wardana | 1152800013 | Documenter |
+
+Dosen: Melani Indriasari, S.T., M.Kom. (pengajar tugas proyek) dan Dra. Endang Ratnawati Djuwitaningrum, M.Kom. (mata kuliah algoritma).
 
 ## Desain
 
@@ -29,13 +44,14 @@ Antarmuka mengikuti desain dan style guide dari tim desain di Figma: [LABU^BU di
 
 - **24 modul materi** dengan rumus (MathJax), pseudocode, dan komponen interaktif.
 - **Visualizer algoritma** untuk pencarian, sorting, analisis, DP, greedy, penelusuran graf, MST, dan shortest path. Setiap langkah menunjukkan baris pseudocode, nilai variabel, dan gambar (batang, graf, tabel, garis waktu, pohon Huffman).
-- **Bandingkan dua algoritma** secara berdampingan dengan data yang sama, langkah serempak, hitungan operasi, dan kesimpulan otomatis. Pasangan yang tersedia:
+- **Bandingkan dua algoritma** secara berdampingan dengan data yang sama, langkah serempak, hitungan operasi, dan kesimpulan otomatis. Dibuka dari menu dropdown **Algoritma perbandingan** di halaman Algoritma. Pasangan yang tersedia:
   - Insertion Sort vs Merge Sort
   - BFS vs DFS
   - Kruskal vs Prim
   - Dijkstra vs Bellman-Ford
 - **Kuis pilihan ganda** di setiap modul (jawaban tunggal dan banyak jawaban), dengan koreksi langsung, bunyi umpan balik, dan rincian hasil.
 - **Mode tantangan kode** di 21 modul: tulis fungsi JavaScript di editor (CodeMirror), jalankan terhadap kasus uji, lalu bandingkan dengan solusi.
+- **Kemajuan belajar** tersimpan di perangkat (tanpa akun): bagian modul yang sudah dibaca lewat gulir, hasil kuis, dan streak harian, dibaca bersama oleh daftar Materi, halaman modul, dan Credit.
 - **PWA**: dapat diunduh, dipasang, dan dipakai offline.
 - **Aksesibilitas**: mengikuti WCAG 2.x level AA, mendukung mode terang dan gelap, dan diaudit otomatis dengan axe-core.
 
@@ -108,8 +124,11 @@ src/
   content/modul/   Materi tiap modul: NN.md, NN.kuis.js, NN.tantangan.json, NN.pseudo.js
   algorithms/      Trace langkah demi langkah tiap algoritma (traces/)
   viz/             Model dan komponen visualizer, Bandingkan, pemutar
-  pages/           Halaman: Algoritma, AlgoritmaDetail, Bandingkan, Materi, Kuis
-  lib/             Mesin kuis dan utilitas
+  pages/           Halaman: Algoritma, AlgoritmaDetail, Bandingkan, Materi, ModulDetail, Quiz, QuizDetail, Credit
+  materi/          Komponen halaman modul dan penyimpanan kemajuan belajar (useProgress, scroll spy)
+  quiz/ credit/    Komponen halaman Quiz dan Credit
+  data/            Data algoritma, modul, kuis, dan isi Credit (termasuk changelog)
+  lib/             Mesin kuis, kemajuan belajar, dan utilitas
   ui/              Komponen antarmuka bersama
   pwa/             Service worker dan pembaruan aplikasi
 docs/              Panduan menulis materi, soal, rumus, visualizer, dan pengujian
@@ -128,6 +147,10 @@ Panduan lengkap ada di folder [`docs/`](docs):
 - [`pengujian-dan-aksesibilitas.md`](docs/pengujian-dan-aksesibilitas.md)
 
 Format singkat tantangan kode (`NN.tantangan.json`): `id`, `title`, `description`, `starterCode`, `solution`, dan `testCases` berisi `input` (daftar argumen) dan `expected`. Kode pengguna dijalankan sebagai `solve(...input)`. Tempatkan slot `{{tantangan}}` di berkas `.md` modul sebelum bagian kesimpulan dan daftarkan di `src/content/modul/index.js`.
+
+## Memperbarui changelog
+
+Saat merilis versi baru: tambahkan bagian di [`CHANGELOG.md`](CHANGELOG.md), tambahkan entri di `tentang.changelog` pada `src/data/credit.js` (dan ubah `tentang.versi`), lalu samakan `version` di `package.json`.
 
 ## Kontribusi
 

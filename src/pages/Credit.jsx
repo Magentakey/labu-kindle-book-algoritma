@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import CreditBar from '../credit/CreditBar.jsx'
 import { creditTabs } from '../data/credit.js'
-import { Glosarium, Sumber, Tentang, Tim } from '../credit/Konten.jsx'
+import { Glosarium, Identitas, Sumber, Tentang, Tim } from '../credit/Konten.jsx'
 import PetaBelajar from '../credit/PetaBelajar.jsx'
 import { Hero, Progres } from '../credit/Progres.jsx'
 import { useScrollSpy } from '../materi/scroll.js'
@@ -14,7 +14,7 @@ export default function Credit() {
   useEffect(() => {
     document.title = 'Credit · LABU'
   }, [])
-  const bagian = [Progres, Glosarium, PetaBelajar, Tim, Sumber, Tentang]
+  const bagian = [Progres, Glosarium, PetaBelajar, Identitas, Tim, Sumber, Tentang]
   return (
     <>
       <CreditBar aktif={aktif} />

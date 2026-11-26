@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from 'react'
-import { TOTAL_MODUL } from '../data/modul.js'
 import { daftarKuis } from '../data/quiz.js'
 import { kelompokkan, ringkasan, saring } from '../lib/quizList.js'
 import KuisKartu from '../quiz/KuisKartu.jsx'
@@ -57,7 +56,7 @@ export default function Quiz() {
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <p className="text-caption text-ink-soft">
-            {ring.kuis} kuis · {ring.soal} soal dari {ring.modul} modul · {TOTAL_MODUL} modul direncanakan
+            {ring.kuis} kuis · {ring.soal} soal dari {ring.modul} modul
           </p>
           <h1 className="text-h1 text-heading">Quiz</h1>
         </div>
@@ -97,12 +96,6 @@ export default function Quiz() {
         </div>
       )}
 
-      <div className="mt-8 flex items-center gap-4 rounded-sm border border-dashed border-line bg-panel p-4">
-        <Mascot expression="berpikir" size={64} />
-        <p className="text-body text-ink-soft">
-          Kuis modul lain sedang disiapkan. Saat ini baru {ring.kuis} kuis yang tersedia; kuis tingkat Complex akan muncul di sini.
-        </p>
-      </div>
     </div>
   )
 }
