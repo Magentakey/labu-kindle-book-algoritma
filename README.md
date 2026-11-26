@@ -1,5 +1,7 @@
 <p align="center">
   <img src="public/icon-512.png" alt="Logo LABU" width="160" />
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="public/logo-iti.png" alt="Logo Institut Teknologi Indonesia" width="160" />
 </p>
 
 <h1 align="center">LABU — Kindle Book Algoritma</h1>
